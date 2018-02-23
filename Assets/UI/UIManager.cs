@@ -25,4 +25,13 @@ public class UIManager : MonoBehaviour {
         Panel_DataSourceManager.SetActive(true);
         Panel_DataSourceManager.GetComponent<DataSourceManager>().Initialize();
     }
+
+    ///////////////////////////////
+    ///       Menu Buttons      ///
+    ///////////////////////////////
+    public void ExitApplication ()
+    {
+        // check if you need to save project first // soon
+        Application.Quit();
+    }
 }

@@ -15,6 +15,7 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
+        Settings.ApplicationPath = Application.dataPath;
         if (!File.Exists("Settings.ini"))
         {
             //File.Create("Settings.ini");
@@ -38,7 +39,15 @@ public class RunAtLaunch : MonoBehaviour {
             }
             SettingsInit();
         }
+
+
+
+
+
+
+
     }
+
 
     private void SettingsInit()
     {
@@ -97,6 +106,11 @@ public class RunAtLaunch : MonoBehaviour {
             // open Data Source Manager //
             DataSourceManagerPanel.SetActive(true);
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
+        }
+
+        if (Settings.Data[2] == "0") // game mode //
+        {
+            CascInitialize.Start();
         }
     }
 }

@@ -15,7 +15,6 @@ public static class Settings {
 
     //public static string CacheDir;
     public static string[] Data = new string[10];
-
     /*
      * [0] = Cache Folder Location
      * [1] = First Run? 0/1
@@ -28,6 +27,9 @@ public static class Settings {
      * [8] = WoWExtractedPath
      * [9] = WoWCustomGameSource
      */
+
+    public static string ApplicationPath;
+
 
     public static void Save ()
     {

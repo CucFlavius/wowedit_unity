@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cb42ebcbe486aaf41b7e54cf4b1aa6e7
+timeCreated: 1519134920
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - TerrainImporterPanel: {instanceID: 0}
+  - MapScrollList: {instanceID: 0}
+  - MapTabPrefab: {fileID: 1409701627777768, guid: 18d4381a70e78234bac8aa7ec421fbf6,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

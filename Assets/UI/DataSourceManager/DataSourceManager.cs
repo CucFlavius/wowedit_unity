@@ -19,16 +19,6 @@ public class DataSourceManager : MonoBehaviour {
 
     private List<string> DropdownGameList = new List<string>();
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public void Initialize ()
     {
         // Update Game List //
@@ -39,6 +29,9 @@ public class DataSourceManager : MonoBehaviour {
             DropdownGameList.Add(Settings.Data[5]);
         if (Settings.Data[6] != null )
             DropdownGameList.Add(Settings.Data[6]);
+        // Add custom game path to the list //
+        if (Settings.Data[9] != null && Settings.Data[9].Length > 1)
+            DropdownGameList.Add(Settings.Data[9]);
         DropdownGame.ClearOptions();
         DropdownGame.AddOptions(DropdownGameList);
 
@@ -52,6 +45,12 @@ public class DataSourceManager : MonoBehaviour {
             ToggleOnline.isOn = true;
         else if (Settings.Data[2] == "2")
             ToggleExtracted.isOn = true;
+
+        // Update Extracted Path //
+        if (Settings.Data[8] != null)
+        {
+            Extracted.text = Settings.Data[8];
+        }
     }
 
     public void Ok ()
@@ -61,6 +60,7 @@ public class DataSourceManager : MonoBehaviour {
             Settings.Data[2] = "0";
             // start Initialize casc thread //
             Settings.Save();
+            CascInitialize.Start();
             gameObject.SetActive(false);
         }
         if (ToggleOnline.isOn)
