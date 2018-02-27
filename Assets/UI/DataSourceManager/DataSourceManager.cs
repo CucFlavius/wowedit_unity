@@ -13,7 +13,7 @@ public class DataSourceManager : MonoBehaviour {
     public Dropdown DropdownGame;
     public Dropdown DropdownOnline;
     public InputField Extracted;
-
+    public GameObject terrainImport;
     public GameObject FolderBrowser;
     public UnityEngine.UI.Text FolderBrowser_SelectedFolderText;
 
@@ -79,6 +79,8 @@ public class DataSourceManager : MonoBehaviour {
                 gameObject.SetActive(false);
             }
         }
+
+        terrainImport.GetComponent<TerrainImport>().Initialize();
     }
 
     public void AddButon ()

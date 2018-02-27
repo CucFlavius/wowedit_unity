@@ -23,7 +23,7 @@ public class WorldLoader : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        blockSize = 533.33333f / ADT.worldScale;//(float)(0.208333125 * 20 / ADT.worldScale * 16 * 9);
+        blockSize = 533.33333f / Settings.worldScale;
 
         // create matrices //
         ADTmatrix = new GameObject[maxWorldSize, maxWorldSize];
@@ -44,7 +44,6 @@ public class WorldLoader : MonoBehaviour {
         {
             PreviousCamX = CurrentCamX;
             PreviousCamY = CurrentCamY;
-            //print(CurrentCamX + " " + CurrentCamY);
             UpdateLodMatrices(CurrentCamX, CurrentCamY);
             Loader();
         }
@@ -53,6 +52,10 @@ public class WorldLoader : MonoBehaviour {
 
     public void LoadFullWorld (List<string> MinimapFileList, string map_name)
     {
+        // Parse WDT file
+        string wdtPath = @"world\maps\" + map_name + @"\";
+        WDT.Load(wdtPath, map_name);
+
         MapName = map_name;
 
         // clear Matrix //
@@ -74,25 +77,18 @@ public class WorldLoader : MonoBehaviour {
 
         // Initial spawn //
         ClearLoDArray(previousTerrainLod);
-        //int camX = (int)CameraStartBlock.x;
-        //int camY = (int)CameraStartBlock.y;
 
         // position camera obj //
         float cameraWorldX = (32 - MidBlockX) * blockSize;
         float cameraWorldZ = (32 - MidBlockY) * blockSize;
-        Camera.transform.position = new Vector3(cameraWorldX, 4.5f, cameraWorldZ);
-        PreviousCamX = MidBlockX;
-        PreviousCamY = MidBlockY;
+        Camera.transform.position = new Vector3(0, 4.5f, 0);
 
-
-        int CurrentCamX = MidBlockX;//(int)Mathf.Floor(32 + (-Camera.transform.position.z / blockSize));
-        int CurrentCamY = MidBlockY; // (int)Mathf.Floor(32 + (-Camera.transform.position.x / blockSize));
+        int CurrentCamX = 0;
+        int CurrentCamY = 0;
         PreviousCamX = CurrentCamX;
         PreviousCamY = CurrentCamY;
         UpdateLodMatrices(CurrentCamX, CurrentCamY);
-
         Loader();
-
     }
 
     public void UpdateLodMatrices (int currentPosX, int currentPosY)

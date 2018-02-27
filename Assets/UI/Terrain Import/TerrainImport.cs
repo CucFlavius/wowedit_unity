@@ -14,17 +14,11 @@ public class TerrainImport : MonoBehaviour {
     public GameObject PanelErrorMessage;
     public UnityEngine.UI.Text ErrorMessageText;
     public GameObject UIManager;
-
     public Dictionary<string ,GameObject> MapTabs = new Dictionary<string, GameObject>();
-
     public List<string> ExtractedMapList;
     public List<string> FilteredList;
     public string FilterWord;
-
-	// Use this for initialization
-	void Start () {
-        Invoke ("Initialize", 1);
-    }
+    private static bool Initialized = false;
 
     public void MapSelected(string mapName)
     {
@@ -57,7 +51,6 @@ public class TerrainImport : MonoBehaviour {
                 // load blank minimaps //
                 UIManager.GetComponent<MinimapHandler>().LoadBlankMinimaps(mapPath);
             }
-
         }
         else
         {
@@ -74,7 +67,6 @@ public class TerrainImport : MonoBehaviour {
                 ErrorMessageText.text = "WMO Only Zone."+"\n"+"No minimaps available.";
             }
         }
-
     }
 
     public void Initialize()
@@ -93,17 +85,24 @@ public class TerrainImport : MonoBehaviour {
         }
         GetMapList(mapPath);
         PopulateMapList();
+        Initialized = true;
     }
 
     public void OpenTerrainImporter ()
     {
+        if (!Initialized)
+        {
+            Initialize();
+        }
+
         TerrainImporterPanel.SetActive(true);
     }
 
     public void GetMapList (string mapPath)
     {
         string[] list = Casc.GetFolderListFromFolder(mapPath);
-        ExtractedMapList = new List<string>(list);
+        ExtractedMapList = new List<string>();
+        ExtractedMapList.AddRange(list);
     }
 
     public void PopulateMapList ()
@@ -127,7 +126,6 @@ public class TerrainImport : MonoBehaviour {
                 entry.Value.SetActive(true);
             }
         }
-
         else
         {
             foreach (KeyValuePair<string, GameObject> entry in MapTabs)
@@ -142,7 +140,6 @@ public class TerrainImport : MonoBehaviour {
                 }
             }
         }
-
     }
 
     public bool CheckForADTs(string path)

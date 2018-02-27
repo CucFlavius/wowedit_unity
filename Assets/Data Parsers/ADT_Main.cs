@@ -8,6 +8,7 @@ public static partial class ADT {
     // global flags //
     private static int MH2Ooffset;
     private static int MFBOoffset;
+    private static List<bool> has_mcsh;
 
     private static void ReadMVER(Stream ADTstream)
     {
@@ -50,7 +51,7 @@ public static partial class ADT {
     private static void ReadMH2O(Stream ADTstream)
     {
         // ignore if not preset
-        if (MH2Ooffset == 0 && ADTstream.Length > ADTstream.Position)
+        if (MH2Ooffset == 0 || ADTstream.Length < ADTstream.Position)
             return;
 
         // parse
@@ -66,8 +67,6 @@ public static partial class ADT {
             int offset_instances = ReadLong(ADTstream);       // points to SMLiquidInstance[layer_count]
             int layer_count = ReadLong(ADTstream);            // 0 if the chunk has no liquids. If > 1, the offsets will point to arrays.
             int offset_attributes = ReadLong(ADTstream);      // points to mh2o_chunk_attributes, can be ommitted for all-0
-
-            //Debug.Log(chunkStartPosition);
 
             if (offset_instances >= 0)
             {
@@ -107,7 +106,9 @@ public static partial class ADT {
         if (ADTstream.Length == ADTstream.Position)
             return;
 
-        for (int a = 0; a < 256; a++)
+        has_mcsh = new List<bool>();
+
+        for (int m = 0; m < 256; m++)
         {
             ChunkData chunkData = new ChunkData();
 
@@ -123,7 +124,7 @@ public static partial class ADT {
             byte[] arrayOfBytes = new byte[4];
             ADTstream.Read(arrayOfBytes, 0, 4);
             BitArray flags = new BitArray(arrayOfBytes);
-            bool has_mcsh = flags[0];
+            has_mcsh.Add(flags[0]); // if ADTtex has MCSH chunk
             bool impass = flags[1];
             bool lq_river = flags[2];
             bool lq_ocean = flags[3];
@@ -182,21 +183,14 @@ public static partial class ADT {
             {
                 ParseExtraSubChunks(ADTstream, chunkData); // don't have existance flags for these
             }
-            ADTdata.Add(chunkData);
+            blockData.ChunksData.Add(chunkData);
         }
     }
 
     private static void ReadMFBO(Stream ADTstream)
     {
-        if (ADTstream.Length == ADTstream.Position)
-        {
+        if (ADTstream.Length == ADTstream.Position || MFBOoffset == 0)
             return;
-        }
-
-        if (MFBOoffset == 0)
-        {
-            return;
-        }
 
         string MFBO = ReadFourCC(ADTstream);
         int MFBOsize = ReadLong(ADTstream);
@@ -267,14 +261,23 @@ public static partial class ADT {
         if (MCCV != "MCCV")
             Debug.Log("Wrong Data Type : " + MCCV);
 
-        for (int v = 1; v <= 145; v++)
+        chunkData.VertexColors = new Color32[145];
+
+        List<int> vertcolors = new List<int>();
+        for (int col = 0; col < 145; col++)
         {
-            int[] BGRA = new int[4];
-            for (int b = 0; b < 4; b++)
-            {
-                BGRA[b] = ADTstream.ReadByte();
-            }
-            chunkData.VertexColors.Add(BGRA);
+            int channelR = ADTstream.ReadByte();
+            vertcolors.Add(channelR);
+            int channelG = ADTstream.ReadByte();
+            vertcolors.Add(channelG);
+            int channelB = ADTstream.ReadByte();
+            vertcolors.Add(channelB);
+            int channelA = ADTstream.ReadByte();
+            vertcolors.Add(channelA);
+
+            Color32 colorsRGBA = new Color32((byte)channelR, (byte)channelG, (byte)channelB, (byte)channelA);
+            Color32 colorBGRA = new Color32(colorsRGBA.b, colorsRGBA.g, colorsRGBA.r, colorsRGBA.a);
+            chunkData.VertexColors[col] = colorBGRA;
         }
     }  //saved
 
@@ -285,15 +288,18 @@ public static partial class ADT {
         if (MCNR != "MCNR")
             Debug.Log("Wrong Data Type : " + MCNR);
 
-        for (int n = 1; n <= 145; n++)
-        {
-            var normsRaw = new Vector3(ADTstream.ReadByte(), ADTstream.ReadByte(), ADTstream.ReadByte()); // normalized. X, Z, Y. 127 == 1.0, -127 == -1.0.
-            var calcX = NormalizeValue(normsRaw.x); if (calcX <= 0) { calcX = 1 + calcX; } else if (calcX > 0) { calcX = (1 - calcX) * (-1); }
-            var calcY = NormalizeValue(normsRaw.z); if (calcY <= 0) { calcY = 1 + calcY; } //else if (calcY > 0) { calcY = calcY; } ????
-            var calcZ = NormalizeValue(normsRaw.y); if (calcZ <= 0) { calcZ = (1 + calcZ) * (-1); } else if (calcZ > 0) { calcZ = (1 - calcZ) * (-1); }
-            chunkData.VertexNormals.Add(new Vector3(calcX, calcY, calcZ));  //append norms [ReadByte stream / 127.0 as float , ReadByte stream / 127.0 as float , ReadByte stream / 127.0 as float ]
-        }
+        chunkData.VertexNormals = new Vector3[145];
 
+        for (int n = 0; n < 145; n++)
+        {
+            Vector3 normsRaw = new Vector3(ADTstream.ReadByte(), ADTstream.ReadByte(), ADTstream.ReadByte());
+
+            var calcX = NormalizeValue(normsRaw.x); if (calcX <= 0) { calcX = 1 + calcX; } else if (calcX > 0) { calcX = (1 - calcX) * (-1); }
+            var calcY = NormalizeValue(normsRaw.y); if (calcY <= 0) { calcY = 1 + calcY; } else if (calcY > 0) { calcY = (1 - calcY) * (-1); }
+            var calcZ = NormalizeValue(normsRaw.z); if (calcZ <= 0) { calcZ = 1 + calcZ; } else if (calcZ > 0) { calcZ = (1 - calcZ) * (-1); }
+
+            chunkData.VertexNormals[n] = new Vector3(calcX, calcZ, calcY);
+        }
         // skip unused 13 byte padding //
         ADTstream.Seek(13, SeekOrigin.Current);
     }  //saved

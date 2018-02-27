@@ -9,6 +9,7 @@ public class RunAtLaunch : MonoBehaviour {
     public GameObject FolderBrowserDialog;
     public GameObject DataSourceManagerPanel;
 
+
     /// <summary>
     ///  Run this code at launch
     /// </summary>
@@ -40,14 +41,7 @@ public class RunAtLaunch : MonoBehaviour {
             SettingsInit();
         }
 
-
-
-
-
-
-
     }
-
 
     private void SettingsInit()
     {

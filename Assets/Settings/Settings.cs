@@ -5,15 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-/// <summary>
 /// General Settings
 /// Static Variables
-/// </summary>
-
-
+/// 
 public static class Settings {
 
-    //public static string CacheDir;
     public static string[] Data = new string[10];
     /*
      * [0] = Cache Folder Location
@@ -29,7 +25,7 @@ public static class Settings {
      */
 
     public static string ApplicationPath;
-
+    public static float worldScale = 10.0f;
 
     public static void Save ()
     {
@@ -39,7 +35,6 @@ public static class Settings {
     public static void GetInstalledGames()
     {
         string[] stringSeparators = new string[] { "||" };
-
         // World of Warcraft //
         RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Blizzard Entertainment\\World of Warcraft");
         if (key != null)
@@ -63,7 +58,6 @@ public static class Settings {
                 Data[5] = objPTR.ToString();
             }
         }
-
         RegistryKey keyBeta = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Blizzard Entertainment\\World of Warcraft\\Beta");
         if (keyBeta != null)
         {
@@ -74,5 +68,4 @@ public static class Settings {
             }
         }
     }
-
 }

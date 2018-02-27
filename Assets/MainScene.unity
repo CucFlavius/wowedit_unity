@@ -4732,6 +4732,7 @@ MonoBehaviour:
   DropdownGame: {fileID: 1788176120}
   DropdownOnline: {fileID: 916764846}
   Extracted: {fileID: 438924644}
+  terrainImport: {fileID: 1218599975}
   FolderBrowser: {fileID: 522702068}
   FolderBrowser_SelectedFolderText: {fileID: 1680751355}
 --- !u!114 &309737842
@@ -14586,9 +14587,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fbc89bb1ebe0974d868701ca683ab26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainSpeed: 100
-  shiftAdd: 250
-  maxShift: 1000
+  mainSpeed: 20
+  shiftAdd: 20
+  maxShift: 100
   camSens: 0.25
 --- !u!1 &1046530412
 GameObject:

@@ -1,9 +1,11 @@
-﻿//using System.Drawing;
-//using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using UnityEngine;
 using System.IO;
+using System.Linq;
+using System;
+using SereniaBLPLib;
+using System.Collections.Generic;
 
 public class BLPinfo
 {
@@ -11,16 +13,16 @@ public class BLPinfo
     public byte encoding;
     public byte alphaDepth;
     public byte alphaEncoding;
-    public byte hasMipmaps;
+    public bool hasMipmaps;
     public int width;
     public int height;
     public uint[] mipmapOffsets;
     public uint[] mipmapSize;
+    public int mipMapCount;
 }
 
 public class ARGBColor8
 {
-
     public byte red;
     public byte green;
     public byte blue;
@@ -41,8 +43,9 @@ public class ARGBColor8
     }
 }
 
-public static class BLP
+public static partial class BLP
 {
+    //public static bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct;
 
     private static TextureFormat textureFormat; 
     private static byte encoding; // 1 = Uncompressed, 2 = DirectX Compressed
@@ -53,22 +56,45 @@ public static class BLP
     private static int height; // Y Resolution of the biggest Mipmap
     private static uint[] mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
     private static uint[] mipmapSize = new uint[16]; // Size for every level
+    private static int MipMapCount;
 
     private static ARGBColor8[] paletteBGRA = new ARGBColor8[256];
     private static Stream str; // Reference of the stream
 
+
+    public static byte[] BLP2 (Stream file, int mipmap)
+    {
+        using (var blp = new BlpFile(file))
+        {
+            byte[] bmp = blp.GetPictureData(0);
+            return bmp;
+        }
+    }
+
+
     public static BLPinfo Info()
     {
         BLPinfo blpInfo = new BLPinfo();
+
         blpInfo.textureFormat = textureFormat;
         blpInfo.encoding = encoding;
         blpInfo.alphaDepth = alphaDepth;
         blpInfo.alphaEncoding = alphaEncoding;
-        blpInfo.hasMipmaps = hasMipmaps;
+        if (hasMipmaps == 2)
+        {
+            blpInfo.hasMipmaps = true;
+        }
+        if (hasMipmaps == 1)
+        {
+            blpInfo.hasMipmaps = false;
+        }
         blpInfo.width = width;
         blpInfo.height = height;
         blpInfo.mipmapOffsets = mipmapOffsets;
         blpInfo.mipmapSize = mipmapSize;
+
+        blpInfo.mipMapCount = MipMapCount;
+        
         return blpInfo;
     }
 
@@ -86,23 +112,53 @@ public static class BLP
         return TextureFormat.RGBA32;
     }
 
-    public static byte[] GetUncompressed(Stream stream, int mipmapLevel = 0)
+    public static int GetMipMapCount()
     {
-        ParseHeaderInfo(stream);
-        byte[] imageBytes = GetImageBytes(mipmapLevel);
-        return imageBytes;
+        int i = 0;
+        while (mipmapOffsets[i] != 0) i++;
+        MipMapCount = i;
+        return MipMapCount;
+    }
+
+    public static byte[] GetUncompressed(Stream stream, bool mipmaps = true)
+    {
+        ClearData();
+        if (!mipmaps)
+        {
+            ParseHeaderInfo(stream);
+            GetMipMapCount();
+            byte[] imageBytes = GetImageBytes(0);
+            return imageBytes;
+        }
+        else if (mipmaps)
+        {
+            ParseHeaderInfo(stream);
+            GetMipMapCount();
+            List<byte> allDataList = new List<byte>();
+            for (int miplvl = 0; miplvl < MipMapCount; miplvl++) {
+                byte[] buffer = GetImageBytes(miplvl);
+                allDataList.AddRange(buffer);
+                
+            }
+            byte[] alldata = allDataList.ToArray();
+            return alldata;
+        }
+        return null;
+    }
+
+    private static void ClearData ()
+    {
+        mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
+        mipmapSize = new uint[16]; // Size for every level
+        MipMapCount = 0;
+        paletteBGRA = null;
     }
 
     private static void ParseHeaderInfo (Stream stream)
     {
         str = stream;
+        string BLPversion = ReadFourCCReverse(str);
         byte[] buffer = new byte[4];
-        str.Read(buffer, 0, 4);
-
-        // check for Magic Code //
-        if (System.BitConverter.ToUInt32(buffer, 0) != 0x32504c42)
-            Debug.Log("Invalid BLP Format");
-
         // Read type
         str.Read(buffer, 0, 4);
         uint type = System.BitConverter.ToUInt32(buffer, 0);
@@ -152,6 +208,8 @@ public static class BLP
                 paletteBGRA[i2].alpha = color[3];
             }
         }
+
+        textureFormat = TxFormat();
     }
 
     private static byte[] GetImageBytes(int mipmapLevel)

@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4752671691309396}
   - component: {fileID: 114150153006418624}
   - component: {fileID: 23660116945289358}
-  - component: {fileID: 33585015788761978}
   m_Layer: 0
   m_Name: ADTBlock
   m_TagString: Untagged
@@ -48,7 +47,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1959010497222844}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_MotionVectors: 1
@@ -74,13 +73,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33585015788761978
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1959010497222844}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &114150153006418624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -93,6 +85,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoD: 0
+  LoD0Loaded: 0
+  LoD1Loaded: 0
   textures:
   - {fileID: 2800000, guid: 625b0d9cc3137964481761cef49dd9c9, type: 3}
   - {fileID: 2800000, guid: 3c0ade1d8ba6c1c459714c7afc448bb2, type: 3}

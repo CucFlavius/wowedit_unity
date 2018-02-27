@@ -97,7 +97,7 @@ public class MinimapHandler : MonoBehaviour {
         string extractedPath = Casc.GetFile(path);
         Stream stream = File.Open(extractedPath, FileMode.Open);
 
-        byte[] data = BLP.GetUncompressed(stream);
+        byte[] data = BLP.GetUncompressed(stream, false);
         BLPinfo info = BLP.Info();
         Texture2D tex = new Texture2D(info.width, info.height, BLP.TxFormat(), false);
         tex.LoadRawTextureData(data);
