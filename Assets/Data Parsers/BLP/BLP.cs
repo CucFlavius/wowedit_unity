@@ -4,7 +4,6 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using System;
-using SereniaBLPLib;
 using System.Collections.Generic;
 
 public class BLPinfo
@@ -21,16 +20,18 @@ public class BLPinfo
     public int mipMapCount;
 }
 
-public class ARGBColor8
+public struct ARGBColor8
 {
     public byte red;
     public byte green;
     public byte blue;
     public byte alpha;
 
+    /// <summary>
     /// Converts the given Pixel-Array into the BGRA-Format
     /// This will also work vice versa
-
+    /// </summary>
+    /// <param name="pixel"></param>
     public static void ConvertToBGRA(byte[] pixel)
     {
         byte tmp;
@@ -61,17 +62,6 @@ public static partial class BLP
     private static ARGBColor8[] paletteBGRA = new ARGBColor8[256];
     private static Stream str; // Reference of the stream
 
-
-    public static byte[] BLP2 (Stream file, int mipmap)
-    {
-        using (var blp = new BlpFile(file))
-        {
-            byte[] bmp = blp.GetPictureData(0);
-            return bmp;
-        }
-    }
-
-
     public static BLPinfo Info()
     {
         BLPinfo blpInfo = new BLPinfo();
@@ -80,11 +70,11 @@ public static partial class BLP
         blpInfo.encoding = encoding;
         blpInfo.alphaDepth = alphaDepth;
         blpInfo.alphaEncoding = alphaEncoding;
-        if (hasMipmaps == 2)
+        if (hasMipmaps > 0)
         {
             blpInfo.hasMipmaps = true;
         }
-        if (hasMipmaps == 1)
+        if (hasMipmaps == 0)
         {
             blpInfo.hasMipmaps = false;
         }
@@ -151,61 +141,67 @@ public static partial class BLP
         mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
         mipmapSize = new uint[16]; // Size for every level
         MipMapCount = 0;
-        paletteBGRA = null;
+        //paletteBGRA = new ARGBColor8[256];
     }
 
     private static void ParseHeaderInfo (Stream stream)
     {
         str = stream;
-        string BLPversion = ReadFourCCReverse(str);
         byte[] buffer = new byte[4];
-        // Read type
+        // Well, have to fix this... looks weird o.O
         str.Read(buffer, 0, 4);
-        uint type = System.BitConverter.ToUInt32(buffer, 0);
-        if (type != 1)
-            Debug.Log("Invalid BLP-Type! Should be 1 but " + type + " was found");
 
-        // Read encoding, alphaBitDepth, alphaEncoding and hasMipmaps
+        // Checking for correct Magic-Code
+        if (BitConverter.ToUInt32(buffer, 0) != 0x32504c42)
+            throw new Exception("Invalid BLP Format");
+
+        // Reading type
+        str.Read(buffer, 0, 4);
+        uint type = BitConverter.ToUInt32(buffer, 0);
+        if (type != 1)
+            throw new Exception("Invalid BLP-Type! Should be 1 but " + type + " was found");
+
+        // Reading encoding, alphaBitDepth, alphaEncoding and hasMipmaps
         str.Read(buffer, 0, 4);
         encoding = buffer[0];
         alphaDepth = buffer[1];
         alphaEncoding = buffer[2];
         hasMipmaps = buffer[3];
 
-        // Read width
+        // Reading width
         str.Read(buffer, 0, 4);
-        width = System.BitConverter.ToInt32(buffer, 0);
+        width = BitConverter.ToInt32(buffer, 0);
 
-        // Read height
+        // Reading height
         str.Read(buffer, 0, 4);
-        height = System.BitConverter.ToInt32(buffer, 0);
+        height = BitConverter.ToInt32(buffer, 0);
 
-        // Read MipmapOffset Array
+        // Reading MipmapOffset Array
         for (int i = 0; i < 16; i++)
-		{
+        {
             stream.Read(buffer, 0, 4);
-            mipmapOffsets[i] = System.BitConverter.ToUInt32(buffer, 0);
+            mipmapOffsets[i] = BitConverter.ToUInt32(buffer, 0);
         }
 
-        // Read MipmapSize Array
-        for (int i1 = 0; i1 < 16; i1++)
-		{
+        // Reading MipmapSize Array
+        for (int i = 0; i < 16; i++)
+        {
             str.Read(buffer, 0, 4);
-            mipmapSize[i1] = System.BitConverter.ToUInt32(buffer, 0);
+            mipmapSize[i] = BitConverter.ToUInt32(buffer, 0);
         }
 
         // When encoding is 1, there is no image compression and we have to read a color palette
         if (encoding == 1)
         {
             // Reading palette
-            for (int i2 = 0; i2 < 256; i2++)
-			{
+            for (int i = 0; i < 256; i++)
+            {
                 byte[] color = new byte[4];
                 str.Read(color, 0, 4);
-                paletteBGRA[i2].blue = color[0];
-                paletteBGRA[i2].green = color[1];
-                paletteBGRA[i2].red = color[2];
-                paletteBGRA[i2].alpha = color[3];
+                paletteBGRA[i].blue = color[0];
+                paletteBGRA[i].green = color[1];
+                paletteBGRA[i].red = color[2];
+                paletteBGRA[i].alpha = color[3];
             }
         }
 

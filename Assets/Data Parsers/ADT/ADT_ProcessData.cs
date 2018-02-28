@@ -88,7 +88,19 @@ public static class ADT_ProcessData {
             // scale chunk positions to worldScale //
             Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale, chunkData.MeshPosition.z / Settings.worldScale, chunkData.MeshPosition.y / Settings.worldScale);
             chunkData.MeshPosition = newMapPosition;
+
+            // Vertex color fill if missing //
+            if (chunkData.VertexColors == null)
+            {
+                chunkData.VertexColors = new Color32[145];
+                for (int v = 0; v < 145; v++)
+                {
+                    //Color32 colorBGRA = new Color32(127, 127, 127, 127);
+                    //chunkData.VertexColors[v] = colorBGRA;
+                }
+            }
         }
+            
     }
 
 

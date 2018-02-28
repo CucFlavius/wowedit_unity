@@ -25,6 +25,14 @@ public class TerrainImport : MonoBehaviour {
         UIManager.GetComponent<MinimapHandler>().ClearMinimaps();
         string mapPath = null;
         string minimapPath = null;
+
+        // Parse WDT //
+        if (!WDT.Flags.ContainsKey(mapName))
+        {
+            string wdtPath = @"world\maps\" + mapName + @"\";
+            WDT.Load(wdtPath, mapName);
+        }
+
         if (Settings.Data[2] == "2") // extracted //
         {
             mapPath = Settings.Data[8] + @"\" + @"world\maps\" + mapName + @"\";
@@ -42,14 +50,14 @@ public class TerrainImport : MonoBehaviour {
             {
                 PanelErrorMessage.SetActive(false);
                 // load minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath);
+                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath, mapName);
             }
             else
             {
                 PanelErrorMessage.SetActive(true);
                 ErrorMessageText.text = "No minimaps available.";
                 // load blank minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadBlankMinimaps(mapPath);
+                UIManager.GetComponent<MinimapHandler>().LoadBlankMinimaps(mapPath, mapName);
             }
         }
         else
@@ -59,7 +67,7 @@ public class TerrainImport : MonoBehaviour {
                 PanelErrorMessage.SetActive(true);
                 ErrorMessageText.text = "WMO Only Zone.";
                 // load minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath);
+                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath, mapName);
             }
             else
             {

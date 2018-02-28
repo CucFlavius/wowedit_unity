@@ -44,6 +44,7 @@ public static partial class ADT {
                 blockData.terrainTexturePaths.Add(texturePath);
                 string extractedPath = Casc.GetFile(texturePath);
                 Stream stream = File.Open(extractedPath, FileMode.Open);
+                //Debug.Log(extractedPath);
                 byte[] data = BLP.GetUncompressed(stream, true);
                 BLPinfo info = BLP.Info();
                 
@@ -137,6 +138,7 @@ public static partial class ADT {
             blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] = layerOffset;
             int effectId = ReadLong(ADTtexstream); //foreign_keyⁱ <uint32_t, &GroundEffectTextureRec::m_ID>; // 0xFFFFFFFF for none, in alpha: uint16_t + padding
         }
+        //Debug.Log(MCLYStartPosition + " " + ADTtexstream.Position + " " + MCLYsize);
     }
 
     private static void ReadMCSH(Stream ADTtexstream, int chunk) //512 bytes
@@ -166,17 +168,20 @@ public static partial class ADT {
             }
         }
         */
-
-        ADTtexstream.Seek(MCSHsize, SeekOrigin.Begin);
+        //Debug("Got shadow..");
+        ADTtexstream.Seek(MCSHsize, SeekOrigin.Current);
     }
 
     private static void ReadMCAL(Stream ADTtexstream, string mapname, int chunk)
     {
         if (ADTtexstream.Length <= ADTtexstream.Position)
             return;
-        if (ReadFourCC(ADTtexstream) != "MCAL") // should replace with PeekFourCC to simplify
+        string chunky = ReadFourCC(ADTtexstream);
+        if (chunky != "MCAL") // should replace with PeekFourCC to simplify
+        {
+            //Debug.Log(chunky);
             return;
-
+        }
         ADTtexstream.Seek(-4, SeekOrigin.Current);
 
         string MCAL = ReadFourCC(ADTtexstream);
@@ -191,7 +196,7 @@ public static partial class ADT {
             blockData.ChunksData[chunk].alphaLayers = new List<byte[]>();
             for (int l = 1; l < numberofLayers; l++) {
 
-                ADTtexstream.Seek(blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] + McalStartPosition, SeekOrigin.Begin);
+                //ADTtexstream.Seek(blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] + McalStartPosition, SeekOrigin.Begin);
 
                 if (WDT.Flags[mapname].adt_has_height_texturing == true)
                 {

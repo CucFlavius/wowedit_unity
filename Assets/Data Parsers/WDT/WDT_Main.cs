@@ -15,9 +15,9 @@ public static partial class WDT {
         int WDTfileversion = ReadLong(WDTstream);
     }
 
-    private static void ReadMPHD (Stream WDTstream, string mapname)
+    private static void ReadMPHD (Stream WDTstream, string mapname, WDTflagsdata WDTflags)
     {
-        WDTflagsdata WDTflags = new WDTflagsdata();
+        
 
         string MPHD = ReadFourCC(WDTstream);
         int MPHDsize = ReadLong(WDTstream);
@@ -54,12 +54,10 @@ public static partial class WDT {
         //uint32 unused[6]; // 6x4bytes padding = skip
         WDTstream.Seek(24, SeekOrigin.Current);
 
-        Flags.Add(mapname, WDTflags);
-
-        Debug.Log("WDTflags.adt_has_big_alpha=" + WDTflags.adt_has_big_alpha + "WDTflags.adt_has_height_texturing=" + WDTflags.adt_has_height_texturing);
+        //Debug.Log("WDTflags.adt_has_big_alpha=" + WDTflags.adt_has_big_alpha + "WDTflags.adt_has_height_texturing=" + WDTflags.adt_has_height_texturing);
     }
 
-    private static void ReadMAIN (Stream WDTstream)
+    private static void ReadMAIN (Stream WDTstream, WDTflagsdata WDTflags)
     {
         string MAIN = ReadFourCC(WDTstream);
         int MAINsize = ReadLong(WDTstream);
@@ -76,7 +74,7 @@ public static partial class WDT {
                 BitArray flags = new BitArray(arrayOfBytes);
 
                 // <flags>
-                bool Flag_HasADT = flags[0]; // flags 0 and 1 always alternate, when one is true other is false.
+                WDTflags.HasADT[x,y] = flags[0]; // flags 0 and 1 always alternate, when one is true other is false.
                 bool Flag_AllWater = flags[1];
                 bool Flag_Loaded = flags[2]; // always false (only set during runtime?)
                 // </flags>

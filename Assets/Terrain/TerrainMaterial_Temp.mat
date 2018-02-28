@@ -7,8 +7,8 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TerrainMaterial_Temp
-  m_Shader: {fileID: 4800000, guid: b528916817d175940bfb6ffa616f4f62, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: 06f2935b989cedf4f8a588699d52ab52, type: 3}
+  m_ShaderKeywords: VERTEX_COLOR_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -93,16 +93,22 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _MainTexTiling: 4
+    - _MaxVisDistance: 16.88
     - _Metallic: 0
+    - _MinVisDistance: 4.32
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Prop1: -0.72
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _VertexColor: 1
+    - _VertexColorOn: 1
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.2352941, g: 0.2352941, b: 0.2352941, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _WireColor: {r: 1, g: 1, b: 1, a: 0.916}

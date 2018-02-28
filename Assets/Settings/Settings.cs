@@ -8,8 +8,11 @@ using UnityEngine;
 /// General Settings
 /// Static Variables
 /// 
-public static class Settings {
 
+public static class Settings
+{
+    // Data Settings //
+    public static string ApplicationPath;
     public static string[] Data = new string[10];
     /*
      * [0] = Cache Folder Location
@@ -24,8 +27,14 @@ public static class Settings {
      * [9] = WoWCustomGameSource
      */
 
-    public static string ApplicationPath;
+
+    // World Settings //
     public static float worldScale = 10.0f;
+
+
+    // Terrain Settings //
+    public static bool showVertexColor = true;
+
 
     public static void Save ()
     {

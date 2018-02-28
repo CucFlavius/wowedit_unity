@@ -240,6 +240,8 @@ public static partial class ADT {
         if (MCLV != "MCLV")
             Debug.Log("Wrong Data Type : " + MCLV);
 
+        Debug.Log("Found - " + MCLV);
+
         for (int v = 1; v <= 145; v++)
         {
             byte[] ARGB = new byte[4];
@@ -248,11 +250,12 @@ public static partial class ADT {
                 ARGB[b] = (byte)ADTstream.ReadByte();
             }
             chunkData.VertexLighting.Add(ARGB);
+            //Debug.Log(ARGB);
         }
         // Alpha is ignored.
         // In contrast to MCCV does not only color but also lightens up the vertices.
         // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
-    }  //saved
+    }
 
     private static void ReadMCCV(Stream ADTstream, ChunkData chunkData)
     {
@@ -279,7 +282,7 @@ public static partial class ADT {
             Color32 colorBGRA = new Color32(colorsRGBA.b, colorsRGBA.g, colorsRGBA.r, colorsRGBA.a);
             chunkData.VertexColors[col] = colorBGRA;
         }
-    }  //saved
+    }
 
     private static void ReadMCNR(Stream ADTstream, ChunkData chunkData)
     {
@@ -355,7 +358,7 @@ public static partial class ADT {
         if (MCBB != "MCBB")
             Debug.Log("Wrong Data Type : " + MCBB);
 
-        Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
+        //Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
 
         // skip for now
         ADTstream.Seek(MCBBsize, SeekOrigin.Current);
@@ -369,7 +372,7 @@ public static partial class ADT {
         if (MCDD != "MCDD ")
             Debug.Log("Wrong Data Type : " + MCDD);
 
-        Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");
+        //Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");
 
         // skip for now
         ADTstream.Seek(MCDDsize, SeekOrigin.Current);

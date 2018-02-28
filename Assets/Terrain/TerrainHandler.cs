@@ -119,7 +119,7 @@ public class TerrainHandler : MonoBehaviour
                     {
                         ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                        Debug.Log(textureName);
+                        //Debug.Log(textureName);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
                         LoadedTerrainTextures[textureName] = tex;

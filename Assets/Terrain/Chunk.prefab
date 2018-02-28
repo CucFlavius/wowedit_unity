@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4752671691309396}
   - component: {fileID: 33672370204381884}
   - component: {fileID: 23030715664096900}
+  - component: {fileID: 114647147811934102}
   m_Layer: 0
   m_Name: Chunk
   m_TagString: Untagged
@@ -80,3 +81,14 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1959010497222844}
   m_Mesh: {fileID: 0}
+--- !u!114 &114647147811934102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1959010497222844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 551d138efaf5bed4b90b10a2f72b8335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

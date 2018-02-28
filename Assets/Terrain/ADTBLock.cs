@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ADTBLock : MonoBehaviour {
+public class ADTBlock : MonoBehaviour {
 
     public int LoD;
     public bool LoD0Loaded = false;

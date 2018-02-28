@@ -12,13 +12,15 @@ public static partial class WDT  {
     {
         string WDTpath = Path + MapName + ".wdt";
         Stream WDTstream = Casc.GetFileStream(WDTpath);
+        WDTflagsdata WDTflags = new WDTflagsdata();
 
         ReadMVER(WDTstream);
-        ReadMPHD(WDTstream, MapName);
-        ReadMAIN(WDTstream);
+        ReadMPHD(WDTstream, MapName, WDTflags);
+        ReadMAIN(WDTstream, WDTflags);
 
         // wmo only worlds specific chunk parsing here :
 
+        Flags.Add(MapName, WDTflags);
         WDTstream.Close();
         WDTstream = null;
     }

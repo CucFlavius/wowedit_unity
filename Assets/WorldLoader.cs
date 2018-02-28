@@ -6,7 +6,7 @@ public class WorldLoader : MonoBehaviour {
 
     public GameObject Camera; // get vector3 location
     public GameObject TerrainParent; // with terrain handler script
-    public GameObject ADTBlock;
+    public GameObject ADTBlockObject;
     public int maxWorldSize = 64;
     public GameObject[,] ADTmatrix;// = new GameObject[maxWorldSize, maxWorldSize];
     public bool[,] existingADTs;// = new bool[maxWorldSize, maxWorldSize];
@@ -31,7 +31,7 @@ public class WorldLoader : MonoBehaviour {
         previousTerrainLod = new int[maxWorldSize, maxWorldSize];
         currentTerrainLod = new int[maxWorldSize, maxWorldSize];
         // clear Matrix //
-        FillMatrix();
+        ClearMatrix();
     }
 	
 	// Update is called once per frame
@@ -52,36 +52,48 @@ public class WorldLoader : MonoBehaviour {
 
     public void LoadFullWorld (List<string> MinimapFileList, string map_name)
     {
-        // Parse WDT file
-        string wdtPath = @"world\maps\" + map_name + @"\";
-        WDT.Load(wdtPath, map_name);
-
         MapName = map_name;
 
         // clear Matrix //
-        FillMatrix();
+        ClearMatrix();
 
-        // fill Matrix with available //
-        foreach (string minimap in MinimapFileList)
+
+        if (MinimapFileList.Count > 0) // build a terrain list based on loaded minimaps 
         {
-            string split0 = minimap.Split("map"[2])[1];
-            int xCoord = int.Parse(split0.Split("_"[0])[0]);
-            int yCoord = int.Parse(split0.Split("_"[0])[1]);
-            existingADTs[xCoord, yCoord] = true;
+            // fill Matrix with available //
+            foreach (string minimap in MinimapFileList)
+            {
+                string split0 = minimap.Split("map"[2])[1];
+                int xCoord = int.Parse(split0.Split("_"[0])[0]);
+                int yCoord = int.Parse(split0.Split("_"[0])[1]);
+                existingADTs[xCoord, yCoord] = true;
+            }
+
+            // find a middle one //
+            string split1 = MinimapFileList[MinimapFileList.Count / 2].Split("map"[2])[1];
+            int MidBlockX = int.Parse(split1.Split("_"[0])[0]);
+            int MidBlockY = int.Parse(split1.Split("_"[0])[1]);
         }
-
-        // find a middle one //
-        string split1 = MinimapFileList[MinimapFileList.Count / 2].Split("map"[2])[1];
-        int MidBlockX = int.Parse(split1.Split("_"[0])[0]);
-        int MidBlockY = int.Parse(split1.Split("_"[0])[1]);
-
+        else // check WDT for existing ADT's instead
+        {
+            for (int x = 0; x < 64; x++)
+            {
+                for (int y = 0; y < 64; y++)
+                {
+                    if (WDT.Flags[map_name].HasADT[x, y])
+                    {
+                        //Debug.Log(x + " " + y);
+                        existingADTs[x, y] = true;
+                    }
+                }
+            }
+        }
         // Initial spawn //
         ClearLoDArray(previousTerrainLod);
+        //ClearLoDArray(currentTerrainLod);
 
         // position camera obj //
-        float cameraWorldX = (32 - MidBlockX) * blockSize;
-        float cameraWorldZ = (32 - MidBlockY) * blockSize;
-        Camera.transform.position = new Vector3(0, 4.5f, 0);
+        Camera.transform.position = new Vector3(0, 30f, 0);
 
         int CurrentCamX = 0;
         int CurrentCamY = 0;
@@ -145,15 +157,15 @@ public class WorldLoader : MonoBehaviour {
                         {
                             if (ADTmatrix[x, y] == null)
                             {
-                                ADTmatrix[x, y] = Instantiate(ADTBlock, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                ADTmatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTmatrix[x, y].transform.SetParent(TerrainParent.transform);
                             }
                             ADTmatrix[x, y].SetActive(true);
                             
-                            if (!ADTmatrix[x, y].GetComponent<ADTBLock>().LoD0Loaded)
+                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded)
                             {
                                 TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTmatrix[x, y]);
-                                ADTmatrix[x, y].GetComponent<ADTBLock>().LoD0Loaded = true;
+                                ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded = true;
                             }
                         }
 
@@ -161,15 +173,15 @@ public class WorldLoader : MonoBehaviour {
                         {
                             if (ADTmatrix[x, y] == null)
                             {
-                                ADTmatrix[x, y] = Instantiate(ADTBlock, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                ADTmatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTmatrix[x, y].transform.SetParent(TerrainParent.transform);
                             }
                             ADTmatrix[x, y].SetActive(true);
 
-                            if (!ADTmatrix[x, y].GetComponent<ADTBLock>().LoD1Loaded)
+                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD1Loaded)
                             {
                                 //TerrainParent.GetComponent<TerrainHandler>().ADTThreadRun(MapName, x, y, ADTmatrix[x, y]);
-                                //ADTmatrix[x, y].GetComponent<ADTBLock>().LoD1Loaded = true;
+                                //ADTmatrix[x, y].GetComponent<ADTBlock>().LoD1Loaded = true;
                             }
                         }
 
@@ -179,7 +191,7 @@ public class WorldLoader : MonoBehaviour {
                             {
                                 ADTmatrix[x, y].SetActive(true);
                                 //TerrainParent.GetComponent<TerrainHandler>().ADTThreadRun(MapName, x, y, ADTmatrix[x, y]);
-                                //ADTmatrix[x, y].GetComponent<ADTBLock>().LoadLod1();
+                                //ADTmatrix[x, y].GetComponent<ADTBlock>().LoadLod1();
                             }
                         }
 
@@ -187,10 +199,10 @@ public class WorldLoader : MonoBehaviour {
                         {
                             ADTmatrix[x, y].SetActive(true);
 
-                            if (!ADTmatrix[x, y].GetComponent<ADTBLock>().LoD0Loaded)
+                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded)
                             {
                                 TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTmatrix[x, y]);
-                                ADTmatrix[x, y].GetComponent<ADTBLock>().LoD0Loaded = true;
+                                ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded = true;
                             }
                         }
 
@@ -207,7 +219,7 @@ public class WorldLoader : MonoBehaviour {
         }
     }
 
-    public void FillMatrix ()
+    public void ClearMatrix ()
     {
         for(int x = 0; x < maxWorldSize-1; x++)
         {

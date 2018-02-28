@@ -11,13 +11,13 @@ public class MinimapHandler : MonoBehaviour {
     public GameObject World;
     private List<string> MinimapFileList = new List<string>();
     public string minimap_Path;
-    public string minimapName;
+    public string map_name;
     private int firstxCoord;
     private int firstyCoord;
     private int lastyCoord;
     private int lastxCoord;
 
-    public void LoadMinimaps(string minimapPath)
+    public void LoadMinimaps(string minimapPath, string mapName)
     {
         // reset global variables //
         ClearData();
@@ -37,13 +37,13 @@ public class MinimapHandler : MonoBehaviour {
         AdjustScrollableArea();
 
         // Create minimap block instances //
-        minimapName = Path.GetFileName(minimapPath.TrimEnd(@"\"[0]));
-        GenerateMinimaps(minimapName);
+        map_name = mapName;
+        GenerateMinimaps(mapName);
     }
 
     public void ClickedLoadFull ()
     {
-        World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, minimapName);
+        World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name);
     }
 
     private void AdjustScrollableArea ()
@@ -71,6 +71,41 @@ public class MinimapHandler : MonoBehaviour {
             if (previousxCoord > lastxCoord) lastxCoord = previousxCoord;
         }
         //// scale scroll pannel to minimaps size ////
+        ScrollPanel.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2((lastxCoord - firstxCoord + 1) * 100, (lastyCoord - firstyCoord + 1) * 100);
+    }
+
+    private void AdjustScrollableAreaFromWDT()
+    {
+
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+                if (WDT.Flags[map_name].HasADT[x, y])
+                {
+                    firstxCoord = y;
+                    firstyCoord = x;
+                    break;
+                }
+            }
+        }
+
+        int previousxCoord = 0;
+        int previousyCoord = 0;
+
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+                if (WDT.Flags[map_name].HasADT[x, y])
+                {
+                    previousxCoord = y;
+                    previousyCoord = x;
+                    if (previousyCoord > lastyCoord) lastyCoord = previousyCoord;
+                    if (previousxCoord > lastxCoord) lastxCoord = previousxCoord;
+                }
+            }
+        }
         ScrollPanel.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2((lastxCoord - firstxCoord + 1) * 100, (lastyCoord - firstyCoord + 1) * 100);
     }
 
@@ -108,9 +143,29 @@ public class MinimapHandler : MonoBehaviour {
         BLP.Close();
     }
 
-    public void LoadBlankMinimaps(string mapPath)
+    public void LoadBlankMinimaps(string mapPath, string mapName)
     {
+        map_name = mapName;
         ClearData();
+
+        AdjustScrollableAreaFromWDT();
+
+        //instantiate empty minimap blocks
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+                if (WDT.Flags[map_name].HasADT[x, y])
+                {
+                    GameObject instance = Instantiate(MinimapBlock, Vector3.zero, Quaternion.identity);
+                    instance.transform.SetParent(ScrollPanel.transform, false);
+                    instance.GetComponent<RectTransform>().anchoredPosition = new Vector2((x - firstxCoord) * 100, -(y - firstyCoord) * 100);
+                    instance.name = mapName + "_" + x + "_" + y;
+                }
+            }
+        }
+
+
     }
 
     private void ClearData()

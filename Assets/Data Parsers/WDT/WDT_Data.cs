@@ -11,6 +11,7 @@ public static partial class WDT  {
     {
         public bool adt_has_big_alpha;
         public bool adt_has_height_texturing;
+        public bool[,] HasADT = new bool[64,64];
     }
 
     public static Dictionary<string, WDTflagsdata> Flags = new Dictionary<string, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)

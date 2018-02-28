@@ -8,8 +8,8 @@ public class DrawNormals : MonoBehaviour
 #if UNITY_EDITOR
     [SerializeField]
     private MeshFilter _meshFilter = null;
-    [SerializeField]
-    private bool _displayWireframe = false;
+    //[SerializeField]
+    //private bool _displayWireframe = false;
     [SerializeField]
     private NormalsDrawData _faceNormals = new NormalsDrawData(new Color32(34, 221, 221, 155), true);
     [SerializeField]
@@ -55,7 +55,7 @@ public class DrawNormals : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        EditorUtility.SetSelectedWireframeHidden(GetComponent<Renderer>(), !_displayWireframe);
+        //EditorUtility.SetSelectedWireframeHidden(GetComponent<Renderer>(), !_displayWireframe);
         OnDrawNormals(true);
     }
 

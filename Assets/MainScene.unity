@@ -7618,7 +7618,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 1043126077}
   TerrainParent: {fileID: 1223143944}
-  ADTBlock: {fileID: 1959010497222844, guid: ac8f8b4121b33964284bf949723efc5c, type: 2}
+  ADTBlockObject: {fileID: 1959010497222844, guid: ac8f8b4121b33964284bf949723efc5c,
+    type: 2}
   maxWorldSize: 64
   drawDistanceLOD0: 1
   drawDistanceLOD1: 2
@@ -10110,11 +10111,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 751649077}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 2109663825, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 3
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -10136,13 +10137,28 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 751649080}
-  m_OnClick:
+  toggleTransition: 1
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      m_Calls:
+      - m_Target: {fileID: 1218599981}
+        m_MethodName: Toggle_showVertexColor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  m_IsOn: 1
 --- !u!114 &751649080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14569,8 +14585,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1043126077}
-  m_LocalRotation: {x: 0, y: 0.992005, z: -0.12619898, w: 0}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.16328888, y: -0.52816546, z: 0.10431784, w: 0.82673806}
+  m_LocalPosition: {x: -21.338385, y: 19.454613, z: 47.75541}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -17011,6 +17027,7 @@ GameObject:
   - component: {fileID: 1218599977}
   - component: {fileID: 1218599979}
   - component: {fileID: 1218599980}
+  - component: {fileID: 1218599981}
   m_Layer: 5
   m_Name: '[UI Manager]'
   m_TagString: Untagged
@@ -17065,7 +17082,7 @@ MonoBehaviour:
   ScrollPanel: {fileID: 1654073236}
   World: {fileID: 523625140}
   minimap_Path: 
-  minimapName: 
+  map_name: 
 --- !u!114 &1218599980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17088,6 +17105,18 @@ MonoBehaviour:
   ExtractedMapList: []
   FilteredList: []
   FilterWord: 
+--- !u!114 &1218599981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1218599975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdac5cbb7c1b0cf42813aedceb999d0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TerrainMat: {fileID: 2100000, guid: bf41c91ee78f0e94c816b43810b9ef6d, type: 2}
 --- !u!1 &1219983594
 GameObject:
   m_ObjectHideFlags: 0

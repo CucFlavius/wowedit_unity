@@ -69,7 +69,7 @@ public static partial class Casc
         List<string> buildInfoFileLines = buildInfoFileReader.ReadToEnd().Split("\n"[0]).ToList();
         string buildFilePath = null;
         string[] buildInfoFileData_Index = buildInfoFileLines[0].Split("|"[0]);
-        string[] buildInfoFileData_Entry_Locale1 = buildInfoFileLines[1].Split("|"[0]);
+        //string[] buildInfoFileData_Entry_Locale1 = buildInfoFileLines[1].Split("|"[0]);
         string[] buildInfoFileData_Entry_Locale2 = new string[10];
         if (buildInfoFileLines.Count >= 3)
         {

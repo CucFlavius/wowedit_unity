@@ -122,7 +122,7 @@ public static class BLTE {
     }
 
     public static Stream BLTE_Decompress (byte[] data) {
-	    byte[] buf = new byte[0x80000];
+	    //byte[] buf = new byte[0x80000];
         MemoryStream ms = new MemoryStream(data, 3, data.Length - 3);
         DeflateStream dStream = new DeflateStream(ms, CompressionMode.Decompress);
 	    return dStream;
@@ -132,7 +132,7 @@ public static class BLTE {
     {
         const byte ENCRYPTION_SALSA20 = 0x53;
         const byte ENCRYPTION_ARC4 = 0x41;
-        const int BLTE_MAGIC = 0x45544c42;
+        //const int BLTE_MAGIC = 0x45544c42;
         byte keyNameSize = data[1];
         if (keyNameSize == 0 || keyNameSize != 8)
             Debug.Log("error");
