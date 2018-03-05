@@ -39,6 +39,8 @@
 		#pragma target 3.0
 		#pragma multi_compile VERTEX_COLOR_ON VERTEX_COLOR_OFF
 
+		#include "Lighting.cginc"
+
 		sampler2D _MainTex;
 		sampler2D _BlendTex1;
 		sampler2D _BlendTexAmount1;
@@ -86,12 +88,12 @@
 			fixed4 blendOutput3 = tex3Col.rgba * tex3Amount.a;
 			fixed4 mainOutput3 = mainOutput2 + blendOutput3;
 
-			#ifdef VERTEX_COLOR_ON
-					o.Albedo = mainOutput3.rgb * IN.vertexColor.rgb * 2;
-			#else
-					o.Albedo = mainOutput3.rgb;
-			#endif
-
+			//#ifdef VERTEX_COLOR_ON
+			o.Albedo = mainOutput3.rgb * IN.vertexColor.rgb * 2;
+			//#else
+			//		o.Albedo = mainOutput3.rgb;
+			//#endif
+			//o.Emission = mainOutput3.rgb * IN.vertexColor.rgb * 0.5;
 		}
 		ENDCG
 			

@@ -50,7 +50,7 @@ public class WorldLoader : MonoBehaviour {
 
 	}
 
-    public void LoadFullWorld (List<string> MinimapFileList, string map_name)
+    public void LoadFullWorld (List<string> MinimapFileList, string map_name, Vector2 playerSpawn)
     {
         MapName = map_name;
 
@@ -93,10 +93,10 @@ public class WorldLoader : MonoBehaviour {
         //ClearLoDArray(currentTerrainLod);
 
         // position camera obj //
-        Camera.transform.position = new Vector3(0, 30f, 0);
+        Camera.transform.position = new Vector3((32-playerSpawn.x)*blockSize, 30f, (32-playerSpawn.y)*blockSize);
 
-        int CurrentCamX = 0;
-        int CurrentCamY = 0;
+        int CurrentCamX = (int)playerSpawn.x;
+        int CurrentCamY = (int)playerSpawn.y;
         PreviousCamX = CurrentCamX;
         PreviousCamY = CurrentCamY;
         UpdateLodMatrices(CurrentCamX, CurrentCamY);

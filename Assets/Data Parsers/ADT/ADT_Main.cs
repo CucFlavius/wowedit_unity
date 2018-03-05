@@ -176,6 +176,8 @@ public static partial class ADT {
                 ReadMCLV(ADTstream, chunkData); // chunk lighting
             if (has_mccv)
                 ReadMCCV(ADTstream, chunkData); // vertex shading
+            else
+                FillMCCV(ADTstream, chunkData); // fill vertex shading with 127...
             ReadMCNR(ADTstream, chunkData); // normals
             ReadMCSE(ADTstream, chunkData); // sound emitters
 
@@ -280,6 +282,16 @@ public static partial class ADT {
 
             Color32 colorsRGBA = new Color32((byte)channelR, (byte)channelG, (byte)channelB, (byte)channelA);
             Color32 colorBGRA = new Color32(colorsRGBA.b, colorsRGBA.g, colorsRGBA.r, colorsRGBA.a);
+            chunkData.VertexColors[col] = colorBGRA;
+        }
+    }
+
+    private static void FillMCCV(Stream ADTstrea, ChunkData chunkData)
+    {
+        chunkData.VertexColors = new Color32[145];
+        for (int col = 0; col < 145; col++)
+        {
+            Color32 colorBGRA = new Color32(127, 127, 127, 127);
             chunkData.VertexColors[col] = colorBGRA;
         }
     }

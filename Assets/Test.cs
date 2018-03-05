@@ -5,16 +5,16 @@ using System.IO;
 
 public class Test : MonoBehaviour {
 
+    public WMOhandler wmoHandler;
+
 	// Use this for initialization
 	void Start () {
-        string path = @"F:\ExportedWOW\root\tileset\generic\black.blp";
-        Stream str = File.Open(path, FileMode.Open);
-        byte[] data = BLP.GetUncompressed(str, false);
-        str.Close();
+        Invoke("Delayed", 1);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Delayed ()
+    {
+        //wmoHandler.AddToQueue(@"world\wmo\zuldazar\troll\8tr_zandalari_pyramid.wmo", Vector3.zero, Quaternion.identity, Vector3.one);
+        //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\duskwood_barn\duskwood_barn.wmo", Vector3.zero, Quaternion.identity, Vector3.one);
+    }
 }

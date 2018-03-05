@@ -39,9 +39,10 @@ GameObject:
   - component: {fileID: 222720148978722006}
   - component: {fileID: 114771630441168788}
   - component: {fileID: 114288096938460694}
+  - component: {fileID: 114338278290568818}
   m_Layer: 0
   m_Name: MinimapBlock
-  m_TagString: Untagged
+  m_TagString: MinimapBlock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +53,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1260986131178798}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -87,6 +88,18 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114338278290568818
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1260986131178798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b6ccc4d7285a6408d1a54b4f034080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimapCoords: {x: 0, y: 0}
 --- !u!114 &114771630441168788
 MonoBehaviour:
   m_ObjectHideFlags: 1

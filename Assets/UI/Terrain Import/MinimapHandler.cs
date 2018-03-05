@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.EventSystems;
 
 public class MinimapHandler : MonoBehaviour {
 
     public GameObject MinimapBlock;
     public GameObject ScrollPanel;
     public GameObject World;
+    public GameObject SelectPlayerBlockIcon;
+    public GameObject SelectPlayerBlockIcon_prefab;
     private List<string> MinimapFileList = new List<string>();
     public string minimap_Path;
     public string map_name;
@@ -16,6 +19,12 @@ public class MinimapHandler : MonoBehaviour {
     private int firstyCoord;
     private int lastyCoord;
     private int lastxCoord;
+    private Vector2 currentSelectedPlayerSpawn = new Vector2(0,0);
+
+    private void Start()
+    {
+        currentSelectedPlayerSpawn = new Vector2(0, 0);
+    }
 
     public void LoadMinimaps(string minimapPath, string mapName)
     {
@@ -43,7 +52,7 @@ public class MinimapHandler : MonoBehaviour {
 
     public void ClickedLoadFull ()
     {
-        World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name);
+        World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name, currentSelectedPlayerSpawn);
     }
 
     private void AdjustScrollableArea ()
@@ -121,6 +130,8 @@ public class MinimapHandler : MonoBehaviour {
             instance.transform.SetParent(ScrollPanel.transform, false);
             instance.GetComponent<RectTransform>().anchoredPosition = new Vector2((xCoord - firstxCoord) * 100, -(yCoord - firstyCoord) * 100);
             instance.name = fileName1;
+            instance.tag = "MinimapBlock";
+            instance.GetComponent<MinimapBlock>().minimapCoords = new Vector2(yCoord, xCoord);
 
             AssignMinimapTexture(instance.gameObject, minimapName);
         }
@@ -179,5 +190,17 @@ public class MinimapHandler : MonoBehaviour {
         {
             GameObject.Destroy(child.gameObject);
         }
+    }
+
+    public void SelectPlayerSpawn(GameObject minimapBlock)
+    {
+        if (SelectPlayerBlockIcon == null)
+            SelectPlayerBlockIcon = Instantiate(SelectPlayerBlockIcon_prefab);
+
+        SelectPlayerBlockIcon.SetActive(true);
+        SelectPlayerBlockIcon.transform.SetParent(minimapBlock.transform);
+        SelectPlayerBlockIcon.GetComponent<RectTransform>().localPosition = Vector2.zero;
+        SelectPlayerBlockIcon.GetComponent<RectTransform>().sizeDelta = Vector2.zero;
+        currentSelectedPlayerSpawn = minimapBlock.GetComponent<MinimapBlock>().minimapCoords;
     }
 }
