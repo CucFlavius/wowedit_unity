@@ -3,107 +3,124 @@ An attempt at recreating the World of Warcraft Editor used by Blizzard Entertain
 My version's purpose is for the aiding of creating machinima / Creating custom environments using WoW's assets / exporting models etc.
 Using Unity 5.6.1f1
 
-Current Progress on importing WoW Data:
+### Current Progress on importing WoW Data:
 
-WDT
-	
-| Chunk | Parsed | Implemented |
-| --- | --- |
-| MPHD | ✓ | % |
-| MAIN | ✓ | ✓ |
-| MWMO | ⨉ | ⨉ |
-| MODF | ⨉ | ⨉ |
-	
-MPHD (ADT flags)				  - Parsed, Partially used.
-	MAIN (ADT existance)			  - Parsed, Implemented.
-	MWMO (WMO only map)			  - Not Parsed, Not implemented.
-	MODF (WMO placement info)		  - Not Parsed, Not implemented.	  
-WDTocc : (occlusion) Not Parsed, Not implemented.
-WDTlgt : (lights) Not Parsed, Not implemented.
+| WDT | Description | Parsed | Implemented |
+|----|----|----|----|
+| MPHD | ADT flags | ✓ | % |
+| MAIN | ADT existance | ✓ | ✓ |
+| MWMO | WMO only map | ⨉ | ⨉ |
+| MODF | WMO placement info | ⨉ | ⨉ |
 
-WDTfogs : Not Parsed, Not implemented.
+| WDTocc | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | occlusion | ⨉ | ⨉ |
 
-ADT : MHDR (Chunk Offsets)            - Parsed, Partially used.
-  MH20 (Water Data)               - Parsed, Not implemented.
-  MCNK (Terrain with Subchunks)   - Parsed, Partially used.
-	MCVT (Vertex Heights)           - Parsed, Implemented.
-	MCLV (Vertex Lighting)          - Parsed, Not implemented.
-	MCCV (Vertex Colors)            - Parsed, Implemented.
-	MCNR (Vertex Normals)           - Parsed, Implemented.
-	MCSE (Sound Emitters)           - Not Parsed, Not implemented.
-	MCBB (Blend Batches)            - Not Parsed, Not implemented.
-	MCDD (Not sure)                 - Not Parsed, Not implemented.
-  MFBO (Flight & Death plane)     - Parsed, Not implemented.
-  MBMH (WMO blend header)         - Not Parsed, Not implemented.
-  MBBB (WMO blend boundingbox)    - Not Parsed, Not implemented.
-  MBNV (WMO blend vertices)       - Not Parsed, Not implemented.
-  MBMI (WMO blend indices)        - Not Parsed, Not implemented.
+| WDTlgt | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | lights | ⨉ | ⨉ |
 
- ADTtex : MAMP (Texture size)			  - Parsed, Not implemented.
-	  MTEX (Texture List)			  - Parsed, Implemented.
-	  MCNK (Data Chunks)			  - No header just chunks
-		MCLY (Texture layers)			- Parsed, Partially used.
-		MCSH (Shadow maps)				- Parsed, Not implemented.
-		MCAL (Alpha maps)				- Parsed, Implemented.
-		MCMT (material_id in DBC)		- Not Parsed, Not implemented.
-		MTXF (MTEX flags)				- Not Parsed, Not implemented.
-		MTXP (texture heights)			- Not Parsed, Not implemented.
+| WDTfogs | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | fog | ⨉ | ⨉ |
 
- ADTobj : Not Parsed, Not implemented.
+| ADT | Description | Parsed | Implemented |
+|----|----|----|----|
+| MHDR | Chunk Offsets | ✓ | % |
+| MH20 | Water Data | ✓ | ⨉ |
+| MCNK | Terrain with Subchunks | ✓ | % |
+| MCVT | Vertex Heights | ✓ | ✓ |
+| MCLV | Vertex Lighting | ✓ | ⨉ |
+| MCCV | Vertex Colors | ✓ | ✓ |
+| MCNR | Vertex Normals | ✓ | ✓ |
+| MCSE | Sound Emitters | ⨉ | ⨉ |
+| MCBB | Blend Batches | ⨉ | ⨉ |
+| MCDD | ??? | ⨉ | ⨉ |
+| MFBO | Flight & Death plane | ✓ | ⨉ |
+| MBMH | WMO blend header | ⨉ | ⨉ |
+| MBBB | WMO blend boundingbox | ⨉ | ⨉ |
+| MBNV | WMO blend vertices | ⨉ | ⨉ |
+| MBMI | WMO blend indices | ⨉ | ⨉ |
 
- ADTlod : Not Parsed, Not implemented.
+| ADTtex | Description | Parsed | Implemented |
+|----|----|----|----|
+| MTEX | Texture File List | ✓ | ✓ |
+| MCNK | Data Chunks | ✓ | % |
+| MCLY | Texture Layers | ✓ | % |
+| MCSH | Shadow Maps | ✓ | ⨉ |
+| MCAL | Alpha Maps | ✓ | ✓ |
+| MCMT | Material_id in DBC | ⨉ | ⨉ |
+| MTXF | MTEX flags | ⨉ | ⨉ |
+| MTXP | Texture Heights | ⨉ | ⨉ |
+| MAMP | Texture size | ✓ | ⨉ |
 
-WDL : Not Parsed, Not implemented.
+| ADTobj | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | WMO/M2 loading | ⨉ | ⨉ |
 
-WMOroot : MOHD (Root Header)			  - Parsed, Partially used. 
-	MOTX (texture paths)			  - Parsed, Implemented.
-	MOMT (materials)				  - Parsed, Partially Implemented.
-	MOUV (texture animation)		  - Parsed, Not implemented.
-	MOGN (group names)			  - Parsed, Implemented.
-	MOGI (group info)				  - Parsed, Partially implemented.
-	MOSB (skybox filename)		  - Parsed, Not implemented.
-	MOPV (portal verts)			  - Parsed, Not implemented.
-	MOPT (portal info)			  - Parsed, Not implemented.
-	MOPR (portal references)		  - Parsed, Not implemented.
-	MOVV (visible block verts)	  - Parsed, Not implemented.
-	MOVB (visible block list)		  - Parsed, Not implemented.
-	MOLT (lighting)				  - Parsed, Not implemented.
-	MODS (doodad sets)			  - Parsed, Not implemented.
-	MODN (M2 filenames)			  - Parsed, Not implemented.
-	MODD (doodad instance info)	  - Parsed, Not implemented.
-	MFOG (fog info)				  - Parsed, Not implemented.
-	MCVP (convex volume planes)	  - Parsed, Not implemented.
-	GFID (fileID wmo load)		  - Parsed, Not implemented.
+| ADTlod | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | LoD Data | ⨉ | ⨉ |
 
-WMOgrp : MOGP (group flags)			  - Parsed, Implemented.
-	MOPY (material info)		  	- Parsed, Not implemented.
-	MOVI (vertex indices)		  	- Parsed, Implemented.
-	MOVT (vertices)				  	- Parsed, Implemented.
-	MONR (normals)					- Parsed, Implemented.
-	MOTV (UVs)						- Parsed, Implemented.
-	MOTV2 (UVs)						- Not Parsed, Not implemented.
-	MOTV3 (UVs)						- Not Parsed, Not implemented.
-	MOBA (render batches)			- Parsed, Implemented.
-	MOCV (vertex colors)			- Parsed, Partially used.
-	MOCV2 (vertex colors)			- Not Parsed, Not implemented.
-	MOLR (light references)			- Not Parsed, Not implemented.
-	MODR (doodad references)		- Not Parsed, Not implemented.
-	MOBN (BSP tree nodes)			- Not Parsed, Not implemented.
-	MOBR (MOBN face indices)		- Not Parsed, Not implemented.
-	MLIQ (liquids)					- Not Parsed, Not implemented.
-	MORI (triangle strip indices)	- Not Parsed, Not implemented.
-	MORB (modifies MOBA)			- Not Parsed, Not implemented.
-	MOTA (map object tangents)		- Not Parsed, Not implemented.
-	MOBS (map obj shadow batches)	- Not Parsed, Not implemented.
-	MDAL (unknown WoD+)				- Not Parsed, Not implemented.
-	MOPL (terrain cutting planes)	- Not Parsed, Not implemented.
-	MOPB (map obj prepass batches)	- Not Parsed, Not implemented.
-	MOLS (map obj spot lights)		- Not Parsed, Not implemented.
-	MOLP (map obj point lights)		- Not Parsed, Not implemented.
-	MOLM (light map list)			- Not Parsed, Not implemented.
-	MOLD (lightmapTexList)			- Not Parsed, Not implemented.
+| WDL | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | Low-resolution Heightmap | ⨉ | ⨉ |
 
- M2 : Not Parsed, Not implemented.
+| WMO Root | Description | Parsed | Implemented |
+|----|----|----|----|
+| MOHD | Root Header | ✓ | % |
+| MOTX | Texture Paths | ✓ | ✓ |
+| MOMT | Materials | ✓ | % |
+| MOUV | Texture UV Animation | ✓ | ⨉ |
+| MOGN | Group Names | ✓ | ✓ |
+| MOGI | Group Info | ✓ | % |
+| MOSB | Skybox File Name | ✓ | ⨉ |
+| MOPV | Portal Vertices | ✓ | ⨉ |
+| MOPT | Portal Information | ✓ | ⨉ |
+| MOPR | Portal References | ✓ | ⨉ |
+| MOVV | Visible Block Verts | ✓ | ⨉ |
+| MOVB | Visible Block List | ✓ | ⨉ |
+| MOLT | Lighting | ✓ | ⨉ |
+| MODS | Doodad Sets | ✓ | ⨉ |
+| MODN | M2 Filenames | ✓ | ⨉ |
+| MODD | Doodad Instance Info | ✓ | ⨉ |
+| MFOG | Fog Info | ✓ | ⨉ |
+| MCVP | Convex Volume Planes | ✓ | ⨉ |
+| GFID | FileID WMO Load | ✓ | ⨉ |
+
+| WMO Group | Description | Parsed | Implemented |
+|----|----|----|----|
+| MOGP | Group Flags |  |  |
+| MOPY | Material Info |  |  |
+| MOVI | Vertex Indices |  |  |
+| MOVT | Vertices |  |  |
+| MONR | Normals |  |  |
+| MOTV | UVs |  |  |
+| MOTV2 | UVs |  |  |
+| MOTV3 | UVs |  |  |
+| MOBA | Render Batches |  |  |
+| MOCV | Vertex Colors |  |  |
+| MOCV2 | Vertex Colors | ⨉ | ⨉ |
+| MOLR | Light References | ⨉ | ⨉ |
+| MODR | Doodad References | ⨉ | ⨉ |
+| MOBN | BSP Tree Nodes | ⨉ | ⨉ |
+| MOBR | MOBN Face Indices | ⨉ | ⨉ |
+| MLIQ | Liquids | ⨉ | ⨉ |
+| MORI | Triangle Strip Indices | ⨉ | ⨉ |
+| MORB | Modifies MOBA | ⨉ | ⨉ |
+| MOTA | Map Object Tangents | ⨉ | ⨉ |
+| MOBS | Map Object Shadow Batches | ⨉ | ⨉ |
+| MDAL | Unknown WOD+ | ⨉ | ⨉ |
+| MOPL | Terrain Cutting Planes | ⨉ | ⨉ |
+| MOPB | Map Object Prepass Batches | ⨉ | ⨉ |
+| MOLS | Map Object Spot Lights | ⨉ | ⨉ |
+| MOLP | Map OBject Point Lights | ⨉ | ⨉ |
+| MOLM | Light Map List | ⨉ | ⨉ |
+| MOLD | Light Map Texture List | ⨉ | ⨉ |
+
+| M2 | Description | Parsed | Implemented |
+|----|----|----|----|
+|  | M2 models | ⨉ | ⨉ |
 
       
 The main source of information when i comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
