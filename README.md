@@ -6,18 +6,18 @@ Using Unity 5.6.1f1
 Current Progress on importing WoW Data:
 --------------------------------------------------------------------------------------
    CASC : implemented, but not enabled for terrain loading (need to build a tree structure from the list file)
---------------------------------------------------------------------------------------
+   
     WDT : MPHD (ADT flags)				  - Parsed, Partially used.
 		  MAIN (ADT existance)			  - Parsed, Implemented.
 		  MWMO (WMO only map)			  - Not Parsed, Not implemented.
 		  MODF (WMO placement info)		  - Not Parsed, Not implemented.
---------------------------------------------------------------------------------------		  
+		  
  WDTocc : (occlusion) Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+ 
  WDTlgt : (lights) Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+ 
 WDTfogs : Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
     ADT : MHDR (Chunk Offsets)            - Parsed, Partially used.
           MH20 (Water Data)               - Parsed, Not implemented.
           MCNK (Terrain with Subchunks)   - Parsed, Partially used.
@@ -33,7 +33,7 @@ WDTfogs : Not Parsed, Not implemented.
           MBBB (WMO blend boundingbox)    - Not Parsed, Not implemented.
           MBNV (WMO blend vertices)       - Not Parsed, Not implemented.
           MBMI (WMO blend indices)        - Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
  ADTtex : MAMP (Texture size)			  - Parsed, Not implemented.
 		  MTEX (Texture List)			  - Parsed, Implemented.
 		  MCNK (Data Chunks)			  - No header just chunks
@@ -43,13 +43,13 @@ WDTfogs : Not Parsed, Not implemented.
 			MCMT (material_id in DBC)		- Not Parsed, Not implemented.
 			MTXF (MTEX flags)				- Not Parsed, Not implemented.
 			MTXP (texture heights)			- Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
  ADTobj : Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
  ADTlod : Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
 	WDL : Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
 WMOroot : MOHD (Root Header)			  - Parsed, Partially used. 
 		  MOTX (texture paths)			  - Parsed, Implemented.
 		  MOMT (materials)				  - Parsed, Partially Implemented.
@@ -69,7 +69,7 @@ WMOroot : MOHD (Root Header)			  - Parsed, Partially used.
 		  MFOG (fog info)				  - Parsed, Not implemented.
 		  MCVP (convex volume planes)	  - Parsed, Not implemented.
 		  GFID (fileID wmo load)		  - Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
  WMOgrp : MOGP (group flags)			  - Parsed, Implemented.
 			MOPY (material info)		  	- Parsed, Not implemented.
 			MOVI (vertex indices)		  	- Parsed, Implemented.
@@ -97,9 +97,9 @@ WMOroot : MOHD (Root Header)			  - Parsed, Partially used.
 			MOLP (map obj point lights)		- Not Parsed, Not implemented.
 			MOLM (light map list)			- Not Parsed, Not implemented.
 			MOLD (lightmapTexList)			- Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
 	 M2 : Not Parsed, Not implemented.
---------------------------------------------------------------------------------------
+
       
 The main source of information when i comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
 Big thanks to the guys who made and update the wiki.
