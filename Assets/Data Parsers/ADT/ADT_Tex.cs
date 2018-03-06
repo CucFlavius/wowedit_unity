@@ -151,7 +151,6 @@ public static partial class ADT {
         if (MCSH != "MCSH")
             Debug.Log("Wrong Data Type : " + MCSH);
 
-        /* skip
         // The shadows are stored per bit, not byte as 0 or 1 (off or on) so we have 8 bytes (which equates to 64 values) X 64 bytes (64 values in this case) which ends up as a square 64x64 shadowmap with either white or black.
         // Note that the shadow values come LSB first.
         // 8bytes(64values) x 64 = 512 bytes
@@ -167,9 +166,9 @@ public static partial class ADT {
                 shadowMap[r, c] = bitRow[c]; // need to test if it's [r,c] or [c,r] 
             }
         }
-        */
+        
         //Debug("Got shadow..");
-        ADTtexstream.Seek(MCSHsize, SeekOrigin.Current);
+        //ADTtexstream.Seek(MCSHsize, SeekOrigin.Current);
     }
 
     private static void ReadMCAL(Stream ADTtexstream, string mapname, int chunk)
