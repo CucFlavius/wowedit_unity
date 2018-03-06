@@ -5,10 +5,17 @@ Using Unity 5.6.1f1
 
 Current Progress on importing WoW Data:
 --------------------------------------------------------------------------------------
-
-	CASC : implemented, but not enabled for terrain loading (need to build a tree structure from the list file)
-
-	WDT : MPHD (ADT flags)				  - Parsed, Partially used.
+	WDT
+	----------------
+	
+	| Chunk | Parsed | Implemented |
+	| --- | --- |
+	| MPHD | ✓ | % |
+	| MAIN | ✓ | ✓ |
+	| MWMO | ⨉ | ⨉ |
+	| MODF | ⨉ | ⨉ |
+	
+	MPHD (ADT flags)				  - Parsed, Partially used.
 		MAIN (ADT existance)			  - Parsed, Implemented.
 		MWMO (WMO only map)			  - Not Parsed, Not implemented.
 		MODF (WMO placement info)		  - Not Parsed, Not implemented.	  
