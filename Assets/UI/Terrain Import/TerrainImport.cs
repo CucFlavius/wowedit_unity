@@ -18,7 +18,7 @@ public class TerrainImport : MonoBehaviour {
     public List<string> ExtractedMapList;
     public List<string> FilteredList;
     public string FilterWord;
-    private static bool Initialized = false;
+    public static bool Initialized = false;
 
     public void MapSelected(string mapName)
     {
@@ -85,13 +85,13 @@ public class TerrainImport : MonoBehaviour {
             DataText.text = "Data: Extracted";
             mapPath = Settings.Data[8] + @"\" + @"world\maps\";
         }
-
         else if (Settings.Data[2] == "0") // game //
         {
             DataText.text = "Data: " + Casc.WoWVersion;
             mapPath = @"world\maps\";
         }
         GetMapList(mapPath);
+        ClearMapList();
         PopulateMapList();
         Initialized = true;
     }
@@ -102,13 +102,13 @@ public class TerrainImport : MonoBehaviour {
         {
             Initialize();
         }
-
         TerrainImporterPanel.SetActive(true);
     }
 
     public void GetMapList (string mapPath)
     {
         string[] list = Casc.GetFolderListFromFolder(mapPath);
+
         ExtractedMapList = new List<string>();
         ExtractedMapList.AddRange(list);
     }
@@ -122,6 +122,15 @@ public class TerrainImport : MonoBehaviour {
             MapTabs.Add(fileName, MapItem);
             MapItem.transform.SetParent(MapScrollList.transform);
             MapItem.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = fileName;
+        }
+    }
+
+    public void ClearMapList ()
+    {
+        MapTabs.Clear();
+        foreach (Transform child in MapScrollList.transform)
+        {
+            Destroy(child);
         }
     }
 

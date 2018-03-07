@@ -31,7 +31,6 @@ public static class Settings
     // World Settings //
     public static float worldScale = 10.0f;
 
-
     // Terrain Settings //
     public static bool showVertexColor = true;
 

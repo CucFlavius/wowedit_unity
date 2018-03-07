@@ -5,6 +5,13 @@ using UnityEngine;
 public class SettingsToggles : MonoBehaviour {
 
     public Material TerrainMat;
+    public UnityEngine.UI.Toggle distanceFogToggle;
+
+    public void Start()
+    {
+        // reset toggles //
+        //distanceFogToggle.isOn = Settings.Data["need fog bool here"];
+    }
 
     public void Toggle_showVertexColor(bool Toggle)
     {
@@ -26,6 +33,11 @@ public class SettingsToggles : MonoBehaviour {
             TerrainMat.DisableKeyword("VERTEX_COLOR_ON");
 
         }
+    }
+
+    public void Toggle_showDistanceFog(bool Toggle)
+    {
+        RenderSettings.fog = Toggle;
     }
 
 }

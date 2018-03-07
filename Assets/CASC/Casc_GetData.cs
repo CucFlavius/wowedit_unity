@@ -5,9 +5,19 @@ using UnityEngine;
 
 public static partial class Casc {
 
-    public static string GetFile (string fileName)
+    public static string GetFile (string fileNameRaw)
     {
         string fileLocation = null;
+        string fileName = "";
+        if (fileNameRaw[0] == (@"/"[0]) || fileNameRaw[0] == (@"\"[0]))
+        {
+            fileName = fileNameRaw.Remove(0, 1);
+        }
+        else
+        {
+            fileName = fileNameRaw;
+        }
+        
         if (Settings.Data[2] == "0") // game
         {
             if (File.Exists(Settings.Data[0] + @"\WoWData\" + fileName))
@@ -16,7 +26,7 @@ public static partial class Casc {
             }
             else
             {
-                fileLocation = ExtractFileToCache(FileListDictionary[fileName], fileName);
+                fileLocation = ExtractFileToCache(FileListDictionary[fileName.Replace(@"\"[0], @"/"[0]).ToLower()], fileName);
             }
         }
         else if (Settings.Data[2] == "1") // online
@@ -47,11 +57,11 @@ public static partial class Casc {
     {
         if (Settings.Data[2] == "0") // game
         {
-            return null;
+            return FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
         }
         else if (Settings.Data[2] == "1") // online
         {
-            return null;
+            /* ??? */
         }
         else if (Settings.Data[2] == "2") // extracted
         {
@@ -65,11 +75,11 @@ public static partial class Casc {
     {
         if (Settings.Data[2] == "0") // game
         {
-            return null;
+            return FolderTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
         }
         else if (Settings.Data[2] == "1") // online
         {
-            return null;
+            /* ??? */
         }
         else if (Settings.Data[2] == "2") // extracted
         {
@@ -83,11 +93,11 @@ public static partial class Casc {
     {
         if (Settings.Data[2] == "0") // game
         {
-            return false;
+            return FileTree.ContainsKey(path.Replace(@"\"[0], @"/"[0]));
         }
         else if (Settings.Data[2] == "1") // online
         {
-            return false;
+            /* ??? */
         }
         else if (Settings.Data[2] == "2") // extracted
         {

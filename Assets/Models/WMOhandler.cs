@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class WMOhandler : MonoBehaviour {
 
-    public Queue<WMOQueueItem> WMOThreadQueue;
+    public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
     public GameObject WMObatchprefab;
     public static System.Threading.Thread WMOThread;
     public Material missingMaterial;
@@ -29,7 +27,6 @@ public class WMOhandler : MonoBehaviour {
     {
         WMO.ThreadWorking = false;
         WMOThreadQueue = new Queue<WMOQueueItem>();
-        //currentLoadingBlocks = new Queue<WMOQueueItem>();
     }
 
     public void AddToQueue(string objectDataPath, Vector3 position, Quaternion rotation, Vector3 scale)
@@ -40,7 +37,6 @@ public class WMOhandler : MonoBehaviour {
         item.Rotation = rotation;
         item.Scale = scale;
         WMOThreadQueue.Enqueue(item);
-        //currentLoadingBlocks.Enqueue(item);
     }
 
     public void WMOThreadRun(string objectDataPath, Vector3 position, Quaternion rotation, Vector3 scale)
@@ -58,15 +54,21 @@ public class WMOhandler : MonoBehaviour {
 
     void Update()
     {
-        if (WMOThreadQueue.Count > 0 && !WMO.ThreadWorking)
+        if (WMOThreadQueue.Count > 0)
         {
-            WMO.ThreadWorking = true;
-            WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
-            WMOThreadRun(queueItem.objectDataPath, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+            if (!WMO.ThreadWorking)
+            {
+                WMO.ThreadWorking = true;
+                WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
+                WMOThreadRun(queueItem.objectDataPath, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+            }
         }
-        if (WMO.AllWMOData.Count > 0 && !WMOThread.IsAlive)
+        if (WMO.AllWMOData.Count > 0)
         {
-            CreateWMOObject();
+            if (!WMOThread.IsAlive)
+            {
+                CreateWMOObject();
+            }
         }
     }
 
@@ -77,9 +79,6 @@ public class WMOhandler : MonoBehaviour {
 
     public void CreateWMOObject()
     {
-        //WMOQueueItem WMOobject = currentLoadingBlocks.Dequeue();
-        print("creating wmo obj");
-
         WMO.WMOData data = WMO.AllWMOData.Dequeue();
 
         GameObject WMOinstance = new GameObject();
@@ -161,7 +160,6 @@ public class WMOhandler : MonoBehaviour {
                 BatchInstance.GetComponent<MeshRenderer>().sharedMaterial = missingMaterial;
 
                 // material //
-                //Debug.Log(data.materials[data.groupsData[g].batchMaterialIDs[bn]].texture1_offset);
                 string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].texture1_offset];
 
                 if (LoadedWMOTextures.ContainsKey(textureName))

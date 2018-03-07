@@ -111,4 +111,42 @@ public static partial class Casc{
 	    }
     }
 
+    private static Dictionary<string, string[]> DeserializeTree(Stream stream)
+    {
+        BinaryReader reader = new BinaryReader(stream);
+        int count = reader.ReadInt32();
+        Dictionary<string, string[]> dictionary = new Dictionary<string, string[]>(count);
+        for (int n = 0; n < count; n++)
+        {
+            string key = reader.ReadString();
+		    int size = reader.ReadInt32();
+
+            string[] value = new string[size];
+		    for (int m = 0; m < size; m++)
+		    {
+			    value[m] = reader.ReadString(); 
+		    }
+            dictionary.Add(key, value);
+        }
+        return dictionary;
+    }
+
+    private static void SerializeTree(Dictionary<string, string[]> dictionary, Stream stream)
+    {
+        BinaryWriter writer = new BinaryWriter(stream);
+        writer.Write(dictionary.Count);
+        foreach (KeyValuePair<string, string[]> kvp in dictionary)
+        {
+            writer.Write(kvp.Key);
+		    int size = kvp.Value.Length;
+            writer.Write(size);
+		    foreach (string obj in kvp.Value)
+		    {
+			    writer.Write(obj);
+		    }
+        }
+        writer.Flush();
+    }
+
+
 }

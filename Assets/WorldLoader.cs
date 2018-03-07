@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class WorldLoader : MonoBehaviour {
 
+
     public GameObject Camera; // get vector3 location
     public GameObject TerrainParent; // with terrain handler script
+    public GameObject WMOParent;
     public GameObject ADTBlockObject;
+    public MinimapHandler minimapHandler;
     public int maxWorldSize = 64;
     public GameObject[,] ADTmatrix;// = new GameObject[maxWorldSize, maxWorldSize];
     public bool[,] existingADTs;// = new bool[maxWorldSize, maxWorldSize];
@@ -57,7 +60,6 @@ public class WorldLoader : MonoBehaviour {
         // clear Matrix //
         ClearMatrix();
 
-
         if (MinimapFileList.Count > 0) // build a terrain list based on loaded minimaps 
         {
             // fill Matrix with available //
@@ -93,12 +95,13 @@ public class WorldLoader : MonoBehaviour {
         //ClearLoDArray(currentTerrainLod);
 
         // position camera obj //
-        Camera.transform.position = new Vector3((32-playerSpawn.x)*blockSize, 30f, (32-playerSpawn.y)*blockSize);
+        Camera.transform.position = new Vector3((32-playerSpawn.x)*blockSize, 60f, (32-playerSpawn.y)*blockSize);
 
-        int CurrentCamX = (int)playerSpawn.x;
-        int CurrentCamY = (int)playerSpawn.y;
+        int CurrentCamX = (int)playerSpawn.y;
+        int CurrentCamY = (int)playerSpawn.x;
         PreviousCamX = CurrentCamX;
         PreviousCamY = CurrentCamY;
+
         UpdateLodMatrices(CurrentCamX, CurrentCamY);
         Loader();
     }
@@ -238,6 +241,17 @@ public class WorldLoader : MonoBehaviour {
             {
                 array[x, y] = 10;
             }
+        }
+    }
+
+    public void ClearAllTerrain()
+    {
+        minimapHandler.currentSelectedPlayerSpawn = new Vector2(0, 0);
+        ClearMatrix();
+
+        foreach (Transform child in TerrainParent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
         }
     }
 }

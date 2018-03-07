@@ -29,11 +29,21 @@ public class DataSourceManager : MonoBehaviour {
             DropdownGameList.Add(Settings.Data[5]);
         if (Settings.Data[6] != null )
             DropdownGameList.Add(Settings.Data[6]);
+
         // Add custom game path to the list //
         if (Settings.Data[9] != null && Settings.Data[9].Length > 1)
             DropdownGameList.Add(Settings.Data[9]);
         DropdownGame.ClearOptions();
         DropdownGame.AddOptions(DropdownGameList);
+
+        // select previously used //
+        for (int v = 0; v < DropdownGameList.Count; v++)
+        {
+            if (DropdownGame.options[v].text == Settings.Data[3])
+            {
+                DropdownGame.value = v;
+            }
+        }
 
         // Update Online List //
         DropdownOnline.ClearOptions();
@@ -58,6 +68,11 @@ public class DataSourceManager : MonoBehaviour {
         if (ToggleGame.isOn)
         {
             Settings.Data[2] = "0";
+            Settings.Data[3] = DropdownGame.options[DropdownGame.value].text;
+            if (Settings.Data[3] != CascInitialize.CurrentDataVersion)
+            {
+                CascInitialize.Initialized = false; // changed data source so reinitialize
+            }
             // start Initialize casc thread //
             Settings.Save();
             CascInitialize.Start();
@@ -80,7 +95,8 @@ public class DataSourceManager : MonoBehaviour {
             }
         }
 
-        terrainImport.GetComponent<TerrainImport>().Initialize();
+        if (Settings.Data[2] == "2")
+            terrainImport.GetComponent<TerrainImport>().Initialize();
     }
 
     public void AddButon ()
@@ -94,7 +110,6 @@ public class DataSourceManager : MonoBehaviour {
         string tempPath = FolderBrowser_SelectedFolderText.text + @"\";
         if (!DropdownGameList.Contains(tempPath))
         {
-            //print(tempPath);
             if (CheckValidWoWPath(tempPath))
             {
                 // correct path //

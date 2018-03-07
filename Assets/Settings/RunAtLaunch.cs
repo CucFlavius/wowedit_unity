@@ -9,14 +9,13 @@ public class RunAtLaunch : MonoBehaviour {
     public GameObject FolderBrowserDialog;
     public GameObject DataSourceManagerPanel;
 
-
     /// <summary>
     ///  Run this code at launch
     /// </summary>
 
     void Start()
     {
-        Settings.ApplicationPath = Application.dataPath;
+        Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
         {
             //File.Create("Settings.ini");
@@ -75,6 +74,7 @@ public class RunAtLaunch : MonoBehaviour {
     void DialogBoxCache_Ok()
     {
         Settings.Data[0] = FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().ChosenPath + @"\Cache";
+        CreateCacheDir();
         Settings.Save();
         CheckWoWInstalls();
     }
@@ -82,6 +82,7 @@ public class RunAtLaunch : MonoBehaviour {
     void DialogBoxCache_Cancel()
     {
         Settings.Data[0] = "Cache";
+        CreateCacheDir();
         Settings.Save();
         CheckWoWInstalls();
     }
@@ -89,6 +90,7 @@ public class RunAtLaunch : MonoBehaviour {
     public void CheckWoWInstalls()
     {
         Settings.GetInstalledGames();
+        CreateCacheDir();
         Settings.Save();
         CheckDataSource();
     }

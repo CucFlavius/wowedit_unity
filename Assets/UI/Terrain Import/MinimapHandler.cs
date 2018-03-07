@@ -12,6 +12,7 @@ public class MinimapHandler : MonoBehaviour {
     public GameObject World;
     public GameObject SelectPlayerBlockIcon;
     public GameObject SelectPlayerBlockIcon_prefab;
+    public GameObject LoadingText;
     private List<string> MinimapFileList = new List<string>();
     public string minimap_Path;
     public string map_name;
@@ -19,11 +20,11 @@ public class MinimapHandler : MonoBehaviour {
     private int firstyCoord;
     private int lastyCoord;
     private int lastxCoord;
-    private Vector2 currentSelectedPlayerSpawn = new Vector2(0,0);
+    public Vector2 currentSelectedPlayerSpawn;
 
-    private void Start()
+    void Start()
     {
-        currentSelectedPlayerSpawn = new Vector2(0, 0);
+        currentSelectedPlayerSpawn = new Vector2(0, 0); // default
     }
 
     public void LoadMinimaps(string minimapPath, string mapName)
@@ -52,7 +53,13 @@ public class MinimapHandler : MonoBehaviour {
 
     public void ClickedLoadFull ()
     {
+        if (currentSelectedPlayerSpawn == new Vector2(0,0) || currentSelectedPlayerSpawn == null)
+        {
+            currentSelectedPlayerSpawn = new Vector2(firstyCoord + ((lastyCoord - firstyCoord) / 2), firstxCoord + ((lastxCoord - firstxCoord) / 2));
+            //currentSelectedPlayerSpawn = new Vector2(firstyCoord , firstxCoord);
+        }
         World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name, currentSelectedPlayerSpawn);
+        LoadingText.SetActive(true);
     }
 
     private void AdjustScrollableArea ()
@@ -175,8 +182,6 @@ public class MinimapHandler : MonoBehaviour {
                 }
             }
         }
-
-
     }
 
     private void ClearData()
