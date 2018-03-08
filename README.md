@@ -90,16 +90,16 @@ Using Unity 5.6.1f1
 
 | WMO Group | Description | Parsed | Implemented |
 |----|----|----|----|
-| MOGP | Group Flags |  |  |
-| MOPY | Material Info |  |  |
-| MOVI | Vertex Indices |  |  |
-| MOVT | Vertices |  |  |
-| MONR | Normals |  |  |
-| MOTV | UVs |  |  |
-| MOTV2 | UVs |  |  |
-| MOTV3 | UVs |  |  |
-| MOBA | Render Batches |  |  |
-| MOCV | Vertex Colors |  |  |
+| MOGP | Group Flags | ✓ | ✓ |
+| MOPY | Material Info | ✓ | ⨉ |
+| MOVI | Vertex Indices | ✓ | ✓ |
+| MOVT | Vertices | ✓ | ✓ |
+| MONR | Normals | ✓ | ✓ |
+| MOTV | UVs | ✓ | ✓ |
+| MOTV2 | UVs | ⨉ | ⨉ |
+| MOTV3 | UVs | ⨉ | ⨉ |
+| MOBA | Render Batches | ✓ | ✓ |
+| MOCV | Vertex Colors | ✓ | % |
 | MOCV2 | Vertex Colors | ⨉ | ⨉ |
 | MOLR | Light References | ⨉ | ⨉ |
 | MODR | Doodad References | ⨉ | ⨉ |
