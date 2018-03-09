@@ -106,4 +106,22 @@ public static partial class Casc {
         }
         return false;
     }
+
+    public static bool FileExists (string path)
+    {
+        if (Settings.Data[2] == "0") // game
+        {
+            return FileList.Contains(path.Replace(@"\"[0], @"/"[0]));
+        }
+        else if (Settings.Data[2] == "1") // online
+        {
+            /* ??? */
+        }
+        else if (Settings.Data[2] == "2") // extracted
+        {
+            bool exists = File.Exists(Settings.Data[8] + @"\" + path);
+            return exists;
+        }
+        return false;
+    }
 }

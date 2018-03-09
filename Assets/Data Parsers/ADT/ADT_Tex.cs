@@ -6,27 +6,15 @@ using UnityEngine;
 
 public static partial class ADT {
 
-    private static long MCNKchnkPos;
-    private static int MCNKsize;
-
     private static void ReadMAMP (Stream ADTtexstream)
     {
-        string MAMP = ReadFourCC(ADTtexstream);
-        int MAMPsize = ReadLong(ADTtexstream);
-        if (MAMP != "MAMP")
-            Debug.Log("Wrong Data Type : " + MAMP);
         int texture_size = ReadLong(ADTtexstream); // either defined here or in MHDR.mamp_value.
     }
 
-    private static void ReadMTEX (Stream ADTtexstream)
+    private static void ReadMTEX (Stream ADTtexstream, int MTEXsize)
     {
         if (ADTtexstream.Length == ADTtexstream.Position)
             return;
-
-        string MTEX = ReadFourCC(ADTtexstream);
-        int MTEXsize = ReadLong(ADTtexstream);
-        if (MTEX != "MTEX")
-            Debug.Log("Wrong Data Type : " + MTEX);
 
         // texture path strings, separated by 0
         string texturePath = "";
@@ -44,10 +32,8 @@ public static partial class ADT {
                 blockData.terrainTexturePaths.Add(texturePath);
                 string extractedPath = Casc.GetFile(texturePath);
                 Stream stream = File.Open(extractedPath, FileMode.Open);
-                //Debug.Log(extractedPath);
                 byte[] data = BLP.GetUncompressed(stream, true);
                 BLPinfo info = BLP.Info();
-                
                 Texture2Ddata texture2Ddata = new Texture2Ddata();
                 texture2Ddata.hasMipmaps = info.hasMipmaps;
                 texture2Ddata.width = info.width;
@@ -65,27 +51,54 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCNKtex (Stream ADTtexstream, string mapname)
+    private static void ReadMCNKtex (Stream ADTtexstream, string mapname, int MCNKchunkNumber, int MCNKsize)
     {
         if (ADTtexstream.Length == ADTtexstream.Position)
             return;
 
-        for (int i = 0; i < 256; i++)
+        long MCNKchnkPos = ADTtexstream.Position;
+        long streamPosition = ADTtexstream.Position;
+        while (streamPosition < MCNKchnkPos+MCNKsize)
         {
-            string MCNK = ReadFourCC(ADTtexstream);
-            MCNKsize = ReadLong(ADTtexstream);
-            if (MCNK != "MCNK")
+            ADTtexstream.Position = streamPosition;
+            int chunkID = ReadLong(ADTtexstream);
+            int chunkSize = ReadLong(ADTtexstream);
+            streamPosition = ADTtexstream.Position + chunkSize;
+            switch (chunkID)
             {
-                Debug.Log("Wrong Data Type : " + MCNK);
+                case (int)ADTchunkID.MCLY:
+                    ReadMCLY(ADTtexstream, MCNKchunkNumber, chunkSize); // texture layers
+                    break;
+                case (int)ADTchunkID.MCSH:
+                    ReadMCSH(ADTtexstream, MCNKchunkNumber); // static shadow maps
+                    break;
+                case (int)ADTchunkID.MCAL:
+                    ReadMCAL(ADTtexstream, mapname, MCNKchunkNumber); // alpha layers
+                    break;
+                default:
+                    SkipUnknownChunk(ADTtexstream, chunkID, chunkSize);
+                    break;
             }
-            MCNKchnkPos = ADTtexstream.Position;
+        }
 
-            // Subchunks
-            ReadMCLY(ADTtexstream, i); // texture layers
-            ReadMCSH(ADTtexstream, i); // static shadow maps
-            ReadMCAL(ADTtexstream, mapname, i); // Alpha maps
+    }
 
-            ADTtexstream.Seek(MCNKchnkPos + MCNKsize, SeekOrigin.Begin);
+    private static void ReadMTXF (Stream ADTtexstream, int MTXFsize)
+    {
+        Debug.Log("MTXF : " + MTXFsize);
+        ADTtexstream.Seek(MTXFsize, SeekOrigin.Current);
+    }
+
+    private static void ReadMTXP (Stream ADTtexstream, int MTXPsize) // 16 bytes per MTEX texture
+    {
+        blockData.MTXP = true;
+        for (int i = 0; i < MTXPsize / 16; i++)
+        {
+            blockData.textureFlags.Add(blockData.terrainTexturePaths[i],ReadTerrainTextureFlag(ADTtexstream));
+            blockData.heightScales.Add(blockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));    // default 0.0 -- the _h texture values are scaled to [0, value) to determine actual "height".
+                                                                    // this determines if textures overlap or not (e.g. roots on top of roads). 
+            blockData.heightOffsets.Add(blockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));   // default 1.0 -- note that _h based chunks are still influenced by MCAL (blendTex below)
+            int padding = ReadLong(ADTtexstream);           // no default, no non-zero values in 20490
         }
     }
 
@@ -93,7 +106,7 @@ public static partial class ADT {
     ///// MCNKtex Subchunks /////
     /////////////////////////////
 
-    private static void ReadMCLY(Stream ADTtexstream, int chunk)
+    private static void ReadMCLY(Stream ADTtexstream, int chunk, int MCLYsize)
     {
         /*
         *  Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
@@ -103,14 +116,8 @@ public static partial class ADT {
         *  For getting the right feeling when walking, you should set the effectId which links to GroundEffectTextureRec::m_ID. It defines the little detail doodads as well as the footstep sounds and if footprints are visible. You can set the id to -1 (int16!) to have no detail doodads and footsteps at all. Also, you need to define the currently on-top layer in the MCNK structure for the correct detail doodads to show up!
         *  Introduced in Wrath of the Lich King, terrain can now reflect a skybox. This is used for icecubes made out of ADTs to reflect something. You need to have the MTXF chunk in, if you want that. Look at an skybox Blizzard made to see how you should do it.
         */
-        string MCLY = ReadFourCC(ADTtexstream);
-        int MCLYsize = ReadLong(ADTtexstream);
-        if (MCLY != "MCLY")
-            Debug.Log("Wrong Data Type : " + MCLY);
         if (MCLYsize == 0)
-        {
             return;
-        }
 
         long MCLYStartPosition = ADTtexstream.Position;
         int numberOfLayers = MCLYsize / 16;
@@ -138,19 +145,10 @@ public static partial class ADT {
             blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] = layerOffset;
             int effectId = ReadLong(ADTtexstream); //foreign_keyⁱ <uint32_t, &GroundEffectTextureRec::m_ID>; // 0xFFFFFFFF for none, in alpha: uint16_t + padding
         }
-        //Debug.Log(MCLYStartPosition + " " + ADTtexstream.Position + " " + MCLYsize);
     }
 
     private static void ReadMCSH(Stream ADTtexstream, int chunk) //512 bytes
     {
-        if (has_mcsh[chunk] != true)
-            return;
-
-        string MCSH = ReadFourCC(ADTtexstream);
-        int MCSHsize = ReadLong(ADTtexstream);
-        if (MCSH != "MCSH")
-            Debug.Log("Wrong Data Type : " + MCSH);
-
         // The shadows are stored per bit, not byte as 0 or 1 (off or on) so we have 8 bytes (which equates to 64 values) X 64 bytes (64 values in this case) which ends up as a square 64x64 shadowmap with either white or black.
         // Note that the shadow values come LSB first.
         // 8bytes(64values) x 64 = 512 bytes
@@ -173,21 +171,6 @@ public static partial class ADT {
 
     private static void ReadMCAL(Stream ADTtexstream, string mapname, int chunk)
     {
-        if (ADTtexstream.Length <= ADTtexstream.Position)
-            return;
-        string chunky = ReadFourCC(ADTtexstream);
-        if (chunky != "MCAL") // should replace with PeekFourCC to simplify
-        {
-            //Debug.Log(chunky);
-            return;
-        }
-        ADTtexstream.Seek(-4, SeekOrigin.Current);
-
-        string MCAL = ReadFourCC(ADTtexstream);
-        int MCALsize = ReadLong(ADTtexstream);
-        if (MCAL != "MCAL")
-            Debug.Log("Wrong Data Type : " + MCAL);
-
         long McalStartPosition = ADTtexstream.Position;
         int numberofLayers = blockData.ChunksData[chunk].NumberOfTextureLayers;
         if (numberofLayers > 1)

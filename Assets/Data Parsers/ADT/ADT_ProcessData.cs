@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public static class ADT_ProcessData {
@@ -81,26 +82,51 @@ public static class ADT_ProcessData {
             chunkData.UVArray = new Vector2[145];
             for (int u = 0; u < 145; u++)
             {
-                chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].x) / 33.3333f) * 0.034f ) - 0.017f,
-                                                    chunkData.VertexArray[u].z / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].z) / 33.3333f) * 0.034f ) - 0.017f);
+                //chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].x) / 33.3333f) * 0.034f ) - 0.017f,
+                //                                    chunkData.VertexArray[u].z / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].z) / 33.3333f) * 0.034f ) - 0.017f);
+                chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / (33.3333f / Settings.worldScale), chunkData.VertexArray[u].z / (33.3333f / Settings.worldScale));
+
+
             }
 
             // scale chunk positions to worldScale //
             Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale, chunkData.MeshPosition.z / Settings.worldScale, chunkData.MeshPosition.y / Settings.worldScale);
             chunkData.MeshPosition = newMapPosition;
 
-            // Vertex color fill if missing //
-            if (chunkData.VertexColors == null)
+        }
+    }
+
+    public static void Load_hTextures ()
+    {
+        if (ADT.blockData.MTXP)
+        {
+            ADT.blockData.terrainHTextures = new Dictionary<string, ADT.Texture2Ddata>();
+            foreach (string texturePath in ADT.blockData.terrainTexturePaths)
             {
-                chunkData.VertexColors = new Color32[145];
-                for (int v = 0; v < 145; v++)
+                string noExtension = Path.GetFileNameWithoutExtension(texturePath);
+                string directoryPath = Path.GetDirectoryName(texturePath);
+                string hTexturePath = directoryPath + @"\" + noExtension + "_h" + ".blp";
+                if (Casc.FileExists(hTexturePath))
                 {
-                    //Color32 colorBGRA = new Color32(127, 127, 127, 127);
-                    //chunkData.VertexColors[v] = colorBGRA;
+                    string extractedPath = Casc.GetFile(hTexturePath);
+                    Stream stream = File.Open(extractedPath, FileMode.Open);
+                    byte[] data = BLP.GetUncompressed(stream, true);
+                    BLPinfo info = BLP.Info();
+                    ADT.Texture2Ddata texture2Ddata = new ADT.Texture2Ddata();
+                    texture2Ddata.hasMipmaps = info.hasMipmaps;
+                    texture2Ddata.width = info.width;
+                    texture2Ddata.height = info.height;
+                    if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
+                        texture2Ddata.hasMipmaps = false;
+                    texture2Ddata.textureFormat = info.textureFormat;
+                    texture2Ddata.TextureData = data;
+                    ADT.blockData.terrainHTextures.Add(texturePath, texture2Ddata);
+                    stream.Close();
+                    stream = null;
                 }
             }
         }
-            
+        
     }
 
 

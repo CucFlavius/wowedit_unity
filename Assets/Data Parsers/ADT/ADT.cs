@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -15,11 +16,15 @@ public static partial class ADT
         blockData.ChunksData = new List<ChunkData>();
         blockData.terrainTexturePaths = new List<string>();
         blockData.terrainTextures = new Dictionary<string, Texture2Ddata>();
+        blockData.textureFlags = new Dictionary<string, TerrainTextureFlag>();
+        blockData.heightScales = new Dictionary<string, float>();
+        blockData.heightOffsets = new Dictionary<string, float>();
 
         ThreadWorking = true;
         ParseADT_Main(Path, MapName, coords);
         ParseADT_Tex(Path, MapName, coords);
         ADT_ProcessData.GenerateMeshArrays();
+        ADT_ProcessData.Load_hTextures();
         AllBlockData.Enqueue(blockData);
         ThreadWorking = false;
     }
@@ -29,13 +34,40 @@ public static partial class ADT
         string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
         Stream ADTstream = Casc.GetFileStream(ADTmainPath);
 
-        ReadMVER(ADTstream); // ADT file version
-        ReadMHDR(ADTstream); // Offsets for specific chunks 0000 if chunks don't exist.
-        ReadMH2O(ADTstream); // Water Data
-        ReadMCNK(ADTstream); // Terrain Data - 256chunks
-        ReadMFBO(ADTstream); // FlightBounds plane & Death plane
+        int MCNKchunkNumber = 0;
+        long streamPosition = 0;
+        while (streamPosition < ADTstream.Length)
+        {
+            ADTstream.Position = streamPosition;
+            int chunkID = ReadLong(ADTstream);
+            int chunkSize = ReadLong(ADTstream);
+            streamPosition = ADTstream.Position + chunkSize;
 
-        // will be extra chunks to parse //
+            switch (chunkID)
+            {
+                case (int)ADTchunkID.MVER:
+                    ReadMVER(ADTstream); // ADT file version
+                    break;
+                case (int)ADTchunkID.MHDR:
+                    ReadMHDR(ADTstream); // Offsets for specific chunks 0000 if chunks don't exist.
+                    break;
+                case (int)ADTchunkID.MH2O:
+                    ReadMH2O(ADTstream, chunkSize); // Water Data
+                    break;
+                case (int)ADTchunkID.MCNK:
+                    {
+                        ReadMCNK(ADTstream, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
+                        MCNKchunkNumber++;
+                    }
+                    break;
+                case (int)ADTchunkID.MFBO:
+                    ReadMFBO(ADTstream); // FlightBounds plane & Death plane
+                    break;
+                default:
+                    SkipUnknownChunk(ADTstream, chunkID, chunkSize);
+                    break;
+            }
+        }
 
         ADTstream.Close();
         ADTstream = null;
@@ -46,13 +78,58 @@ public static partial class ADT
         string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
         Stream ADTtexstream = Casc.GetFileStream(ADTtexPath);
 
-        ReadMVER(ADTtexstream); // ADT file version
-        ReadMAMP(ADTtexstream); // Single value - texture size = 64
-        ReadMTEX(ADTtexstream); // Texture Paths
-        ReadMCNKtex(ADTtexstream, MapName); // Texture Data - 256chunks
+        int MCNKchunkNumber = 0;
+        long streamPosition = 0;
+        while (streamPosition < ADTtexstream.Length)
+        {
+            ADTtexstream.Position = streamPosition;
+            int chunkID = ReadLong(ADTtexstream);
+            int chunkSize = ReadLong(ADTtexstream);
+            streamPosition = ADTtexstream.Position + chunkSize;
 
+            switch (chunkID)
+            {
+                case (int)ADTchunkID.MVER:
+                    ReadMVER(ADTtexstream); // ADT file version
+                    break;
+                case (int)ADTchunkID.MAMP:
+                    ReadMAMP(ADTtexstream); // Single value - texture size = 64
+                    break;
+                case (int)ADTchunkID.MTEX:
+                    ReadMTEX(ADTtexstream, chunkSize); // Texture Paths
+                    break;
+                case (int)ADTchunkID.MCNK:
+                    {
+                        ReadMCNKtex(ADTtexstream, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
+                        MCNKchunkNumber++;
+                    }
+                    break;
+                case (int)ADTchunkID.MTXF:
+                    ReadMTXF(ADTtexstream, chunkSize); // Texture Paths
+                    break;
+                case (int)ADTchunkID.MTXP:
+                    ReadMTXP(ADTtexstream, chunkSize); // Texture Paths
+                    break;
+                default:
+                    SkipUnknownChunk(ADTtexstream, chunkID, chunkSize);
+                    break;
+            }
+        }
         ADTtexstream.Close();
         ADTtexstream = null;
+    }
+
+    public static void SkipUnknownChunk(Stream ADTstream, int chunkID, int chunkSize)
+    {
+        try
+        {
+            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADTchunkID), chunkID)).ToString() + " | Skipped");
+        }
+        catch
+        {
+            Debug.Log("Missing chunk ID : " + chunkID);
+        }
+        ADTstream.Seek(chunkSize, SeekOrigin.Current);
     }
 
 }

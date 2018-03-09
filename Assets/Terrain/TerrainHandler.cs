@@ -17,6 +17,7 @@ public class TerrainHandler : MonoBehaviour
     public static bool FinishedCreatingObject;
 
     public Dictionary<string, Texture2D> LoadedTerrainTextures = new Dictionary<string, Texture2D>();
+    public Dictionary<string, Texture2D> LoadedHTerrainTextures = new Dictionary<string, Texture2D>();
 
     public class QueueItem
     {
@@ -96,6 +97,7 @@ public class TerrainHandler : MonoBehaviour
             ChunkObj.name = "Chunk_" + i.ToString();
             ChunkObj.transform.position = data.ChunksData[i].MeshPosition;
             ChunkObj.transform.SetParent(LoD0.transform);
+
             // Create Mesh //
             Mesh mesh = new Mesh();
             mesh.vertices = data.ChunksData[i].VertexArray;
@@ -104,81 +106,125 @@ public class TerrainHandler : MonoBehaviour
             mesh.normals = data.ChunksData[i].VertexNormals;
             mesh.colors32 = data.ChunksData[i].VertexColors;
             ChunkObj.GetComponent<MeshFilter>().mesh = mesh;
-            // Assign textures //
 
-	        for (int tl = 0; tl < data.ChunksData[i].NumberOfTextureLayers; tl++) {
+            // Assign textures //
+            float heightScale0 = 0f;
+            float heightScale1 = 0f;
+            float heightScale2 = 0f;
+            float heightScale3 = 0f;
+            float heightOffset0 = 0f;
+            float heightOffset1 = 0f;
+            float heightOffset2 = 0f;
+            float heightOffset3 = 0f;
+
+            for (int tl = 0; tl < data.ChunksData[i].NumberOfTextureLayers; tl++) {
                 if (tl == 0)
                 {
+                    // Layer 0 Texture //
                     string textureName = data.terrainTexturePaths[data.ChunksData[i].textureIds[tl]];
-                    if (LoadedTerrainTextures.ContainsKey(textureName))
-                    {
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedTerrainTextures[textureName]);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, -1));
-                    }
-                    else
+                    if (!LoadedTerrainTextures.ContainsKey(textureName))
                     {
                         ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                        //Debug.Log(textureName);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
                         LoadedTerrainTextures[textureName] = tex;
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, -1));
                     }
+                    ChunkObj.GetComponent<Renderer>().material.SetTexture("_layer0", LoadedTerrainTextures[textureName]);
+                    ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_layer0", new Vector2(-1, -1));
+                    // Layer 0 Height Texture //
+                    if (data.terrainHTextures.ContainsKey(textureName))
+                    {
+                        if (!LoadedHTerrainTextures.ContainsKey(textureName))
+                        {
+                            ADT.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            tex.LoadRawTextureData(tdata.TextureData);
+                            tex.Apply();
+                            LoadedHTerrainTextures[textureName] = tex;
+                        }
+                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_height0", LoadedHTerrainTextures[textureName]);
+                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_height0", new Vector2(-1, -1));
+                    }
+                    data.heightScales.TryGetValue(textureName, out heightScale0);
+                    data.heightOffsets.TryGetValue(textureName, out heightOffset0);
                 }
-                // 1 Alpha layer //
                 else if (tl == 1)
                 {
+                    // Layer 1 Texture //
                     string textureName = data.terrainTexturePaths[data.ChunksData[i].textureIds[tl]];
-                    if (LoadedTerrainTextures.ContainsKey(textureName))
-                    {
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex1", LoadedTerrainTextures[textureName]);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex1", new Vector2(4, 4));
-                    }
-                    else
+                    if (!LoadedTerrainTextures.ContainsKey(textureName))
                     {
                         ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
                         LoadedTerrainTextures[textureName] = tex;
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex1", tex);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex1", new Vector2(4, 4));
                     }
+                    ChunkObj.GetComponent<Renderer>().material.SetTexture("_layer1", LoadedTerrainTextures[textureName]);
+                    ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_layer1", new Vector2(4, 4));
+                    // Layer 1 Height Texture //
+                    if (data.terrainHTextures.ContainsKey(textureName))
+                    {
+                        if (!LoadedHTerrainTextures.ContainsKey(textureName))
+                        {
+                            ADT.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            tex.LoadRawTextureData(tdata.TextureData);
+                            tex.Apply();
+                            LoadedHTerrainTextures[textureName] = tex;
+                        }
+                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_height1", LoadedHTerrainTextures[textureName]);
+                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_height1", new Vector2(-1, -1));
+                    }
+                    data.heightScales.TryGetValue(textureName, out heightScale1);
+                    data.heightOffsets.TryGetValue(textureName, out heightOffset1);
+                    // Layer 1 Alpha //
                     if (data.ChunksData[i].alphaLayers.Count > 0) {
                         if (data.ChunksData[i].alphaLayers[0] != null)
                         {
                             Texture2D textureAlpha = new Texture2D(64, 64, TextureFormat.Alpha8, false);
                             textureAlpha.LoadRawTextureData(data.ChunksData[i].alphaLayers[0]);
+                            textureAlpha.wrapMode = TextureWrapMode.Clamp;
                             Color32[] pixels = textureAlpha.GetPixels32();
                             pixels = ADT.RotateMatrix(pixels, 64);
                             textureAlpha.SetPixels32(pixels);
                             textureAlpha.Apply();
-                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTexAmount1", textureAlpha);
-                            ChunkObj.GetComponent<Renderer>().material.mainTextureScale = new Vector2(1, -1);
+                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_blend1", textureAlpha);
                         }
                     }
                 }
-                // 2 Alpha layers //
                 else if (tl == 2)
                 {
+                    // Layer 2 Texture //
                     string textureName = data.terrainTexturePaths[data.ChunksData[i].textureIds[tl]];
-                    if (LoadedTerrainTextures.ContainsKey(textureName))
-                    {
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex2", LoadedTerrainTextures[textureName]);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex2", new Vector2(4, 4));
-                    }
-                    else
+                    if (!LoadedTerrainTextures.ContainsKey(textureName))
                     {
                         ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
                         LoadedTerrainTextures[textureName] = tex;
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex2", tex);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex2", new Vector2(4, 4));
                     }
+                    ChunkObj.GetComponent<Renderer>().material.SetTexture("_layer2", LoadedTerrainTextures[textureName]);
+                    ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_layer2", new Vector2(4, 4));
+                    // Layer 2 Height Texture //
+                    if (data.terrainHTextures.ContainsKey(textureName))
+                    {
+                        if (!LoadedHTerrainTextures.ContainsKey(textureName))
+                        {
+                            ADT.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            tex.LoadRawTextureData(tdata.TextureData);
+                            tex.Apply();
+                            LoadedHTerrainTextures[textureName] = tex;
+                        }
+                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_height2", LoadedHTerrainTextures[textureName]);
+                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_height2", new Vector2(-1, -1));
+                    }
+                    data.heightScales.TryGetValue(textureName, out heightScale2);
+                    data.heightOffsets.TryGetValue(textureName, out heightOffset2);
+                    // Layer 2 Alpha //
                     if (data.ChunksData[i].alphaLayers.Count > 0)
                     {
                         if (data.ChunksData[i].alphaLayers[1] != null)
@@ -189,30 +235,42 @@ public class TerrainHandler : MonoBehaviour
                             pixels = ADT.RotateMatrix(pixels, 64);
                             textureAlpha.SetPixels32(pixels);
                             textureAlpha.Apply();
-                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTexAmount2", textureAlpha);
-                            ChunkObj.GetComponent<Renderer>().material.mainTextureScale = new Vector2(1, -1);
+                            textureAlpha.wrapMode = TextureWrapMode.Clamp;
+                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_blend2", textureAlpha);
                         }
                     }
                 }
-                // 3 Alpha layers //
                 else if (tl == 3)
                 {
+                    // Layer 3 Texture //
                     string textureName = data.terrainTexturePaths[data.ChunksData[i].textureIds[tl]];
-                    if (LoadedTerrainTextures.ContainsKey(textureName))
-                    {
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex3", LoadedTerrainTextures[textureName]);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex3", new Vector2(4, 4));
-                    }
-                    else
+                    if (!LoadedTerrainTextures.ContainsKey(textureName))
                     {
                         ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
                         LoadedTerrainTextures[textureName] = tex;
-                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTex3", tex);
-                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_BlendTex3", new Vector2(4, 4));
                     }
+                    ChunkObj.GetComponent<Renderer>().material.SetTexture("_layer3", LoadedTerrainTextures[textureName]);
+                    ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_layer3", new Vector2(4, 4));
+                    // Layer 3 Height Texture //
+                    if (data.terrainHTextures.ContainsKey(textureName))
+                    {
+                        if (!LoadedHTerrainTextures.ContainsKey(textureName))
+                        {
+                            ADT.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            tex.LoadRawTextureData(tdata.TextureData);
+                            tex.Apply();
+                            LoadedHTerrainTextures[textureName] = tex;
+                        }
+                        ChunkObj.GetComponent<Renderer>().material.SetTexture("_height3", LoadedHTerrainTextures[textureName]);
+                        ChunkObj.GetComponent<Renderer>().material.SetTextureScale("_height3", new Vector2(-1, -1));
+                    }
+                    data.heightScales.TryGetValue(textureName, out heightScale3);
+                    data.heightOffsets.TryGetValue(textureName, out heightOffset3);
+                    // Layer 3 Alpha //
                     if (data.ChunksData[i].alphaLayers.Count > 0)
                     {
                         if (data.ChunksData[i].alphaLayers[2] != null)
@@ -223,12 +281,17 @@ public class TerrainHandler : MonoBehaviour
                             pixels = ADT.RotateMatrix(pixels, 64);
                             textureAlpha.SetPixels32(pixels);
                             textureAlpha.Apply();
-                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_BlendTexAmount3", textureAlpha);
-                            ChunkObj.GetComponent<Renderer>().material.mainTextureScale = new Vector2(1, -1);
+                            textureAlpha.wrapMode = TextureWrapMode.Clamp;
+                            ChunkObj.GetComponent<Renderer>().material.SetTexture("_blend3", textureAlpha);
                         }
                     }
                 }
 	        }
+            if (data.MTXP)
+            {
+                ChunkObj.GetComponent<Renderer>().material.SetVector("heightScale", new Vector4(heightScale0, heightScale1, heightScale2, heightScale3));
+                ChunkObj.GetComponent<Renderer>().material.SetVector("heightOffset", new Vector4(heightOffset0, heightOffset1, heightOffset2, heightOffset3));
+            }
         }
     }
 }

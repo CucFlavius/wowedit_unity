@@ -32,6 +32,18 @@ public static partial class ADT {
         return str;
     }
 
+    private static TerrainTextureFlag ReadTerrainTextureFlag(Stream stream)
+    {
+        byte[] bytes = new byte[4];
+        uint value;
+        for (int i = 0; i < 4; i++)
+        {
+            bytes[i] = (byte)stream.ReadByte();
+        }
+        value = System.BitConverter.ToUInt32(bytes, 0);
+        return (TerrainTextureFlag)value;
+    }
+
     private static int ReadShort(Stream stream) // 2 bytes to int
     {
 

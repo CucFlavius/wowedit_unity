@@ -3,21 +3,21 @@
 	Properties
 	{
 	[Header(Texture Layers)]
-	[NoScaleOffset] _MainTex("Layer 0", 2D) = "black" {}
-	[NoScaleOffset] _BlendTex1("Layer 1", 2D) = "black" {}
-	[NoScaleOffset] _BlendTex2("Layer 2", 2D) = "black" {}
-	[NoScaleOffset] _BlendTex3("Layer 3", 2D) = "black" {}
+	[NoScaleOffset] _layer0("Layer 0", 2D) = "black" {}
+	[NoScaleOffset] _layer1("Layer 1", 2D) = "black" {}
+	[NoScaleOffset] _layer2("Layer 2", 2D) = "black" {}
+	[NoScaleOffset] _layer3("Layer 3", 2D) = "black" {}
 
 	[Header(Layer Tiling)]
-	_MainTexTiling("Layer 0", Range(1,10)) = 1
-	_BlendTex1Tiling("Layer 1", Range(1,10)) = 1
-	_BlendTex2Tiling("Layer 2", Range(1,10)) = 1
-	_BlendTex3Tiling("Layer 3", Range(1,10)) = 1
+	layer0scale("Layer 0", Range(1,10)) = 1
+	layer1scale("Layer 1", Range(1,10)) = 1
+	layer2scale("Layer 2", Range(1,10)) = 1
+	layer3scale("Layer 3", Range(1,10)) = 1
 
 	[Header(Alpha Masks)]
-	[NoScaleOffset] _BlendTexAmount1("Alpha 1", 2D) = "black" {}
-	[NoScaleOffset] _BlendTexAmount2("Alpha 2", 2D) = "black" {}
-	[NoScaleOffset] _BlendTexAmount3("Alpha 3", 2D) = "black" {}
+	[NoScaleOffset] _blend1("Alpha 1", 2D) = "black" {}
+	[NoScaleOffset] _blend2("Alpha 2", 2D) = "black" {}
+	[NoScaleOffset] _blend3("Alpha 3", 2D) = "black" {}
 
 	// Toggles //
 	//[Header(WoWedit Toggles)]
@@ -41,21 +41,21 @@
 
 		#include "Lighting.cginc"
 
-		sampler2D _MainTex;
-		sampler2D _BlendTex1;
-		sampler2D _BlendTexAmount1;
-		sampler2D _BlendTex2;
-		sampler2D _BlendTexAmount2;
-		sampler2D _BlendTex3;
-		sampler2D _BlendTexAmount3;
-		half _MainTexTiling;
-		half _BlendTex1Tiling;
-		half _BlendTex2Tiling;
-		half _BlendTex3Tiling;
+		sampler2D _layer0;
+		sampler2D _layer1;
+		sampler2D _blend1;
+		sampler2D _layer2;
+		sampler2D _blend2;
+		sampler2D _layer3;
+		sampler2D _blend3;
+		half layer0scale;
+		half layer1scale;
+		half layer2scale;
+		half layer3scale;
 
 		struct Input
 		{
-			float2 uv_MainTex;
+			float2 uv_layer0;
 			float3 vertexColor;
 		};
 
@@ -72,13 +72,15 @@
 
 		void surf(Input IN, inout SurfaceOutputStandard o)
 		{
-			fixed4 mainCol = tex2D(_MainTex, IN.uv_MainTex*_MainTexTiling);
-			fixed4 tex1Col = tex2D(_BlendTex1, IN.uv_MainTex*_BlendTex1Tiling);
-			fixed4 tex1Amount = tex2D(_BlendTexAmount1, IN.uv_MainTex);
-			fixed4 tex2Col = tex2D(_BlendTex2, IN.uv_MainTex*_BlendTex2Tiling);
-			fixed4 tex2Amount = tex2D(_BlendTexAmount2, IN.uv_MainTex);
-			fixed4 tex3Col = tex2D(_BlendTex3, IN.uv_MainTex*_BlendTex3Tiling);
-			fixed4 tex3Amount = tex2D(_BlendTexAmount3, IN.uv_MainTex);
+			float2 trimmedUV = { 1-IN.uv_layer0.x, IN.uv_layer0.y };
+
+			fixed4 mainCol = tex2D(_layer0, IN.uv_layer0*layer0scale);
+			fixed4 tex1Col = tex2D(_layer1, IN.uv_layer0*layer1scale);
+			fixed4 tex1Amount = tex2D(_blend1, trimmedUV);
+			fixed4 tex2Col = tex2D(_layer2, IN.uv_layer0*layer2scale);
+			fixed4 tex2Amount = tex2D(_blend2, trimmedUV);
+			fixed4 tex3Col = tex2D(_layer3, IN.uv_layer0*layer3scale);
+			fixed4 tex3Amount = tex2D(_blend3, trimmedUV);
 
 			fixed4 mainOutput = mainCol.rgba * (1.0 - tex1Amount.a);
 			fixed4 blendOutput1 = tex1Col.rgba * tex1Amount.a;
