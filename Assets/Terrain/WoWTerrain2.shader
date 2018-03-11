@@ -27,6 +27,8 @@
 
 		heightScale("HeightScale", Vector) = (0,0,0,0)
 		heightOffset("HeightOffset", Vector) = (1,1,1,1)
+
+		[NoScaleOffset] _shadowMap("Shadow Map", 2D) = "black"{}
 	}
 
 	SubShader
@@ -51,6 +53,7 @@
 		sampler2D _blend1;
 		sampler2D _blend2;
 		sampler2D _blend3;
+		sampler2D _shadowMap;
 		float4 heightOffset;
 		float4 heightScale;
 		float layer0scale;
@@ -78,6 +81,9 @@
 		void surf(Input IN, inout SurfaceOutputStandard o)
 		{
 			float2 UVs = { 1 - IN.uv_layer0.x, IN.uv_layer0.y };	// Fixed UVs
+
+			float shadowMap = tex2D(_shadowMap, UVs).a;
+			float3 shadowMapRGB = float3(shadowMap, shadowMap, shadowMap);
 
 			float2 tc0 = UVs * (8.0 / layer0scale);
 			float2 tc1 = UVs * (8.0 / layer1scale);
@@ -123,7 +129,7 @@
 
 			// and combine weighted layers with vertex color and a constant factor to have the final diffuse layer
 			float3 matDiffuse = (weightedLayer_0.rgb + weightedLayer_1.rgb + weightedLayer_2.rgb + weightedLayer_3.rgb) * IN.vertexColor.rgb * 2.0; // * 2.0 because mccv goes from 0.0 to 1.0
-			
+			//float3 matDiffuseShadow = (weightedLayer_0.rgb + weightedLayer_1.rgb + weightedLayer_2.rgb + weightedLayer_3.rgb) * IN.vertexColor.rgb * 2.0 -(shadowMapRGB /3); // * 2.0 because mccv goes from 0.0 to 1.0
 			o.Albedo = matDiffuse;
 		}
 		ENDCG	

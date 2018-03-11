@@ -9,7 +9,7 @@ public class Test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Invoke("Delayed", 1);
+        Invoke("Delayed", 0.1f);
 	}
 	
     void Delayed ()

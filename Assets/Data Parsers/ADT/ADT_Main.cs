@@ -85,26 +85,10 @@ public static partial class ADT {
 
     private static void ReadMCNK(Stream ADTstream, int MCNKchunkNumber, int MCNKsize)
     {
-        has_mcsh = new List<bool>();
         ChunkData chunkData = new ChunkData();
         long MCNKchnkPos = ADTstream.Position;
         // <Header> - 128 bytes
-        // <Flags> 4 bytes
-        byte[] arrayOfBytes = new byte[4];
-        ADTstream.Read(arrayOfBytes, 0, 4);
-        BitArray flags = new BitArray(arrayOfBytes);
-        has_mcsh.Add(flags[0]); // if ADTtex has MCSH chunk
-        bool impass = flags[1];
-        bool lq_river = flags[2];
-        bool lq_ocean = flags[3];
-        bool lq_magma = flags[4];
-        bool lq_slime = flags[5];
-        bool has_mccv = flags[6];
-        bool unknown_0x80 = flags[7];
-        bool do_not_fix_alpha_map = flags[15];  // "fix" alpha maps in MCAL (4 bit alpha maps are 63*63 instead of 64*64).
-                                                // Note that this also means that it *has* to be 4 bit alpha maps, otherwise UnpackAlphaShadowBits will assert.
-        bool high_res_holes = flags[16];  // Since ~5.3 WoW uses full 64-bit to store holes for each tile if this flag is set.
-        // </Flags>
+        chunkData.flags = ReadMCNKflags(ADTstream);
 
         chunkData.IndexX = ReadLong(ADTstream);
         chunkData.IndexY = ReadLong(ADTstream);
@@ -139,7 +123,7 @@ public static partial class ADT {
         int unused = ReadLong(ADTstream);                              // currently unused
         // </header>
 
-        if (!has_mccv)
+        if (!chunkData.flags.has_mccv)
             FillMCCV(ADTstream, chunkData); // fill vertex shading with 127...
 
         long streamPosition = ADTstream.Position;
@@ -227,7 +211,7 @@ public static partial class ADT {
         // Alpha is ignored.
         // In contrast to MCCV does not only color but also lightens up the vertices.
         // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
-    }
+    } // chunk lighting
 
     private static void ReadMCCV(Stream ADTstream, ChunkData chunkData)
     {
@@ -249,7 +233,7 @@ public static partial class ADT {
             Color32 colorBGRA = new Color32(colorsRGBA.b, colorsRGBA.g, colorsRGBA.r, colorsRGBA.a);
             chunkData.VertexColors[col] = colorBGRA;
         }
-    }
+    } // vertex shading
 
     private static void FillMCCV(Stream ADTstrea, ChunkData chunkData)
     {
@@ -259,7 +243,7 @@ public static partial class ADT {
             Color32 colorBGRA = new Color32(127, 127, 127, 127);
             chunkData.VertexColors[col] = colorBGRA;
         }
-    }
+    } // fill vertex shading with 127
 
     private static void ReadMCNR(Stream ADTstream, ChunkData chunkData)
     {
@@ -277,7 +261,7 @@ public static partial class ADT {
         }
         // skip unused 13 byte padding //
         ADTstream.Seek(13, SeekOrigin.Current);
-    }  //saved
+    }  // normals
 
     private static void ReadMCSE(Stream ADTstream, ChunkData chunkData, int MCSEsize)
     {

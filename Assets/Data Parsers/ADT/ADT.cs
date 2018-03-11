@@ -12,6 +12,8 @@ public static partial class ADT
 
     public static void Load(string Path, string MapName, Vector2 coords)
     {
+        ThreadWorking = true;
+
         blockData = new BlockDataType();
         blockData.ChunksData = new List<ChunkData>();
         blockData.terrainTexturePaths = new List<string>();
@@ -20,12 +22,15 @@ public static partial class ADT
         blockData.heightScales = new Dictionary<string, float>();
         blockData.heightOffsets = new Dictionary<string, float>();
 
-        ThreadWorking = true;
         ParseADT_Main(Path, MapName, coords);
         ParseADT_Tex(Path, MapName, coords);
+        ParseADT_Obj(Path, MapName, coords);
         ADT_ProcessData.GenerateMeshArrays();
+        if (ADTSettings.LoadShadowMaps)
+            ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
         ADT_ProcessData.Load_hTextures();
         AllBlockData.Enqueue(blockData);
+
         ThreadWorking = false;
     }
 
@@ -117,6 +122,58 @@ public static partial class ADT
         }
         ADTtexstream.Close();
         ADTtexstream = null;
+    }
+
+    public static void ParseADT_Obj(string Path, string MapName, Vector2 coords)
+    {
+        string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
+        Stream ADTobjstream = Casc.GetFileStream(ADTobjPath);
+
+        int MCNKchunkNumber = 0;
+        long streamPosition = 0;
+        while (streamPosition < ADTobjstream.Length)
+        {
+            ADTobjstream.Position = streamPosition;
+            int chunkID = ReadLong(ADTobjstream);
+            int chunkSize = ReadLong(ADTobjstream);
+            streamPosition = ADTobjstream.Position + chunkSize;
+
+            switch (chunkID)
+            {
+                case (int)ADTchunkID.MVER:
+                    ReadMVER(ADTobjstream); // ADT file version
+                    break;
+                case (int)ADTchunkID.MMDX:
+                    ReadMMDX(ADTobjstream, chunkSize); // List of filenames for M2 models
+                    break;
+                case (int)ADTchunkID.MMID:
+                    ReadMMID(ADTobjstream, chunkSize); // List of offsets of model filenames in the MMDX chunk.
+                    break;
+                case (int)ADTchunkID.MWMO:
+                    ReadMWMO(ADTobjstream, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
+                    break;
+                case (int)ADTchunkID.MWID:
+                    ReadMWID(ADTobjstream, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
+                    break;
+                case (int)ADTchunkID.MDDF:
+                    ReadMDDF(ADTobjstream, chunkSize); // Placement information for doodads (M2 models).
+                    break;
+                case (int)ADTchunkID.MODF:
+                    ReadMODF(ADTobjstream, chunkSize); // Placement information for WMOs.
+                    break;
+                case (int)ADTchunkID.MCNK:
+                    {
+                        ReadMCNKObj(ADTobjstream, MapName, MCNKchunkNumber, chunkSize); // 256chunks
+                        MCNKchunkNumber++;
+                    }
+                    break;
+                default:
+                    SkipUnknownChunk(ADTobjstream, chunkID, chunkSize);
+                    break;
+            }
+        }
+        ADTobjstream.Close();
+        ADTobjstream = null;
     }
 
     public static void SkipUnknownChunk(Stream ADTstream, int chunkID, int chunkSize)

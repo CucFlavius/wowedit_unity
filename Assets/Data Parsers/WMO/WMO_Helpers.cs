@@ -34,7 +34,7 @@ public static partial class WMO
         return str;
     }
 
-    public static string ReadNullTerminatedString( Stream stream)
+    public static string ReadNullTerminatedString(Stream stream)
     {
         StringBuilder sb = new StringBuilder();
 

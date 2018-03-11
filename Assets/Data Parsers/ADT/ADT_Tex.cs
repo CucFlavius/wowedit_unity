@@ -152,21 +152,22 @@ public static partial class ADT {
         // The shadows are stored per bit, not byte as 0 or 1 (off or on) so we have 8 bytes (which equates to 64 values) X 64 bytes (64 values in this case) which ends up as a square 64x64 shadowmap with either white or black.
         // Note that the shadow values come LSB first.
         // 8bytes(64values) x 64 = 512 bytes
-        bool[,] shadowMap = new bool[64, 64];
-        for (int r = 0; r<64; r++)
-        {
-            byte[] ByteRow = new byte[8];
-            ADTtexstream.Read(ByteRow, 0, 8);
-            BitArray bitRow = new BitArray(ByteRow);
+        blockData.ChunksData[chunk].shadowMap = new bool[64 * 64];
 
-            for (int c = 63; c >= 0; c--) // LSB
+        byte[] ByteArray = new byte[64 * 64];
+        ADTtexstream.Read(ByteArray, 0, 8 * 64);
+        if (ADTSettings.LoadShadowMaps)
+        {
+            BitArray bits = new BitArray(ByteArray);
+            for (int b = 4095; b >= 0; b--) // LSB
             {
-                shadowMap[r, c] = bitRow[c]; // need to test if it's [r,c] or [c,r] 
+                blockData.ChunksData[chunk].shadowMap[b] = bits[b];
+                if (bits[b])
+                    blockData.ChunksData[chunk].shadowMapTexture[b] = 127;
+                else
+                    blockData.ChunksData[chunk].shadowMapTexture[b] = 0;
             }
         }
-        
-        //Debug("Got shadow..");
-        //ADTtexstream.Seek(MCSHsize, SeekOrigin.Current);
     }
 
     private static void ReadMCAL(Stream ADTtexstream, string mapname, int chunk)
@@ -177,9 +178,6 @@ public static partial class ADT {
         {
             blockData.ChunksData[chunk].alphaLayers = new List<byte[]>();
             for (int l = 1; l < numberofLayers; l++) {
-
-                //ADTtexstream.Seek(blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] + McalStartPosition, SeekOrigin.Begin);
-
                 if (WDT.Flags[mapname].adt_has_height_texturing == true)
                 {
                     if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)

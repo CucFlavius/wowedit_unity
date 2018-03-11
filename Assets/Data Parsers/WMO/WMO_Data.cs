@@ -12,6 +12,8 @@ public static partial class WMO
     public struct WMOData
     {
         // object //
+        public string dataPath;
+        public int uniqueID;
         public Vector3 position;
         public Quaternion rotation;
         public Vector3 scale;

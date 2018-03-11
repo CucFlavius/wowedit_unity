@@ -151,19 +151,19 @@ public static partial class WMO
 
     public static void ReadMOCV2(Stream WMOrootstream, int chunkSize)
     {
-        Debug.Log("Skipping MOCV2");
+        //Debug.Log("Skipping MOCV2");
         WMOrootstream.Seek(chunkSize, SeekOrigin.Current);
     }
 
     public static void ReadMOTV2(Stream WMOrootstream, int chunkSize)
     {
-        Debug.Log("Skipping MOTV2");
+        //Debug.Log("Skipping MOTV2");
         WMOrootstream.Seek(chunkSize, SeekOrigin.Current);
     }
 
     public static void ReadMOTV3(Stream WMOrootstream, int chunkSize)
     {
-        Debug.Log("Skipping MOTV3");
+        //Debug.Log("Skipping MOTV3");
         WMOrootstream.Seek(chunkSize, SeekOrigin.Current);
     }
 

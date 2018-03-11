@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 public static partial class ADT {
@@ -30,18 +31,6 @@ public static partial class ADT {
             }
         }
         return str;
-    }
-
-    private static TerrainTextureFlag ReadTerrainTextureFlag(Stream stream)
-    {
-        byte[] bytes = new byte[4];
-        uint value;
-        for (int i = 0; i < 4; i++)
-        {
-            bytes[i] = (byte)stream.ReadByte();
-        }
-        value = System.BitConverter.ToUInt32(bytes, 0);
-        return (TerrainTextureFlag)value;
     }
 
     private static int ReadShort(Stream stream) // 2 bytes to int
@@ -268,5 +257,93 @@ public static partial class ADT {
         }
 
         return result;
+    }
+
+    public static string ReadNullTerminatedString(Stream stream)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        char c;
+        while ((c = System.Convert.ToChar(stream.ReadByte())) != 0)
+        {
+            sb.Append(c);
+        }
+
+        return sb.ToString();
+    }
+
+    private static BoundingBox ReadBoundingBox(Stream stream)
+    {
+        BoundingBox box = new BoundingBox();
+        box.min = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
+        box.max = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
+        return box;
+    }
+
+    ///////////////////////////////////
+    /////////// Flag Readers///////////
+    ///////////////////////////////////
+
+    private static MCNKflags ReadMCNKflags (Stream stream)
+    {
+        MCNKflags mcnkFlags = new MCNKflags();
+        // <Flags> 4 bytes
+        byte[] arrayOfBytes = new byte[4];
+        stream.Read(arrayOfBytes, 0, 4);
+        BitArray flags = new BitArray(arrayOfBytes);
+        mcnkFlags.has_mcsh = flags[0]; // if ADTtex has MCSH chunk
+        mcnkFlags.impass = flags[1];
+        mcnkFlags.lq_river = flags[2];
+        mcnkFlags.lq_ocean = flags[3];
+        mcnkFlags.lq_magma = flags[4];
+        mcnkFlags.lq_slime = flags[5];
+        mcnkFlags.has_mccv = flags[6];
+        mcnkFlags.unknown_0x80 = flags[7];
+        mcnkFlags.do_not_fix_alpha_map = flags[15];  // "fix" alpha maps in MCAL (4 bit alpha maps are 63*63 instead of 64*64).
+                                                     // Note that this also means that it *has* to be 4 bit alpha maps, otherwise UnpackAlphaShadowBits will assert.
+        mcnkFlags.high_res_holes = flags[16];  // Since ~5.3 WoW uses full 64-bit to store holes for each tile if this flag is set.
+        return mcnkFlags;
+    }
+
+    private static TerrainTextureFlag ReadTerrainTextureFlag (Stream stream)
+    {
+        byte[] bytes = new byte[4];
+        uint value;
+        for (int i = 0; i < 4; i++)
+        {
+            bytes[i] = (byte)stream.ReadByte();
+        }
+        value = System.BitConverter.ToUInt32(bytes, 0);
+        return (TerrainTextureFlag)value;
+    }
+
+    private static MDDFFlags ReadMDDFFlags (Stream stream)
+    {
+        byte[] arrayOfBytes = new byte[2];
+        stream.Read(arrayOfBytes, 0, 2);
+        BitArray flags = new BitArray(arrayOfBytes);
+        MDDFFlags MDDFflags = new MDDFFlags();
+        MDDFflags.mddf_biodome = flags[0];              // this sets internal flags to | 0x800 (WDOODADDEF.var0xC).
+        MDDFflags.mddf_shrubbery = flags[1];            // the actual meaning of these is unknown to me. maybe biodome is for really big M2s.
+                                                        // 6.0.1.18179 seems not to check for this flag
+        MDDFflags.mddf_unk_4 = flags[2];                // Legion+ᵘ
+        MDDFflags.mddf_unk_8 = flags[3];                // Legion+ᵘ
+        MDDFflags.Flag_liquidKnown = flags[5];          // Legion+ᵘ // SMDoodadDef::Flag_liquidKnown
+        MDDFflags.mddf_entry_is_filedata_id = flags[6]; // Legion+ᵘ nameId is a file data id to directly load
+        MDDFflags.mddf_unk_100 = flags[8];              // Legion+ᵘ
+        return MDDFflags;
+    }
+
+    private static MODFFlags ReadMODFFlags (Stream stream)
+    {
+        byte[] arrayOfBytes = new byte[2];
+        stream.Read(arrayOfBytes, 0, 2);
+        BitArray flags = new BitArray(arrayOfBytes);
+        MODFFlags MODFflags = new MODFFlags();
+        MODFflags.modf_destroyable = flags[0];          // set for destroyable buildings like the tower in DeathknightStart. This makes it a server-controllable game object.
+        MODFflags.modf_use_lod = flags[1];              // WoD(?)+: also load _LOD1.WMO for use dependent on distance
+        MODFflags.modf_unk_4 = flags[2];                // Legion(?)+: unknown
+        MODFflags.modf_entry_is_filedata_id = flags[3]; // Legion+: nameId is a file data id to directly load //SMMapObjDef::FLAG_FILEDATAID
+        return MODFflags;
     }
 }

@@ -19,6 +19,11 @@ public class TerrainHandler : MonoBehaviour
     public Dictionary<string, Texture2D> LoadedTerrainTextures = new Dictionary<string, Texture2D>();
     public Dictionary<string, Texture2D> LoadedHTerrainTextures = new Dictionary<string, Texture2D>();
 
+    public WMOhandler WMOHandler;
+    public Dictionary<string, GameObject> LoadedWMOs = new Dictionary<string, GameObject>();
+    public Dictionary<int, GameObject> ADTBlockWMOParents = new Dictionary<int, GameObject>();
+    public List<int> LoadedUniqueWMOs = new List<int>();
+
     public class QueueItem
     {
         public string mapName;
@@ -89,6 +94,24 @@ public class TerrainHandler : MonoBehaviour
         LoD0.transform.SetParent(Gobject.Block.transform);
         // Get ADT Block Data //
         ADT.BlockDataType data = ADT.AllBlockData.Dequeue();
+
+        GameObject WMO0 = new GameObject();
+        WMO0.transform.parent = Gobject.Block.transform;
+
+        // Create WMO Objects - Send work to the WMO thread //
+        foreach (ADT.WMOPlacementInfo wmoInfo in data.WMOInfo)
+        {
+            if (!LoadedUniqueWMOs.Contains(wmoInfo.uniqueID))
+            {
+                LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
+                ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
+                string wmoPath = data.WMOPaths[data.WMOOffsets[wmoInfo.nameID]];
+                Vector3 addPosition = new Vector3(wmoInfo.position.x + LoD0.transform.position.x, wmoInfo.position.y + LoD0.transform.position.y, wmoInfo.position.z + LoD0.transform.position.z);
+                WMOHandler.AddToQueue(wmoPath, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+            }
+        }
+
+        // Create Terrain Chunks //
         for (int i = 0; i < 256; i++)
         {
             // Create GameObject //
@@ -117,7 +140,8 @@ public class TerrainHandler : MonoBehaviour
             float heightOffset2 = 0f;
             float heightOffset3 = 0f;
 
-            for (int tl = 0; tl < data.ChunksData[i].NumberOfTextureLayers; tl++) {
+            for (int tl = 0; tl < data.ChunksData[i].NumberOfTextureLayers; tl++)
+            {
                 if (tl == 0)
                 {
                     // Layer 0 Texture //
@@ -291,6 +315,24 @@ public class TerrainHandler : MonoBehaviour
             {
                 ChunkObj.GetComponent<Renderer>().material.SetVector("heightScale", new Vector4(heightScale0, heightScale1, heightScale2, heightScale3));
                 ChunkObj.GetComponent<Renderer>().material.SetVector("heightOffset", new Vector4(heightOffset0, heightOffset1, heightOffset2, heightOffset3));
+            }
+
+            // Shadow Map //
+            if (ADTSettings.LoadShadowMaps)
+            {
+                if (data.ChunksData[i].shadowMapTexture.Length > 0)
+                {
+                    Texture2D textureAlpha = new Texture2D(64, 64, TextureFormat.Alpha8, false);
+                    textureAlpha.LoadRawTextureData(data.ChunksData[i].shadowMapTexture);
+                    Color32[] pixels = textureAlpha.GetPixels32();
+                    pixels = ADT.RotateMatrix(pixels, 64);
+                    textureAlpha.SetPixels32(pixels);
+                    textureAlpha.Apply();
+                    textureAlpha.wrapMode = TextureWrapMode.Clamp;
+                    ChunkObj.GetComponent<Renderer>().material.SetTexture("_shadowMap", textureAlpha);
+
+                    // need to enable in shader too //
+                }
             }
         }
     }

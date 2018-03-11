@@ -11,10 +11,12 @@ public static partial class WMO
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
 
-    public static void Load (string dataPath, Vector3 position, Quaternion rotation, Vector3 scale)
+    public static void Load (string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         wmoData = new WMOData();
 
+        wmoData.dataPath = dataPath;
+        wmoData.uniqueID = uniqueID;
         wmoData.position = position;
         wmoData.rotation = rotation;
         wmoData.scale = scale;
@@ -32,8 +34,8 @@ public static partial class WMO
         ParseWMO_Root(dataPath);
         ParseWMO_Groups(dataPath);
 
-
         AllWMOData.Enqueue(wmoData);
+
         ThreadWorking = false;
     }
 
@@ -202,6 +204,12 @@ public static partial class WMO
             WMOgroupstream = null;
 
         }
+    }
+
+    public static void SkipUnknownChunk(Stream WMOrootstream, int chunkID, int chunkSize)
+    {
+        //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(WMOChunkID), chunkID)).ToString() + " | Skipped");
+        WMOrootstream.Seek(chunkSize, SeekOrigin.Current);
     }
 }
 

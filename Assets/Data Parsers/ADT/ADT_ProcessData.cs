@@ -82,17 +82,39 @@ public static class ADT_ProcessData {
             chunkData.UVArray = new Vector2[145];
             for (int u = 0; u < 145; u++)
             {
-                //chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].x) / 33.3333f) * 0.034f ) - 0.017f,
-                //                                    chunkData.VertexArray[u].z / ((33.3333f) / Settings.worldScale) + (((16.6666f - chunkData.VertexArray[u].z) / 33.3333f) * 0.034f ) - 0.017f);
-                chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / (33.3333f / Settings.worldScale), chunkData.VertexArray[u].z / (33.3333f / Settings.worldScale));
-
-
+                chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / (33.3333f / Settings.worldScale),
+                                                   chunkData.VertexArray[u].z / (33.3333f / Settings.worldScale));
             }
 
             // scale chunk positions to worldScale //
-            Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale, chunkData.MeshPosition.z / Settings.worldScale, chunkData.MeshPosition.y / Settings.worldScale);
+            Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale,
+                                                 chunkData.MeshPosition.z / Settings.worldScale,
+                                                 chunkData.MeshPosition.y / Settings.worldScale);
             chunkData.MeshPosition = newMapPosition;
 
+        }
+    }
+
+    public static void AdjustAlphaBasedOnShadowmap (string mapname)
+    {
+        foreach (ADT.ChunkData chunkData in ADT.blockData.ChunksData)
+        {
+            if (chunkData.flags.do_not_fix_alpha_map)
+            {
+                if (WDT.Flags[mapname].adt_has_height_texturing || WDT.Flags[mapname].adt_has_big_alpha)
+                {
+                    foreach (byte[] alphaLayer in chunkData.alphaLayers)
+                    {
+                        for (int b = 0; b < 4096; b++)
+                        {
+                            if (chunkData.shadowMap[b])
+                            {
+                                alphaLayer[b] = (byte)((int)alphaLayer[b] * 0.7f);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

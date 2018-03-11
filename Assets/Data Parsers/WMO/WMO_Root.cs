@@ -53,8 +53,9 @@ public static partial class WMO
         {
             int position = (int)(WMOrootstream.Position - currentPos);
             string path = ReadNullTerminatedString(WMOrootstream);
-            if (path != "")
+            if (path != "" )//&& !wmoData.textureData.ContainsKey(path))
             {
+                //Debug.Log(path);
                 wmoData.texturePaths.Add(position, path);
                 string extractedPath = Casc.GetFile(path);
                 Stream stream = File.Open(extractedPath, FileMode.Open);
@@ -64,11 +65,11 @@ public static partial class WMO
                 texture2Ddata.hasMipmaps = info.hasMipmaps;
                 texture2Ddata.width = info.width;
                 texture2Ddata.height = info.height;
-                if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                    texture2Ddata.hasMipmaps = false;
+                //if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
+                //    texture2Ddata.hasMipmaps = false;
                 texture2Ddata.textureFormat = info.textureFormat;
                 texture2Ddata.TextureData = data;
-                wmoData.textureData.Add(path, texture2Ddata);
+                wmoData.textureData[path] = texture2Ddata;
                 stream.Close();
                 stream = null;
             }
@@ -386,10 +387,5 @@ public static partial class WMO
         }
     }
 
-    public static void SkipUnknownChunk (Stream WMOrootstream, int chunkID, int chunkSize)
-    {
-        Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(WMOChunkID), chunkID)).ToString() + " | Skipped");
-        WMOrootstream.Seek(chunkSize, SeekOrigin.Current);
-    }
 }
 

@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class WMOhandler : MonoBehaviour {
 
+    public TerrainHandler terrainHandler;
     public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
     public GameObject WMObatchprefab;
     public static System.Threading.Thread WMOThread;
     public Material missingMaterial;
 
     private string currentWMOdatapath;
+    private int currentWMOuniqueID;
     private Vector3 currentWMOposition;
     private Quaternion currentWMOrotation;
     private Vector3 currentWMOscale;
     private Dictionary<string, Texture2D> LoadedWMOTextures = new Dictionary<string, Texture2D>();
+    private List<WMOQueueItem> WMOClones = new List<WMOQueueItem>();
 
     public class WMOQueueItem
     {
         public string objectDataPath;
+        public int uniqueID;
         public Vector3 Position;
         public Quaternion Rotation;
         public Vector3 Scale;
@@ -29,27 +33,51 @@ public class WMOhandler : MonoBehaviour {
         WMOThreadQueue = new Queue<WMOQueueItem>();
     }
 
-    public void AddToQueue(string objectDataPath, Vector3 position, Quaternion rotation, Vector3 scale)
+    public void AddToQueue(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         WMOQueueItem item = new WMOQueueItem();
         item.objectDataPath = objectDataPath;
+        item.uniqueID = uniqueID;
         item.Position = position;
         item.Rotation = rotation;
         item.Scale = scale;
         WMOThreadQueue.Enqueue(item);
     }
 
-    public void WMOThreadRun(string objectDataPath, Vector3 position, Quaternion rotation, Vector3 scale)
+    // Parsing thread - Unless it's a copy //
+    public void WMOThreadRun(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         currentWMOdatapath = objectDataPath;
+        currentWMOuniqueID = uniqueID;
         currentWMOposition = position;
         currentWMOrotation = rotation;
         currentWMOscale = scale;
-        ParseWMOBlock(); // nonthreaded - for testing purposes
-        WMOThread = new System.Threading.Thread(ParseWMOBlock);
-        WMOThread.IsBackground = true;
-        WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
-        //WMOThread.Start();
+
+        if (!terrainHandler.LoadedWMOs.ContainsKey(objectDataPath))
+        {
+            //ParseWMOBlock(); // nonthreaded - for testing purposes
+            terrainHandler.LoadedWMOs.Add(objectDataPath, null);
+            WMOThread = new System.Threading.Thread(ParseWMOBlock);
+            WMOThread.IsBackground = true;
+            WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
+            WMOThread.Start();
+        }
+        else
+        {
+            CloneWMO(objectDataPath, uniqueID, position, rotation, scale);
+        }
+    }
+
+    // Add WMO copies to a list so they will be copied after loading is done //
+    public void CloneWMO(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        WMOQueueItem item = new WMOQueueItem();
+        item.objectDataPath = objectDataPath;
+        item.uniqueID = uniqueID;
+        item.Position = position;
+        item.Rotation = rotation;
+        item.Scale = scale;
+        WMOClones.Add(item);
     }
 
     void Update()
@@ -58,11 +86,11 @@ public class WMOhandler : MonoBehaviour {
         {
             if (!WMO.ThreadWorking)
             {
-                WMO.ThreadWorking = true;
                 WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
-                WMOThreadRun(queueItem.objectDataPath, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+                WMOThreadRun(queueItem.objectDataPath, queueItem.uniqueID , queueItem.Position, queueItem.Rotation, queueItem.Scale);
             }
         }
+
         if (WMO.AllWMOData.Count > 0)
         {
             if (!WMOThread.IsAlive)
@@ -70,30 +98,53 @@ public class WMOhandler : MonoBehaviour {
                 CreateWMOObject();
             }
         }
+
+        if (WMOClones.Count > 0)
+        {
+            List<WMOQueueItem> RemoveElements = new List<WMOQueueItem>();
+            // Check if Copies are Required //
+            foreach (WMOQueueItem item in WMOClones)
+            {
+                if (terrainHandler.LoadedWMOs.ContainsKey(item.objectDataPath))
+                {
+                    if (terrainHandler.LoadedWMOs[item.objectDataPath] != null)
+                    {
+                        WMOQueueItem clone = item;
+                        RemoveElements.Add(item);
+                        GameObject instance = Instantiate(terrainHandler.LoadedWMOs[item.objectDataPath]);
+                        instance.transform.position = clone.Position;
+                        instance.transform.rotation = clone.Rotation;
+                        instance.transform.localScale = Vector3.one;
+                        instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
+                    }
+                }
+            }
+            // Remove 
+            foreach(WMOQueueItem removeItem in RemoveElements)
+            {
+                WMOClones.Remove(removeItem);
+            }
+            RemoveElements.Clear();
+        }
     }
 
     public void ParseWMOBlock()
     {
-        WMO.Load(currentWMOdatapath, currentWMOposition, currentWMOrotation, currentWMOscale);
+        WMO.Load(currentWMOdatapath, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
     }
 
     public void CreateWMOObject()
     {
         WMO.WMOData data = WMO.AllWMOData.Dequeue();
-
         GameObject WMOinstance = new GameObject();
-        WMOinstance.transform.SetParent(transform);
-        WMOinstance.transform.position = data.position;
-        WMOinstance.transform.rotation = data.rotation;
-        WMOinstance.transform.localScale = data.scale;
-        WMOinstance.name = data.Info.wmoID.ToString();
+        terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
 
         int nGroups = data.Info.nGroups;
         for (int g = 0; g < nGroups; g++)
         {
             // object //
             GameObject GroupInstance = new GameObject();
-            GroupInstance.transform.SetParent(WMOinstance.transform);
+            GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
             GroupInstance.name = data.groupsData[g].groupName;
 
             for (int bn = 0; bn < data.groupsData[g].nBatches; bn++)
@@ -177,5 +228,11 @@ public class WMOhandler : MonoBehaviour {
                 }
             }
         }
+        terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
+        terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
+        terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
+        terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
+        terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
+
     }
 }
