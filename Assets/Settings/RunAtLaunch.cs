@@ -40,6 +40,10 @@ public class RunAtLaunch : MonoBehaviour {
             SettingsInit();
         }
 
+        //Debug.Log(Settings.worldScale);
+
+        ADT.Initialize();
+
     }
 
     private void SettingsInit()

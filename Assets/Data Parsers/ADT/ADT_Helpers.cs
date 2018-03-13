@@ -44,6 +44,7 @@ public static partial class ADT {
         return value;
     }
 
+    
     private static int ReadLong(Stream stream) // 4 bytes to int
     {
         byte[] bytes = new byte[4];
@@ -54,7 +55,20 @@ public static partial class ADT {
         value = System.BitConverter.ToInt32(bytes, 0);
         return value;
     }
-
+    
+    /*
+    private static int ReadLong(MemoryStream stream) // 4 bytes to int
+    {
+        byte[] bytes = new byte[4];
+        int value;
+        for (int i = 0; i < 4; i++)
+        {
+            bytes[i] = (byte)stream.ReadByte();
+        }
+        value = System.BitConverter.ToInt32(bytes, 0);
+        return value;
+    }
+    */
     private static float ReadFloat(Stream stream) // 4 bytes to float
     {
         byte[] bytes = new byte[4];
@@ -95,6 +109,20 @@ public static partial class ADT {
         // Normalizing 0 - 254
         float normalized = (2 * (value / 254)) - 1;
         return normalized;
+    }
+
+
+    public static byte[] RotateAlpha8(byte[] matrix, int n)
+    {
+        byte[] ret = new byte[n * n];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                ret[i * n + j] = matrix[(n - j - 1) * n + i];
+            }
+        }
+        return ret;
     }
 
     public static Color32[] RotateMatrix(Color32[] matrix , int n)
@@ -280,11 +308,14 @@ public static partial class ADT {
         return box;
     }
 
+
+
     ///////////////////////////////////
     /////////// Flag Readers///////////
     ///////////////////////////////////
 
-    private static MCNKflags ReadMCNKflags (Stream stream)
+
+    private static MCNKflags ReadMCNKflags (MemoryStream stream)
     {
         MCNKflags mcnkFlags = new MCNKflags();
         // <Flags> 4 bytes
@@ -304,7 +335,31 @@ public static partial class ADT {
         mcnkFlags.high_res_holes = flags[16];  // Since ~5.3 WoW uses full 64-bit to store holes for each tile if this flag is set.
         return mcnkFlags;
     }
+    
 
+        /*
+    private static MCNKflags ReadMCNKflags(BinaryReader br)
+    {
+        MCNKflags mcnkFlags = new MCNKflags();
+        // <Flags> 4 bytes
+        byte[] arrayOfBytes = new byte[4];
+        //stream.Read(arrayOfBytes, 0, 4);
+        br.Read(arrayOfBytes, 0, 4);
+        BitArray flags = new BitArray(arrayOfBytes);
+        mcnkFlags.has_mcsh = flags[0]; // if ADTtex has MCSH chunk
+        mcnkFlags.impass = flags[1];
+        mcnkFlags.lq_river = flags[2];
+        mcnkFlags.lq_ocean = flags[3];
+        mcnkFlags.lq_magma = flags[4];
+        mcnkFlags.lq_slime = flags[5];
+        mcnkFlags.has_mccv = flags[6];
+        mcnkFlags.unknown_0x80 = flags[7];
+        mcnkFlags.do_not_fix_alpha_map = flags[15];  // "fix" alpha maps in MCAL (4 bit alpha maps are 63*63 instead of 64*64).
+                                                     // Note that this also means that it *has* to be 4 bit alpha maps, otherwise UnpackAlphaShadowBits will assert.
+        mcnkFlags.high_res_holes = flags[16];  // Since ~5.3 WoW uses full 64-bit to store holes for each tile if this flag is set.
+        return mcnkFlags;
+    }
+    */
     private static TerrainTextureFlag ReadTerrainTextureFlag (Stream stream)
     {
         byte[] bytes = new byte[4];

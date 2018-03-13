@@ -183,8 +183,7 @@ public class WorldLoader : MonoBehaviour {
 
                             if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD1Loaded)
                             {
-                                //TerrainParent.GetComponent<TerrainHandler>().ADTThreadRun(MapName, x, y, ADTmatrix[x, y]);
-                                //ADTmatrix[x, y].GetComponent<ADTBlock>().LoD1Loaded = true;
+
                             }
                         }
 
@@ -193,8 +192,6 @@ public class WorldLoader : MonoBehaviour {
                             if (ADTmatrix[x, y] != null)
                             {
                                 ADTmatrix[x, y].SetActive(true);
-                                //TerrainParent.GetComponent<TerrainHandler>().ADTThreadRun(MapName, x, y, ADTmatrix[x, y]);
-                                //ADTmatrix[x, y].GetComponent<ADTBlock>().LoadLod1();
                             }
                         }
 
@@ -211,8 +208,8 @@ public class WorldLoader : MonoBehaviour {
 
                         if (currentTerrainLod[x, y] == 10 && previousTerrainLod[x, y] != 10)
                         {
-                            if (ADTmatrix[x, y] != null)
-                                ADTmatrix[x, y].SetActive(false);
+                            //if (ADTmatrix[x, y] != null)
+                                //ADTmatrix[x, y].SetActive(false);
                         }
 
                         previousTerrainLod[x, y] = currentTerrainLod[x, y];

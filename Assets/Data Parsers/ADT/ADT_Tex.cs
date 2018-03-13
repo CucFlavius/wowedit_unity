@@ -6,12 +6,12 @@ using UnityEngine;
 
 public static partial class ADT {
 
-    private static void ReadMAMP (Stream ADTtexstream)
+    private static void ReadMAMP (MemoryStream ADTtexstream)
     {
         int texture_size = ReadLong(ADTtexstream); // either defined here or in MHDR.mamp_value.
     }
 
-    private static void ReadMTEX (Stream ADTtexstream, int MTEXsize)
+    private static void ReadMTEX (MemoryStream ADTtexstream, int MTEXsize)
     {
         if (ADTtexstream.Length == ADTtexstream.Position)
             return;
@@ -51,7 +51,7 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCNKtex (Stream ADTtexstream, string mapname, int MCNKchunkNumber, int MCNKsize)
+    private static void ReadMCNKtex (MemoryStream ADTtexstream, string mapname, int MCNKchunkNumber, int MCNKsize)
     {
         if (ADTtexstream.Length == ADTtexstream.Position)
             return;
@@ -83,13 +83,13 @@ public static partial class ADT {
 
     }
 
-    private static void ReadMTXF (Stream ADTtexstream, int MTXFsize)
+    private static void ReadMTXF (MemoryStream ADTtexstream, int MTXFsize)
     {
         Debug.Log("MTXF : " + MTXFsize);
         ADTtexstream.Seek(MTXFsize, SeekOrigin.Current);
     }
 
-    private static void ReadMTXP (Stream ADTtexstream, int MTXPsize) // 16 bytes per MTEX texture
+    private static void ReadMTXP (MemoryStream ADTtexstream, int MTXPsize) // 16 bytes per MTEX texture
     {
         blockData.MTXP = true;
         for (int i = 0; i < MTXPsize / 16; i++)
@@ -106,7 +106,7 @@ public static partial class ADT {
     ///// MCNKtex Subchunks /////
     /////////////////////////////
 
-    private static void ReadMCLY(Stream ADTtexstream, int chunk, int MCLYsize)
+    private static void ReadMCLY(MemoryStream ADTtexstream, int chunk, int MCLYsize)
     {
         /*
         *  Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
@@ -147,7 +147,7 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCSH(Stream ADTtexstream, int chunk) //512 bytes
+    private static void ReadMCSH(MemoryStream ADTtexstream, int chunk) //512 bytes
     {
         // The shadows are stored per bit, not byte as 0 or 1 (off or on) so we have 8 bytes (which equates to 64 values) X 64 bytes (64 values in this case) which ends up as a square 64x64 shadowmap with either white or black.
         // Note that the shadow values come LSB first.
@@ -170,7 +170,7 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCAL(Stream ADTtexstream, string mapname, int chunk)
+    private static void ReadMCAL(MemoryStream ADTtexstream, string mapname, int chunk)
     {
         long McalStartPosition = ADTtexstream.Position;
         int numberofLayers = blockData.ChunksData[chunk].NumberOfTextureLayers;
@@ -182,11 +182,11 @@ public static partial class ADT {
                 {
                     if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
                     {
-                        blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                        blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream), 64));
                     }
                     else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
                     {
-                        blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                        blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                     }
                 }
                 else if (WDT.Flags[mapname].adt_has_height_texturing == false)
@@ -195,22 +195,22 @@ public static partial class ADT {
                     {
                         if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
+                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedHalfRes(ADTtexstream),64));
                         }
                         else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                         }
                     }
                     else if (WDT.Flags[mapname].adt_has_big_alpha == true)
                     {
                         if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream),64));
                         }
                         else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                         }
                     }
                 }
@@ -218,14 +218,14 @@ public static partial class ADT {
         }
     }
 
-    private static byte[] AlphaMap_UncompressedFullRes(Stream ADTtexstream) // uncompressed 4096 bytes
+    private static byte[] AlphaMap_UncompressedFullRes(MemoryStream ADTtexstream) // uncompressed 4096 bytes
     {
         byte[] textureArray = new byte[4096];
         ADTtexstream.Read(textureArray, 0, 4096);
         return textureArray;
     }
 
-    private static byte[] AlphaMap_Compressed(Stream ADTtexstream) // compressed
+    private static byte[] AlphaMap_Compressed(MemoryStream ADTtexstream) // compressed
     {
         byte[] textureArray = new byte[4096];
         int alphaOffset = 0;
@@ -277,7 +277,7 @@ public static partial class ADT {
         return textureArray;
     }
 
-    private static byte[] AlphaMap_UncompressedHalfRes(Stream ADTtexstream)
+    private static byte[] AlphaMap_UncompressedHalfRes(MemoryStream ADTtexstream)
     {
         int currentArrayPos = 0;
         byte[] textureArray = new byte[4096];

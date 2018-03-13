@@ -7,7 +7,7 @@ public static partial class ADT
 {
 
     // List of filenames for M2 models that appear in this map tile. //
-    public static void ReadMMDX(Stream ADTobjstream, int MMDXsize)
+    public static void ReadMMDX(MemoryStream ADTobjstream, int MMDXsize)
     {
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MMDXsize)
@@ -22,7 +22,7 @@ public static partial class ADT
     }
 
     // List of offsets of model filenames in the MMDX chunk. //
-    public static void ReadMMID(Stream ADTobjstream, int MMIDsize)
+    public static void ReadMMID(MemoryStream ADTobjstream, int MMIDsize)
     {
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MMIDsize)
@@ -32,7 +32,7 @@ public static partial class ADT
     }
 
     // List of filenames for WMOs (world map objects) that appear in this map tile. //
-    public static void ReadMWMO(Stream ADTobjstream, int MWMOsize)
+    public static void ReadMWMO(MemoryStream ADTobjstream, int MWMOsize)
     {
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MWMOsize)
@@ -47,7 +47,7 @@ public static partial class ADT
     }
 
     // List of offsets of WMO filenames in the MWMO chunk. //
-    public static void ReadMWID(Stream ADTobjstream, int MWIDsize)
+    public static void ReadMWID(MemoryStream ADTobjstream, int MWIDsize)
     {
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MWIDsize)
@@ -58,7 +58,7 @@ public static partial class ADT
 
     // Placement information for doodads (M2 models). //
     // Additional to this, the models to render are referenced in each MCRF chunk. //
-    public static void ReadMDDF(Stream ADTobjstream, int MDDFsize)
+    public static void ReadMDDF(MemoryStream ADTobjstream, int MDDFsize)
     {
         blockData.M2Info = new List<M2PlacementInfo>();
         long currentPos = ADTobjstream.Position;
@@ -99,7 +99,7 @@ public static partial class ADT
 
     // Placement information for WMOs. //
     // Additional to this, the WMOs to render are referenced in each MCRF chunk. (?) //
-    public static void ReadMODF(Stream ADTobjstream, int MODFsize)
+    public static void ReadMODF(MemoryStream ADTobjstream, int MODFsize)
     {
         blockData.WMOInfo = new List<WMOPlacementInfo>();
         long currentPos = ADTobjstream.Position;
@@ -145,7 +145,7 @@ public static partial class ADT
     }
 
     // Chunk Data //
-    public static void ReadMCNKObj (Stream ADTobjstream, string mapname, int MCNKchunkNumber, int MCNKsize)
+    public static void ReadMCNKObj (MemoryStream ADTobjstream, string mapname, int MCNKchunkNumber, int MCNKsize)
     {
         if (ADTobjstream.Length == ADTobjstream.Position)
             return;
@@ -178,7 +178,7 @@ public static partial class ADT
     /////////////////////
 
     // MCNK.nDoodadRefs into the file's MDDF //
-    public static void ReadMCRD(Stream ADTobjstream, int MCNKchunkNumber, int MCRDsize)
+    public static void ReadMCRD(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRDsize)
     {
         List<int> MDDFentries = new List<int>();
         long currentPos = ADTobjstream.Position;
@@ -189,7 +189,7 @@ public static partial class ADT
     }
 
     // MCNK.nMapObjRefs into the file's MODF //
-    public static void ReadMCRW(Stream ADTobjstream, int MCNKchunkNumber, int MCRWsize)
+    public static void ReadMCRW(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRWsize)
     {
         List<int> MODFentries = new List<int>();
         long currentPos = ADTobjstream.Position;

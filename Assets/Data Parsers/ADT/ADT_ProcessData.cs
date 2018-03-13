@@ -11,6 +11,34 @@ public static class ADT_ProcessData {
         foreach (ADT.ChunkData chunkData in ADT.blockData.ChunksData)
         {
             // vertices array //
+
+            /*
+            chunkData.VertexArray = new Vector3[145];
+            int currentVertex = 0;
+
+            chunkData.VertexArray = ADT.Chunk_Vertices;
+            for (int i = 0; i < 17; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        chunkData.VertexArray[currentVertex].y = chunkData.VertexHeights[currentVertex] / Settings.worldScale;
+                        currentVertex++;
+                    }
+                }
+                if (i % 2 == 1)
+                {
+                    for (int j1 = 0; j1 < 8; j1++)
+                    {
+                        chunkData.VertexArray[currentVertex].y = chunkData.VertexHeights[currentVertex] / Settings.worldScale;
+                        currentVertex++;
+                    }
+                }
+            }
+            currentVertex = 0;
+            */
+            
             chunkData.VertexArray = new Vector3[145];
             int currentVertex = 0;
             for (int i = 0; i < 17; i++)
@@ -19,9 +47,9 @@ public static class ADT_ProcessData {
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        chunkData.VertexArray[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.worldScale,
+                        chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.worldScale,
                                                                             chunkData.VertexHeights[currentVertex] / Settings.worldScale,
-                                                                            (float)(-j * 0.208333125 * 20) / Settings.worldScale);
+                                                                            (float)(-j * 4.1666625) / Settings.worldScale);
                         currentVertex++;
                     }
                 }
@@ -29,16 +57,19 @@ public static class ADT_ProcessData {
                 {
                     for (int j1 = 0; j1 < 8; j1++)
                     {
-                        chunkData.VertexArray[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.worldScale,
+                        chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.worldScale,
                                                                             chunkData.VertexHeights[currentVertex] / Settings.worldScale,
-                                                                            (float)((-j1 - 0.5) * 0.208333125 * 20) / Settings.worldScale);
+                                                                            (float)((-j1 - 0.5) * 4.1666625) / Settings.worldScale);
                         currentVertex++;
                     }
                 }
             }
             currentVertex = 0;
 
+
             // triangles array //
+            chunkData.TriangleArray = ADT.Chunk_Triangles;
+            /*
             chunkData.TriangleArray = new int[256 * 3];
             int triOffset = 0;
             //create 8 strips//
@@ -77,21 +108,24 @@ public static class ADT_ProcessData {
                     triOffset = triOffset + 3;
                 }
             }
+            */
 
             // UVW array //
+            chunkData.UVArray = ADT.Chunk_UVs;
+            /*
             chunkData.UVArray = new Vector2[145];
             for (int u = 0; u < 145; u++)
             {
                 chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / (33.3333f / Settings.worldScale),
                                                    chunkData.VertexArray[u].z / (33.3333f / Settings.worldScale));
             }
-
+            */
             // scale chunk positions to worldScale //
             Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale,
                                                  chunkData.MeshPosition.z / Settings.worldScale,
                                                  chunkData.MeshPosition.y / Settings.worldScale);
             chunkData.MeshPosition = newMapPosition;
-
+            
         }
     }
 

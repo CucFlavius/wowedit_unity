@@ -10,12 +10,13 @@ public static partial class ADT {
     private static int MFBOoffset;
     private static List<bool> has_mcsh;
 
-    private static void ReadMVER(Stream ADTstream)
+    
+    private static void ReadMVER(MemoryStream ADTstream)
     {
         int ADTfileversion = ReadLong(ADTstream);
     }
-
-    private static void ReadMHDR(Stream ADTstream)
+    
+    private static void ReadMHDR(MemoryStream ADTstream)
     {
         int flags = ReadLong(ADTstream);
         int mcin = ReadLong(ADTstream);  // Cata+: obviously gone. probably all offsets gone, except mh2o(which remains in root file).
@@ -39,8 +40,8 @@ public static partial class ADT {
         unused[1] = ReadLong(ADTstream);
         unused[2] = ReadLong(ADTstream);
     }
-
-    private static void ReadMH2O(Stream ADTstream, int MH2Osize)
+    
+    private static void ReadMH2O(MemoryStream ADTstream, int MH2Osize)
     {
         long chunkStartPosition = ADTstream.Position;
 
@@ -82,8 +83,9 @@ public static partial class ADT {
         }
         ADTstream.Seek(chunkStartPosition + MH2Osize, SeekOrigin.Begin); // set stream location to right after MH2O
     }
-
-    private static void ReadMCNK(Stream ADTstream, int MCNKchunkNumber, int MCNKsize)
+  
+    
+    private static void ReadMCNK(MemoryStream ADTstream, int MCNKchunkNumber, int MCNKsize)
     {
         ChunkData chunkData = new ChunkData();
         long MCNKchnkPos = ADTstream.Position;
@@ -124,7 +126,7 @@ public static partial class ADT {
         // </header>
 
         if (!chunkData.flags.has_mccv)
-            FillMCCV(ADTstream, chunkData); // fill vertex shading with 127...
+            FillMCCV(chunkData); // fill vertex shading with 127...
 
         long streamPosition = ADTstream.Position;
         while (streamPosition < MCNKchnkPos + MCNKsize)
@@ -163,8 +165,10 @@ public static partial class ADT {
         }
         blockData.ChunksData.Add(chunkData);
     }
+    
 
-    private static void ReadMFBO(Stream ADTstream)
+    
+    private static void ReadMFBO(MemoryStream ADTstream)
     {
         short[,] planeMax = new short[3, 3];
         for (int x = 0; x < 3; x++)
@@ -183,21 +187,23 @@ public static partial class ADT {
             }
         }
     }
+    
 
 
     ////////////////////////////
     ////// MCNK Subchunks //////
     ////////////////////////////
 
-    private static void ReadMCVT(Stream ADTstream, ChunkData chunkData)
+    
+    private static void ReadMCVT(MemoryStream ADTstream, ChunkData chunkData)
     {
         for (int v = 1; v <= 145; v++)
         {
             chunkData.VertexHeights.Add(ReadFloat(ADTstream));
         }
-    }  //saved
-    
-    private static void ReadMCLV(Stream ADTstream, ChunkData chunkData)
+    }
+ 
+    private static void ReadMCLV(MemoryStream ADTstream, ChunkData chunkData)
     {
         for (int v = 1; v <= 145; v++)
         {
@@ -212,8 +218,11 @@ public static partial class ADT {
         // In contrast to MCCV does not only color but also lightens up the vertices.
         // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
     } // chunk lighting
+    
 
-    private static void ReadMCCV(Stream ADTstream, ChunkData chunkData)
+  
+    
+    private static void ReadMCCV(MemoryStream ADTstream, ChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
 
@@ -234,8 +243,13 @@ public static partial class ADT {
             chunkData.VertexColors[col] = colorBGRA;
         }
     } // vertex shading
+    
 
-    private static void FillMCCV(Stream ADTstrea, ChunkData chunkData)
+
+
+
+
+    private static void FillMCCV(ChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
         for (int col = 0; col < 145; col++)
@@ -245,7 +259,8 @@ public static partial class ADT {
         }
     } // fill vertex shading with 127
 
-    private static void ReadMCNR(Stream ADTstream, ChunkData chunkData)
+    
+    private static void ReadMCNR(MemoryStream ADTstream, ChunkData chunkData)
     {
         chunkData.VertexNormals = new Vector3[145];
 
@@ -262,8 +277,10 @@ public static partial class ADT {
         // skip unused 13 byte padding //
         ADTstream.Seek(13, SeekOrigin.Current);
     }  // normals
+    
 
-    private static void ReadMCSE(Stream ADTstream, ChunkData chunkData, int MCSEsize)
+
+    private static void ReadMCSE(MemoryStream ADTstream, ChunkData chunkData, int MCSEsize)
     {
         if (MCSEsize != 0)
         {
@@ -272,14 +289,14 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCBB(Stream ADTstream, ChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
+    private static void ReadMCBB(MemoryStream ADTstream, ChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
     {
         //Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
         // skip for now
         ADTstream.Seek(MCBBsize, SeekOrigin.Current);
     }
 
-    private static void ReadMCDD(Stream ADTstream, ChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
+    private static void ReadMCDD(MemoryStream ADTstream, ChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
                                                     // in live clients (32 bytes instead of 8) (?). if inlined to MCNK is low-res.
     {
         //Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");
