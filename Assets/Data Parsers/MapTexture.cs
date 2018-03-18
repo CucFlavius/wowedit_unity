@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+
+public static class MapTexture
+{
+    // Threading //
+    public static bool MapTextureThreadRunning = false;
+
+    // Data //
+    public static Queue<MapTextureBlock> MapTextureDataQueue = new Queue<MapTextureBlock>();
+
+    public class MapTextureBlock
+    {
+        public string dataPath;
+        public string mapName;
+        public Vector2 coords;
+        public Texture2Ddata data;
+    }
+
+    public static void Load(string mapName, Vector2 coords)
+    {
+        string dataPath = @"world\maptextures\" + mapName + @"\" + mapName + "_" + coords.x + "_" + coords.y + ".blp";
+
+        MapTextureBlock mapTextureBlock = new MapTextureBlock();
+        Texture2Ddata texture2Ddata = new Texture2Ddata();
+
+        string extractedTexturePath = Casc.GetFile(dataPath);
+        Stream stream = File.Open(extractedTexturePath, FileMode.Open);
+        byte[] data = BLP.GetUncompressed(stream, true);
+        BLPinfo info = BLP.Info();
+
+        texture2Ddata.hasMipmaps = info.hasMipmaps;
+        texture2Ddata.height = info.height;
+        texture2Ddata.width = info.width;
+        texture2Ddata.textureFormat = info.textureFormat;
+        texture2Ddata.TextureData = data;
+
+        mapTextureBlock.dataPath = dataPath;
+        mapTextureBlock.mapName = mapName;
+        mapTextureBlock.coords = coords;
+        mapTextureBlock.data = texture2Ddata;
+
+        MapTextureDataQueue.Enqueue(mapTextureBlock);
+
+        data = null;
+        stream.Close();
+        stream = null;
+        mapTextureBlock = null;
+        MapTextureThreadRunning = false;
+    }
+
+}
+

@@ -10,7 +10,7 @@ public static partial class ADT {
      * Helper Methods for reading byte data
      */
 
-    private static string ReadFourCC(Stream stream) // 4 byte to 4 chars
+    private static string ReadFourCC(MemoryStream stream) // 4 byte to 4 chars
     {
         
         string str = "";
@@ -33,25 +33,22 @@ public static partial class ADT {
         return str;
     }
 
-    private static int ReadShort(Stream stream) // 2 bytes to int
+    private static int ReadShort(MemoryStream stream) // 2 bytes to int
     {
 
         byte[] bytes = new byte[2];
         int value;
-        bytes[0] = (byte)stream.ReadByte();
-        bytes[1] = (byte)stream.ReadByte();
+        stream.Read(bytes, 0, bytes.Length);
         value = System.BitConverter.ToInt16(bytes, 0);
         return value;
     }
 
     
-    private static int ReadLong(Stream stream) // 4 bytes to int
+    private static int ReadLong(MemoryStream stream) // 4 bytes to int
     {
         byte[] bytes = new byte[4];
         int value;
-        for (int i = 0; i < 4; i++) {
-            bytes[i] = (byte)stream.ReadByte();
-        }
+        stream.Read(bytes, 0, bytes.Length);
         value = System.BitConverter.ToInt32(bytes, 0);
         return value;
     }
@@ -69,24 +66,20 @@ public static partial class ADT {
         return value;
     }
     */
-    private static float ReadFloat(Stream stream) // 4 bytes to float
+    private static float ReadFloat(MemoryStream stream) // 4 bytes to float
     {
         byte[] bytes = new byte[4];
         float value;
-        for (int i = 0; i < 4; i++) {
-            bytes[i] = (byte)stream.ReadByte();
-        }
+        stream.Read(bytes, 0, bytes.Length);
         value = System.BitConverter.ToSingle(bytes, 0);
         return value;
     }
 
-    private static ulong ReadUint64(Stream stream) // 8 bytes to ulong
+    private static ulong ReadUint64(MemoryStream stream) // 8 bytes to ulong
     {
         byte[] bytes = new byte[8];
         ulong value;
-        for (int i = 0; i < 8; i++) {
-            bytes[i] = (byte)stream.ReadByte();
-        }
+        stream.Read(bytes, 0, bytes.Length);
         value = System.BitConverter.ToUInt64(bytes, 0);
         return value;
     }
@@ -287,7 +280,7 @@ public static partial class ADT {
         return result;
     }
 
-    public static string ReadNullTerminatedString(Stream stream)
+    public static string ReadNullTerminatedString(MemoryStream stream)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -300,7 +293,7 @@ public static partial class ADT {
         return sb.ToString();
     }
 
-    private static BoundingBox ReadBoundingBox(Stream stream)
+    private static BoundingBox ReadBoundingBox(MemoryStream stream)
     {
         BoundingBox box = new BoundingBox();
         box.min = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
@@ -336,30 +329,6 @@ public static partial class ADT {
         return mcnkFlags;
     }
     
-
-        /*
-    private static MCNKflags ReadMCNKflags(BinaryReader br)
-    {
-        MCNKflags mcnkFlags = new MCNKflags();
-        // <Flags> 4 bytes
-        byte[] arrayOfBytes = new byte[4];
-        //stream.Read(arrayOfBytes, 0, 4);
-        br.Read(arrayOfBytes, 0, 4);
-        BitArray flags = new BitArray(arrayOfBytes);
-        mcnkFlags.has_mcsh = flags[0]; // if ADTtex has MCSH chunk
-        mcnkFlags.impass = flags[1];
-        mcnkFlags.lq_river = flags[2];
-        mcnkFlags.lq_ocean = flags[3];
-        mcnkFlags.lq_magma = flags[4];
-        mcnkFlags.lq_slime = flags[5];
-        mcnkFlags.has_mccv = flags[6];
-        mcnkFlags.unknown_0x80 = flags[7];
-        mcnkFlags.do_not_fix_alpha_map = flags[15];  // "fix" alpha maps in MCAL (4 bit alpha maps are 63*63 instead of 64*64).
-                                                     // Note that this also means that it *has* to be 4 bit alpha maps, otherwise UnpackAlphaShadowBits will assert.
-        mcnkFlags.high_res_holes = flags[16];  // Since ~5.3 WoW uses full 64-bit to store holes for each tile if this flag is set.
-        return mcnkFlags;
-    }
-    */
     private static TerrainTextureFlag ReadTerrainTextureFlag (Stream stream)
     {
         byte[] bytes = new byte[4];

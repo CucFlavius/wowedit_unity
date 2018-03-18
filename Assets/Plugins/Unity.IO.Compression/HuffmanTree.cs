@@ -30,7 +30,7 @@ namespace Unity.IO.Compression
         short[]      right;
         byte[]       codeLengthArray;
 #if DEBUG
-        uint[]       codeArrayDebug;
+        //uint[]       codeArrayDebug;
 #endif
 
         int tableMask;         
@@ -137,7 +137,7 @@ namespace Unity.IO.Compression
             uint[] codeArray = CalculateHuffmanCode();
             table = new short[ 1 << tableBits];
 #if DEBUG            
-            codeArrayDebug = codeArray;
+            //codeArrayDebug = codeArray;
 #endif
             
             // I need to find proof that left and right array will always be 

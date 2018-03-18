@@ -16,7 +16,7 @@ public static partial class ADT
             string path = ReadNullTerminatedString(ADTobjstream);
             if (path != "")
             {
-                blockData.M2Paths.Add(position, path);
+                modelBlockData.M2Paths.Add(position, path);
             }
         }
     }
@@ -27,7 +27,7 @@ public static partial class ADT
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MMIDsize)
         {
-            blockData.M2Offsets.Add(ReadLong(ADTobjstream));
+            modelBlockData.M2Offsets.Add(ReadLong(ADTobjstream));
         }
     }
 
@@ -41,7 +41,7 @@ public static partial class ADT
             string path = ReadNullTerminatedString(ADTobjstream);
             if (path != "")
             {
-                blockData.WMOPaths.Add(position, path);
+                modelBlockData.WMOPaths.Add(position, path);
             }
         }
     }
@@ -52,7 +52,7 @@ public static partial class ADT
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MWIDsize)
         {
-            blockData.WMOOffsets.Add(ReadLong(ADTobjstream));
+            modelBlockData.WMOOffsets.Add(ReadLong(ADTobjstream));
         }
     }
 
@@ -60,7 +60,7 @@ public static partial class ADT
     // Additional to this, the models to render are referenced in each MCRF chunk. //
     public static void ReadMDDF(MemoryStream ADTobjstream, int MDDFsize)
     {
-        blockData.M2Info = new List<M2PlacementInfo>();
+        modelBlockData.M2Info = new List<M2PlacementInfo>();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MDDFsize)
         {
@@ -93,7 +93,7 @@ public static partial class ADT
             // values from struct MDDFFlags.
             data.flags = ReadMDDFFlags(ADTobjstream);
 
-            blockData.M2Info.Add(data);
+            modelBlockData.M2Info.Add(data);
         }
     }
 
@@ -101,7 +101,7 @@ public static partial class ADT
     // Additional to this, the WMOs to render are referenced in each MCRF chunk. (?) //
     public static void ReadMODF(MemoryStream ADTobjstream, int MODFsize)
     {
-        blockData.WMOInfo = new List<WMOPlacementInfo>();
+        modelBlockData.WMOInfo = new List<WMOPlacementInfo>();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MODFsize)
         {
@@ -140,7 +140,7 @@ public static partial class ADT
             // Legion(?)+: has data finally, looks like scaling (same as MDDF). Padding in 0.5.3 alpha. 
             int unk = ReadShort(ADTobjstream);
 
-            blockData.WMOInfo.Add(data);
+            modelBlockData.WMOInfo.Add(data);
         }
     }
 

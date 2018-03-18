@@ -8,7 +8,7 @@ public static class ADT_ProcessData {
     // mesh handler //
     public static void GenerateMeshArrays()
     {
-        foreach (ADT.ChunkData chunkData in ADT.blockData.ChunksData)
+        foreach (ADT.MeshChunkData chunkData in ADT.meshBlockData.meshChunksData)
         {
             // vertices array //
 
@@ -69,57 +69,10 @@ public static class ADT_ProcessData {
 
             // triangles array //
             chunkData.TriangleArray = ADT.Chunk_Triangles;
-            /*
-            chunkData.TriangleArray = new int[256 * 3];
-            int triOffset = 0;
-            //create 8 strips//
-            for (int strip = 0; strip < 8; strip++)
-            {
-                //   case \/   //
-                for (int t = 0; t < 8; t++)
-                {
-                    chunkData.TriangleArray[triOffset + 0] = t + strip * 17;
-                    chunkData.TriangleArray[triOffset + 1] = t + 1 + strip * 17;
-                    chunkData.TriangleArray[triOffset + 2] = t + 9 + strip * 17;
-                    triOffset = triOffset + 3;
-                }
-                //   case /\   //
-                for (int t1 = 0; t1 < 8; t1++)
-                {
-                    chunkData.TriangleArray[triOffset + 0] = t1 + (strip + 1) * 17;
-                    chunkData.TriangleArray[triOffset + 1] = t1 - 8 + (strip + 1) * 17;
-                    chunkData.TriangleArray[triOffset + 2] = t1 + 1 + (strip + 1) * 17;
-                    triOffset = triOffset + 3;
-                }
-                //   case >   //
-                for (int t2 = 0; t2 < 8; t2++)
-                {
-                    chunkData.TriangleArray[triOffset + 0] = t2 + strip * 17;
-                    chunkData.TriangleArray[triOffset + 1] = t2 + 9 + strip * 17;
-                    chunkData.TriangleArray[triOffset + 2] = t2 + 17 + strip * 17;
-                    triOffset = triOffset + 3;
-                }
-                //   case <   //
-                for (int t3 = 0; t3 < 8; t3++)
-                {
-                    chunkData.TriangleArray[triOffset + 0] = t3 + 9 + strip * 17;
-                    chunkData.TriangleArray[triOffset + 1] = t3 + 1 + strip * 17;
-                    chunkData.TriangleArray[triOffset + 2] = t3 + 18 + strip * 17;
-                    triOffset = triOffset + 3;
-                }
-            }
-            */
 
             // UVW array //
             chunkData.UVArray = ADT.Chunk_UVs;
-            /*
-            chunkData.UVArray = new Vector2[145];
-            for (int u = 0; u < 145; u++)
-            {
-                chunkData.UVArray[u] = new Vector2(chunkData.VertexArray[u].x / (33.3333f / Settings.worldScale),
-                                                   chunkData.VertexArray[u].z / (33.3333f / Settings.worldScale));
-            }
-            */
+
             // scale chunk positions to worldScale //
             Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.worldScale,
                                                  chunkData.MeshPosition.z / Settings.worldScale,
@@ -131,7 +84,9 @@ public static class ADT_ProcessData {
 
     public static void AdjustAlphaBasedOnShadowmap (string mapname)
     {
-        foreach (ADT.ChunkData chunkData in ADT.blockData.ChunksData)
+        // can't run, missing a flag that resides in ADT main
+        /*
+        foreach (ADT.TextureChunkData chunkData in ADT.textureBlockData.textureChunksData)
         {
             if (chunkData.flags.do_not_fix_alpha_map)
             {
@@ -150,14 +105,15 @@ public static class ADT_ProcessData {
                 }
             }
         }
+        */
     }
 
     public static void Load_hTextures ()
     {
-        if (ADT.blockData.MTXP)
+        if (ADT.textureBlockData.MTXP)
         {
-            ADT.blockData.terrainHTextures = new Dictionary<string, ADT.Texture2Ddata>();
-            foreach (string texturePath in ADT.blockData.terrainTexturePaths)
+            ADT.textureBlockData.terrainHTextures = new Dictionary<string, ADT.Texture2Ddata>();
+            foreach (string texturePath in ADT.textureBlockData.terrainTexturePaths)
             {
                 string noExtension = Path.GetFileNameWithoutExtension(texturePath);
                 string directoryPath = Path.GetDirectoryName(texturePath);
@@ -176,13 +132,23 @@ public static class ADT_ProcessData {
                         texture2Ddata.hasMipmaps = false;
                     texture2Ddata.textureFormat = info.textureFormat;
                     texture2Ddata.TextureData = data;
-                    ADT.blockData.terrainHTextures.Add(texturePath, texture2Ddata);
+                    ADT.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
                     stream.Close();
                     stream = null;
                 }
             }
         }
-        
+    }
+
+    public static void AtlassAlphaMaps ()
+    {
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+
+            }
+        }
     }
 
 

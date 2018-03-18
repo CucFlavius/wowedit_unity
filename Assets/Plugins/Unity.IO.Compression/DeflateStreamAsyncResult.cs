@@ -12,7 +12,7 @@ namespace Unity.IO.Compression {
         public bool isWrite;
 #pragma warning restore 0414
 
-        private object m_AsyncObject;               // Caller's async object.
+        //private object m_AsyncObject;               // Caller's async object.
         private object m_AsyncState;                // Caller's state object.
         private AsyncCallback m_AsyncCallback;      // Caller's callback method.
 
@@ -30,7 +30,7 @@ namespace Unity.IO.Compression {
             this.offset = offset;
             this.count = count;
             m_CompletedSynchronously = true;
-            m_AsyncObject = asyncObject;
+            //m_AsyncObject = asyncObject;
             m_AsyncState = asyncState;
             m_AsyncCallback = asyncCallback;
         }

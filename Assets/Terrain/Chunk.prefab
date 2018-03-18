@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4752671691309396}
   - component: {fileID: 33672370204381884}
   - component: {fileID: 23030715664096900}
-  - component: {fileID: 114647147811934102}
+  - component: {fileID: 114851057396058020}
   m_Layer: 0
   m_Name: Chunk
   m_TagString: Untagged
@@ -52,10 +52,10 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: bf41c91ee78f0e94c816b43810b9ef6d, type: 2}
+  - {fileID: 2100000, guid: 68f88370c29e2db4bb2f9e8ad8f62c3a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,7 +81,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1959010497222844}
   m_Mesh: {fileID: 0}
---- !u!114 &114647147811934102
+--- !u!114 &114851057396058020
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -92,3 +92,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551d138efaf5bed4b90b10a2f72b8335, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  high: {fileID: 0}
+  low: {fileID: 0}

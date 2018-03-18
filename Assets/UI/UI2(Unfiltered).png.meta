@@ -1,0 +1,466 @@
+fileFormatVersion: 2
+guid: 74329754cdbab884393ee4b0903c2f60
+timeCreated: 1521323374
+licenseType: Pro
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Button Close Window
+    21300002: BlackBorder_TransparentCenter
+    21300004: Win10_MenuBarOption_Normal
+    21300006: Win10_Toolbar_EndLine
+    21300008: Win10_Toolbar_HorizontalEndLine
+    21300010: Win10_Toolbar_HorizontalSeparator
+    21300012: Win10_MenuBarOption_Over
+    21300014: Win10_MenuBarOption_Pressed
+    21300016: Win10_MenuBoxSeparator
+    21300018: Win10_Toolbar_VerticalEndLine
+    21300020: Win10_Toolbar_VerticalSeparator
+    21300022: Button Highlighted
+    21300024: Button Normal
+    21300026: Button Pressed
+    21300028: Input Box Border
+    21300030: White 3x3
+    21300032: Window Body Border
+    21300034: Window Border
+    21300036: Win10_UI_HorizontalSeparator
+    21300038: Win10_UI_VerticalLeftSeparator
+    21300040: Win7_MenuBarOption_Normal
+    21300042: UI2(Unfiltered)_20
+    21300044: Win10_MenuBox
+    21300046: Win10_Toolbar_HorizontalGrip
+    21300048: Win10_MenuBoxButton
+    21300050: Win10_MenuBoxButton_Highlight
+    21300052: Win10_Toolbar_VerticalGrip
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 512
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 512
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 512
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 512
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Button Close Window
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 482
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BlackBorder_TransparentCenter
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 509
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBarOption_Normal
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 502
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_EndLine
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 473
+        width: 1
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_HorizontalEndLine
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 472
+        width: 2
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_HorizontalSeparator
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 472
+        width: 4
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBarOption_Over
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 496
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBarOption_Pressed
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 490
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBoxSeparator
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 473
+        width: 30
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 29, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_VerticalEndLine
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 463
+        width: 40
+        height: 2
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_VerticalSeparator
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 447
+        width: 40
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Button Highlighted
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 504
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Button Normal
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 499
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Button Pressed
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 494
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Input Box Border
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 489
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: White 3x3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 484
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Window Body Border
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 509
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Window Border
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 504
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_UI_HorizontalSeparator
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 500
+        width: 2
+        height: 2
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 0, z: 1, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_UI_VerticalLeftSeparator
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 496
+        width: 2
+        height: 2
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 1, z: 0, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win7_MenuBarOption_Normal
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 508
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 0, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBox
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 484
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_HorizontalGrip
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 474
+        width: 8
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBoxButton
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 470
+        width: 30
+        height: 1
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_MenuBoxButton_Highlight
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 467
+        width: 30
+        height: 1
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Win10_Toolbar_VerticalGrip
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 453
+        width: 38
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline:
+    - - {x: -202, y: 211}
+      - {x: -185, y: 214}
+      - {x: -185, y: 256}
+      - {x: -256, y: 256}
+      - {x: -256, y: 189}
+      - {x: -216, y: 189}
+      - {x: -214, y: 190}
+      - {x: -213, y: 210}
+      - {x: -216, y: 211}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

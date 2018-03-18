@@ -213,50 +213,54 @@ public static partial class Casc
     {
         if (fs != null)
         {
-            BinaryReader br = new BinaryReader(fs);
-            br.ReadBytes(2); // EN
-            byte b1 = br.ReadByte();
-            byte b2 = br.ReadByte();
-            byte b3 = br.ReadByte();
-            ushort s1 = br.ReadUInt16();
-            ushort s2 = br.ReadUInt16();
-            int numEntries = ReadInt32BE(br);
-            int i1 = ReadInt32BE(br);
-            byte b4 = br.ReadByte();
-            int entriesOfs = ReadInt32BE(br);
-            fs.Position += entriesOfs; // skip strings
-            fs.Position += numEntries * 32;
-            for (int i = 0; i < numEntries; ++i)
-		    {
-                ushort keysCount;
-                while (true)
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                br.ReadBytes(2);
+                //byte b1 = br.ReadByte();
+                //byte b2 = br.ReadByte();
+                //byte b3 = br.ReadByte();
+                //ushort s1 = br.ReadUInt16();
+                //ushort s2 = br.ReadUInt16();
+                br.ReadBytes(7);
+                int numEntries = ReadInt32BE(br);
+                //int i1 = ReadInt32BE(br);
+                //byte b4 = br.ReadByte();
+                br.ReadBytes(5);
+                int entriesOfs = ReadInt32BE(br);
+                fs.Position += entriesOfs; // skip strings
+                fs.Position += numEntries * 32;
+                for (int i = 0; i < numEntries; ++i)
                 {
-                    keysCount = br.ReadUInt16();
-                    if (keysCount == 0)
+                    ushort keysCount;
+                    while (true)
                     {
-                        break;
+                        keysCount = br.ReadUInt16();
+                        if (keysCount == 0)
+                        {
+                            break;
+                        }
+                        int fileSize = ReadInt32BE(br);
+                        byte[] md5 = br.ReadBytes(16);
+                        EncodingEntry entry = new EncodingEntry();
+                        entry.EncodingEntryInit();
+                        entry.Size = fileSize;
+                        List<byte[]> entryKeysList = new List<byte[]>();
+                        for (int ki = 0; ki < keysCount; ++ki)
+                        {
+                            byte[] key = br.ReadBytes(16);
+                            entryKeysList.Add(key);
+                        }
+                        entry.Keys = entryKeysList;
+                        EncodingData.Add(ByteString(md5), entry);
                     }
-                    int fileSize = ReadInt32BE(br);
-                    byte[] md5 = br.ReadBytes(16);
-                    EncodingEntry entry = new EncodingEntry();
-                    entry.EncodingEntryInit();
-                    entry.Size = fileSize;
-                    List<byte[]> entryKeysList = new List<byte[]>();
-                    for (int ki = 0; ki < keysCount; ++ki)
-				    {
-                        byte[] key = br.ReadBytes(16);
-                        entryKeysList.Add(key);
+                    while (br.PeekChar() == 0)
+                    {
+                        fs.Position++;
                     }
-                    entry.Keys = entryKeysList;
-                    EncodingData.Add(ByteString(md5), entry);
                 }
-                while (br.PeekChar() == 0)
-                {
-                    fs.Position++;
-                }
+                fs.Close();
+                fs = null;
             }
-            fs.Close();
-            fs = null;
         }
         else
         {

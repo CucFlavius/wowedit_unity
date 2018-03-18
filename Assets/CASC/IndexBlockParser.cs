@@ -28,14 +28,16 @@ public static class IndexBlockParser  {
 		using (var br = new BinaryReader(fs))
 		{
 			int h2Len = br.ReadInt32();
-			int h2Check = br.ReadInt32();
-			byte[] h2 = br.ReadBytes(h2Len);
-
-			long padPos = (8 + h2Len + 0x0F) & 0xFFFFFFF0;
+            //int h2Check = br.ReadInt32();
+            br.ReadBytes(4);
+            //byte[] h2 = br.ReadBytes(h2Len);
+            br.ReadBytes(h2Len);
+            long padPos = (8 + h2Len + 0x0F) & 0xFFFFFFF0;
 			fs.Position = padPos;
 
 			int dataLen = br.ReadInt32();
-			int dataCheck = br.ReadInt32();
+            //int dataCheck = br.ReadInt32();
+            br.ReadBytes(4);
 
 			int numBlocks = dataLen / 18;
 

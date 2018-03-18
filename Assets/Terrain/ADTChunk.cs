@@ -5,44 +5,35 @@ using UnityEngine;
 
 public class ADTChunk : MonoBehaviour {
 
-    // block settings //
-    private bool current_showVertexColor;
-
-    // Use this for initialization
-    void Start () {
-        current_showVertexColor = Settings.showVertexColor;
-    }
+    // Material LoDs // store materials of the chunk here upon data loaded
+    public Material high;
+    public Material low;
 	
 	// Update is called once per frame
 	void Update () {
-        /*
-        // Show Vertex Color Toggle //
-		if (Settings.showVertexColor != current_showVertexColor)
-        {
-            //float value = 2;
-            current_showVertexColor = Settings.showVertexColor;
-            Renderer renderer = GetComponent<Renderer>();
-            Material mat = renderer.material;
-            if (Settings.showVertexColor == true)
-            {
-                //value = 1;
-                Debug.Log("Yay");
-                mat.EnableKeyword("VERTEX_COLOR_ON");
-                mat.DisableKeyword("VERTEX_COLOR_OFF");
-            }
-            else if (Settings.showVertexColor == false)
-            {
-                //value = 0;
-                Debug.Log("Nay");
 
-                mat.EnableKeyword("VERTEX_COLOR_OFF");
-                mat.DisableKeyword("VERTEX_COLOR_ON");
+        // check distance from camera
 
-            }
-            current_showVertexColor = Settings.showVertexColor;
-            
-            
-        }
-    */
+        // if distance long
+            // swap to low material
+        // if distance short
+            // if material high is loaded != null
+                // swap to high material
+
 	}
+
+    public void MaterialReady(int lod, Material mat)
+    {
+        if (lod == 0)
+        {
+            high = mat;
+            //GetComponent<Renderer>().material = high;
+        }
+        if (lod == 1)
+        {
+            low = mat;
+            GetComponent<Renderer>().material = low;
+        }
+    }
+
 }

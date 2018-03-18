@@ -13,7 +13,8 @@ public static partial class ADT {
     
     private static void ReadMVER(MemoryStream ADTstream)
     {
-        int ADTfileversion = ReadLong(ADTstream);
+        //int ADTfileversion = ReadLong(ADTstream);
+        ADTstream.Position += 4;
     }
     
     private static void ReadMHDR(MemoryStream ADTstream)
@@ -87,7 +88,7 @@ public static partial class ADT {
     
     private static void ReadMCNK(MemoryStream ADTstream, int MCNKchunkNumber, int MCNKsize)
     {
-        ChunkData chunkData = new ChunkData();
+        MeshChunkData chunkData = new MeshChunkData();
         long MCNKchnkPos = ADTstream.Position;
         // <Header> - 128 bytes
         chunkData.flags = ReadMCNKflags(ADTstream);
@@ -163,7 +164,7 @@ public static partial class ADT {
                     break;
             }
         }
-        blockData.ChunksData.Add(chunkData);
+        meshBlockData.meshChunksData.Add(chunkData);
     }
     
 
@@ -195,7 +196,7 @@ public static partial class ADT {
     ////////////////////////////
 
     
-    private static void ReadMCVT(MemoryStream ADTstream, ChunkData chunkData)
+    private static void ReadMCVT(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         for (int v = 1; v <= 145; v++)
         {
@@ -203,7 +204,7 @@ public static partial class ADT {
         }
     }
  
-    private static void ReadMCLV(MemoryStream ADTstream, ChunkData chunkData)
+    private static void ReadMCLV(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         for (int v = 1; v <= 145; v++)
         {
@@ -222,7 +223,7 @@ public static partial class ADT {
 
   
     
-    private static void ReadMCCV(MemoryStream ADTstream, ChunkData chunkData)
+    private static void ReadMCCV(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
 
@@ -249,7 +250,7 @@ public static partial class ADT {
 
 
 
-    private static void FillMCCV(ChunkData chunkData)
+    private static void FillMCCV(MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
         for (int col = 0; col < 145; col++)
@@ -260,7 +261,7 @@ public static partial class ADT {
     } // fill vertex shading with 127
 
     
-    private static void ReadMCNR(MemoryStream ADTstream, ChunkData chunkData)
+    private static void ReadMCNR(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         chunkData.VertexNormals = new Vector3[145];
 
@@ -280,7 +281,7 @@ public static partial class ADT {
     
 
 
-    private static void ReadMCSE(MemoryStream ADTstream, ChunkData chunkData, int MCSEsize)
+    private static void ReadMCSE(MemoryStream ADTstream, MeshChunkData chunkData, int MCSEsize)
     {
         if (MCSEsize != 0)
         {
@@ -289,14 +290,14 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCBB(MemoryStream ADTstream, ChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
+    private static void ReadMCBB(MemoryStream ADTstream, MeshChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
     {
         //Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
         // skip for now
         ADTstream.Seek(MCBBsize, SeekOrigin.Current);
     }
 
-    private static void ReadMCDD(MemoryStream ADTstream, ChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
+    private static void ReadMCDD(MemoryStream ADTstream, MeshChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
                                                     // in live clients (32 bytes instead of 8) (?). if inlined to MCNK is low-res.
     {
         //Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");

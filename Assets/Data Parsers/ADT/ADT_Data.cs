@@ -5,40 +5,26 @@ using UnityEngine;
 public static partial class ADT {
 
     // block queue //
-    public static Queue<BlockDataType> AllBlockData = new Queue<BlockDataType>();
+    //public static Queue<BlockData> AllBlockData = new Queue<BlockData>();
+    public static Queue<MeshBlockData> MeshBlockDataQueue = new Queue<MeshBlockData>();
+    public static Queue<TextureBlockData> TextureBlockDataQueue = new Queue<TextureBlockData>();
+    public static Queue<ModelBlockData> ModelBlockDataQueue = new Queue<ModelBlockData>();
 
     // block buffer //
-    public static BlockDataType blockData = new BlockDataType();
+    //public static BlockData blockData = new BlockData();
+    public static MeshBlockData meshBlockData = new MeshBlockData();
+    public static TextureBlockData textureBlockData = new TextureBlockData();
+    public static ModelBlockData modelBlockData = new ModelBlockData();
 
     // data structures //
-    public class BlockDataType
+
+    public class MeshBlockData
     {
         // Per chunk data //
-        public List<ChunkData> ChunksData = new List<ChunkData>();
-
-        // Terrain textures //
-        public List<string> terrainTexturePaths = new List<string>();
-        public Dictionary<string, Texture2Ddata> terrainTextures = new Dictionary<string, Texture2Ddata>();
-
-        // MTXP data //
-        public bool MTXP = false;
-        public Dictionary<string, TerrainTextureFlag> textureFlags = new Dictionary<string, TerrainTextureFlag>();
-        public Dictionary<string, float> heightScales = new Dictionary<string, float>();
-        public Dictionary<string, float> heightOffsets = new Dictionary<string, float>();
-        public Dictionary<string, Texture2Ddata> terrainHTextures = new Dictionary<string, Texture2Ddata>();
-
-        // WMO data //
-        public Dictionary<int, string> WMOPaths = new Dictionary<int, string>();
-        public List<int> WMOOffsets = new List<int>();
-        public List<WMOPlacementInfo> WMOInfo = new List<WMOPlacementInfo>();
-
-        // M2 data //
-        public Dictionary<int, string> M2Paths = new Dictionary<int, string>();
-        public List<int> M2Offsets = new List<int>();
-        public List<M2PlacementInfo> M2Info = new List<M2PlacementInfo>();
+        public List<MeshChunkData> meshChunksData = new List<MeshChunkData>();
     }
 
-    public class ChunkData
+    public class MeshChunkData
     {
         // object properties //
         public MCNKflags flags;
@@ -55,7 +41,28 @@ public static partial class ADT {
         public Vector3[] VertexNormals;
         public int[] TriangleArray;
         public Vector2[] UVArray;
+    }
 
+    public class TextureBlockData
+    {
+        // Per chunk data //
+        public List<TextureChunkData> textureChunksData = new List<TextureChunkData>();
+
+        // Terrain textures //
+        public List<string> terrainTexturePaths = new List<string>();
+        public Dictionary<string, Texture2Ddata> terrainTextures = new Dictionary<string, Texture2Ddata>();
+        public List<byte[]> atlassedAlphaLayers = new List<byte[]>();
+
+        // MTXP data //
+        public bool MTXP = false;
+        public Dictionary<string, TerrainTextureFlag> textureFlags = new Dictionary<string, TerrainTextureFlag>();
+        public Dictionary<string, float> heightScales = new Dictionary<string, float>();
+        public Dictionary<string, float> heightOffsets = new Dictionary<string, float>();
+        public Dictionary<string, Texture2Ddata> terrainHTextures = new Dictionary<string, Texture2Ddata>();
+    }
+
+    public class TextureChunkData
+    {
         // texture data //
         public int NumberOfTextureLayers; // number of texture layers in this chunk 1=no alpha
         public int[] textureIds = new int[6]; // texture ID from terrainTextures per layer
@@ -66,6 +73,19 @@ public static partial class ADT {
         // shadow map //
         public bool[] shadowMap = new bool[64 * 64];
         public byte[] shadowMapTexture = new byte[64 * 64];
+    }
+
+    public class ModelBlockData
+    {
+        // WMO data //
+        public Dictionary<int, string> WMOPaths = new Dictionary<int, string>();
+        public List<int> WMOOffsets = new List<int>();
+        public List<WMOPlacementInfo> WMOInfo = new List<WMOPlacementInfo>();
+
+        // M2 data //
+        public Dictionary<int, string> M2Paths = new Dictionary<int, string>();
+        public List<int> M2Offsets = new List<int>();
+        public List<M2PlacementInfo> M2Info = new List<M2PlacementInfo>();
     }
 
     public class Texture2Ddata
@@ -99,13 +119,16 @@ public static partial class ADT {
         public int nameSet;
     }
 
+    /*
     public static void ClearBlockData ()
     {
         Debug.Log("Cleared buffer.");
         blockData.terrainTexturePaths.Clear();
         blockData.terrainTextures.Clear();
-        blockData.ChunksData.Clear();
+        meshBlockData.meshChunksData.Clear();
+        textureBlockData.textureChunksData.Clear();
     }
+    */
 
     public enum ADTchunkID // blame Fabi
     {

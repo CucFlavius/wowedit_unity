@@ -6,20 +6,28 @@ using UnityEngine;
 
 public static partial class ADT
 {
+    // Thread Status //
+    public static bool ThreadWorkingMesh;
+    public static bool ThreadWorkingTextures;
+    public static bool ThreadWorkingModels;
+    public static float finishedTimeTerrainMesh;
+    public static float finishedTimeTerrainTextures;
+    public static float finishedTimeTerrainModels;
 
-    public static bool BlockDataReady;
-    public static bool ThreadWorking;
-    public static float finishedTime;
-
-    // Precalculated data //
+    // Precalculated Mesh Data //
     public static Vector3[] Chunk_Vertices;
+    public static Vector3[] Chunk_VerticesLoD1;
     public static int[] Chunk_Triangles;
+    public static int[] Chunk_TrianglesLoD1;
     public static Vector2[] Chunk_UVs;
+    public static List<Vector2[]> Chunk_UVs2;
+    public static Vector2[] Chunk_UVsLod1;
 
+    // Run at Startup to Precalculate Some of the Chunk Mesh Data //
     public static void Initialize()
     {
         ////////////////////////////////////////
-        // Verts
+        #region Verts LoD0 (needs fix, unused)
 
         Chunk_Vertices = new Vector3[145];
         int currentVertex = 0;
@@ -46,10 +54,38 @@ public static partial class ADT
                 }
             }
         }
-        currentVertex = 0;
+
+        #endregion
+        ////////////////////////////////////////
 
         ////////////////////////////////////////
-        // Triangles
+        #region Verts LoD1 (unused)
+        /*
+        Chunk_VerticesLoD1 = new Vector3[81];
+        int currentVert = 0;
+        int currentWriteVert = 0;
+        for (int v = 0; v < 17; v++)
+        {
+            if (v % 2 == 0)
+            {
+                for (int v1 = 0; v1 < 9; v1++)
+                {
+                    Chunk_VerticesLoD1[currentWriteVert] = Chunk_Vertices[currentVert];
+                    currentVert++;
+                    currentWriteVert++;
+                }
+            }
+            else
+            {
+                currentVert = currentVert + 8;
+            }
+        }
+        */
+        #endregion
+        ////////////////////////////////////////
+
+        ////////////////////////////////////////
+        #region Triangles LoD0
 
         Chunk_Triangles = new int[256 * 3];
         int triOffset = 0;
@@ -89,9 +125,40 @@ public static partial class ADT
                 triOffset = triOffset + 3;
             }
         }
+        #endregion
+        ////////////////////////////////////////
 
         ////////////////////////////////////////
-        // UV's
+        #region Triangles LoD1 (unused)
+        /*
+        Chunk_TrianglesLoD1 = new int[128 * 3];
+        int triOffset1 = 0;
+        //create 8 strips//
+        for (int strip = 0; strip < 8; strip++)
+        {
+            //   case ⅂   //
+            for (int t = 0; t < 8; t++)
+            {
+                Chunk_TrianglesLoD1[triOffset1 + 0] = t + strip * 9;
+                Chunk_TrianglesLoD1[triOffset1 + 1] = t + 1 + strip * 9;
+                Chunk_TrianglesLoD1[triOffset1 + 2] = t + 10 + strip * 9;
+                triOffset1 = triOffset1 + 3;
+            }
+            //   case L   //
+            for (int t1 = 0; t1 < 8; t1++)
+            {
+                Chunk_TrianglesLoD1[triOffset1 + 0] = t1 + strip * 9;
+                Chunk_TrianglesLoD1[triOffset1 + 1] = t1 + 10 + strip * 9;
+                Chunk_TrianglesLoD1[triOffset1 + 2] = t1 + 9 + strip * 9;
+                triOffset1 = triOffset1 + 3;
+            }
+        }
+        */
+        #endregion
+        ////////////////////////////////////////
+
+        ////////////////////////////////////////
+        #region UV's LoD0
 
         Chunk_UVs = new Vector2[145];
         for (int u = 0; u < 145; u++)
@@ -100,41 +167,108 @@ public static partial class ADT
                                        Chunk_Vertices[u].z / (33.3333f / Settings.worldScale));
         }
 
+        #endregion
+        ////////////////////////////////////////
+
+        ////////////////////////////////////////
+        #region UV's2 LoD0
+
+        Chunk_UVs2 = new List<Vector2[]>();
+        for (int c = 16; c > 0; c--)
+        {
+            for (int r = 16; r > 0; r--)
+            {
+                Vector2[] UVs = new Vector2[145];
+                for (int u = 0; u < 145; u++)
+                {
+                    UVs[u] = new Vector2( 1 - ((Chunk_Vertices[u].z / (33.3333f / Settings.worldScale) * 0.0625f) + (r * 0.0625f)),
+                                               1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.worldScale) * 0.0625f) + (c * 0.0625f)));
+                }
+                Chunk_UVs2.Add(UVs);
+            }
+        }
+
+
+        #endregion
+        ////////////////////////////////////////
+
+        ////////////////////////////////////////
+        #region UV's LoD1 (unused)
+        /*
+        Chunk_UVsLod1 = new Vector2[81];
+        for (int u = 0; u < 81; u++)
+        {
+            Chunk_UVsLod1[u] = new Vector2(Chunk_VerticesLoD1[u].x / (33.3333f / Settings.worldScale),
+                                           Chunk_VerticesLoD1[u].z / (33.3333f / Settings.worldScale));
+        }
+        */
+        #endregion
+        ////////////////////////////////////////
     }
 
-    public static void Load(string Path, string MapName, Vector2 coords)
+    // Run Terrain Mesh Parser //
+    public static void LoadTerrainMesh (string Path, string MapName, Vector2 Coords)
     {
-        
-        ThreadWorking = true;
-        //float startTime = Time.time;
-        long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        ThreadWorkingMesh = true;
+        long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        blockData = new BlockDataType();
-        blockData.ChunksData = new List<ChunkData>();
-        blockData.terrainTexturePaths = new List<string>();
-        blockData.terrainTextures = new Dictionary<string, Texture2Ddata>();
-        blockData.textureFlags = new Dictionary<string, TerrainTextureFlag>();
-        blockData.heightScales = new Dictionary<string, float>();
-        blockData.heightOffsets = new Dictionary<string, float>();
+        meshBlockData = new MeshBlockData();
+        meshBlockData.meshChunksData = new List<MeshChunkData>();
 
-        ParseADT_Main(Path, MapName, coords);
-        ParseADT_Tex(Path, MapName, coords);
-        //if (ADTSettings.LoadWMOs || ADTSettings.LoadM2s)
-            //ParseADT_Obj(Path, MapName, coords);
+        ParseADT_Main(Path, MapName, Coords);
         ADT_ProcessData.GenerateMeshArrays();
+
+        MeshBlockDataQueue.Enqueue(meshBlockData);
+
+        long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        finishedTimeTerrainMesh = (millisecondsStop - millisecondsStart) / 1000f;
+
+        ThreadWorkingMesh = false;
+    }
+
+    // Run Terrain Texture Parser //
+    public static void LoadTerrainTextures (string Path, string MapName, Vector2 Coords)
+    {
+        ThreadWorkingTextures = true;
+        long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+        textureBlockData = new TextureBlockData();
+        textureBlockData.textureChunksData = new List<TextureChunkData>();
+
+        ParseADT_Tex(Path, MapName, Coords);
         if (ADTSettings.LoadShadowMaps)
             ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
         ADT_ProcessData.Load_hTextures();
-        AllBlockData.Enqueue(blockData);
 
-        long millisecondsB = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-        finishedTime = (millisecondsB - milliseconds)/1000f;
+        TextureBlockDataQueue.Enqueue(textureBlockData);
 
-        ThreadWorking = false;
+        long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        finishedTimeTerrainTextures = (millisecondsStop - millisecondsStart) / 1000f;
 
+        ThreadWorkingTextures = false;
     }
 
 
+    // Run Terrain Models Parser //
+    public static void LoadTerrainModels (string Path, string MapName, Vector2 Coords)
+    {
+        ThreadWorkingModels = true;
+        long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+        modelBlockData = new ModelBlockData();
+
+        if (ADTSettings.LoadWMOs || ADTSettings.LoadM2s)
+            ParseADT_Obj(Path, MapName, Coords);
+
+        ModelBlockDataQueue.Enqueue(modelBlockData);
+
+        long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        finishedTimeTerrainModels = (millisecondsStop - millisecondsStart) / 1000f;
+
+        ThreadWorkingModels = false;
+    }
+
+    // Terrain Mesh Parser //
     private static void ParseADT_Main(string Path, string MapName, Vector2 coords)  // MS version
     {
         string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
@@ -146,7 +280,6 @@ public static partial class ADT
 
         using (MemoryStream ms = new MemoryStream(ADTmainData))
         {
-
             while (streamPosition < ms.Length)
             {
                 ms.Position = streamPosition;
@@ -180,12 +313,10 @@ public static partial class ADT
                 }
             }
         }
-
         ADTmainData = null;
     }
 
-
-
+    // Terrain Texture Parser //
     private static void ParseADT_Tex(string Path, string MapName, Vector2 coords)
     {
         string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
@@ -234,63 +365,67 @@ public static partial class ADT
                 }
             }
         }
-
         ADTtexData = null;
     }
 
-    /*
+    // Terrain Models Parser //
     public static void ParseADT_Obj(string Path, string MapName, Vector2 coords)
     {
         string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
-        Stream ADTobjstream = Casc.GetFileStream(ADTobjPath);
+        string path = Casc.GetFile(ADTobjPath);
+
+        byte[] ADTobjData = File.ReadAllBytes(path);
 
         int MCNKchunkNumber = 0;
         long streamPosition = 0;
-        while (streamPosition < ADTobjstream.Length)
+        using (MemoryStream ms = new MemoryStream(ADTobjData))
         {
-            ADTobjstream.Position = streamPosition;
-            int chunkID = ReadLong(ADTobjstream);
-            int chunkSize = ReadLong(ADTobjstream);
-            streamPosition = ADTobjstream.Position + chunkSize;
-
-            switch (chunkID)
+            while (streamPosition < ms.Length)
             {
-                case (int)ADTchunkID.MVER:
-                    ReadMVER(ADTobjstream); // ADT file version
-                    break;
-                case (int)ADTchunkID.MMDX:
-                    ReadMMDX(ADTobjstream, chunkSize); // List of filenames for M2 models
-                    break;
-                case (int)ADTchunkID.MMID:
-                    ReadMMID(ADTobjstream, chunkSize); // List of offsets of model filenames in the MMDX chunk.
-                    break;
-                case (int)ADTchunkID.MWMO:
-                    ReadMWMO(ADTobjstream, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
-                    break;
-                case (int)ADTchunkID.MWID:
-                    ReadMWID(ADTobjstream, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
-                    break;
-                case (int)ADTchunkID.MDDF:
-                    ReadMDDF(ADTobjstream, chunkSize); // Placement information for doodads (M2 models).
-                    break;
-                case (int)ADTchunkID.MODF:
-                    ReadMODF(ADTobjstream, chunkSize); // Placement information for WMOs.
-                    break;
-                case (int)ADTchunkID.MCNK:
-                    {
-                        ReadMCNKObj(ADTobjstream, MapName, MCNKchunkNumber, chunkSize); // 256chunks
-                        MCNKchunkNumber++;
-                    }
-                    break;
-                default:
-                    SkipUnknownChunk(ADTobjstream, chunkID, chunkSize);
-                    break;
+                ms.Position = streamPosition;
+                int chunkID = ReadLong(ms);
+                int chunkSize = ReadLong(ms);
+                streamPosition = ms.Position + chunkSize;
+
+                switch (chunkID)
+                {
+                    case (int)ADTchunkID.MVER:
+                        ReadMVER(ms); // ADT file version
+                        break;
+                    case (int)ADTchunkID.MMDX:
+                        ReadMMDX(ms, chunkSize); // List of filenames for M2 models
+                        break;
+                    case (int)ADTchunkID.MMID:
+                        ReadMMID(ms, chunkSize); // List of offsets of model filenames in the MMDX chunk.
+                        break;
+                    case (int)ADTchunkID.MWMO:
+                        ReadMWMO(ms, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
+                        break;
+                    case (int)ADTchunkID.MWID:
+                        ReadMWID(ms, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
+                        break;
+                    case (int)ADTchunkID.MDDF:
+                        ReadMDDF(ms, chunkSize); // Placement information for doodads (M2 models).
+                        break;
+                    case (int)ADTchunkID.MODF:
+                        ReadMODF(ms, chunkSize); // Placement information for WMOs.
+                        break;
+                    case (int)ADTchunkID.MCNK:
+                        {
+                            ReadMCNKObj(ms, MapName, MCNKchunkNumber, chunkSize); // 256chunks
+                            MCNKchunkNumber++;
+                        }
+                        break;
+                    default:
+                        SkipUnknownChunk(ms, chunkID, chunkSize);
+                        break;
+                }
             }
         }
-        ADTobjstream.Close();
-        ADTobjstream = null;
+        ADTobjData = null;
     }
-    */
+    
+    // Move the stream forward upon finding unknown chunks //
     public static void SkipUnknownChunk(MemoryStream ADTstream, int chunkID, int chunkSize)
     {
         try

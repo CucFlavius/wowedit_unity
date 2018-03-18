@@ -9,9 +9,11 @@ public class WorldLoader : MonoBehaviour {
     public GameObject TerrainParent; // with terrain handler script
     public GameObject WMOParent;
     public GameObject ADTBlockObject;
+    public GameObject ADTLowBlockObject;
     public MinimapHandler minimapHandler;
     public int maxWorldSize = 64;
-    public GameObject[,] ADTmatrix;// = new GameObject[maxWorldSize, maxWorldSize];
+    public GameObject[,] ADTMatrix;// = new GameObject[maxWorldSize, maxWorldSize];
+    public GameObject[,] ADTLowMatrix;
     public bool[,] existingADTs;// = new bool[maxWorldSize, maxWorldSize];
     public int[,] previousTerrainLod;// = new int[maxWorldSize, maxWorldSize];
     public int[,] currentTerrainLod;// = new int[maxWorldSize, maxWorldSize];
@@ -29,7 +31,8 @@ public class WorldLoader : MonoBehaviour {
         blockSize = 533.33333f / Settings.worldScale;
 
         // create matrices //
-        ADTmatrix = new GameObject[maxWorldSize, maxWorldSize];
+        ADTMatrix = new GameObject[maxWorldSize, maxWorldSize];
+        ADTLowMatrix = new GameObject[maxWorldSize, maxWorldSize];
         existingADTs = new bool[maxWorldSize, maxWorldSize];
         previousTerrainLod = new int[maxWorldSize, maxWorldSize];
         currentTerrainLod = new int[maxWorldSize, maxWorldSize];
@@ -112,6 +115,7 @@ public class WorldLoader : MonoBehaviour {
         Spiral(currentPosX, currentPosY);
     }
 
+    
     public void Spiral(int X, int Y)
     {
         int x, y, dx, dy;
@@ -143,6 +147,81 @@ public class WorldLoader : MonoBehaviour {
             y += dy;
         }
     }
+    
+    /*
+    public void Spiral(int X, int Y)
+    {
+        int x, y, dx, dy;
+        x = y = dx = 0;
+        dx = 0;
+        dy = -1;
+        int t = drawDistanceLOD1 * 2 + 1;
+        int maxI = t * t;
+        for (int i = 0; i < maxI; i++)
+        {
+            if (((x + X) > 0) && ((x + X) < maxWorldSize) && ((y + Y) > 0) && ((y + Y) < maxWorldSize))
+            {
+                if (Mathf.Abs(x) <= drawDistanceLOD0 && Mathf.Abs(y) <= drawDistanceLOD0)
+                {
+                    int xC = x + X;
+                    int yC = y + Y;
+                    currentTerrainLod[xC, yC] = 0;
+                    if (existingADTs[xC, yC])
+                    {
+                        if (previousTerrainLod[xC, yC] != 0)
+                        {
+                            float zPos = (32 - xC) * blockSize;
+                            float xPos = (32 - yC) * blockSize;
+                            if (previousTerrainLod[xC, yC] == 10)
+                            {
+                                if (ADTMatrix[xC, yC] == null)
+                                {
+                                    ADTMatrix[xC, yC] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                    ADTMatrix[xC, yC].transform.SetParent(TerrainParent.transform);
+                                    TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, xC, yC, ADTMatrix[xC, yC]);
+                                }
+                                else
+                                {
+                                    ADTMatrix[xC, yC].SetActive(true);
+                                }
+                                //ADTMatrix[x, y].SetActive(true);
+                            }
+                            if (previousTerrainLod[xC, yC] == 1)
+                            {
+                                if (ADTMatrix[xC, yC] == null)
+                                {
+                                    ADTMatrix[xC, yC] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                    ADTMatrix[xC, yC].transform.SetParent(TerrainParent.transform);
+                                }
+                                else
+                                {
+                                    ADTMatrix[xC, yC].SetActive(true);
+                                }
+                                if (ADTLowMatrix[xC, yC] != null)
+                                {
+                                    //ADTLowMatrix[x, y].SetActive(false);
+                                }
+                            }
+                        }
+                    }
+                    previousTerrainLod[xC, yC] = currentTerrainLod[xC, yC];
+                }
+                else if (Mathf.Abs(x) <= drawDistanceLOD1 && Mathf.Abs(y) <= drawDistanceLOD1)
+                {
+                    currentTerrainLod[x + X, y + Y] = 1;
+                }
+            }
+            if ((x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1 - y)))
+            {
+                t = dx;
+                dx = -dy;
+                dy = t;
+            }
+            x += dx;
+            y += dy;
+        }
+    }
+    */
 
     public void Loader ()
     {
@@ -156,60 +235,80 @@ public class WorldLoader : MonoBehaviour {
                     {
                         float zPos = (32 - x) * blockSize;
                         float xPos = (32 - y) * blockSize;
+                        // no terrain exists - load high quality
                         if (currentTerrainLod[x, y] == 0 && previousTerrainLod[x, y] == 10)
                         {
-                            if (ADTmatrix[x, y] == null)
+                            if (ADTMatrix[x, y] == null)
                             {
-                                ADTmatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-                                ADTmatrix[x, y].transform.SetParent(TerrainParent.transform);
+                                ADTMatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                ADTMatrix[x, y].transform.SetParent(TerrainParent.transform);
+                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTMatrix[x, y]);
                             }
-                            ADTmatrix[x, y].SetActive(true);
-                            
-                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded)
+                            else
                             {
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTmatrix[x, y]);
-                                ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded = true;
+                                ADTMatrix[x, y].SetActive(true);
                             }
+                            //ADTMatrix[x, y].SetActive(true);
                         }
-
+                        // no terrain exists - load low quality
                         if (currentTerrainLod[x, y] == 1 && previousTerrainLod[x, y] == 10)
                         {
-                            if (ADTmatrix[x, y] == null)
+                            if (ADTLowMatrix[x, y] == null)
                             {
-                                ADTmatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-                                ADTmatrix[x, y].transform.SetParent(TerrainParent.transform);
+                                //ADTLowMatrix[x, y] = Instantiate(ADTLowBlockObject, new Vector3(xPos-20, 0, zPos-20), Quaternion.identity);
+                                //ADTLowMatrix[x, y].transform.SetParent(TerrainParent.transform);
                             }
-                            ADTmatrix[x, y].SetActive(true);
-
-                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD1Loaded)
-                            {
-
-                            }
+                            //ADTLowMatrix[x, y].SetActive(true);
                         }
-
+                        // high quality exists - load low quality
                         if (currentTerrainLod[x, y] == 1 && previousTerrainLod[x, y] == 0)
                         {
-                            if (ADTmatrix[x, y] != null)
+                            if (ADTLowMatrix[x, y] == null)
                             {
-                                ADTmatrix[x, y].SetActive(true);
+                                //ADTLowMatrix[x, y] = Instantiate(ADTLowBlockObject, new Vector3(xPos-20, 0, zPos-20), Quaternion.identity);
+                                //ADTLowMatrix[x, y].transform.SetParent(TerrainParent.transform);
                             }
-                        }
+                            else
+                            {
+                                //ADTLowMatrix[x, y].SetActive(true);
+                            }
+                            if (ADTMatrix[x, y] != null)
+                            {
+                                ADTMatrix[x, y].SetActive(false);
+                            }
 
+                        }
+                        // low quality exists - load high quality
                         if (currentTerrainLod[x, y] == 0 && previousTerrainLod[x, y] == 1)
                         {
-                            ADTmatrix[x, y].SetActive(true);
-
-                            if (!ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded)
+                            if (ADTMatrix[x, y] == null)
                             {
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTmatrix[x, y]);
-                                ADTmatrix[x, y].GetComponent<ADTBlock>().LoD0Loaded = true;
+                                ADTMatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                ADTMatrix[x, y].transform.SetParent(TerrainParent.transform);
+                            }
+                            else
+                            {
+                                ADTMatrix[x, y].SetActive(true);
+                            }
+                            if (ADTLowMatrix[x, y] != null)
+                            {
+                                //ADTLowMatrix[x, y].SetActive(false);
                             }
                         }
-
+                        // destroy both low and high quality
                         if (currentTerrainLod[x, y] == 10 && previousTerrainLod[x, y] != 10)
                         {
-                            //if (ADTmatrix[x, y] != null)
-                                //ADTmatrix[x, y].SetActive(false);
+                            if (ADTMatrix[x, y] != null)
+                            {
+                                ADTMatrix[x, y].SetActive(false);
+                                //Destroy(ADTMatrix[x, y].gameObject);
+                                //ADTMatrix[x, y] = null;
+                            }
+                            if (ADTLowMatrix[x, y] != null)
+                            {
+                                //Destroy(ADTLowMatrix[x, y].gameObject);
+                                //ADTLowMatrix[x, y] = null;
+                            }
                         }
 
                         previousTerrainLod[x, y] = currentTerrainLod[x, y];

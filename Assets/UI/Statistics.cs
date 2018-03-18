@@ -8,33 +8,45 @@ public class Statistics : MonoBehaviour {
     public TerrainHandler terrainHandler;
     public UnityEngine.UI.Text statsText;
 
-    private float PreviousBlockParse;
-    private float PreviousBlockCreate;
+    private float PreviousParseADTRootSpeed;
+    private float PreviousParseADTTexSpeed;
+    private float PreviousParseADTObjSpeed;
+    private float PreviousAssembleHTMeshSpeed;
 
-    private List<float> BlockParseTimes;
-    private List<float> BlockCreateTimes;
+    private float AverageADTRootParseSpeed = 0f;
+    private float AverageHTMeshCreateSpeed = 0f;
 
-	// Use this for initialization
-	void Start () {
-        BlockParseTimes = new List<float>();
-        BlockCreateTimes = new List<float>();
-        PreviousBlockParse = 0;
-        PreviousBlockCreate = 0;
+    private List<float> ADTRootParseTimes;
+    private List<float> HTMeshCreateTimes;
+
+    private string RemainingHTerrainBlocks = "";
+
+    // Use this for initialization
+    void Start () {
+
+        ADTRootParseTimes = new List<float>();
+        HTMeshCreateTimes = new List<float>();
+        PreviousParseADTRootSpeed = 0;
+        PreviousParseADTTexSpeed = 0;
+        PreviousParseADTObjSpeed = 0;
+        PreviousAssembleHTMeshSpeed = 0;
+
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        float BlockParseSpeed = ADT.finishedTime;
-        float BlockCreateSpeed = Truncate(terrainHandler.finishedTime, 2);
+        UpdateTerrainMeshStats();
+
+        /*
+        float ParseADTTexSpeed= ADT.finishedTimeTerrainTextures;
+        float ParseADTObjSpeed = ADT.finishedTimeTerrainModels;
         float AverageParseSpeed = 0f;
         float AverageCreateSpeed = 0f;
 
 
         if (BlockParseSpeed != PreviousBlockParse || BlockCreateSpeed != PreviousBlockCreate)
         {
-            PreviousBlockParse = BlockParseSpeed;
-            PreviousBlockCreate = BlockCreateSpeed;
 
             int numberInParseQueue = terrainHandler.ADTThreadQueue.Count;
             int numberInCreateQueue = ADT.AllBlockData.Count;
@@ -65,7 +77,50 @@ public class Statistics : MonoBehaviour {
                              "\n" + RemainingCreateBlocks +
                              "\n";
         }
+        */
     }
+
+    private void UpdateTerrainMeshStats()
+    {
+        float ParseADTRootSpeed = ADT.finishedTimeTerrainMesh;
+        float AssembleHTMeshSpeed = Truncate(terrainHandler.finishedTimeAssembleHT, 2);
+
+        if (PreviousParseADTRootSpeed != ParseADTRootSpeed)
+        {
+            PreviousParseADTRootSpeed = ParseADTRootSpeed;
+            if (ParseADTRootSpeed != 0)
+            {
+                ADTRootParseTimes.Add(ParseADTRootSpeed);
+            }
+            AverageADTRootParseSpeed = Truncate(CalculateAverage(ADTRootParseTimes), 2);
+
+            int numberInParseQueue = terrainHandler.ADTRootQueue.Count;
+            RemainingHTerrainBlocks = Tabs(numberInParseQueue, "□");
+        }
+
+        if (PreviousAssembleHTMeshSpeed != AssembleHTMeshSpeed)
+        { 
+            PreviousAssembleHTMeshSpeed = AssembleHTMeshSpeed;
+            if (AssembleHTMeshSpeed != 0)
+            {
+                HTMeshCreateTimes.Add(ParseADTRootSpeed);
+            }
+            AverageHTMeshCreateSpeed = Truncate(CalculateAverage(HTMeshCreateTimes), 2);
+        }
+
+        // setup string //
+        statsText.text = "\n" + "[HTerrain Mesh Speed]" +
+                 "\n" + "Last Parse: " + ParseADTRootSpeed + "s" +
+                 "\n" + "Last Create: " + AssembleHTMeshSpeed + "s" +
+                 "\n" + "Average Parse: " + AverageADTRootParseSpeed + "s" +
+                 "\n" + "Average Create: " + AverageHTMeshCreateSpeed + "s" +
+                 "\n" + "[Remaining HTerrain Blocks]" +
+                 "\n" + RemainingHTerrainBlocks;
+
+    }
+
+    //////////////////////
+    #region Helpers
 
     private float CalculateAverage(List<float> Values)
     {
@@ -93,5 +148,8 @@ public class Statistics : MonoBehaviour {
         IEnumerable<string> tabs = Enumerable.Repeat(tabType, (int)numTabs);
         return (numTabs > 0) ? tabs.Aggregate((sum, next) => sum + next) : "";
     }
+
+    #endregion
+    //////////////////////
 
 }

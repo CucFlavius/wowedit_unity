@@ -29,7 +29,7 @@ public static partial class ADT {
             }
             else if (b == 0)
             {
-                blockData.terrainTexturePaths.Add(texturePath);
+                textureBlockData.terrainTexturePaths.Add(texturePath);
                 string extractedPath = Casc.GetFile(texturePath);
                 Stream stream = File.Open(extractedPath, FileMode.Open);
                 byte[] data = BLP.GetUncompressed(stream, true);
@@ -42,7 +42,7 @@ public static partial class ADT {
                     texture2Ddata.hasMipmaps = false;
                 texture2Ddata.textureFormat = info.textureFormat;
                 texture2Ddata.TextureData = data;
-                blockData.terrainTextures.Add(texturePath, texture2Ddata);
+                textureBlockData.terrainTextures.Add(texturePath, texture2Ddata);
                 texturePath = null;
                 numberOfTextures++;
                 stream.Close();
@@ -56,6 +56,8 @@ public static partial class ADT {
         if (ADTtexstream.Length == ADTtexstream.Position)
             return;
 
+        TextureChunkData chunkData = new TextureChunkData();
+        
         long MCNKchnkPos = ADTtexstream.Position;
         long streamPosition = ADTtexstream.Position;
         while (streamPosition < MCNKchnkPos+MCNKsize)
@@ -67,20 +69,20 @@ public static partial class ADT {
             switch (chunkID)
             {
                 case (int)ADTchunkID.MCLY:
-                    ReadMCLY(ADTtexstream, MCNKchunkNumber, chunkSize); // texture layers
+                    ReadMCLY(ADTtexstream, chunkData, chunkSize); // texture layers
                     break;
                 case (int)ADTchunkID.MCSH:
-                    ReadMCSH(ADTtexstream, MCNKchunkNumber); // static shadow maps
+                    ReadMCSH(ADTtexstream, chunkData); // static shadow maps
                     break;
                 case (int)ADTchunkID.MCAL:
-                    ReadMCAL(ADTtexstream, mapname, MCNKchunkNumber); // alpha layers
+                    ReadMCAL(ADTtexstream, mapname, chunkData); // alpha layers
                     break;
                 default:
                     SkipUnknownChunk(ADTtexstream, chunkID, chunkSize);
                     break;
             }
         }
-
+        textureBlockData.textureChunksData.Add(chunkData);
     }
 
     private static void ReadMTXF (MemoryStream ADTtexstream, int MTXFsize)
@@ -91,13 +93,13 @@ public static partial class ADT {
 
     private static void ReadMTXP (MemoryStream ADTtexstream, int MTXPsize) // 16 bytes per MTEX texture
     {
-        blockData.MTXP = true;
+        textureBlockData.MTXP = true;
         for (int i = 0; i < MTXPsize / 16; i++)
         {
-            blockData.textureFlags.Add(blockData.terrainTexturePaths[i],ReadTerrainTextureFlag(ADTtexstream));
-            blockData.heightScales.Add(blockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));    // default 0.0 -- the _h texture values are scaled to [0, value) to determine actual "height".
-                                                                    // this determines if textures overlap or not (e.g. roots on top of roads). 
-            blockData.heightOffsets.Add(blockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));   // default 1.0 -- note that _h based chunks are still influenced by MCAL (blendTex below)
+            textureBlockData.textureFlags.Add(textureBlockData.terrainTexturePaths[i],ReadTerrainTextureFlag(ADTtexstream));
+            textureBlockData.heightScales.Add(textureBlockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));    // default 0.0 -- the _h texture values are scaled to [0, value) to determine actual "height".
+                                                                                                                   // this determines if textures overlap or not (e.g. roots on top of roads). 
+            textureBlockData.heightOffsets.Add(textureBlockData.terrainTexturePaths[i],ReadFloat(ADTtexstream));   // default 1.0 -- note that _h based chunks are still influenced by MCAL (blendTex below)
             int padding = ReadLong(ADTtexstream);           // no default, no non-zero values in 20490
         }
     }
@@ -106,7 +108,7 @@ public static partial class ADT {
     ///// MCNKtex Subchunks /////
     /////////////////////////////
 
-    private static void ReadMCLY(MemoryStream ADTtexstream, int chunk, int MCLYsize)
+    private static void ReadMCLY(MemoryStream ADTtexstream, TextureChunkData chunkData, int MCLYsize)
     {
         /*
         *  Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
@@ -121,11 +123,12 @@ public static partial class ADT {
 
         long MCLYStartPosition = ADTtexstream.Position;
         int numberOfLayers = MCLYsize / 16;
-        blockData.ChunksData[chunk].NumberOfTextureLayers = numberOfLayers;
-
+        chunkData.NumberOfTextureLayers = numberOfLayers;
+        chunkData.textureIds = new int[numberOfLayers];
+        chunkData.LayerOffsetsInMCAL = new int[numberOfLayers];
         for (int l = 0; l < numberOfLayers; l++)
         {
-            blockData.ChunksData[chunk].textureIds[l] = ReadLong(ADTtexstream); // texture ID
+            chunkData.textureIds[l] = ReadLong(ADTtexstream); // texture ID
             // <flags>
             byte[] arrayOfBytes = new byte[4];
             ADTtexstream.Read(arrayOfBytes, 0, 4);
@@ -135,24 +138,25 @@ public static partial class ADT {
             bool animation_enabled = flags[6];
             bool overbright = flags[7];                // This will make the texture way brighter. Used for lava to make it "glow".
             bool use_alpha_map = flags[8];             // set for every layer after the first
-            blockData.ChunksData[chunk].alpha_map_compressed[l] = flags[9];      // see MCAL chunk description - MCLY_AlphaType_Flag
+            chunkData.alpha_map_compressed[l] = flags[9];      // see MCAL chunk description - MCLY_AlphaType_Flag
             bool use_cube_map_reflection = flags[10];   // This makes the layer behave like its a reflection of the skybox. See below
             bool unknown_0x800 = flags[11];             // WoD?+ if either of 0x800 or 0x1000 is set, texture effects' texture_scale is applied
             bool unknown_0x1000 = flags[12];            // WoD?+ see 0x800
             // flags 13-32 unused
             // </flags>
             int layerOffset = ReadLong(ADTtexstream);
-            blockData.ChunksData[chunk].LayerOffsetsInMCAL[l] = layerOffset;
+            chunkData.LayerOffsetsInMCAL[l] = layerOffset;
             int effectId = ReadLong(ADTtexstream); //foreign_keyⁱ <uint32_t, &GroundEffectTextureRec::m_ID>; // 0xFFFFFFFF for none, in alpha: uint16_t + padding
         }
     }
 
-    private static void ReadMCSH(MemoryStream ADTtexstream, int chunk) //512 bytes
+    private static void ReadMCSH(MemoryStream ADTtexstream, TextureChunkData chunkData) //512 bytes
     {
         // The shadows are stored per bit, not byte as 0 or 1 (off or on) so we have 8 bytes (which equates to 64 values) X 64 bytes (64 values in this case) which ends up as a square 64x64 shadowmap with either white or black.
         // Note that the shadow values come LSB first.
         // 8bytes(64values) x 64 = 512 bytes
-        blockData.ChunksData[chunk].shadowMap = new bool[64 * 64];
+        chunkData.shadowMap = new bool[64 * 64];
+        chunkData.shadowMapTexture = new byte[64 * 64];
 
         byte[] ByteArray = new byte[64 * 64];
         ADTtexstream.Read(ByteArray, 0, 8 * 64);
@@ -161,56 +165,56 @@ public static partial class ADT {
             BitArray bits = new BitArray(ByteArray);
             for (int b = 4095; b >= 0; b--) // LSB
             {
-                blockData.ChunksData[chunk].shadowMap[b] = bits[b];
+                chunkData.shadowMap[b] = bits[b];
                 if (bits[b])
-                    blockData.ChunksData[chunk].shadowMapTexture[b] = 127;
+                    chunkData.shadowMapTexture[b] = 127;
                 else
-                    blockData.ChunksData[chunk].shadowMapTexture[b] = 0;
+                    chunkData.shadowMapTexture[b] = 0;
             }
         }
     }
 
-    private static void ReadMCAL(MemoryStream ADTtexstream, string mapname, int chunk)
+    private static void ReadMCAL(MemoryStream ADTtexstream, string mapname, TextureChunkData chunkData)
     {
         long McalStartPosition = ADTtexstream.Position;
-        int numberofLayers = blockData.ChunksData[chunk].NumberOfTextureLayers;
+        int numberofLayers = chunkData.NumberOfTextureLayers;
         if (numberofLayers > 1)
         {
-            blockData.ChunksData[chunk].alphaLayers = new List<byte[]>();
+            chunkData.alphaLayers = new List<byte[]>();
             for (int l = 1; l < numberofLayers; l++) {
                 if (WDT.Flags[mapname].adt_has_height_texturing == true)
                 {
-                    if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
+                    if (chunkData.alpha_map_compressed[l] == false)
                     {
-                        blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream), 64));
+                        chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream), 64));
                     }
-                    else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
+                    else if (chunkData.alpha_map_compressed[l] == true)
                     {
-                        blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                        chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                     }
                 }
                 else if (WDT.Flags[mapname].adt_has_height_texturing == false)
                 {
                     if (WDT.Flags[mapname].adt_has_big_alpha == false)
                     {
-                        if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
+                        if (chunkData.alpha_map_compressed[l] == false)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedHalfRes(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedHalfRes(ADTtexstream),64));
                         }
-                        else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
+                        else if (chunkData.alpha_map_compressed[l] == true)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                         }
                     }
                     else if (WDT.Flags[mapname].adt_has_big_alpha == true)
                     {
-                        if (blockData.ChunksData[chunk].alpha_map_compressed[l] == false)
+                        if (chunkData.alpha_map_compressed[l] == false)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream),64));
                         }
-                        else if (blockData.ChunksData[chunk].alpha_map_compressed[l] == true)
+                        else if (chunkData.alpha_map_compressed[l] == true)
                         {
-                            blockData.ChunksData[chunk].alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
                         }
                     }
                 }
