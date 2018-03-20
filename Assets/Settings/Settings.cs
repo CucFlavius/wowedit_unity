@@ -31,6 +31,11 @@ public static class Settings
     // World Settings //
     public static float worldScale = 10.0f;
 
+    // LoD Settings //
+    public static float terrainMaterialDistance = 300;
+    public static float highMipMapBias = 0.5f; // negative = sharper, 0 = default, positive = blurryer
+    public static float lowMipMapBias = 0f; // negative = sharper, 0 = default, positive = blurryer
+
     // Terrain Settings //
     public static bool showVertexColor = true;
 

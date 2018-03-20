@@ -342,12 +342,15 @@ public class WorldLoader : MonoBehaviour {
 
     public void ClearAllTerrain()
     {
-        minimapHandler.currentSelectedPlayerSpawn = new Vector2(0, 0);
-        ClearMatrix();
-
-        foreach (Transform child in TerrainParent.transform)
+        if (TerrainParent.transform.childCount > 0)
         {
-            GameObject.Destroy(child.gameObject);
+            minimapHandler.currentSelectedPlayerSpawn = new Vector2(0, 0);
+            ClearMatrix();
+
+            foreach (Transform child in TerrainParent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
         }
     }
 }

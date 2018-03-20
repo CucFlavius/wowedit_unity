@@ -59,8 +59,9 @@ public static partial class WMO
                 wmoData.texturePaths.Add(position, path);
                 string extractedPath = Casc.GetFile(path);
                 Stream stream = File.Open(extractedPath, FileMode.Open);
-                byte[] data = BLP.GetUncompressed(stream, true);
-                BLPinfo info = BLP.Info();
+                BLP blp = new BLP();
+                byte[] data = blp.GetUncompressed(stream, true);
+                BLPinfo info = blp.Info();
                 Texture2Ddata texture2Ddata = new Texture2Ddata();
                 texture2Ddata.hasMipmaps = info.hasMipmaps;
                 texture2Ddata.width = info.width;

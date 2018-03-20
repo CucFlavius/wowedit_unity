@@ -122,8 +122,9 @@ public static class ADT_ProcessData {
                 {
                     string extractedPath = Casc.GetFile(hTexturePath);
                     Stream stream = File.Open(extractedPath, FileMode.Open);
-                    byte[] data = BLP.GetUncompressed(stream, true);
-                    BLPinfo info = BLP.Info();
+                    BLP blp = new BLP();
+                    byte[] data = blp.GetUncompressed(stream, true);
+                    BLPinfo info = blp.Info();
                     ADT.Texture2Ddata texture2Ddata = new ADT.Texture2Ddata();
                     texture2Ddata.hasMipmaps = info.hasMipmaps;
                     texture2Ddata.width = info.width;

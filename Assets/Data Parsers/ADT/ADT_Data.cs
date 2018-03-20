@@ -27,7 +27,7 @@ public static partial class ADT {
     public class MeshChunkData
     {
         // object properties //
-        public MCNKflags flags;
+        public Flags.MCNKflags flags;
         public int IndexX;
         public int IndexY;
         public int nLayers; // number of alpha layers
@@ -104,7 +104,7 @@ public static partial class ADT {
         public Vector3 position;
         public Quaternion rotation;
         public float scale;
-        public MDDFFlags flags;
+        public Flags.MDDFFlags flags;
     }
 
     public class WMOPlacementInfo
@@ -114,7 +114,7 @@ public static partial class ADT {
         public Vector3 position;
         public Quaternion rotation;
         public BoundingBox extents;
-        public MODFFlags flags;
+        public Flags.MODFFlags flags;
         public int doodadSet;
         public int nameSet;
     }

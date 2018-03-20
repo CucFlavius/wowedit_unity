@@ -58,6 +58,7 @@ public class MinimapHandler : MonoBehaviour {
             currentSelectedPlayerSpawn = new Vector2(firstyCoord + ((lastyCoord - firstyCoord) / 2), firstxCoord + ((lastxCoord - firstxCoord) / 2));
             //currentSelectedPlayerSpawn = new Vector2(firstyCoord , firstxCoord);
         }
+        Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
         World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);
     }
@@ -149,16 +150,16 @@ public class MinimapHandler : MonoBehaviour {
         string path = @"world\minimaps\" + minimapName + @"\" + MinimapObject.name + ".blp";
         string extractedPath = Casc.GetFile(path);
         Stream stream = File.Open(extractedPath, FileMode.Open);
-
-        byte[] data = BLP.GetUncompressed(stream, false);
-        BLPinfo info = BLP.Info();
-        Texture2D tex = new Texture2D(info.width, info.height, BLP.TxFormat(), false);
+        BLP blp = new BLP();
+        byte[] data = blp.GetUncompressed(stream, false);
+        BLPinfo info = blp.Info();
+        Texture2D tex = new Texture2D(info.width, info.height, blp.TxFormat(), false);
         tex.LoadRawTextureData(data);
         MinimapObject.GetComponent<RawImage>().texture = tex;
         MinimapObject.GetComponent<RawImage>().uvRect = new Rect(0, 0, 1, -1);
         tex.Apply();
         stream.Close();
-        BLP.Close();
+        blp.Close();
     }
 
     public void LoadBlankMinimaps(string mapPath, string mapName)

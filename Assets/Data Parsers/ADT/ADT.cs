@@ -232,15 +232,15 @@ public static partial class ADT
         ThreadWorkingTextures = true;
         long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        textureBlockData = new TextureBlockData();
-        textureBlockData.textureChunksData = new List<TextureChunkData>();
+        ADTTexData.textureBlockData = new ADTTexData.TextureBlockData();
+        ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
 
         ParseADT_Tex(Path, MapName, Coords);
         if (ADTSettings.LoadShadowMaps)
             ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
         ADT_ProcessData.Load_hTextures();
 
-        TextureBlockDataQueue.Enqueue(textureBlockData);
+        ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainTextures = (millisecondsStop - millisecondsStart) / 1000f;
@@ -271,6 +271,7 @@ public static partial class ADT
     // Terrain Mesh Parser //
     private static void ParseADT_Main(string Path, string MapName, Vector2 coords)  // MS version
     {
+        StreamTools s = new StreamTools();
         string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
         string path = Casc.GetFile(ADTmainPath);
         byte[] ADTmainData = File.ReadAllBytes(path);
@@ -283,8 +284,8 @@ public static partial class ADT
             while (streamPosition < ms.Length)
             {
                 ms.Position = streamPosition;
-                int chunkID = ReadLong(ms);
-                int chunkSize = ReadLong(ms);
+                int chunkID = s.ReadLong(ms);
+                int chunkSize = s.ReadLong(ms);
                 streamPosition = ms.Position + chunkSize;
 
                 switch (chunkID)
@@ -319,6 +320,8 @@ public static partial class ADT
     // Terrain Texture Parser //
     private static void ParseADT_Tex(string Path, string MapName, Vector2 coords)
     {
+        StreamTools s = new StreamTools();
+        ADTTex t = new ADTTex();
         string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
         string path = Casc.GetFile(ADTtexPath);
 
@@ -332,8 +335,8 @@ public static partial class ADT
             while (streamPosition < ms.Length)
             {
                 ms.Position = streamPosition;
-                int chunkID = ReadLong(ms);
-                int chunkSize = ReadLong(ms);
+                int chunkID = s.ReadLong(ms);
+                int chunkSize = s.ReadLong(ms);
                 streamPosition = ms.Position + chunkSize;
 
                 switch (chunkID)
@@ -342,22 +345,22 @@ public static partial class ADT
                         ReadMVER(ms); // ADT file version
                         break;
                     case (int)ADTchunkID.MAMP:
-                        ReadMAMP(ms); // Single value - texture size = 64
+                        t.ReadMAMP(ms); // Single value - texture size = 64
                         break;
                     case (int)ADTchunkID.MTEX:
-                        ReadMTEX(ms, chunkSize); // Texture Paths
+                        t.ReadMTEX(ms, chunkSize); // Texture Paths
                         break;
                     case (int)ADTchunkID.MCNK:
                         {
-                            ReadMCNKtex(ms, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
+                            t.ReadMCNKtex(ms, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
                             MCNKchunkNumber++;
                         }
                         break;
                     case (int)ADTchunkID.MTXF:
-                        ReadMTXF(ms, chunkSize); // Texture Paths
+                        t.ReadMTXF(ms, chunkSize); // Texture Paths
                         break;
                     case (int)ADTchunkID.MTXP:
-                        ReadMTXP(ms, chunkSize); // Texture Paths
+                        t.ReadMTXP(ms, chunkSize); // Texture Paths
                         break;
                     default:
                         SkipUnknownChunk(ms, chunkID, chunkSize);
@@ -371,6 +374,7 @@ public static partial class ADT
     // Terrain Models Parser //
     public static void ParseADT_Obj(string Path, string MapName, Vector2 coords)
     {
+        StreamTools s = new StreamTools();
         string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
         string path = Casc.GetFile(ADTobjPath);
 
@@ -383,8 +387,8 @@ public static partial class ADT
             while (streamPosition < ms.Length)
             {
                 ms.Position = streamPosition;
-                int chunkID = ReadLong(ms);
-                int chunkSize = ReadLong(ms);
+                int chunkID = s.ReadLong(ms);
+                int chunkSize = s.ReadLong(ms);
                 streamPosition = ms.Position + chunkSize;
 
                 switch (chunkID)

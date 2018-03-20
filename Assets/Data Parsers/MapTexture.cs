@@ -9,7 +9,7 @@ public static class MapTexture
     public static bool MapTextureThreadRunning = false;
 
     // Data //
-    public static Queue<MapTextureBlock> MapTextureDataQueue = new Queue<MapTextureBlock>();
+    public static LockFreeQueue<MapTextureBlock> MapTextureDataQueue = new LockFreeQueue<MapTextureBlock>();
 
     public class MapTextureBlock
     {
@@ -25,30 +25,30 @@ public static class MapTexture
 
         MapTextureBlock mapTextureBlock = new MapTextureBlock();
         Texture2Ddata texture2Ddata = new Texture2Ddata();
-
         string extractedTexturePath = Casc.GetFile(dataPath);
-        Stream stream = File.Open(extractedTexturePath, FileMode.Open);
-        byte[] data = BLP.GetUncompressed(stream, true);
-        BLPinfo info = BLP.Info();
 
-        texture2Ddata.hasMipmaps = info.hasMipmaps;
-        texture2Ddata.height = info.height;
-        texture2Ddata.width = info.width;
-        texture2Ddata.textureFormat = info.textureFormat;
-        texture2Ddata.TextureData = data;
+        using (Stream stream = File.Open(extractedTexturePath, FileMode.Open))
+        {
 
-        mapTextureBlock.dataPath = dataPath;
-        mapTextureBlock.mapName = mapName;
-        mapTextureBlock.coords = coords;
-        mapTextureBlock.data = texture2Ddata;
+            BLP blp = new BLP();
+            byte[] data = blp.GetUncompressed(stream, true);
+            BLPinfo info = blp.Info();
 
-        MapTextureDataQueue.Enqueue(mapTextureBlock);
+            texture2Ddata.hasMipmaps = info.hasMipmaps;
+            texture2Ddata.height = info.height;
+            texture2Ddata.width = info.width;
+            texture2Ddata.textureFormat = info.textureFormat;
+            texture2Ddata.TextureData = data;
 
-        data = null;
-        stream.Close();
-        stream = null;
-        mapTextureBlock = null;
-        MapTextureThreadRunning = false;
+            mapTextureBlock.dataPath = dataPath;
+            mapTextureBlock.mapName = mapName;
+            mapTextureBlock.coords = coords;
+            mapTextureBlock.data = texture2Ddata;
+
+            MapTextureDataQueue.Enqueue(mapTextureBlock);
+
+            MapTextureThreadRunning = false;
+        }
     }
 
 }

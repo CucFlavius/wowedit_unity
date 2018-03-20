@@ -57,6 +57,7 @@ public class TerrainHandler : MonoBehaviour
         ADT.ThreadWorkingMesh = false;
         ADT.ThreadWorkingTextures = false;
         ADT.ThreadWorkingModels = false;
+        MapTexture.MapTextureThreadRunning = false;
         ADTRootQueue = new Queue<QueueItem>();
         ADTTexQueue = new Queue<QueueItem>();
         currentLoadingHTerrainBlock = new Queue<QueueItem>();
@@ -71,18 +72,20 @@ public class TerrainHandler : MonoBehaviour
         if (ADTRootQueue.Count > 0 && !ADT.ThreadWorkingMesh)
         {
             ADT.ThreadWorkingMesh = true;
-            ADTRootThreadRun(ADTRootQueue.Dequeue());
+            QueueItem q = ADTRootQueue.Dequeue();
+            ADTRootThreadRun(q);
         }
-        if (ADTTexQueue.Count > 0 && !ADT.ThreadWorkingTextures && !ADT.ThreadWorkingMesh)
+        if (ADTTexQueue.Count > 0 && !ADT.ThreadWorkingTextures)
         {
-            //Debug.Log("Yep");
             ADT.ThreadWorkingTextures = true;
-            ADTTexThreadRun(ADTTexQueue.Dequeue());
+            QueueItem q = ADTTexQueue.Dequeue();
+            ADTTexThreadRun(q);
         }
         if (mapTextureQueue.Count > 0 && !MapTexture.MapTextureThreadRunning)
         {
             MapTexture.MapTextureThreadRunning = true;
-            MapTextureThreadRun(mapTextureQueue.Dequeue());
+            QueueItem q = mapTextureQueue.Dequeue();
+            MapTextureThreadRun(q);
         }
         // Assemblers //
         if (frameBusy == false)
@@ -90,17 +93,16 @@ public class TerrainHandler : MonoBehaviour
             // if there's Hterrain data ready
             if (ADT.MeshBlockDataQueue.Count > 0)
             {
-                //StartCoroutine(CreateADTObject());
                 frameBusy = true;
                 StartCoroutine(AssembleHTBlock());
             }
             // if there's LTexture data ready
-            if (MapTexture.MapTextureDataQueue.Count > 0)
+            if (MapTexture.MapTextureDataQueue.count > 0)
             {
                 frameBusy = true;
                 LoadLTexture();
             }
-            if (ADT.TextureBlockDataQueue.Count > 0)
+            if (ADTTexData.TextureBlockDataQueue.Count > 0)
             {
                 frameBusy = true;
                 StartCoroutine(AssembleHTextures());
@@ -135,16 +137,17 @@ public class TerrainHandler : MonoBehaviour
     public void ADTTexThreadRun(QueueItem queueItem)
     {
         currentHTexture = queueItem;
-        ADTTexThread(); // nonthreaded
+        //ADTTexThread(); // nonthreaded
         ADTThread = new System.Threading.Thread(ADTTexThread);
         ADTThread.IsBackground = true;
         ADTThread.Priority = System.Threading.ThreadPriority.AboveNormal;
-        //ADTThread.Start();
+        ADTThread.Start();
     }
 
     public void MapTextureThreadRun(QueueItem queueItem)
     {
         currentMapTexture = queueItem;
+        //MapTextureThread(); // nonthreaded
         ADTThread = new System.Threading.Thread(MapTextureThread);
         ADTThread.IsBackground = true;
         ADTThread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -187,14 +190,19 @@ public class TerrainHandler : MonoBehaviour
             CreateHTBlockQuarter(frameSpread ,i, HTData, HTGroupItem.Block);
             yield return null;
         }
+
+        // Batch terrain meshes //
         StaticBatchingUtility.Combine(HTGroupItem.Block);
 
+        HTGroupItem.Block.GetComponent<ADTBlock>().enabled = true;
         LoadedQueueItems.Add(HTGroupItem);
+
         // request the LTexture //
         mapTextureQueue.Enqueue(HTGroupItem);
+
         // request the HTexture //
         ADTTexQueue.Enqueue(HTGroupItem);
-        //ADT.LoadTerrainTextures(HTGroupItem.Block.name, HTGroupItem.mapName, new Vector2(HTGroupItem.x, HTGroupItem.y));
+
         currentLoadingHTextureBlock.Enqueue(HTGroupItem);
         frameBusy = false;
         finishedTimeAssembleHT = Time.time - startTimeAssembleHT;
@@ -205,7 +213,7 @@ public class TerrainHandler : MonoBehaviour
     {
         float startTimeAssembleHTextures = Time.time;
 
-        ADT.TextureBlockData HTexData = ADT.TextureBlockDataQueue.Dequeue();
+        ADTTexData.TextureBlockData HTexData = ADTTexData.TextureBlockDataQueue.Dequeue();
         QueueItem HTextureItem = currentLoadingHTextureBlock.Dequeue();
         HTextureItem.Block.name = HTextureItem.mapName + "_" + HTextureItem.x + "_" + HTextureItem.y;
 
@@ -254,7 +262,7 @@ public class TerrainHandler : MonoBehaviour
     }
 
     // Create a part of the ADT block textures //
-    private void CreateHTextureQuarter(int fS, int Q, ADT.TextureBlockData data, GameObject Block)
+    private void CreateHTextureQuarter(int fS, int Q, ADTTexData.TextureBlockData data, GameObject Block)
     {
         for (int i = (256 / fS) * (Q - 1); i < (256 / fS) * Q; i++)
         {
@@ -276,10 +284,10 @@ public class TerrainHandler : MonoBehaviour
                 string textureName = data.terrainTexturePaths[data.textureChunksData[i].textureIds[layer]];
                 if (!LoadedTerrainTextures.ContainsKey(textureName))
                 {
-                    ADT.Texture2Ddata tdata = data.terrainTextures[textureName];
+                    ADTTexData.Texture2Ddata tdata = data.terrainTextures[textureName];
                     Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                     tex.LoadRawTextureData(tdata.TextureData);
-                    tex.mipMapBias = .5f;
+                    tex.mipMapBias = Settings.highMipMapBias;
                     tex.Apply();
                     LoadedTerrainTextures[textureName] = tex;
                 }
@@ -290,7 +298,7 @@ public class TerrainHandler : MonoBehaviour
                 {
                     if (!LoadedHTerrainTextures.ContainsKey(textureName))
                     {
-                        ADT.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                        ADTTexData.Texture2Ddata tdata = data.terrainHTextures[textureName];
                         Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                         tex.LoadRawTextureData(tdata.TextureData);
                         tex.Apply();
@@ -374,15 +382,27 @@ public class TerrainHandler : MonoBehaviour
     // Assemble low resolution map textures //
     private void LoadLTexture ()
     {
-        MapTexture.MapTextureBlock mapTextureBlock = MapTexture.MapTextureDataQueue.Dequeue();
-        Texture2D Ltexture = new Texture2D(mapTextureBlock.data.width, mapTextureBlock.data.height, mapTextureBlock.data.textureFormat, mapTextureBlock.data.hasMipmaps);
+        MapTexture.MapTextureBlock mapTextureBlock;
+        MapTexture.MapTextureDataQueue.Dequeue(out mapTextureBlock);
+        Texture2D Ltexture = new Texture2D(mapTextureBlock.data.width, mapTextureBlock.data.height, mapTextureBlock.data.textureFormat,false);
         Ltexture.wrapMode = TextureWrapMode.Clamp;
-        Ltexture.LoadRawTextureData(mapTextureBlock.data.TextureData);
-        Ltexture.Apply();
+        try
+        {
+            Ltexture.LoadRawTextureData(mapTextureBlock.data.TextureData);
+            Ltexture.mipMapBias = Settings.lowMipMapBias;
+            Ltexture.Apply();
+        }
+        catch
+        {
+            Debug.Log("Not enough texture data: " + mapTextureBlock.data.TextureData.Length);
+        }
 
         Material mat = new Material(shaderWoWTerrainLow);
+        //Material mat = LChunkMaterial;
         mat.SetTexture("_MainTex2", Ltexture);
         mat.SetTextureScale("_MainTex2", new Vector2(1, 1));
+        //mat.SetColor("_Color", Color.white);
+        mat.enableInstancing = true;
 
         for (int i = 0; i < LoadedQueueItems.Count; i++)
         {

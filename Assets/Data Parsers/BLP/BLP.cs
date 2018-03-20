@@ -32,7 +32,7 @@ public struct ARGBColor8
     /// This will also work vice versa
     /// </summary>
     /// <param name="pixel"></param>
-    public static void ConvertToBGRA(byte[] pixel)
+    public void ConvertToBGRA(byte[] pixel)
     {
         byte tmp;
         for (int i = 0; i < pixel.Length; i += 4)
@@ -44,25 +44,25 @@ public struct ARGBColor8
     }
 }
 
-public static partial class BLP
+public class BLP
 {
     //public static bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct;
 
-    private static TextureFormat textureFormat; 
-    private static byte encoding; // 1 = Uncompressed, 2 = DirectX Compressed
-    private static byte alphaDepth; // 0 = no alpha, 1 = 1 Bit, 4 = Bit (only DXT3), 8 = 8 Bit Alpha
-    private static byte alphaEncoding; // 0: DXT1 alpha (0 or 1 Bit alpha), 1 = DXT2/3 alpha (4 Bit), 7: DXT4/5 (interpolated alpha)
-    private static byte hasMipmaps; // If true (1), then there are Mipmaps
-    private static int width; // X Resolution of the biggest Mipmap
-    private static int height; // Y Resolution of the biggest Mipmap
-    private static uint[] mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
-    private static uint[] mipmapSize = new uint[16]; // Size for every level
-    private static int MipMapCount;
+    private TextureFormat textureFormat; 
+    private byte encoding; // 1 = Uncompressed, 2 = DirectX Compressed
+    private byte alphaDepth; // 0 = no alpha, 1 = 1 Bit, 4 = Bit (only DXT3), 8 = 8 Bit Alpha
+    private byte alphaEncoding; // 0: DXT1 alpha (0 or 1 Bit alpha), 1 = DXT2/3 alpha (4 Bit), 7: DXT4/5 (interpolated alpha)
+    private byte hasMipmaps; // If true (1), then there are Mipmaps
+    private int width; // X Resolution of the biggest Mipmap
+    private int height; // Y Resolution of the biggest Mipmap
+    private uint[] mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
+    private uint[] mipmapSize = new uint[16]; // Size for every level
+    private int MipMapCount;
 
-    private static ARGBColor8[] paletteBGRA = new ARGBColor8[256];
-    private static Stream str; // Reference of the stream
+    private ARGBColor8[] paletteBGRA = new ARGBColor8[256];
+    private Stream str; // Reference of the stream
 
-    public static BLPinfo Info()
+    public BLPinfo Info()
     {
         BLPinfo blpInfo = new BLPinfo();
 
@@ -88,7 +88,7 @@ public static partial class BLP
         return blpInfo;
     }
 
-    public static TextureFormat TxFormat()
+    public TextureFormat TxFormat()
     {
         if (encoding == 2)
         {
@@ -102,7 +102,7 @@ public static partial class BLP
         return TextureFormat.RGBA32;
     }
 
-    public static int GetMipMapCount()
+    public int GetMipMapCount()
     {
         int i = 0;
         while (mipmapOffsets[i] != 0) i++;
@@ -110,7 +110,7 @@ public static partial class BLP
         return MipMapCount;
     }
 
-    public static byte[] GetUncompressed(Stream stream, bool mipmaps = true)
+    public byte[] GetUncompressed(Stream stream, bool mipmaps = true)
     {
         ClearData();
         if (!mipmaps)
@@ -136,7 +136,7 @@ public static partial class BLP
         return null;
     }
 
-    private static void ClearData ()
+    private void ClearData ()
     {
         mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
         mipmapSize = new uint[16]; // Size for every level
@@ -144,7 +144,7 @@ public static partial class BLP
         //paletteBGRA = new ARGBColor8[256];
     }
 
-    private static void ParseHeaderInfo (Stream stream)
+    private void ParseHeaderInfo (Stream stream)
     {
         str = stream;
         byte[] buffer = new byte[4];
@@ -208,7 +208,7 @@ public static partial class BLP
         textureFormat = TxFormat();
     }
 
-    private static byte[] GetImageBytes(int mipmapLevel)
+    private byte[] GetImageBytes(int mipmapLevel)
 	{
 		switch (encoding)
 		{
@@ -232,7 +232,7 @@ public static partial class BLP
 		}
 	}
 
-    private static byte[] ExtractPalettizedImageData (int w, int h, byte[] data)
+    private byte[] ExtractPalettizedImageData (int w, int h, byte[] data)
     {
         int length = w * h;
         byte[] pic = new byte[length * 4];
@@ -246,7 +246,7 @@ public static partial class BLP
         return pic;
     }
 
-    private static byte GetAlpha (byte[] data, int index, int alphaStart)
+    private byte GetAlpha (byte[] data, int index, int alphaStart)
     {
         switch (alphaDepth)
         {
@@ -263,9 +263,32 @@ public static partial class BLP
         }
     }
 
-    public static void Close()
+    public void Close()
     {
         str.Close();
         str = null;
+    }
+
+    private string ReadFourCCReverse(Stream stream) // 4 byte to 4 chars
+    {
+
+        string str = "";
+        for (int i = 1; i <= 4; i++)
+        {
+            int b = stream.ReadByte();
+            try
+            {
+                var s = System.Convert.ToChar(b);
+                if (s != '\0')
+                {
+                    str = str + s;
+                }
+            }
+            catch
+            {
+                Debug.Log("Couldn't convert Byte to Char: " + b);
+            }
+        }
+        return str;
     }
 }

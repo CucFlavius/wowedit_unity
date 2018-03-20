@@ -53,19 +53,6 @@ public static partial class ADT {
         return value;
     }
     
-    /*
-    private static int ReadLong(MemoryStream stream) // 4 bytes to int
-    {
-        byte[] bytes = new byte[4];
-        int value;
-        for (int i = 0; i < 4; i++)
-        {
-            bytes[i] = (byte)stream.ReadByte();
-        }
-        value = System.BitConverter.ToInt32(bytes, 0);
-        return value;
-    }
-    */
     private static float ReadFloat(MemoryStream stream) // 4 bytes to float
     {
         byte[] bytes = new byte[4];
