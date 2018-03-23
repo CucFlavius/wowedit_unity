@@ -4,16 +4,10 @@ using UnityEngine.UI;
 
 public class ConsoleToGUI : MonoBehaviour
 {
-
 	public UnityEngine.UI.Text ConsoleText;
 
     string myLog;
     Queue myLogQueue = new Queue();
-
-    void Start()
-    {
-
-    }
 
     void OnEnable()
     {
@@ -30,11 +24,11 @@ public class ConsoleToGUI : MonoBehaviour
         myLog = logString;
         string newString = "\n [" + type + "] : " + myLog;
         myLogQueue.Enqueue(newString);
-        //if (type == LogType.Exception)
-        //{
+        if (type == LogType.Log)
+        {
             newString = "\n" + stackTrace;
             myLogQueue.Enqueue(newString);
-        //}
+        }
         myLog = string.Empty;
         foreach (string mylog in myLogQueue)
         {
@@ -42,10 +36,8 @@ public class ConsoleToGUI : MonoBehaviour
         }
     }
 
-    void Update () {
-				
-	    //UnityEngine.UI.Text instruction = ConsoleText.GetComponent<Text>();
-        ConsoleText.text = myLog;
-				
+    void Update ()
+    {
+        ConsoleText.text = myLog;	
     }
 }

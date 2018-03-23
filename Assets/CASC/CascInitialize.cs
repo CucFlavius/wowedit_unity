@@ -6,7 +6,7 @@ public static class CascInitialize  {
 
     public static bool ThreadRunning;
     public static bool Initialized;
-    public static bool Working;
+    public static bool Working = false;
     public static bool Working_InitializationFinished;
     public static string CurrentWorkerText;
     public static string PreviousWorkerText;
@@ -18,7 +18,7 @@ public static class CascInitialize  {
     public static void Reset()
     {
         Initialized = false;
-        Working = false;
+        //Working = false;
         Working_InitializationFinished = false;
     }
 
@@ -49,8 +49,8 @@ public static class CascInitialize  {
 
     private static void CASCInitThread()
     {
-        while (ThreadRunning)
-        {
+        //while (ThreadRunning)
+        //{
             CurrentDataVersion = Settings.Data[3];
             Working = true;
 
@@ -95,6 +95,6 @@ public static class CascInitialize  {
             CASCThread.Abort();
             CASCThread = null;
             ThreadRunning = false;
-        }
+        //}
     }
 }

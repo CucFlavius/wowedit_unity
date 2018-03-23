@@ -10,35 +10,6 @@ public static class ADT_ProcessData {
     {
         foreach (ADT.MeshChunkData chunkData in ADT.meshBlockData.meshChunksData)
         {
-            // vertices array //
-
-            /*
-            chunkData.VertexArray = new Vector3[145];
-            int currentVertex = 0;
-
-            chunkData.VertexArray = ADT.Chunk_Vertices;
-            for (int i = 0; i < 17; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        chunkData.VertexArray[currentVertex].y = chunkData.VertexHeights[currentVertex] / Settings.worldScale;
-                        currentVertex++;
-                    }
-                }
-                if (i % 2 == 1)
-                {
-                    for (int j1 = 0; j1 < 8; j1++)
-                    {
-                        chunkData.VertexArray[currentVertex].y = chunkData.VertexHeights[currentVertex] / Settings.worldScale;
-                        currentVertex++;
-                    }
-                }
-            }
-            currentVertex = 0;
-            */
-            
             chunkData.VertexArray = new Vector3[145];
             int currentVertex = 0;
             for (int i = 0; i < 17; i++)
@@ -66,7 +37,6 @@ public static class ADT_ProcessData {
             }
             currentVertex = 0;
 
-
             // triangles array //
             chunkData.TriangleArray = ADT.Chunk_Triangles;
 
@@ -78,7 +48,6 @@ public static class ADT_ProcessData {
                                                  chunkData.MeshPosition.z / Settings.worldScale,
                                                  chunkData.MeshPosition.y / Settings.worldScale);
             chunkData.MeshPosition = newMapPosition;
-            
         }
     }
 
@@ -151,6 +120,4 @@ public static class ADT_ProcessData {
             }
         }
     }
-
-
 }

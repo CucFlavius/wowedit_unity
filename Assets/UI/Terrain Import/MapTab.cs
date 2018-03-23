@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MapTab : MonoBehaviour {
 
-    public GameObject terrain;
+    private GameObject terrain;
 
     public void MapTabClicked ()
     {

@@ -48,8 +48,6 @@ public class ADTTex
                     ADTTexData.textureBlockData.terrainTextures.Add(texturePath, texture2Ddata);
                     texturePath = null;
                     numberOfTextures++;
-                    //stream.Close();
-                    //stream = null;
                 }
             }
         }
@@ -198,11 +196,11 @@ public class ADTTex
                 {
                     if (chunkData.alpha_map_compressed[l] == false)
                     {
-                        chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream), 64));
+                        chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
                     }
                     else if (chunkData.alpha_map_compressed[l] == true)
                     {
-                        chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                        chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
                     }
                 }
                 else if (WDT.Flags[mapname].adt_has_height_texturing == false)
@@ -211,22 +209,22 @@ public class ADTTex
                     {
                         if (chunkData.alpha_map_compressed[l] == false)
                         {
-                            chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_UncompressedHalfRes(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
                         }
                         else if (chunkData.alpha_map_compressed[l] == true)
                         {
-                            chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
                         }
                     }
                     else if (WDT.Flags[mapname].adt_has_big_alpha == true)
                     {
                         if (chunkData.alpha_map_compressed[l] == false)
                         {
-                            chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_UncompressedFullRes(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
                         }
                         else if (chunkData.alpha_map_compressed[l] == true)
                         {
-                            chunkData.alphaLayers.Add(s.RotateAlpha8(AlphaMap_Compressed(ADTtexstream),64));
+                            chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
                         }
                     }
                 }

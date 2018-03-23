@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class RightClickHandler : MonoBehaviour {
 
-    public MinimapHandler minimapHandler;
+    public TerrainImport terrainImport;
 
     void Update()
     {
@@ -23,7 +23,7 @@ public class RightClickHandler : MonoBehaviour {
                 {
                     if (go.gameObject.CompareTag("MinimapBlock"))
                     {
-                        minimapHandler.SelectPlayerSpawn(go.gameObject);
+                        terrainImport.SelectPlayerSpawn(go.gameObject);
                     }
                 }
             }

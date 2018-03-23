@@ -34,10 +34,12 @@
 	SubShader
 	{
 		Tags{ "RenderType" = "Opaque" }
+		//Cull Off
 		LOD 200
 		Name "FORWARD"
 		CGPROGRAM
-		#pragma surface surf Standard vertex:vert addshadow 
+		
+		#pragma surface surf Lambert vertex:vert addshadow 
 		#pragma target 3.0
 		#pragma multi_compile VERTEX_COLOR_ON VERTEX_COLOR_OFF
 		#include "Lighting.cginc"
@@ -67,7 +69,8 @@
 			float3 vertexColor;
 		};
 
-		struct v2f {
+		struct v2f 
+		{
 			float4 pos : SV_POSITION;
 			fixed4 color : COLOR;
 		};
@@ -78,9 +81,9 @@
 			o.vertexColor = v.color; // Save the Vertex Color in the Input for the surf() method
 		}
 
-		void surf(Input IN, inout SurfaceOutputStandard o)
+		void surf(Input IN, inout SurfaceOutput o)
 		{
-			float2 UVs = { 1 - IN.uv_layer0.x, IN.uv_layer0.y };	// Fixed UVs
+			float2 UVs = { IN.uv_layer0.x, IN.uv_layer0.y };	// Fixed UVs
 
 			float shadowMap = tex2D(_shadowMap, UVs).a;
 			float3 shadowMapRGB = float3(shadowMap, shadowMap, shadowMap);

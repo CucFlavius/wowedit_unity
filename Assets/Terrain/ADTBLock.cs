@@ -14,7 +14,6 @@ public class ADTBlock : MonoBehaviour {
     private void Start()
     {
         cameraMain = Camera.main;
-        //blockCenter = transform.GetChild(119).transform.position;
         blockCorners = new Vector3[4];
         blockCorners[0] = transform.GetChild(0).transform.position;
         blockCorners[1] = transform.GetChild(15).transform.position;
@@ -52,21 +51,17 @@ public class ADTBlock : MonoBehaviour {
 
     public void UpdatePosition ()
     {
-
         // find minimum corner distance //
         float distance = 10000;
         for (int i = 0; i < 4; i++)
         {
             Vector3 heading = blockCorners[i] - cameraMain.transform.position;
             float currentDistance = Vector3.Dot(heading, cameraMain.transform.forward);
-            //float currentDistance = Vector3.Distance(cameraMain.transform.position, blockCorners[i]);
             if (currentDistance < distance)
             {
                 distance = currentDistance;
             }
         }
-
-
         if (distance < Settings.terrainMaterialDistance / Settings.worldScale)
         {
             if (materialLoDState == 1 || reCheck)
@@ -86,62 +81,4 @@ public class ADTBlock : MonoBehaviour {
             }
         }
     }
-
-    /*
-    private void Enabler()
-    {
-        for (int i = 1; i <= 4; i++)
-        {
-            for (int j = (256 / 4) * (i - 1); j < (256 / 4) * i; j++)
-            {
-                transform.GetChild(j).GetComponent<ADTChunk>().enabled = true;
-            }
-        }
-    }
-
-    private void Disabler()
-    {
-        for (int i = 1; i <= 4; i++)
-        {
-            for (int j = (256 / 4) * (i - 1); j < (256 / 4) * i; j++)
-            {
-                 transform.GetChild(j).GetComponent<ADTChunk>().enabled = false;
-            }
-        }
-    }
-    */
-
-    /*
-    IEnumerator Enabler ()
-    {
-        for (int i = 1; i <= 4; i++)
-        {
-            for (int j = (256 / 4) * (i - 1); j < (256 / 4) * i; j++)
-            {
-                transform.GetChild(j).GetComponent<ADTChunk>().enabled = true;
-            }
-            yield return null;
-        }
-    }
-
-    IEnumerator Disabler()
-    {
-
-        for (int i = 1; i <= 4; i++)
-        {
-            for (int j = (256 / 4) * (i - 1); j < (256 / 4) * i; j++)
-            {
-                try
-                {
-                    transform.GetChild(j).GetComponent<ADTChunk>().enabled = false;
-                }
-                catch
-                {
-                    Debug.Log(j);
-                }
-            }
-            yield return null;
-        }
-    }
-    */
 }

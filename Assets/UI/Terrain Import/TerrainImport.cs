@@ -19,19 +19,35 @@ public class TerrainImport : MonoBehaviour {
     public List<string> FilteredList;
     public string FilterWord;
     public static bool Initialized = false;
+    public Minimap minimap;
+    public GameObject minimapScrollPanel;
+    public Vector2 currentSelectedPlayerSpawn;
+    public GameObject SelectPlayerBlockIcon;
+    public GameObject SelectPlayerBlockIcon_prefab;
+    public GameObject World;
+    private string selectedMapName = "";
+    public GameObject LoadingText;
+
+    void Start()
+    {
+        currentSelectedPlayerSpawn = new Vector2(0, 0); // default
+    }
 
     public void MapSelected(string mapName)
     {
+        /*
         UIManager.GetComponent<MinimapHandler>().ClearMinimaps();
         string mapPath = null;
         string minimapPath = null;
 
+        
         // Parse WDT //
         if (!WDT.Flags.ContainsKey(mapName))
         {
             string wdtPath = @"world\maps\" + mapName + @"\";
             WDT.Load(wdtPath, mapName);
         }
+        
 
         if (Settings.Data[2] == "2") // extracted //
         {
@@ -75,6 +91,10 @@ public class TerrainImport : MonoBehaviour {
                 ErrorMessageText.text = "WMO Only Zone."+"\n"+"No minimaps available.";
             }
         }
+        */
+        selectedMapName = mapName;
+        minimap.ClearMinimaps(minimapScrollPanel);
+        minimap.Load(mapName, minimapScrollPanel);
     }
 
     public void Initialize()
@@ -101,6 +121,7 @@ public class TerrainImport : MonoBehaviour {
         if (!Initialized)
         {
             Initialize();
+            minimap.pause = false;
         }
         TerrainImporterPanel.SetActive(true);
     }
@@ -161,7 +182,7 @@ public class TerrainImport : MonoBehaviour {
 
     public bool CheckForADTs(string path)
     {
-        string[] files = Casc.GetFileListFromFolder(path);
+        List<string> files = Casc.GetFileListFromFolder(path);
         foreach (string file in files)
         {
             if (Path.GetExtension(file).ToLower() == ".adt")
@@ -176,6 +197,30 @@ public class TerrainImport : MonoBehaviour {
             return true;
         else
             return false;
+    }
+
+    public void SelectPlayerSpawn(GameObject minimapBlock)
+    {
+        if (SelectPlayerBlockIcon == null)
+            SelectPlayerBlockIcon = Instantiate(SelectPlayerBlockIcon_prefab);
+
+        SelectPlayerBlockIcon.SetActive(true);
+        SelectPlayerBlockIcon.transform.SetParent(minimapBlock.transform);
+        SelectPlayerBlockIcon.GetComponent<RectTransform>().localPosition = new Vector2(50,-50);
+        SelectPlayerBlockIcon.GetComponent<RectTransform>().localScale = minimapBlock.transform.localScale;
+        currentSelectedPlayerSpawn = minimapBlock.GetComponent<MinimapBlock>().minimapCoords;
+    }
+
+    public void ClickedLoadFull()
+    {
+        minimap.pause = true;
+        if (currentSelectedPlayerSpawn == new Vector2(0, 0) || currentSelectedPlayerSpawn == null)
+        {
+            currentSelectedPlayerSpawn = new Vector2(MinimapData.Min.y + ((MinimapData.Max.y - MinimapData.Min.y) / 2), MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
+        }
+        Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
+        World.GetComponent<WorldLoader>().LoadFullWorld(selectedMapName, currentSelectedPlayerSpawn);
+        LoadingText.SetActive(true);
     }
 
 }

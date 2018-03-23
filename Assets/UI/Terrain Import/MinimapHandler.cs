@@ -33,7 +33,7 @@ public class MinimapHandler : MonoBehaviour {
         ClearData();
 
         // update global list of minimap files : MinimapFileList //
-        string[] FileList = Casc.GetFileListFromFolder(minimapPath);
+        List<string> FileList = Casc.GetFileListFromFolder(minimapPath);
         foreach (string file in FileList)
         {
             var fileName = Path.GetFileNameWithoutExtension(file);
@@ -59,7 +59,7 @@ public class MinimapHandler : MonoBehaviour {
             //currentSelectedPlayerSpawn = new Vector2(firstyCoord , firstxCoord);
         }
         Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
-        World.GetComponent<WorldLoader>().LoadFullWorld(MinimapFileList, map_name, currentSelectedPlayerSpawn);
+        World.GetComponent<WorldLoader>().LoadFullWorld(map_name, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);
     }
 

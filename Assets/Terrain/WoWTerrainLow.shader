@@ -1,5 +1,7 @@
-﻿Shader "WoWEdit/WoWTerrainLow" {
-	Properties {
+﻿Shader "WoWEdit/WoWTerrainLow" 
+{
+	Properties 
+	{
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_MainTex2("Albedo (RGB)", 2D) = "white" {}
@@ -8,13 +10,17 @@
 		_ChunkCoordX ("Chunk Coord X", Float) = 0.0
 		_ChunkCoordY("Chunk Coord Y", Float) = 0.0
 	}
-	SubShader {
-		Tags { "RenderType"="Opaque" }
+	SubShader 
+	{
+		Tags 
+		{
+			"RenderType"="Opaque"
+		}
 		LOD 200
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows
+		#pragma surface surf Lambert addshadow
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -22,7 +28,8 @@
 		sampler2D _MainTex;
 		sampler2D _MainTex2;
 
-		struct Input {
+		struct Input 
+		{
 			float2 uv_MainTex;
 			float2 uv2_MainTex2;
 		};
@@ -40,22 +47,14 @@
 		// put more per-instance properties here
 		UNITY_INSTANCING_CBUFFER_END
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
-
-			//float offsetX = _ChunkCoordX / 16;
-			//float offsetY = _ChunkCoordY / 16;
-			//float size = IN.uv_MainTex.x / 16;
+		void surf (Input IN, inout SurfaceOutput o) 
+		{
 			float2 UVs;
 			UVs.x = IN.uv2_MainTex2.x;
 			UVs.y = IN.uv2_MainTex2.y;
 
-
-			// Albedo comes from a texture tinted by color
 			fixed4 c = tex2D (_MainTex2, UVs) * _Color;
 			o.Albedo = c.rgb;
-			// Metallic and smoothness come from slider variables
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;
 		}
 		ENDCG

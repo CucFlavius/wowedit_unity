@@ -161,10 +161,10 @@ public static partial class ADT
         #region UV's LoD0
 
         Chunk_UVs = new Vector2[145];
-        for (int u = 0; u < 145; u++)
+        for (int u = 144; u >= 0; u--)
         {
-            Chunk_UVs[u] = new Vector2(Chunk_Vertices[u].x / (33.3333f / Settings.worldScale),
-                                       Chunk_Vertices[u].z / (33.3333f / Settings.worldScale));
+            Chunk_UVs[u] = new Vector2(-(Chunk_Vertices[u].z / (33.3333f / Settings.worldScale)),
+                                       -(Chunk_Vertices[u].x / (33.3333f / Settings.worldScale)));
         }
 
         #endregion

@@ -101,7 +101,7 @@ public class DevTools : MonoBehaviour {
 
         //Vector2 currentSelectedPlayerSpawn = new Vector2(firstyCoord + ((lastyCoord - firstyCoord) / 2), firstxCoord + ((lastxCoord - firstxCoord) / 2));
         //Debug.Log(MinimapFileList.Count);
-        World.LoadFullWorld(MinimapFileList, mapName, currentSelectedPlayerSpawn);
+        World.LoadFullWorld(mapName, currentSelectedPlayerSpawn);
     }
 
     private void GetWDTInfo(string map_name)
@@ -160,7 +160,7 @@ public class DevTools : MonoBehaviour {
         MinimapFileList.Clear();
 
         // update global list of minimap files : MinimapFileList //
-        string[] FileList = Casc.GetFileListFromFolder(minimapPath);
+        List<string> FileList = Casc.GetFileListFromFolder(minimapPath);
         foreach (string file in FileList)
         {
             var fileName = Path.GetFileNameWithoutExtension(file);
@@ -173,7 +173,7 @@ public class DevTools : MonoBehaviour {
 
     public bool CheckForADTs(string path)
     {
-        string[] files = Casc.GetFileListFromFolder(path);
+        List<string> files = Casc.GetFileListFromFolder(path);
         foreach (string file in files)
         {
             if (Path.GetExtension(file).ToLower() == ".adt")

@@ -5,13 +5,11 @@ using UnityEngine;
 public static partial class ADT {
 
     // block queue //
-    //public static Queue<BlockData> AllBlockData = new Queue<BlockData>();
     public static Queue<MeshBlockData> MeshBlockDataQueue = new Queue<MeshBlockData>();
     public static Queue<TextureBlockData> TextureBlockDataQueue = new Queue<TextureBlockData>();
     public static Queue<ModelBlockData> ModelBlockDataQueue = new Queue<ModelBlockData>();
 
     // block buffer //
-    //public static BlockData blockData = new BlockData();
     public static MeshBlockData meshBlockData = new MeshBlockData();
     public static TextureBlockData textureBlockData = new TextureBlockData();
     public static ModelBlockData modelBlockData = new ModelBlockData();
@@ -118,17 +116,6 @@ public static partial class ADT {
         public int doodadSet;
         public int nameSet;
     }
-
-    /*
-    public static void ClearBlockData ()
-    {
-        Debug.Log("Cleared buffer.");
-        blockData.terrainTexturePaths.Clear();
-        blockData.terrainTextures.Clear();
-        meshBlockData.meshChunksData.Clear();
-        textureBlockData.textureChunksData.Clear();
-    }
-    */
 
     public enum ADTchunkID // blame Fabi
     {

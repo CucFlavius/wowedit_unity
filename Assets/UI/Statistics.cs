@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Statistics : MonoBehaviour {
-
+public class Statistics : MonoBehaviour
+{
     public TerrainHandler terrainHandler;
     public UnityEngine.UI.Text statsText;
 
@@ -42,50 +42,9 @@ public class Statistics : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+    {
         UpdateTerrainMeshStats();
-
-        /*
-        float ParseADTTexSpeed= ADT.finishedTimeTerrainTextures;
-        float ParseADTObjSpeed = ADT.finishedTimeTerrainModels;
-        float AverageParseSpeed = 0f;
-        float AverageCreateSpeed = 0f;
-
-
-        if (BlockParseSpeed != PreviousBlockParse || BlockCreateSpeed != PreviousBlockCreate)
-        {
-
-            int numberInParseQueue = terrainHandler.ADTThreadQueue.Count;
-            int numberInCreateQueue = ADT.AllBlockData.Count;
-
-            string RemainingParseBlocks = Tabs(numberInParseQueue, "□");
-            string RemainingCreateBlocks = Tabs(numberInCreateQueue, "■");
-
-            if (BlockParseSpeed != 0)
-            {
-                BlockParseTimes.Add(BlockParseSpeed);
-            }
-            if (BlockCreateSpeed != 0)
-            {
-                BlockCreateTimes.Add(BlockCreateSpeed);
-            }
-            AverageParseSpeed = Truncate(CalculateAverage(BlockParseTimes),2);
-            AverageCreateSpeed = Truncate(CalculateAverage(BlockCreateTimes),2);
-            statsText.text = "\n" + "[Last Block]" +
-                             "\n" + "Parse Speed: " + BlockParseSpeed + "s" +
-                             "\n" + "Create Speed: " + BlockCreateSpeed + "s" +
-                             "\n" +
-                             "\n" + "[Average]" +
-                             "\n" + "Parse Speed: " + AverageParseSpeed + "s" +
-                             "\n" + "Create Speed: " + AverageCreateSpeed + "s" +
-                             "\n" +
-                             "\n" + "[Remaining Blocks]" +
-                             "\n" + RemainingParseBlocks +
-                             "\n" + RemainingCreateBlocks +
-                             "\n";
-        }
-        */
     }
 
     private void UpdateTerrainMeshStats()
@@ -96,54 +55,42 @@ public class Statistics : MonoBehaviour {
         float AssembleHTexSpeed = Truncate(terrainHandler.finishedTimeAssembleHTextures, 2);
 
         // root parse //
-        //if (PreviousParseADTRootSpeed != ParseADTRootSpeed)
-        //{
-            PreviousParseADTRootSpeed = ParseADTRootSpeed;
-            if (ParseADTRootSpeed != 0)
-            {
-                ADTRootParseTimes.Add(ParseADTRootSpeed);
-            }
-            AverageADTRootParseSpeed = Truncate(CalculateAverage(ADTRootParseTimes), 2);
+        PreviousParseADTRootSpeed = ParseADTRootSpeed;
+        if (ParseADTRootSpeed != 0)
+        {
+            ADTRootParseTimes.Add(ParseADTRootSpeed);
+        }
+        AverageADTRootParseSpeed = Truncate(CalculateAverage(ADTRootParseTimes), 2);
 
-            int numberInParseQueue = ADT.MeshBlockDataQueue.Count;
-            RemainingHTerrainBlocks = Tabs(numberInParseQueue, "□");
-        //}
+        int numberInParseQueue = ADT.MeshBlockDataQueue.Count;
+        RemainingHTerrainBlocks = Tabs(numberInParseQueue, "□");
 
         // tex parse //
-       // if (PreviousParseADTTexSpeed != ParseADTTexSpeed)
-       // {
-            PreviousParseADTTexSpeed = ParseADTTexSpeed;
-            if (ParseADTTexSpeed != 0)
-            {
-                ADTTexParseTimes.Add(ParseADTTexSpeed);
-            }
-            AverageADTTexParseSpeed = Truncate(CalculateAverage(ADTTexParseTimes), 2);
+        PreviousParseADTTexSpeed = ParseADTTexSpeed;
+        if (ParseADTTexSpeed != 0)
+        {
+            ADTTexParseTimes.Add(ParseADTTexSpeed);
+        }
+        AverageADTTexParseSpeed = Truncate(CalculateAverage(ADTTexParseTimes), 2);
 
-            int numberInParseQueue1 = terrainHandler.ADTTexQueue.Count;
-            RemainingHTexBlocks = Tabs(numberInParseQueue1, "■");
-        //}
+        int numberInParseQueue1 = terrainHandler.ADTTexQueue.Count;
+        RemainingHTexBlocks = Tabs(numberInParseQueue1, "■");
 
         // root assemble //
-        //if (PreviousAssembleHTMeshSpeed != AssembleHTMeshSpeed)
-       // { 
-            PreviousAssembleHTMeshSpeed = AssembleHTMeshSpeed;
-            if (AssembleHTMeshSpeed != 0)
-            {
-                HTMeshCreateTimes.Add(AssembleHTMeshSpeed);
-            }
-            AverageHTMeshCreateSpeed = Truncate(CalculateAverage(HTMeshCreateTimes), 2);
-       // }
+        PreviousAssembleHTMeshSpeed = AssembleHTMeshSpeed;
+        if (AssembleHTMeshSpeed != 0)
+        {
+            HTMeshCreateTimes.Add(AssembleHTMeshSpeed);
+        }
+        AverageHTMeshCreateSpeed = Truncate(CalculateAverage(HTMeshCreateTimes), 2);
 
         // tex assemble //
-      //  if (PreviousAssembleHTexSpeed != AssembleHTexSpeed)
-      //  {
-            PreviousAssembleHTexSpeed = AssembleHTexSpeed;
-            if (AssembleHTMeshSpeed != 0)
-            {
-                HTexCreateTimes.Add(AssembleHTexSpeed);
-            }
-            AverageHTexCreateSpeed = Truncate(CalculateAverage(HTexCreateTimes), 2);
-      //  }
+        PreviousAssembleHTexSpeed = AssembleHTexSpeed;
+        if (AssembleHTMeshSpeed != 0)
+        {
+            HTexCreateTimes.Add(AssembleHTexSpeed);
+        }
+        AverageHTexCreateSpeed = Truncate(CalculateAverage(HTexCreateTimes), 2);
 
         // setup string //
         statsText.text = "\n" + "[HTerrain Mesh Speed]" +
@@ -160,7 +107,6 @@ public class Statistics : MonoBehaviour {
                  "\n" + "Average Create: " + AverageHTexCreateSpeed + "s" +
                  "\n" + "[Remaining HTexture Blocks]" +
                  "\n" + RemainingHTexBlocks;
-
     }
 
     //////////////////////

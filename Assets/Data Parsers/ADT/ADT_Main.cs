@@ -171,8 +171,6 @@ public static partial class ADT {
         meshBlockData.meshChunksData.Add(chunkData);
     }
     
-
-    
     private static void ReadMFBO(MemoryStream ADTstream)
     {
         StreamTools s = new StreamTools();
@@ -194,13 +192,10 @@ public static partial class ADT {
         }
     }
     
-
-
     ////////////////////////////
     ////// MCNK Subchunks //////
     ////////////////////////////
 
-    
     private static void ReadMCVT(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         StreamTools s = new StreamTools();
@@ -226,7 +221,6 @@ public static partial class ADT {
         // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
     } // chunk lighting
     
-
     private static void ReadMCCV(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
@@ -249,7 +243,6 @@ public static partial class ADT {
         }
     } // vertex shading
     
-
     private static void FillMCCV(MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
@@ -260,7 +253,6 @@ public static partial class ADT {
         }
     } // fill vertex shading with 127
 
-    
     private static void ReadMCNR(MemoryStream ADTstream, MeshChunkData chunkData)
     {
         StreamTools s = new StreamTools();
@@ -279,8 +271,6 @@ public static partial class ADT {
         ADTstream.Seek(13, SeekOrigin.Current);
     }  // normals
     
-
-
     private static void ReadMCSE(MemoryStream ADTstream, MeshChunkData chunkData, int MCSEsize)
     {
         if (MCSEsize != 0)

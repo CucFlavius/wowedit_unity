@@ -10,7 +10,7 @@ public class WorldLoader : MonoBehaviour {
     public GameObject WMOParent;
     public GameObject ADTBlockObject;
     public GameObject ADTLowBlockObject;
-    public MinimapHandler minimapHandler;
+    public TerrainImport terrainImport;
     public int maxWorldSize = 64;
     public GameObject[,] ADTMatrix;// = new GameObject[maxWorldSize, maxWorldSize];
     public GameObject[,] ADTLowMatrix;
@@ -56,12 +56,21 @@ public class WorldLoader : MonoBehaviour {
 
 	}
 
-    public void LoadFullWorld (List<string> MinimapFileList, string map_name, Vector2 playerSpawn)
+    public void LoadFullWorld (string map_name, Vector2 playerSpawn)
     {
         MapName = map_name;
 
         // clear Matrix //
         ClearMatrix();
+
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+                existingADTs[x, y] = MinimapData.mapAvailability[x, y].ADT;
+            }
+        }
+        /*
 
         if (MinimapFileList.Count > 0) // build a terrain list based on loaded minimaps 
         {
@@ -73,11 +82,6 @@ public class WorldLoader : MonoBehaviour {
                 int yCoord = int.Parse(split0.Split("_"[0])[1]);
                 existingADTs[xCoord, yCoord] = true;
             }
-
-            // find a middle one //
-            string split1 = MinimapFileList[MinimapFileList.Count / 2].Split("map"[2])[1];
-            int MidBlockX = int.Parse(split1.Split("_"[0])[0]);
-            int MidBlockY = int.Parse(split1.Split("_"[0])[1]);
         }
         else // check WDT for existing ADT's instead
         {
@@ -93,6 +97,7 @@ public class WorldLoader : MonoBehaviour {
                 }
             }
         }
+        */
         // Initial spawn //
         ClearLoDArray(previousTerrainLod);
         //ClearLoDArray(currentTerrainLod);
@@ -344,7 +349,7 @@ public class WorldLoader : MonoBehaviour {
     {
         if (TerrainParent.transform.childCount > 0)
         {
-            minimapHandler.currentSelectedPlayerSpawn = new Vector2(0, 0);
+            terrainImport.currentSelectedPlayerSpawn = new Vector2(0, 0);
             ClearMatrix();
 
             foreach (Transform child in TerrainParent.transform)

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Fps : MonoBehaviour
 {
-
     string label = "";
 
     int frameCount = 0;

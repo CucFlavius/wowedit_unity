@@ -17,8 +17,6 @@ public static partial class WDT {
 
     private static void ReadMPHD (Stream WDTstream, string mapname, WDTflagsdata WDTflags)
     {
-        
-
         string MPHD = ReadFourCC(WDTstream);
         int MPHDsize = ReadLong(WDTstream);
         if (MPHD != "MPHD")
@@ -53,8 +51,6 @@ public static partial class WDT {
         int something = ReadLong(WDTstream);
         //uint32 unused[6]; // 6x4bytes padding = skip
         WDTstream.Seek(24, SeekOrigin.Current);
-
-        //Debug.Log("WDTflags.adt_has_big_alpha=" + WDTflags.adt_has_big_alpha + "WDTflags.adt_has_height_texturing=" + WDTflags.adt_has_height_texturing);
     }
 
     private static void ReadMAIN (Stream WDTstream, WDTflagsdata WDTflags)

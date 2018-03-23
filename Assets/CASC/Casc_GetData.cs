@@ -17,7 +17,6 @@ public static partial class Casc {
         {
             fileName = fileNameRaw;
         }
-        
         if (Settings.Data[2] == "0") // game
         {
             if (File.Exists(Settings.Data[0] + @"\WoWData\" + fileName))
@@ -53,11 +52,11 @@ public static partial class Casc {
         return fileStream;
     }
 
-    public static string[] GetFileListFromFolder (string path)
+    public static List<string> GetFileListFromFolder (string path)
     {
         if (Settings.Data[2] == "0") // game
         {
-            return FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
+            return new List<string>(FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])]);
         }
         else if (Settings.Data[2] == "1") // online
         {
@@ -66,7 +65,7 @@ public static partial class Casc {
         else if (Settings.Data[2] == "2") // extracted
         {
             string [] list = Directory.GetFiles(path);
-            return list;
+            return new List<string>(list);
         }
         return null;
     }
@@ -91,37 +90,53 @@ public static partial class Casc {
 
     public static bool FolderExists (string path)
     {
-        if (Settings.Data[2] == "0") // game
+        try
         {
-            return FileTree.ContainsKey(path.Replace(@"\"[0], @"/"[0]));
+            if (Settings.Data[2] == "0") // game
+            {
+                return FileTree.ContainsKey(path.Replace(@"\"[0], @"/"[0]));
+            }
+            else if (Settings.Data[2] == "1") // online
+            {
+                /* ??? */
+            }
+            else if (Settings.Data[2] == "2") // extracted
+            {
+                bool exists = Directory.Exists(Settings.Data[8] + @"\" + path);
+                return exists;
+            }
+            return false;
         }
-        else if (Settings.Data[2] == "1") // online
+        catch
         {
-            /* ??? */
+            Debug.Log("CASC Error: Can't check if the folder exists.");
+            return false;
         }
-        else if (Settings.Data[2] == "2") // extracted
-        {
-            bool exists = Directory.Exists(path);
-            return exists;
-        }
-        return false;
     }
 
     public static bool FileExists (string path)
     {
-        if (Settings.Data[2] == "0") // game
+        try
         {
-            return FileList.Contains(path.Replace(@"\"[0], @"/"[0]));
+            if (Settings.Data[2] == "0") // game
+            {
+                return FileList.Contains(path.Replace(@"\"[0], @"/"[0]));
+            }
+            else if (Settings.Data[2] == "1") // online
+            {
+                /* ??? */
+            }
+            else if (Settings.Data[2] == "2") // extracted
+            {
+                bool exists = File.Exists(Settings.Data[8] + @"\" + path);
+                return exists;
+            }
+            return false;
         }
-        else if (Settings.Data[2] == "1") // online
+        catch
         {
-            /* ??? */
+            Debug.Log("CASC Error: Can't check if the file exists.");
+            return false;
         }
-        else if (Settings.Data[2] == "2") // extracted
-        {
-            bool exists = File.Exists(Settings.Data[8] + @"\" + path);
-            return exists;
-        }
-        return false;
     }
 }

@@ -277,7 +277,6 @@ public class TerrainHandler : MonoBehaviour
             Texture2D[] AlphaLayers = new Texture2D[4];
             Texture2D ShadowMap = null;
 
-            //Debug.Log(data.textureChunksData[i].NumberOfTextureLayers);
             for (int layer = 0; layer < data.textureChunksData[i].NumberOfTextureLayers; layer++)
             {
                 // Diffuse Texture //
@@ -355,11 +354,11 @@ public class TerrainHandler : MonoBehaviour
                 string diffuseName = "_layer" + ln;
                 if (DiffuseLayers[ln] != null)
                     mat.SetTexture(diffuseName, LoadedTerrainTextures[DiffuseLayers[ln]]);
-                mat.SetTextureScale(diffuseName, new Vector2(-1, -1));
+                mat.SetTextureScale(diffuseName, new Vector2(1, 1));
                 string heightName = "_height" + ln;
                 if (HeightLayers[ln] != null)
                     mat.SetTexture(heightName, LoadedHTerrainTextures[HeightLayers[ln]]);
-                mat.SetTextureScale(heightName, new Vector2(-1, -1));
+                mat.SetTextureScale(heightName, new Vector2(1, 1));
                 string alphaName = "_blend" + ln;
                 if (ln > 0 && AlphaLayers[ln] != null)
                     mat.SetTexture(alphaName, AlphaLayers[ln]);
@@ -396,14 +395,10 @@ public class TerrainHandler : MonoBehaviour
         {
             Debug.Log("Not enough texture data: " + mapTextureBlock.data.TextureData.Length);
         }
-
         Material mat = new Material(shaderWoWTerrainLow);
-        //Material mat = LChunkMaterial;
         mat.SetTexture("_MainTex2", Ltexture);
         mat.SetTextureScale("_MainTex2", new Vector2(1, 1));
-        //mat.SetColor("_Color", Color.white);
         mat.enableInstancing = true;
-
         for (int i = 0; i < LoadedQueueItems.Count; i++)
         {
             if (LoadedQueueItems[i].mapName == mapTextureBlock.mapName && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)

@@ -27,11 +27,6 @@ public struct ARGBColor8
     public byte blue;
     public byte alpha;
 
-    /// <summary>
-    /// Converts the given Pixel-Array into the BGRA-Format
-    /// This will also work vice versa
-    /// </summary>
-    /// <param name="pixel"></param>
     public void ConvertToBGRA(byte[] pixel)
     {
         byte tmp;
@@ -46,8 +41,6 @@ public struct ARGBColor8
 
 public class BLP
 {
-    //public static bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct;
-
     private TextureFormat textureFormat; 
     private byte encoding; // 1 = Uncompressed, 2 = DirectX Compressed
     private byte alphaDepth; // 0 = no alpha, 1 = 1 Bit, 4 = Bit (only DXT3), 8 = 8 Bit Alpha
@@ -125,10 +118,10 @@ public class BLP
             ParseHeaderInfo(stream);
             GetMipMapCount();
             List<byte> allDataList = new List<byte>();
-            for (int miplvl = 0; miplvl < MipMapCount; miplvl++) {
+            for (int miplvl = 0; miplvl < MipMapCount; miplvl++)
+            {
                 byte[] buffer = GetImageBytes(miplvl);
                 allDataList.AddRange(buffer);
-                
             }
             byte[] alldata = allDataList.ToArray();
             return alldata;
@@ -141,14 +134,12 @@ public class BLP
         mipmapOffsets = new uint[16]; // Offset for every Mipmap level. If 0 = no more mipmap level
         mipmapSize = new uint[16]; // Size for every level
         MipMapCount = 0;
-        //paletteBGRA = new ARGBColor8[256];
     }
 
     private void ParseHeaderInfo (Stream stream)
     {
         str = stream;
         byte[] buffer = new byte[4];
-        // Well, have to fix this... looks weird o.O
         str.Read(buffer, 0, 4);
 
         // Checking for correct Magic-Code
@@ -204,7 +195,6 @@ public class BLP
                 paletteBGRA[i].alpha = color[3];
             }
         }
-
         textureFormat = TxFormat();
     }
 
@@ -271,7 +261,6 @@ public class BLP
 
     private string ReadFourCCReverse(Stream stream) // 4 byte to 4 chars
     {
-
         string str = "";
         for (int i = 1; i <= 4; i++)
         {
