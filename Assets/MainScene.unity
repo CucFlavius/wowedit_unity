@@ -17044,7 +17044,6 @@ MonoBehaviour:
   PanelErrorMessage: {fileID: 236}
   ErrorMessageText: {fileID: 1698}
   pause: 0
-  checkWMOonly: 0
 --- !u!114 &1168
 MonoBehaviour:
   m_ObjectHideFlags: 0

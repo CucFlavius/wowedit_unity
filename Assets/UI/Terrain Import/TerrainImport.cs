@@ -35,63 +35,6 @@ public class TerrainImport : MonoBehaviour {
 
     public void MapSelected(string mapName)
     {
-        /*
-        UIManager.GetComponent<MinimapHandler>().ClearMinimaps();
-        string mapPath = null;
-        string minimapPath = null;
-
-        
-        // Parse WDT //
-        if (!WDT.Flags.ContainsKey(mapName))
-        {
-            string wdtPath = @"world\maps\" + mapName + @"\";
-            WDT.Load(wdtPath, mapName);
-        }
-        
-
-        if (Settings.Data[2] == "2") // extracted //
-        {
-            mapPath = Settings.Data[8] + @"\" + @"world\maps\" + mapName + @"\";
-            minimapPath = Settings.Data[8] + @"\" + @"world\minimaps\" + mapName + @"\";
-        }
-        else if (Settings.Data[2] == "0") // game //
-        {
-            mapPath =  @"world\maps\" + mapName;
-            minimapPath = @"world\minimaps\" + mapName;
-        }
-        bool MinimapsExist = CheckForMinimaps(minimapPath);
-        if (CheckForADTs(mapPath))
-        {
-            if (CheckForMinimaps(minimapPath))
-            {
-                PanelErrorMessage.SetActive(false);
-                // load minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath, mapName);
-            }
-            else
-            {
-                PanelErrorMessage.SetActive(true);
-                ErrorMessageText.text = "No minimaps available.";
-                // load blank minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadBlankMinimaps(mapPath, mapName);
-            }
-        }
-        else
-        {
-            if (CheckForMinimaps(minimapPath))
-            {
-                PanelErrorMessage.SetActive(true);
-                ErrorMessageText.text = "WMO Only Zone.";
-                // load minimaps //
-                UIManager.GetComponent<MinimapHandler>().LoadMinimaps(minimapPath, mapName);
-            }
-            else
-            {
-                PanelErrorMessage.SetActive(true);
-                ErrorMessageText.text = "WMO Only Zone."+"\n"+"No minimaps available.";
-            }
-        }
-        */
         selectedMapName = mapName;
         minimap.ClearMinimaps(minimapScrollPanel);
         minimap.Load(mapName, minimapScrollPanel);
@@ -99,17 +42,11 @@ public class TerrainImport : MonoBehaviour {
 
     public void Initialize()
     {
-        string mapPath = null;
+        string mapPath = @"world\maps\";
         if (Settings.Data[2] == "2") // extracted //
-        {
             DataText.text = "Data: Extracted";
-            mapPath = Settings.Data[8] + @"\" + @"world\maps\";
-        }
         else if (Settings.Data[2] == "0") // game //
-        {
             DataText.text = "Data: " + Casc.WoWVersion;
-            mapPath = @"world\maps\";
-        }
         GetMapList(mapPath);
         ClearMapList();
         PopulateMapList();

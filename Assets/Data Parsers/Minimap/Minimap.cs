@@ -15,7 +15,6 @@ public class Minimap : MonoBehaviour
     private int RemainingMinimaps = 0;
     public bool pause = false;
     
-
     void Update()
     {
         if (MinimapThread.ResetParentSize)
@@ -73,7 +72,7 @@ public class Minimap : MonoBehaviour
         minimapThread.IsBackground = true;
         minimapThread.Priority = System.Threading.ThreadPriority.AboveNormal;
         minimapThread.Start();
-        //MinimapThread.LoadThread();
+        //MinimapThread.LoadThread(); // Nonthreaded, for debug
     }
 
     // Assemble the Minimap GameObjects //
@@ -86,7 +85,6 @@ public class Minimap : MonoBehaviour
         instance.name = "map" + blockData.coords.x + "_" + blockData.coords.y + ".blp";
         instance.tag = "MinimapBlock";
         instance.GetComponent<MinimapBlock>().minimapCoords = blockData.coords;
-        //instance.isStatic = true;
         if (MinimapData.mapAvailability[(int)blockData.coords.x, (int)blockData.coords.y].Minimap)
         {
             Texture2D tex = new Texture2D(blockData.textureInfo.width, blockData.textureInfo.height, blockData.textureInfo.textureFormat, false);

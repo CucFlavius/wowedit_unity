@@ -23,7 +23,7 @@ public static class MinimapThread
     }
 
     // Build an array of available minimaps and maps //
-    private static void CompileMapList(string mapName)
+    public static void CompileMapList(string mapName)
     {
         MinimapData.dataExists.WDT = false;
         if (!WDT.Flags.ContainsKey(mapName))
@@ -53,7 +53,6 @@ public static class MinimapThread
                 // ADT files //
                 if (MinimapData.dataExists.ADT)
                 {
-                    //if (Casc.FileExists(@"world\maps\" + mapName + @"\" + mapName + "_" + x + "_" + y + ".adt"))
                     if (ADTs.Contains(mapName + "_" + x + "_" + y + ".adt"))
                         MinimapData.mapAvailability[x, y].ADT = true;
                     else
@@ -62,7 +61,6 @@ public static class MinimapThread
                 // Minimap files //
                 if (MinimapData.dataExists.Minimap)
                 {
-                    //if (Casc.FileExists(@"world\minimaps\" + mapName + @"\" + "map" + x + "_" + y + ".blp"))
                     if (Minimaps.Contains("map" + x + "_" + y + ".blp"))
                         MinimapData.mapAvailability[x, y].Minimap = true;
                     else
@@ -105,7 +103,6 @@ public static class MinimapThread
         }
         MinimapData.Min = new Vector2(firstXCoord, firstYCoord);
         MinimapData.Max = new Vector2(lastXCoord, lastYCoord);
-        //Debug.Log(MinimapData.Min + " " + MinimapData.Max);
         if (MinimapData.Total == 0)
             WMOOnlyZone = true;
         else
@@ -115,7 +112,6 @@ public static class MinimapThread
     // Request BLP blocks //
     private static void RequestAvailableBLPs(string mapName)
     {
-        
         int X = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
         int Y = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
         Debug.Log(X + " " + Y);

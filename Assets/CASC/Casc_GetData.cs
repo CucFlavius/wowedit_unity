@@ -56,7 +56,8 @@ public static partial class Casc {
     {
         if (Settings.Data[2] == "0") // game
         {
-            return new List<string>(FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])]);
+            string[] list = FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
+            return new List<string>(list);
         }
         else if (Settings.Data[2] == "1") // online
         {
@@ -64,8 +65,13 @@ public static partial class Casc {
         }
         else if (Settings.Data[2] == "2") // extracted
         {
-            string [] list = Directory.GetFiles(path);
-            return new List<string>(list);
+            string[] list = Directory.GetFiles(Settings.Data[8] + @"\" + path);
+            List<string> listl = new List<string>();
+            for (int i = 0; i < list.Length; i++)
+            {
+                listl.Add(Path.GetFileName(list[i]));
+            }
+            return listl;
         }
         return null;
     }
@@ -82,7 +88,7 @@ public static partial class Casc {
         }
         else if (Settings.Data[2] == "2") // extracted
         {
-            string[] list = Directory.GetDirectories(path);
+            string[] list = Directory.GetDirectories(Settings.Data[8] + @"\" + path);
             return list;
         }
         return null;
