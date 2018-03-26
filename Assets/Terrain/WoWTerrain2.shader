@@ -9,10 +9,10 @@
 		[NoScaleOffset] _layer3("Layer 3", 2D) = "black" {}
 
 		[Header(Layer Tiling)]
-		layer0scale("layer0scale", Float) = 2
-		layer1scale("layer1scale", Float) = 2
-		layer2scale("layer2scale", Float) = 2
-		layer3scale("layer3scale", Float) = 2
+		layer0scale("layer0scale", Float) = 1
+		layer1scale("layer1scale", Float) = 1
+		layer2scale("layer2scale", Float) = 1
+		layer3scale("layer3scale", Float) = 1
 
 		[Header(Height Textures)]
 		[NoScaleOffset] _height0("Height 0", 2D) = "black" {}
@@ -99,27 +99,23 @@
 			half alphaMap3 = tex2D(_blend3, UVs).a;
 			blendTex = float3(alphaMap1, alphaMap2, alphaMap3);
 
-			float3 one3 = { 1.0, 1.0, 1.0 };
-			float4 one4 = { 1.0, 1.0, 1.0, 1.0 };
-			float4 zero = { 0,0,0,0 };
-
-			float sum = blendTex.x + blendTex.y + blendTex.z;
+			float sum = dot(float3(1.0, 1.0, 1.0), blendTex);
 			float clamp_result = clamp(sum, 0, 1);
 			float4 layer_weights = float4(1.0 - clamp_result,blendTex);
 			float4 layer_pct = float4(layer_weights.x * (tex2D(_height0, tc0).a * heightScale[0] + heightOffset[0])
-			, layer_weights.y * (tex2D(_height1, tc1).a * heightScale[1] + heightOffset[1])
-			, layer_weights.z * (tex2D(_height2, tc2).a * heightScale[2] + heightOffset[2])
-			, layer_weights.w * (tex2D(_height3, tc3).a * heightScale[3] + heightOffset[3])
-			);
+									, layer_weights.y * (tex2D(_height1, tc1).a * heightScale[1] + heightOffset[1])
+									, layer_weights.z * (tex2D(_height2, tc2).a * heightScale[2] + heightOffset[2])
+									, layer_weights.w * (tex2D(_height3, tc3).a * heightScale[3] + heightOffset[3])
+									);
 
 			float4 max1 = max(layer_pct.x, layer_pct.y);
-			float4 max2 = max(layer_pct.y, layer_pct.z);
+			float4 max2 = max(layer_pct.z, layer_pct.w);
 			float4 max3 = max(max1, max2);
 			float4 layer_pct_max = max3;
-			float4 scale = one4 - clamp(layer_pct_max - layer_pct, 0, 1);
+			float4 scale = float4(1.0, 1.0, 1.0, 1.0) - clamp(layer_pct_max - layer_pct, 0, 1);
 			layer_pct = layer_pct * scale;
-			float4 sum2 = dot(one4, layer_pct);
-			layer_pct = layer_pct / float4(sum2);
+			float sum2 = dot(float4(1.0, 1.0, 1.0, 1.0), layer_pct);
+			layer_pct = layer_pct / float4(sum2, sum2, sum2, sum2);
 
 			float4 weightedLayer_0 = tex2D(_layer0, tc0) * layer_pct.x;
 			float4 weightedLayer_1 = tex2D(_layer1, tc1) * layer_pct.y;
@@ -133,6 +129,7 @@
 			// and combine weighted layers with vertex color and a constant factor to have the final diffuse layer
 			float3 matDiffuse = (weightedLayer_0.rgb + weightedLayer_1.rgb + weightedLayer_2.rgb + weightedLayer_3.rgb) * IN.vertexColor.rgb * 2.0; // * 2.0 because mccv goes from 0.0 to 1.0
 			//float3 matDiffuseShadow = (weightedLayer_0.rgb + weightedLayer_1.rgb + weightedLayer_2.rgb + weightedLayer_3.rgb) * IN.vertexColor.rgb * 2.0 -(shadowMapRGB /3); // * 2.0 because mccv goes from 0.0 to 1.0
+			//float3 matDiffuse = weightedLayer_0.rgb + weightedLayer_1.rgb + weightedLayer_2.rgb + weightedLayer_3.rgb;
 			o.Albedo = matDiffuse;
 		}
 		ENDCG	

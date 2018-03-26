@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 public class Flags
 {
     ///////////////////////////////////
     #region Flag Structs
 
-    public enum TerrainTextureFlag : uint
+    public struct TerrainTextureFlag
     {
-        do_not_load_specular_or_height_texture_but_use_cubemap = 1,
-        Unknown = 3,
-        texture_scale = 4,
-        Unknown2 = 24
+        public bool do_not_load_specular_or_height_texture_but_use_cubemap;// = 1,
+        //Unknown;// = 3,
+        public int texture_scale;// = 4,
+        //Unknown2;// = 24
     }
 
     public struct MCNKflags
@@ -83,14 +84,27 @@ public class Flags
 
     public TerrainTextureFlag ReadTerrainTextureFlag(Stream stream)
     {
+        StreamTools s = new StreamTools();
         byte[] bytes = new byte[4];
-        uint value;
-        for (int i = 0; i < 4; i++)
-        {
-            bytes[i] = (byte)stream.ReadByte();
-        }
-        value = System.BitConverter.ToUInt32(bytes, 0);
-        return (TerrainTextureFlag)value;
+        TerrainTextureFlag value = new TerrainTextureFlag();
+        stream.Read(bytes, 0, 4);
+        BitArray flags = new BitArray(bytes);
+        value.do_not_load_specular_or_height_texture_but_use_cubemap = flags[0];
+        bool[] texScaleBools = new bool[4];
+        texScaleBools[3] = flags[4];
+        texScaleBools[2] = flags[5];
+        texScaleBools[1] = flags[6];
+        texScaleBools[0] = flags[7];
+        /*
+        BitArray texScaleBitArray = new BitArray(texScaleBools);
+        value.texture_scale = (int)s.getIntFromBitArray(texScaleBitArray);
+        */
+        value.texture_scale = s.getUintFrom4Bits(texScaleBools);
+        value.texture_scale = 2 * value.texture_scale;
+        if (value.texture_scale == 0)
+            value.texture_scale = 1;
+        //Debug.Log(value.texture_scale);
+        return value;
     }
 
     public MDDFFlags ReadMDDFFlags(Stream stream)

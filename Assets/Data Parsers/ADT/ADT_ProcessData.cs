@@ -79,10 +79,10 @@ public static class ADT_ProcessData {
 
     public static void Load_hTextures ()
     {
-        if (ADT.textureBlockData.MTXP)
+        if (ADTTexData.textureBlockData.MTXP)
         {
-            ADT.textureBlockData.terrainHTextures = new Dictionary<string, ADT.Texture2Ddata>();
-            foreach (string texturePath in ADT.textureBlockData.terrainTexturePaths)
+            ADTTexData.textureBlockData.terrainHTextures = new Dictionary<string, ADTTexData.Texture2Ddata>();
+            foreach (string texturePath in ADTTexData.textureBlockData.terrainTexturePaths)
             {
                 string noExtension = Path.GetFileNameWithoutExtension(texturePath);
                 string directoryPath = Path.GetDirectoryName(texturePath);
@@ -94,7 +94,7 @@ public static class ADT_ProcessData {
                     BLP blp = new BLP();
                     byte[] data = blp.GetUncompressed(stream, true);
                     BLPinfo info = blp.Info();
-                    ADT.Texture2Ddata texture2Ddata = new ADT.Texture2Ddata();
+                    ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
                     texture2Ddata.hasMipmaps = info.hasMipmaps;
                     texture2Ddata.width = info.width;
                     texture2Ddata.height = info.height;
@@ -102,7 +102,7 @@ public static class ADT_ProcessData {
                         texture2Ddata.hasMipmaps = false;
                     texture2Ddata.textureFormat = info.textureFormat;
                     texture2Ddata.TextureData = data;
-                    ADT.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
+                    ADTTexData.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
                     stream.Close();
                     stream = null;
                 }

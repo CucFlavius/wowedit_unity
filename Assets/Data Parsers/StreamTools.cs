@@ -6,6 +6,61 @@ using UnityEngine;
 
 public class StreamTools
 {
+    public int getUintFrom4Bits (bool[] bits)
+    {
+        int v = 0;
+        bool a = bits[0];
+        bool b = bits[1];
+        bool c = bits[2];
+        bool d = bits[3];
+
+        if (!a && !b && !c && !d)
+            v = 0;
+        else if (!a && !b && !c && d)
+            v = 1;
+        else if(!a && !b && c && !d)
+            v = 2;
+        else if(!a && !b && c && d)
+            v = 3;
+        else if (!a && b && !c && !d)
+            v = 4;
+        else if (!a && b && !c && d)
+            v = 5;
+        else if (!a && b && c && !d)
+            v = 6;
+        else if (!a && b && c && d)
+            v = 7;
+        else if (a && !b && !c && !d)
+            v = 8;
+        else if (a && !b && !c && d)
+            v = 9;
+        else if (a && !b && c && !d)
+            v = 10;
+        else if (a && !b && c && d)
+            v = 11;
+        else if (a && b && !c && !d)
+            v = 12;
+        else if (a && b && !c && d)
+            v = 13;
+        else if (a && b && c && !d)
+            v = 14;
+        else if (a && b && c && d)
+            v = 15;
+        return v;
+    }
+
+    public uint getIntFromBitArray(BitArray bitArray)
+    {
+        if (bitArray.Length > 32)
+            throw new ArgumentException("Argument length shall be at most 32 bits.");
+
+        int[] array = new int[1];
+        bitArray.CopyTo(array, 0);
+        uint asUint = unchecked((uint)array[0]);
+        return asUint;
+
+    }
+
     // 4 byte to 4 chars //
     public string ReadFourCC(MemoryStream stream) 
     {

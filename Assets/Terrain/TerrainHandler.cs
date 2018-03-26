@@ -274,6 +274,7 @@ public class TerrainHandler : MonoBehaviour
             float[] heightOffsets = new float[4];
             string[] DiffuseLayers = new string[4];
             string[] HeightLayers = new string[4];
+            Flags.TerrainTextureFlag[] TextureFlags = new Flags.TerrainTextureFlag[4];
             Texture2D[] AlphaLayers = new Texture2D[4];
             Texture2D ShadowMap = null;
 
@@ -308,6 +309,7 @@ public class TerrainHandler : MonoBehaviour
                 // Height Values //
                 data.heightScales.TryGetValue(textureName, out HeightScales[layer]);
                 data.heightOffsets.TryGetValue(textureName, out heightOffsets[layer]);
+                data.textureFlags.TryGetValue(textureName, out TextureFlags[layer]);
 
                 // Alpha Texture //
                 if (data.textureChunksData[i].alphaLayers.Count > 0 && layer > 0)
@@ -351,17 +353,15 @@ public class TerrainHandler : MonoBehaviour
             
             for (int ln = 0; ln < 4; ln++)
             {
-                string diffuseName = "_layer" + ln;
                 if (DiffuseLayers[ln] != null)
-                    mat.SetTexture(diffuseName, LoadedTerrainTextures[DiffuseLayers[ln]]);
-                mat.SetTextureScale(diffuseName, new Vector2(1, 1));
-                string heightName = "_height" + ln;
+                    mat.SetTexture("_layer" + ln, LoadedTerrainTextures[DiffuseLayers[ln]]);
+                mat.SetTextureScale("_layer" + ln, new Vector2(1, 1));
                 if (HeightLayers[ln] != null)
-                    mat.SetTexture(heightName, LoadedHTerrainTextures[HeightLayers[ln]]);
-                mat.SetTextureScale(heightName, new Vector2(1, 1));
-                string alphaName = "_blend" + ln;
+                    mat.SetTexture("_height" + ln, LoadedHTerrainTextures[HeightLayers[ln]]);
+                mat.SetTextureScale("_height" + ln, new Vector2(1 , 1 ));
                 if (ln > 0 && AlphaLayers[ln] != null)
-                    mat.SetTexture(alphaName, AlphaLayers[ln]);
+                    mat.SetTexture("_blend" + ln, AlphaLayers[ln]);
+                mat.SetFloat("layer" + ln + "scale", TextureFlags[ln].texture_scale);
             }
             if (data.MTXP)
             {
