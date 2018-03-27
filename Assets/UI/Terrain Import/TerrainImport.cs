@@ -5,44 +5,45 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public class TerrainImport : MonoBehaviour {
-
+public class TerrainImport : MonoBehaviour
+{
+    ////////////////////
+    #region References
+    
     public GameObject TerrainImporterPanel;
     public GameObject MapScrollList;
     public GameObject MapTabPrefab;
-    public UnityEngine.UI.Text DataText;
     public GameObject PanelErrorMessage;
-    public UnityEngine.UI.Text ErrorMessageText;
     public GameObject UIManager;
+    public GameObject minimapScrollPanel;
+    public GameObject SelectPlayerBlockIcon;
+    public GameObject SelectPlayerBlockIcon_prefab;
+    public GameObject World;
+    public GameObject LoadingText;
+    public Minimap minimap;
+    public UnityEngine.UI.Text DataText;
+    public UnityEngine.UI.Text ErrorMessageText;
     public UnityEngine.UI.Toggle wmoToggle;
     public UnityEngine.UI.Toggle m2Toggle;
+
+    #endregion
+    ////////////////////
+
+    ////////////////////
+    #region Globals
 
     public Dictionary<string ,GameObject> MapTabs = new Dictionary<string, GameObject>();
     public List<string> ExtractedMapList;
     public List<string> FilteredList;
     public string FilterWord;
     public static bool Initialized = false;
-    public Minimap minimap;
-    public GameObject minimapScrollPanel;
-    public Vector2 currentSelectedPlayerSpawn;
-    public GameObject SelectPlayerBlockIcon;
-    public GameObject SelectPlayerBlockIcon_prefab;
-    public GameObject World;
+    public Vector2 currentSelectedPlayerSpawn = new Vector2(0, 0); // default
     private string selectedMapName = "";
-    public GameObject LoadingText;
 
-    void Start()
-    {
-        currentSelectedPlayerSpawn = new Vector2(0, 0); // default
-    }
+    #endregion
+    ////////////////////
 
-    public void MapSelected(string mapName)
-    {
-        selectedMapName = mapName;
-        minimap.ClearMinimaps(minimapScrollPanel);
-        minimap.Load(mapName, minimapScrollPanel);
-    }
-
+    // Initialize Terrain Importer //
     public void Initialize()
     {
         string mapPath = @"world\maps\";
@@ -56,6 +57,7 @@ public class TerrainImport : MonoBehaviour {
         Initialized = true;
     }
 
+    // Open the Terrain Importer Panel //
     public void OpenTerrainImporter ()
     {
         if (!Initialized)
@@ -65,11 +67,18 @@ public class TerrainImport : MonoBehaviour {
         }
         TerrainImporterPanel.SetActive(true);
 
+        // reset spawn //
+        currentSelectedPlayerSpawn = new Vector2(0, 0); // default
+
         // reset toggles //
-        wmoToggle.isOn = ADTSettings.LoadWMOs;
-        m2Toggle.isOn = ADTSettings.LoadM2s;
+        wmoToggle.isOn = SettingsTerrainImport.LoadWMOs;
+        m2Toggle.isOn = SettingsTerrainImport.LoadM2s;
     }
 
+    ////////////////////
+    #region Map List Methods
+    
+    // Get a List of Maps from the ADT Maps Directory //
     public void GetMapList (string mapPath)
     {
         string[] list = Casc.GetFolderListFromFolder(mapPath);
@@ -78,6 +87,7 @@ public class TerrainImport : MonoBehaviour {
         ExtractedMapList.AddRange(list);
     }
 
+    // Create UI Buttons in the Map List Panel //
     public void PopulateMapList ()
     {
         for (int i =0; i < ExtractedMapList.Count; i++)
@@ -90,6 +100,7 @@ public class TerrainImport : MonoBehaviour {
         }
     }
 
+    // Destroy all UI Buttons in the Map List Panel //
     public void ClearMapList ()
     {
         MapTabs.Clear();
@@ -99,6 +110,7 @@ public class TerrainImport : MonoBehaviour {
         }
     }
 
+    // Filter Buttons in the Map List Panel based on keyword //
     public void FilterMapList (string filter)
     {
         if (filter == null)
@@ -112,7 +124,7 @@ public class TerrainImport : MonoBehaviour {
         {
             foreach (KeyValuePair<string, GameObject> entry in MapTabs)
             {
-                if (entry.Key.Contains(filter))
+                if (entry.Key.Contains(filter.ToLower()))
                 {
                     entry.Value.SetActive(true);
                 }
@@ -124,25 +136,21 @@ public class TerrainImport : MonoBehaviour {
         }
     }
 
-    public bool CheckForADTs(string path)
+    #endregion
+    ////////////////////
+
+    ////////////////////
+    #region UI Interaction
+
+    // Map Selected in the Map List Panel //
+    public void MapSelected(string mapName)
     {
-        List<string> files = Casc.GetFileListFromFolder(path);
-        foreach (string file in files)
-        {
-            if (Path.GetExtension(file).ToLower() == ".adt")
-                return true;
-        }
-        return false;
+        selectedMapName = mapName;
+        minimap.ClearMinimaps(minimapScrollPanel);
+        minimap.Load(mapName, minimapScrollPanel);
     }
 
-    public bool CheckForMinimaps(string path)
-    {
-        if (Casc.FolderExists(path))
-            return true;
-        else
-            return false;
-    }
-
+    // Select a Player Spawn when Right Clicking on a Minimap Block //
     public void SelectPlayerSpawn(GameObject minimapBlock)
     {
         if (SelectPlayerBlockIcon == null)
@@ -153,9 +161,9 @@ public class TerrainImport : MonoBehaviour {
         SelectPlayerBlockIcon.GetComponent<RectTransform>().localPosition = new Vector2(50,-50);
         SelectPlayerBlockIcon.GetComponent<RectTransform>().localScale = minimapBlock.transform.localScale;
         currentSelectedPlayerSpawn = minimapBlock.GetComponent<MinimapBlock>().minimapCoords;
-        //Debug.Log(currentSelectedPlayerSpawn);
     }
 
+    // Clicked the Load Full Map Button //
     public void ClickedLoadFull()
     {
         minimap.pause = true;
@@ -168,14 +176,18 @@ public class TerrainImport : MonoBehaviour {
         LoadingText.SetActive(true);
     }
 
+    // Load WMO's Toggle Interaction //
     public void Toggle_WMO(bool on)
     {
-        ADTSettings.LoadWMOs = on;
+        SettingsTerrainImport.LoadWMOs = on;
     }
 
+    // Load M2's Toggle Interaction //
     public void Toggle_M2(bool on)
     {
-        ADTSettings.LoadM2s = on;
+        SettingsTerrainImport.LoadM2s = on;
     }
 
+    #endregion
+    ////////////////////
 }

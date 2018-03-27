@@ -10,6 +10,8 @@ public class ADTBlock : MonoBehaviour {
     public Material GLmat;
     public bool reCheck;
     Camera cameraMain;
+    public Vector2 coords;
+    public string mapName;
 
     private void Start()
     {
@@ -20,6 +22,33 @@ public class ADTBlock : MonoBehaviour {
         blockCorners[2] = transform.GetChild(240).transform.position;
         blockCorners[3] = transform.GetChild(255).transform.position;
         materialLoDState = 1;
+    }
+
+    public void UnloadAsset()
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            //Destroy(transform.GetChild(i).GetComponent<MeshFilter>().mesh);
+            transform.GetChild(i).gameObject.SetActive(false);
+            Destroy(transform.GetChild(i).GetComponent<MeshFilter>().sharedMesh);
+            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().mesh);
+            for (int ln = 1; ln < 4; ln++)
+            {
+                try
+                {
+                    Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high.GetTexture("_blend" + ln));
+                }
+                catch
+                {
+                    Debug.Log("Memory Cleaner - Error: Couldn't find " + "_blend" + ln);
+                }
+            }
+            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low.GetTexture("_MainTex2"));
+            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low);
+            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high);
+            Destroy(transform.GetChild(i).GetComponent<Renderer>().sharedMaterial);
+        }
+        Destroy(gameObject);
     }
 
     private void Update()

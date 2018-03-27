@@ -58,21 +58,22 @@ public static partial class WMO
                 //Debug.Log(path);
                 wmoData.texturePaths.Add(position, path);
                 string extractedPath = Casc.GetFile(path);
-                Stream stream = File.Open(extractedPath, FileMode.Open);
-                BLP blp = new BLP();
-                byte[] data = blp.GetUncompressed(stream, true);
-                BLPinfo info = blp.Info();
-                Texture2Ddata texture2Ddata = new Texture2Ddata();
-                texture2Ddata.hasMipmaps = info.hasMipmaps;
-                texture2Ddata.width = info.width;
-                texture2Ddata.height = info.height;
-                //if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                //    texture2Ddata.hasMipmaps = false;
-                texture2Ddata.textureFormat = info.textureFormat;
-                texture2Ddata.TextureData = data;
-                wmoData.textureData[path] = texture2Ddata;
-                stream.Close();
-                stream = null;
+                if (File.Exists(extractedPath))
+                {
+                    Stream stream = File.Open(extractedPath, FileMode.Open);
+                    BLP blp = new BLP();
+                    byte[] data = blp.GetUncompressed(stream, true);
+                    BLPinfo info = blp.Info();
+                    Texture2Ddata texture2Ddata = new Texture2Ddata();
+                    texture2Ddata.hasMipmaps = info.hasMipmaps;
+                    texture2Ddata.width = info.width;
+                    texture2Ddata.height = info.height;
+                    texture2Ddata.textureFormat = info.textureFormat;
+                    texture2Ddata.TextureData = data;
+                    wmoData.textureData[path] = texture2Ddata;
+                    stream.Close();
+                    stream = null;
+                }
             }
         }
     } // loaded

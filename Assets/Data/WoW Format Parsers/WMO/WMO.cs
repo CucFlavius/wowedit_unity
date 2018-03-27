@@ -28,8 +28,8 @@ public static partial class WMO
         wmoData.materials = new List<WMOMaterial>();
 
         wmoData.groupsData = new List<GroupData>();
-        try
-        {
+        //try
+        //{
             ThreadWorking = true;
 
             ParseWMO_Root(dataPath);
@@ -38,11 +38,11 @@ public static partial class WMO
             AllWMOData.Enqueue(wmoData);
 
             ThreadWorking = false;
-        }
-        catch
-        {
-            Debug.Log("Error : Trying to parse WMO - " + dataPath);
-        }
+        //}
+        //catch
+        //{
+         //   Debug.Log("Error : Trying to parse WMO - " + dataPath);
+        //}
     }
 
     private static void ParseWMO_Root(string dataPath)

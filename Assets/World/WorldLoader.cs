@@ -11,8 +11,11 @@ public class WorldLoader : MonoBehaviour {
     public GameObject ADTBlockObject;
     public GameObject ADTLowBlockObject;
     public TerrainImport terrainImport;
+    public TerrainHandler terainHandler;
     public int maxWorldSize = 64;
-    public GameObject[,] ADTMatrix;// = new GameObject[maxWorldSize, maxWorldSize];
+    public int[,] ADTMatrix;// = new GameObject[maxWorldSize, maxWorldSize];
+    //public Queue<GameObject> LoadedADTBlocks;
+    public List<GameObject> LoadedADTBlocks;
     public GameObject[,] ADTLowMatrix;
     public bool[,] existingADTs;// = new bool[maxWorldSize, maxWorldSize];
     public int[,] previousTerrainLod;// = new int[maxWorldSize, maxWorldSize];
@@ -24,14 +27,19 @@ public class WorldLoader : MonoBehaviour {
     private int PreviousCamX;
     private int PreviousCamY;
     public string MapName;
+    private int pullFrom = 0;
 
     // Use this for initialization
     void Start () {
 
+        //InvokeRepeating("FreeMemory", 2.0f, 10f);
+
         blockSize = 533.33333f / Settings.worldScale;
 
         // create matrices //
-        ADTMatrix = new GameObject[maxWorldSize, maxWorldSize];
+        ADTMatrix = new int[maxWorldSize, maxWorldSize];
+        //LoadedADTBlocks = new Queue<GameObject>();
+        LoadedADTBlocks = new List<GameObject>();
         ADTLowMatrix = new GameObject[maxWorldSize, maxWorldSize];
         existingADTs = new bool[maxWorldSize, maxWorldSize];
         previousTerrainLod = new int[maxWorldSize, maxWorldSize];
@@ -54,7 +62,41 @@ public class WorldLoader : MonoBehaviour {
             Loader();
         }
 
+
+        if (LoadedADTBlocks.Count > 60)
+        {
+            if (!LoadedADTBlocks[pullFrom].activeSelf)
+            {
+                GameObject PulledObj = LoadedADTBlocks[pullFrom];
+                Vector2 coords = PulledObj.GetComponent<ADTBlock>().coords;
+                string mapName = PulledObj.GetComponent<ADTBlock>().mapName;
+                ADTMatrix[(int)coords.x, (int)coords.y] = 0;
+                TerrainHandler.QueueItem queueItem = new TerrainHandler.QueueItem();
+                queueItem.x = (int)coords.x;
+                queueItem.y = (int)coords.y;
+                queueItem.mapName = mapName;
+                queueItem.Block = PulledObj;
+                if (terainHandler.ADTTexQueue.Contains(queueItem))
+                {
+                    terainHandler.ADTTexQueue.Remove(queueItem);
+                }
+                PulledObj.GetComponent<ADTBlock>().UnloadAsset();
+                LoadedADTBlocks.RemoveAt(pullFrom);
+                terainHandler.LoadedQueueItems.Remove(queueItem);
+                pullFrom = 0;
+            }
+            else
+            {
+                pullFrom++;
+            }
+        }
+        
 	}
+
+    public void FreeMemory()
+    {
+        Resources.UnloadUnusedAssets();
+    }
 
     public void LoadFullWorld (string map_name, Vector2 playerSpawn)
     {
@@ -245,15 +287,33 @@ public class WorldLoader : MonoBehaviour {
                         // no terrain exists - load high quality
                         if (currentTerrainLod[x, y] == 0 && previousTerrainLod[x, y] == 10)
                         {
-                            if (ADTMatrix[x, y] == null)
+                            if (ADTMatrix[x, y] == 0)
                             {
-                                ADTMatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-                                ADTMatrix[x, y].transform.SetParent(TerrainParent.transform);
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTMatrix[x, y]);
+                                bool Exists = false;
+                                foreach (Transform child in TerrainParent.transform)
+                                {
+                                    Vector2 coords = child.gameObject.GetComponent<ADTBlock>().coords;
+                                    if (coords == new Vector2(x, y))
+                                    {
+                                        Exists = true;
+                                        ADTMatrix[x, y] = 1;
+                                        child.gameObject.SetActive(true);
+                                    }
+                                }
+                                if (!Exists)
+                                {
+                                    ADTMatrix[x, y] = 1;
+                                    GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                    ADTblock.transform.SetParent(TerrainParent.transform);
+                                    ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                    TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+                                    LoadedADTBlocks.Add(ADTblock);
+                                }
                             }
                             else
                             {
-                                ADTMatrix[x, y].SetActive(true);
+                                //ADTMatrix[x, y].SetActive(true);
                             }
                             //ADTMatrix[x, y].SetActive(true);
                         }
@@ -279,23 +339,43 @@ public class WorldLoader : MonoBehaviour {
                             {
                                 //ADTLowMatrix[x, y].SetActive(true);
                             }
+                            /*
                             if (ADTMatrix[x, y] != null)
                             {
                                 ADTMatrix[x, y].SetActive(false);
                             }
-
+                            */
                         }
                         // low quality exists - load high quality
                         if (currentTerrainLod[x, y] == 0 && previousTerrainLod[x, y] == 1)
                         {
-                            if (ADTMatrix[x, y] == null)
+                            if (ADTMatrix[x, y] == 0)
                             {
-                                ADTMatrix[x, y] = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-                                ADTMatrix[x, y].transform.SetParent(TerrainParent.transform);
+                                bool Exists = false;
+                                foreach (Transform child in TerrainParent.transform)
+                                {
+                                    Vector2 coords = child.gameObject.GetComponent<ADTBlock>().coords;
+                                    if (coords == new Vector2(x, y))
+                                    {
+                                        Exists = true;
+                                        ADTMatrix[x, y] = 1;
+                                        child.gameObject.SetActive(true);
+                                    }
+                                }
+                                if (!Exists)
+                                {
+                                    ADTMatrix[x, y] = 1;
+                                    GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+                                    ADTblock.transform.SetParent(TerrainParent.transform);
+                                    ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                    TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+                                    LoadedADTBlocks.Add(ADTblock);
+                                }
                             }
                             else
                             {
-                                ADTMatrix[x, y].SetActive(true);
+                                //ADTMatrix[x, y].SetActive(true);
                             }
                             if (ADTLowMatrix[x, y] != null)
                             {
@@ -305,11 +385,18 @@ public class WorldLoader : MonoBehaviour {
                         // destroy both low and high quality
                         if (currentTerrainLod[x, y] == 10 && previousTerrainLod[x, y] != 10)
                         {
-                            if (ADTMatrix[x, y] != null)
+                            if (ADTMatrix[x, y] != 0)
                             {
-                                ADTMatrix[x, y].SetActive(false);
-                                //Destroy(ADTMatrix[x, y].gameObject);
-                                //ADTMatrix[x, y] = null;
+                                //ADTMatrix[x, y].SetActive(false);
+                                foreach (Transform child in TerrainParent.transform)
+                                {
+                                    Vector2 coords = child.gameObject.GetComponent<ADTBlock>().coords;
+                                    if (coords == new Vector2(x,y))
+                                    {
+                                        child.gameObject.SetActive(false);
+                                        ADTMatrix[x, y] = 0;
+                                    }
+                                }
                             }
                             if (ADTLowMatrix[x, y] != null)
                             {
@@ -332,6 +419,7 @@ public class WorldLoader : MonoBehaviour {
             for (int y = 0; y < maxWorldSize - 1; y++)
             {
                 existingADTs[x, y] = false;
+                ADTMatrix[x, y] = 0;
             }
         }
     }
@@ -352,12 +440,19 @@ public class WorldLoader : MonoBehaviour {
         if (TerrainParent.transform.childCount > 0)
         {
             terrainImport.currentSelectedPlayerSpawn = new Vector2(0, 0);
+            LoadedADTBlocks.Clear();
             ClearMatrix();
-
-            foreach (Transform child in TerrainParent.transform)
+            foreach (Transform child in WMOParent.transform)
             {
                 GameObject.Destroy(child.gameObject);
+                //child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
             }
+            foreach (Transform child in TerrainParent.transform)
+            {
+                child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
+                //GameObject.Destroy(child.gameObject);
+            }
+            Resources.UnloadUnusedAssets();
         }
     }
 }

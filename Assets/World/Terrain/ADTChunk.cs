@@ -8,6 +8,7 @@ public class ADTChunk : MonoBehaviour {
     // Material LoDs // store materials of the chunk here upon data loaded
     public Material high;
     public Material low;
+    public Mesh mesh;
 
     public void UpdateDistance (int LoD)
     {

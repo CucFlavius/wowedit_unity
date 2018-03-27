@@ -173,7 +173,7 @@ public class ADTTex
 
         byte[] ByteArray = new byte[64 * 64];
         ADTtexstream.Read(ByteArray, 0, 8 * 64);
-        if (ADTSettings.LoadShadowMaps)
+        if (SettingsTerrainImport.LoadShadowMaps)
         {
             BitArray bits = new BitArray(ByteArray);
             for (int b = 4095; b >= 0; b--) // LSB

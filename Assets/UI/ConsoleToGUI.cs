@@ -1,43 +1,56 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
+/// <summary>
+/// A console to display Unity's debug logs in-game.
+/// </summary>
 public class ConsoleToGUI : MonoBehaviour
 {
-	public UnityEngine.UI.Text ConsoleText;
+    public UnityEngine.UI.Text logText;
+    private string fullText;
 
-    string myLog;
-    Queue myLogQueue = new Queue();
-
-    void OnEnable()
+    struct Log
     {
-        Application.logMessageReceived += HandleLog;
+        public string message;
+        public string stackTrace;
+        public LogType type;
     }
 
-    void OnDisable()
+    private void Update()
     {
-        Application.logMessageReceived -= HandleLog;
+        logText.text = fullText;
     }
+
+    static readonly Dictionary<LogType, string> logTypeColors = new Dictionary<LogType, string>()
+    {
+        { LogType.Assert, "white" },
+        { LogType.Error, "#ff0000ff" },
+        { LogType.Exception, "#ff0000ff" },
+        { LogType.Log, "white" },
+        { LogType.Warning, "#00ff00ff" },
+    };
+    
+    public void OnEnable()
+    {
+        //Debug.Log("ExternalLoggerComponent -> OnEnable");
+
+        Application.logMessageReceivedThreaded += HandleLog;
+    }
+
+    public void OnDisable()
+    {
+        //Debug.Log("ExternalLoggerComponent -> OnDisable");
+
+        Application.logMessageReceivedThreaded -= HandleLog;
+    }
+
 
     void HandleLog(string logString, string stackTrace, LogType type)
     {
-        myLog = logString;
-        string newString = "\n [" + type + "] : " + myLog;
-        myLogQueue.Enqueue(newString);
-        if (type == LogType.Log)
-        {
-            newString = "\n" + stackTrace;
-            myLogQueue.Enqueue(newString);
-        }
-        myLog = string.Empty;
-        foreach (string mylog in myLogQueue)
-        {
-            myLog += mylog;
-        }
+        fullText += ("<color=" + logTypeColors[type] + ">" + logString + "</color>" + "\n");
     }
 
-    void Update ()
-    {
-        ConsoleText.text = myLog;	
-    }
+
 }

@@ -35950,11 +35950,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ec3008939ef6d54f96429c2b74d4ffa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoD: 0
-  LoD0Loaded: 0
-  LoD1Loaded: 0
-  textures: []
-  rend: {fileID: 0}
+  GLmat: {fileID: 0}
+  reCheck: 0
 --- !u!205 &205897852871955210
 LODGroup:
   m_ObjectHideFlags: 1

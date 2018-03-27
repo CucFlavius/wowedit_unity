@@ -94,22 +94,23 @@ public class Statistics : MonoBehaviour
         AverageHTexCreateSpeed = Truncate(CalculateAverage(HTexCreateTimes), 2);
 
         // setup string //
-        statsText.text = "\n" + "[HTerrain Mesh Speed]" +
-                 "\n" + "Last Parse: " + ParseADTRootSpeed + "s" +
-                 "\n" + "Last Create: " + AssembleHTMeshSpeed + "s" +
-                 "\n" + "Average Parse: " + AverageADTRootParseSpeed + "s" +
-                 "\n" + "Average Create: " + AverageHTMeshCreateSpeed + "s" +
-                 "\n" + "[Remaining HTerrain Blocks]" +
-                 "\n" + RemainingHTerrainBlocks +
-                 "\n" + "[HTextures Speed]" +
-                 "\n" + "Last Parse: " + ParseADTTexSpeed + "s" +
-                 "\n" + "Last Create: " + AssembleHTexSpeed + "s" +
-                 "\n" + "Average Parse: " + AverageADTTexParseSpeed + "s" +
-                 "\n" + "Average Create: " + AverageHTexCreateSpeed + "s" +
-                 "\n" + "[Remaining HTexture Blocks]" +
-                 "\n" + RemainingHTexBlocks +
-                 "\n" + "ModelBlockDataQueue: " + ADTObjData.ModelBlockDataQueue.Count +
-                 "\n" + "WMOThreadQueue: " + wmoHandler.WMOThreadQueue.Count;
+        statsText.text = "\n" + "<b><color=silver>[HTerrain Mesh Speed]</color></b>" +
+                 "\n" + "<b>Last Parse: </b>" + ParseADTRootSpeed + "s" +
+                 "\n" + "<b>Last Create: </b>" + AssembleHTMeshSpeed + "s" +
+                 "\n" + "<b>Average Parse: </b>" + AverageADTRootParseSpeed + "s" +
+                 "\n" + "<b>Average Create: </b>" + AverageHTMeshCreateSpeed + "s" +
+                 "\n" + "<b>Remaining HTerrain Blocks: </b>" + ADTRootData.MeshBlockDataQueue.Count + 
+                 //"\n" + RemainingHTerrainBlocks +
+                 "\n" + "<b><color=silver>[HTextures Speed]</color></b>" +
+                 "\n" + "<b>Last Parse: </b>" + ParseADTTexSpeed + "s" +
+                 "\n" + "<b>Last Create: </b>" + AssembleHTexSpeed + "s" +
+                 "\n" + "<b>Average Parse: </b>" + AverageADTTexParseSpeed + "s" +
+                 "\n" + "<b>Average Create: </b>" + AverageHTexCreateSpeed + "s" +
+                 "\n" + "<b>Remaining HTexture Blocks: </b>" + terrainHandler.ADTTexQueue.Count +
+                 //"\n" + RemainingHTexBlocks +
+                 "\n" + "<b><color=silver>[WMO Queues]</color></b>" +
+                 "\n" + "<b>ADTObj: </b>" + ADTObjData.ModelBlockDataQueue.Count +
+                 "\n" + "<b>WMO: </b>" + wmoHandler.WMOThreadQueue.Count;
     }
 
     //////////////////////

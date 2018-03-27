@@ -236,7 +236,7 @@ public static partial class ADT
         ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
 
         ParseADT_Tex(Path, MapName, Coords);
-        if (ADTSettings.LoadShadowMaps)
+        if (SettingsTerrainImport.LoadShadowMaps)
             ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
         ADT_ProcessData.Load_hTextures();
 
@@ -256,7 +256,7 @@ public static partial class ADT
 
         ADTObjData.modelBlockData = new ADTObjData.ModelBlockData();
         ADTObjData.modelBlockData.terrainPos = Coords;
-        if (ADTSettings.LoadWMOs || ADTSettings.LoadM2s)
+        if (SettingsTerrainImport.LoadWMOs || SettingsTerrainImport.LoadM2s)
             ParseADT_Obj(Path, MapName, Coords);
 
         ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
