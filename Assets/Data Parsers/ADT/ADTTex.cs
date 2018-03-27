@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class ADTTex
 {
+    public void ReadMVER(MemoryStream ADTstream)
+    {
+        ADTstream.Position += 4;
+    }
+
     public void ReadMAMP (MemoryStream ADTtexstream)
     {
         StreamTools s = new StreamTools();
@@ -71,13 +75,13 @@ public class ADTTex
             streamPosition = ADTtexstream.Position + chunkSize;
             switch (chunkID)
             {
-                case (int)ChunkID.ADTchunkID.MCLY:
+                case (int)ChunkID.ADT.MCLY:
                     ReadMCLY(ADTtexstream, chunkData, chunkSize); // texture layers
                     break;
-                case (int)ChunkID.ADTchunkID.MCSH:
+                case (int)ChunkID.ADT.MCSH:
                     ReadMCSH(ADTtexstream, chunkData); // static shadow maps
                     break;
-                case (int)ChunkID.ADTchunkID.MCAL:
+                case (int)ChunkID.ADT.MCAL:
                     ReadMCAL(ADTtexstream, mapname, chunkData); // alpha layers
                     break;
                 default:
@@ -316,7 +320,7 @@ public class ADTTex
     {
         try
         {
-            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADTchunkID), chunkID)).ToString() + " | Skipped");
+            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADT), chunkID)).ToString() + " | Skipped");
         }
         catch
         {

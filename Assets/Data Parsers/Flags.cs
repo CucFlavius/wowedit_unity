@@ -95,15 +95,8 @@ public class Flags
         texScaleBools[2] = flags[5];
         texScaleBools[1] = flags[6];
         texScaleBools[0] = flags[7];
-        /*
-        BitArray texScaleBitArray = new BitArray(texScaleBools);
-        value.texture_scale = (int)s.getIntFromBitArray(texScaleBitArray);
-        */
         value.texture_scale = s.getUintFrom4Bits(texScaleBools);
-        value.texture_scale = 2 * value.texture_scale;
-        if (value.texture_scale == 0)
-            value.texture_scale = 1;
-        //Debug.Log(value.texture_scale);
+        value.texture_scale = (int)Mathf.Pow(2, value.texture_scale);
         return value;
     }
 

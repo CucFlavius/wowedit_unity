@@ -1,13 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public static partial class ADT
+public class ADTObj
 {
+    public void ReadMVER(MemoryStream ADTstream)
+    {
+        ADTstream.Position += 4;
+    }
 
     // List of filenames for M2 models that appear in this map tile. //
-    public static void ReadMMDX(MemoryStream ADTobjstream, int MMDXsize)
+    public void ReadMMDX(MemoryStream ADTobjstream, int MMDXsize)
     {
         StreamTools s = new StreamTools();
         long currentPos = ADTobjstream.Position;
@@ -17,24 +20,24 @@ public static partial class ADT
             string path = s.ReadNullTerminatedString(ADTobjstream);
             if (path != "")
             {
-                modelBlockData.M2Paths.Add(position, path);
+                ADTObjData.modelBlockData.M2Paths.Add(position, path);
             }
         }
     }
 
     // List of offsets of model filenames in the MMDX chunk. //
-    public static void ReadMMID(MemoryStream ADTobjstream, int MMIDsize)
+    public void ReadMMID(MemoryStream ADTobjstream, int MMIDsize)
     {
         StreamTools s = new StreamTools();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MMIDsize)
         {
-            modelBlockData.M2Offsets.Add(s.ReadLong(ADTobjstream));
+            ADTObjData.modelBlockData.M2Offsets.Add(s.ReadLong(ADTobjstream));
         }
     }
 
     // List of filenames for WMOs (world map objects) that appear in this map tile. //
-    public static void ReadMWMO(MemoryStream ADTobjstream, int MWMOsize)
+    public void ReadMWMO(MemoryStream ADTobjstream, int MWMOsize)
     {
         StreamTools s = new StreamTools();
         long currentPos = ADTobjstream.Position;
@@ -44,33 +47,33 @@ public static partial class ADT
             string path = s.ReadNullTerminatedString(ADTobjstream);
             if (path != "")
             {
-                modelBlockData.WMOPaths.Add(position, path);
+                ADTObjData.modelBlockData.WMOPaths.Add(position, path);
             }
         }
     }
 
     // List of offsets of WMO filenames in the MWMO chunk. //
-    public static void ReadMWID(MemoryStream ADTobjstream, int MWIDsize)
+    public void ReadMWID(MemoryStream ADTobjstream, int MWIDsize)
     {
         StreamTools s = new StreamTools();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MWIDsize)
         {
-            modelBlockData.WMOOffsets.Add(s.ReadLong(ADTobjstream));
+            ADTObjData.modelBlockData.WMOOffsets.Add(s.ReadLong(ADTobjstream));
         }
     }
 
     // Placement information for doodads (M2 models). //
     // Additional to this, the models to render are referenced in each MCRF chunk. //
-    public static void ReadMDDF(MemoryStream ADTobjstream, int MDDFsize)
+    public void ReadMDDF(MemoryStream ADTobjstream, int MDDFsize)
     {
         Flags f = new Flags();
         StreamTools s = new StreamTools();
-        modelBlockData.M2Info = new List<M2PlacementInfo>();
+        ADTObjData.modelBlockData.M2Info = new List<ADTObjData.M2PlacementInfo>();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MDDFsize)
         {
-            M2PlacementInfo data = new M2PlacementInfo();
+            ADTObjData.M2PlacementInfo data = new ADTObjData.M2PlacementInfo();
 
             // References an entry in the MMID chunk, specifying the model to use.
             data.nameID = s.ReadLong(ADTobjstream);
@@ -99,21 +102,21 @@ public static partial class ADT
             // values from struct MDDFFlags.
             data.flags = f.ReadMDDFFlags(ADTobjstream);
 
-            modelBlockData.M2Info.Add(data);
+            ADTObjData.modelBlockData.M2Info.Add(data);
         }
     }
 
     // Placement information for WMOs. //
     // Additional to this, the WMOs to render are referenced in each MCRF chunk. (?) //
-    public static void ReadMODF(MemoryStream ADTobjstream, int MODFsize)
+    public void ReadMODF(MemoryStream ADTobjstream, int MODFsize)
     {
         Flags f = new Flags();
         StreamTools s = new StreamTools();
-        modelBlockData.WMOInfo = new List<WMOPlacementInfo>();
+        ADTObjData.modelBlockData.WMOInfo = new List<ADTObjData.WMOPlacementInfo>();
         long currentPos = ADTobjstream.Position;
         while (ADTobjstream.Position < currentPos + MODFsize)
         {
-            WMOPlacementInfo data = new WMOPlacementInfo();
+            ADTObjData.WMOPlacementInfo data = new ADTObjData.WMOPlacementInfo();
 
             // references an entry in the MWID chunk, specifying the model to use.
             data.nameID = s.ReadLong(ADTobjstream);
@@ -148,12 +151,12 @@ public static partial class ADT
             // Legion(?)+: has data finally, looks like scaling (same as MDDF). Padding in 0.5.3 alpha. 
             int unk = s.ReadShort(ADTobjstream);
 
-            modelBlockData.WMOInfo.Add(data);
+            ADTObjData.modelBlockData.WMOInfo.Add(data);
         }
     }
 
     // Chunk Data //
-    public static void ReadMCNKObj (MemoryStream ADTobjstream, string mapname, int MCNKchunkNumber, int MCNKsize)
+    public void ReadMCNKObj(MemoryStream ADTobjstream, string mapname, int MCNKchunkNumber, int MCNKsize)
     {
         if (ADTobjstream.Length == ADTobjstream.Position)
             return;
@@ -168,10 +171,10 @@ public static partial class ADT
             streamPosition = ADTobjstream.Position + chunkSize;
             switch (chunkID)
             {
-                case (int)ADTchunkID.MCRD:
+                case (int)ChunkID.ADT.MCRD:
                     ReadMCRD(ADTobjstream, MCNKchunkNumber, chunkSize); // MCNK.nDoodadRefs into the file's MDDF
                     break;
-                case (int)ADTchunkID.MCRW:
+                case (int)ChunkID.ADT.MCRW:
                     ReadMCRW(ADTobjstream, MCNKchunkNumber, chunkSize); // MCNK.nMapObjRefs into the file's MODF
                     break;
                 default:
@@ -186,7 +189,7 @@ public static partial class ADT
     /////////////////////
 
     // MCNK.nDoodadRefs into the file's MDDF //
-    public static void ReadMCRD(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRDsize)
+    public void ReadMCRD(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRDsize)
     {
         StreamTools s = new StreamTools();
         List<int> MDDFentries = new List<int>();
@@ -198,7 +201,7 @@ public static partial class ADT
     }
 
     // MCNK.nMapObjRefs into the file's MODF //
-    public static void ReadMCRW(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRWsize)
+    public void ReadMCRW(MemoryStream ADTobjstream, int MCNKchunkNumber, int MCRWsize)
     {
         StreamTools s = new StreamTools();
         List<int> MODFentries = new List<int>();
@@ -208,4 +211,19 @@ public static partial class ADT
             MODFentries.Add(s.ReadLong(ADTobjstream));
         }
     }
+
+    // Move the stream forward upon finding unknown chunks //
+    public void SkipUnknownChunk(MemoryStream ADTstream, int chunkID, int chunkSize)
+    {
+        try
+        {
+            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADTchunkID), chunkID)).ToString() + " | Skipped");
+        }
+        catch
+        {
+            Debug.Log("Missing chunk ID : " + chunkID);
+        }
+        ADTstream.Seek(chunkSize, SeekOrigin.Current);
+    }
+
 }

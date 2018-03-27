@@ -1914,7 +1914,7 @@ GameObject:
   - component: {fileID: 524}
   - component: {fileID: 1333}
   m_Layer: 5
-  m_Name: Text (1)
+  m_Name: Text Custom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16850,8 +16850,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -323.09}
-  m_SizeDelta: {x: 306, y: 220}
+  m_AnchoredPosition: {x: 0, y: -308.73}
+  m_SizeDelta: {x: 306, y: 250}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &1157
 RectTransform:
@@ -19475,6 +19475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainHandler: {fileID: 1454}
+  busy: 0
   WMObatchprefab: {fileID: 0}
   missingMaterial: {fileID: 2100000, guid: 94bf8849202ccb3448d117d9c884cae2, type: 2}
 --- !u!114 &1249
@@ -21548,7 +21549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.7411765, g: 0.7411765, b: 0.7411765, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -22152,7 +22153,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1335}
   m_OnClick:
     m_PersistentCalls:
@@ -22544,7 +22545,18 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1448}
+        m_MethodName: Toggle_WMO
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_IsOn: 1
@@ -22628,7 +22640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.7294118, g: 0.7294118, b: 0.7294118, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -25783,6 +25795,8 @@ MonoBehaviour:
   PanelErrorMessage: {fileID: 236}
   ErrorMessageText: {fileID: 1698}
   UIManager: {fileID: 188}
+  wmoToggle: {fileID: 1345}
+  m2Toggle: {fileID: 1517}
   ExtractedMapList: []
   FilteredList: []
   FilterWord: 
@@ -25938,6 +25952,7 @@ MonoBehaviour:
     type: 2}
   BlockChunksPrefab: {fileID: 1934210482691920, guid: 9f637a4ea0b449947a6c6e34532b0939,
     type: 2}
+  WMOParent: {fileID: 56}
   HChunkMaterial: {fileID: 2100000, guid: bf41c91ee78f0e94c816b43810b9ef6d, type: 2}
   LChunkMaterial: {fileID: 2100000, guid: 68f88370c29e2db4bb2f9e8ad8f62c3a, type: 2}
   LChunkMaterials: []
@@ -26807,7 +26822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.6911765, g: 0.6911765, b: 0.6911765, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -27837,17 +27852,28 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1559}
   toggleTransition: 1
   graphic: {fileID: 1302}
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1448}
+        m_MethodName: Toggle_M2
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &1518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28294,7 +28320,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1531}
   m_OnClick:
     m_PersistentCalls:
@@ -33268,7 +33294,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1688}
   m_OnClick:
     m_PersistentCalls:
@@ -35065,6 +35091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainHandler: {fileID: 1454}
+  wmoHandler: {fileID: 1248}
   statsText: {fileID: 1739}
 --- !u!114 &1741
 MonoBehaviour:

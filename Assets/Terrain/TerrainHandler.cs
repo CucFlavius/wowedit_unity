@@ -14,6 +14,7 @@ public class TerrainHandler : MonoBehaviour
     public static System.Threading.Thread ADTThread;
     public GameObject ChunkPrefab;
     public GameObject BlockChunksPrefab;
+    public GameObject WMOParent;
     public Material HChunkMaterial;
     public Material LChunkMaterial;
     public List<Material> LChunkMaterials;
@@ -26,8 +27,11 @@ public class TerrainHandler : MonoBehaviour
     public List<QueueItem> LoadedQueueItems = new List<QueueItem>();
     public Queue<QueueItem> ADTRootQueue = new Queue<QueueItem>();
     public Queue<QueueItem> ADTTexQueue = new Queue<QueueItem>();
+    public Queue<QueueItem> ADTObjQueue = new Queue<QueueItem>();
+
     public Queue<QueueItem> currentLoadingHTerrainBlock;
     public Queue<QueueItem> currentLoadingHTextureBlock;
+    public Queue<QueueItem> currentLoadingObjBlock;
     public static Queue<QueueItem> mapTextureQueue = new Queue<QueueItem>();
     public static bool FinishedCreatingObject;
 
@@ -42,6 +46,7 @@ public class TerrainHandler : MonoBehaviour
     private QueueItem currentMapTexture;
     private QueueItem currentHTexture;
     private QueueItem currentHTerrain;
+    private QueueItem currentObj;
 
     public class QueueItem
     {
@@ -60,8 +65,11 @@ public class TerrainHandler : MonoBehaviour
         MapTexture.MapTextureThreadRunning = false;
         ADTRootQueue = new Queue<QueueItem>();
         ADTTexQueue = new Queue<QueueItem>();
+        ADTObjQueue = new Queue<QueueItem>();
         currentLoadingHTerrainBlock = new Queue<QueueItem>();
         currentLoadingHTextureBlock = new Queue<QueueItem>();
+        currentLoadingObjBlock = new Queue<QueueItem>();
+        //currentLoadingObj = new Queue<QueueItem>();
         mapTextureQueue = new Queue<QueueItem>();
     }
 	
@@ -74,6 +82,12 @@ public class TerrainHandler : MonoBehaviour
             ADT.ThreadWorkingMesh = true;
             QueueItem q = ADTRootQueue.Dequeue();
             ADTRootThreadRun(q);
+        }
+        if (ADTObjQueue.Count > 0 && !ADT.ThreadWorkingModels)
+        {
+            ADT.ThreadWorkingModels = true;
+            QueueItem q = ADTObjQueue.Dequeue();
+            ADTObjThreadRun(q);
         }
         if (ADTTexQueue.Count > 0 && !ADT.ThreadWorkingTextures)
         {
@@ -91,7 +105,7 @@ public class TerrainHandler : MonoBehaviour
         if (frameBusy == false)
         {
             // if there's Hterrain data ready
-            if (ADT.MeshBlockDataQueue.Count > 0)
+            if (ADTRootData.MeshBlockDataQueue.Count > 0)
             {
                 frameBusy = true;
                 StartCoroutine(AssembleHTBlock());
@@ -106,6 +120,10 @@ public class TerrainHandler : MonoBehaviour
             {
                 frameBusy = true;
                 StartCoroutine(AssembleHTextures());
+            }
+            if (ADTObjData.ModelBlockDataQueue.Count > 0 && !WMOHandler.busy)
+            {
+                LoadWMOs();
             }
         }
     }
@@ -144,6 +162,16 @@ public class TerrainHandler : MonoBehaviour
         ADTThread.Start();
     }
 
+    public void ADTObjThreadRun(QueueItem queueItem)
+    {
+        currentObj = queueItem;
+        ADTObjThread();
+        ADTThread = new System.Threading.Thread(ADTObjThread);
+        ADTThread.IsBackground = true;
+        ADTThread.Priority = System.Threading.ThreadPriority.AboveNormal;
+        //ADTThread.Start();
+    }
+
     public void MapTextureThreadRun(QueueItem queueItem)
     {
         currentMapTexture = queueItem;
@@ -166,6 +194,12 @@ public class TerrainHandler : MonoBehaviour
         ADT.LoadTerrainTextures(ADTpath, currentHTexture.mapName, new Vector2(currentHTexture.x, currentHTexture.y));
     }
 
+    public void ADTObjThread()
+    {
+        string ADTpath = @"\world\maps\" + currentObj.mapName + @"\";
+        ADT.LoadTerrainModels(ADTpath, currentObj.mapName, new Vector2(currentObj.x, currentObj.y));
+    }
+
     public void MapTextureThread ()
     {
         MapTexture.Load(currentMapTexture.mapName, new Vector2(currentMapTexture.x, currentMapTexture.y));
@@ -179,7 +213,7 @@ public class TerrainHandler : MonoBehaviour
     {
         float startTimeAssembleHT = Time.time;
 
-        ADT.MeshBlockData HTData = ADT.MeshBlockDataQueue.Dequeue();
+        ADTRootData.MeshBlockData HTData = ADTRootData.MeshBlockDataQueue.Dequeue();
         QueueItem HTGroupItem = currentLoadingHTerrainBlock.Dequeue();
         HTGroupItem.Block.name = HTGroupItem.mapName + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
 
@@ -197,13 +231,17 @@ public class TerrainHandler : MonoBehaviour
         HTGroupItem.Block.GetComponent<ADTBlock>().enabled = true;
         LoadedQueueItems.Add(HTGroupItem);
 
+        // request Objs //
+        ADTObjQueue.Enqueue(HTGroupItem);
+        currentLoadingObjBlock.Enqueue(HTGroupItem);
+
         // request the LTexture //
         mapTextureQueue.Enqueue(HTGroupItem);
 
         // request the HTexture //
         ADTTexQueue.Enqueue(HTGroupItem);
-
         currentLoadingHTextureBlock.Enqueue(HTGroupItem);
+
         frameBusy = false;
         finishedTimeAssembleHT = Time.time - startTimeAssembleHT;
     }
@@ -230,7 +268,7 @@ public class TerrainHandler : MonoBehaviour
     }
 
     // Create a part of the ADT block meshes //
-    private void CreateHTBlockQuarter (int fS , int Q, ADT.MeshBlockData data, GameObject Block)
+    private void CreateHTBlockQuarter (int fS , int Q, ADTRootData.MeshBlockData data, GameObject Block)
     {
         for (int i = (256 / fS) * (Q - 1); i < (256 / fS) * Q; i++)
         {
@@ -250,7 +288,7 @@ public class TerrainHandler : MonoBehaviour
 
             Mesh mesh0 = new Mesh();
             mesh0.vertices = data.meshChunksData[i].VertexArray;
-            mesh0.triangles = ADT.Chunk_Triangles;
+            mesh0.triangles = data.meshChunksData[i].TriangleArray;
             mesh0.uv = ADT.Chunk_UVs;
             mesh0.uv2 = ADT.Chunk_UVs2[i];
             mesh0.normals = data.meshChunksData[i].VertexNormals;
@@ -264,6 +302,7 @@ public class TerrainHandler : MonoBehaviour
     // Create a part of the ADT block textures //
     private void CreateHTextureQuarter(int fS, int Q, ADTTexData.TextureBlockData data, GameObject Block)
     {
+        StreamTools s = new StreamTools();
         for (int i = (256 / fS) * (Q - 1); i < (256 / fS) * Q; i++)
         {
             //////////////////////////////
@@ -335,9 +374,9 @@ public class TerrainHandler : MonoBehaviour
                 {
                     ShadowMap = new Texture2D(64, 64, TextureFormat.Alpha8, false);
                     ShadowMap.LoadRawTextureData(data.textureChunksData[i].shadowMapTexture);
-                    Color32[] pixels = ShadowMap.GetPixels32();
-                    pixels = ADT.RotateMatrix(pixels, 64);
-                    ShadowMap.SetPixels32(pixels);
+                    //Color32[] pixels = ShadowMap.GetPixels32();
+                    //pixels = s.RotateMatrix(pixels, 64);
+                    //ShadowMap.SetPixels32(pixels);
                     ShadowMap.Apply();
                     ShadowMap.wrapMode = TextureWrapMode.Clamp;
                     // need to enable in shader too //
@@ -361,7 +400,8 @@ public class TerrainHandler : MonoBehaviour
                 mat.SetTextureScale("_height" + ln, new Vector2(1 , 1 ));
                 if (ln > 0 && AlphaLayers[ln] != null)
                     mat.SetTexture("_blend" + ln, AlphaLayers[ln]);
-                mat.SetFloat("layer" + ln + "scale", TextureFlags[ln].texture_scale);
+                if (data.MTXP)
+                    mat.SetFloat("layer" + ln + "scale", TextureFlags[ln].texture_scale);
             }
             if (data.MTXP)
             {
@@ -412,6 +452,41 @@ public class TerrainHandler : MonoBehaviour
         frameBusy = false;
     }
 
+    private void LoadWMOs ()
+    {
+        // Get ADT Block Data //
+        ADTObjData.ModelBlockData data = ADTObjData.ModelBlockDataQueue.Dequeue();
+        //QueueItem Gobject = currentLoadingObjBlock.Dequeue();
+        float blockSize = 533.33333f / Settings.worldScale;
+
+        if (ADTSettings.LoadWMOs)
+        {
+            GameObject WMO0 = new GameObject();
+            Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
+            WMO0.name = "WMO_" + terrainPos.x + "_" + terrainPos.y;
+            WMO0.transform.position = new Vector3 (((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
+            WMO0.transform.parent = WMOParent.transform; // Gobject.Block.transform;
+
+            // Create WMO Objects - Send work to the WMO thread //
+            foreach (ADTObjData.WMOPlacementInfo wmoInfo in data.WMOInfo)
+            {
+                if (!LoadedUniqueWMOs.Contains(wmoInfo.uniqueID))
+                {
+                    LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
+                    ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
+                    string wmoPath = data.WMOPaths[data.WMOOffsets[wmoInfo.nameID]];
+                    //Vector3 addPosition = new Vector3(wmoInfo.position.x + Gobject.Block.transform.position.x,
+                    //                                  wmoInfo.position.y + Gobject.Block.transform.position.y,
+                    //                                  wmoInfo.position.z + Gobject.Block.transform.position.z);
+                    Vector3 addPosition = new Vector3(wmoInfo.position.x,// + WMO0.transform.position.x,
+                                                      wmoInfo.position.y,
+                                                      wmoInfo.position.z);// + WMO0.transform.position.z);
+                    WMOHandler.AddToQueue(wmoPath, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+                }
+            }
+        }
+        WMOHandler.busy = true;
+    }
     /*
     IEnumerator CreateADTObject()
     {

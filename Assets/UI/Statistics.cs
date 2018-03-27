@@ -6,6 +6,7 @@ using UnityEngine;
 public class Statistics : MonoBehaviour
 {
     public TerrainHandler terrainHandler;
+    public WMOhandler wmoHandler;
     public UnityEngine.UI.Text statsText;
 
     private float PreviousParseADTRootSpeed;
@@ -62,7 +63,7 @@ public class Statistics : MonoBehaviour
         }
         AverageADTRootParseSpeed = Truncate(CalculateAverage(ADTRootParseTimes), 2);
 
-        int numberInParseQueue = ADT.MeshBlockDataQueue.Count;
+        int numberInParseQueue = ADTRootData.MeshBlockDataQueue.Count;
         RemainingHTerrainBlocks = Tabs(numberInParseQueue, "□");
 
         // tex parse //
@@ -106,7 +107,9 @@ public class Statistics : MonoBehaviour
                  "\n" + "Average Parse: " + AverageADTTexParseSpeed + "s" +
                  "\n" + "Average Create: " + AverageHTexCreateSpeed + "s" +
                  "\n" + "[Remaining HTexture Blocks]" +
-                 "\n" + RemainingHTexBlocks;
+                 "\n" + RemainingHTexBlocks +
+                 "\n" + "ModelBlockDataQueue: " + ADTObjData.ModelBlockDataQueue.Count +
+                 "\n" + "WMOThreadQueue: " + wmoHandler.WMOThreadQueue.Count;
     }
 
     //////////////////////

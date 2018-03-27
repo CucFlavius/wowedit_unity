@@ -1,23 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public static partial class ADT {
+public class ADTRoot {
 
     // global flags //
-    private static int MH2Ooffset;
-    private static int MFBOoffset;
-    private static List<bool> has_mcsh;
+    public int MH2Ooffset;
+    public int MFBOoffset;
+    public List<bool> has_mcsh;
 
-    
-    private static void ReadMVER(MemoryStream ADTstream)
+
+    public void ReadMVER(MemoryStream ADTstream)
     {
-        //int ADTfileversion = ReadLong(ADTstream);
         ADTstream.Position += 4;
     }
-    
-    private static void ReadMHDR(MemoryStream ADTstream)
+
+    public void ReadMHDR(MemoryStream ADTstream)
     {
         StreamTools s = new StreamTools();
         int flags = s.ReadLong(ADTstream);
@@ -42,8 +40,8 @@ public static partial class ADT {
         unused[1] = s.ReadLong(ADTstream);
         unused[2] = s.ReadLong(ADTstream);
     }
-    
-    private static void ReadMH2O(MemoryStream ADTstream, int MH2Osize)
+
+    public void ReadMH2O(MemoryStream ADTstream, int MH2Osize)
     {
         StreamTools s = new StreamTools();
         long chunkStartPosition = ADTstream.Position;
@@ -60,9 +58,9 @@ public static partial class ADT {
                 ADTstream.Seek(chunkStartPosition + offset_instances, SeekOrigin.Begin);
                 int liquid_type = s.ReadShort(ADTstream); //DBC - foreign_keyⁱ<uint16_t, &LiquidTypeRec::m_ID> liquid_type;
                 int liquid_object_or_lvf = s.ReadShort(ADTstream);    //DBC -  foreign_keyⁱ<uint16_t, &LiquidObjectRec::m_ID> liquid_object_or_lvf;        
-                                                                    // if > 41, an id into DB/LiquidObject. If below, LiquidVertexFormat, used in ADT/v18#instance_vertex_data Note hardcoded LO ids below.
-                                                                    // if >= 42, look up via DB/LiquidType and DB/LiquidMaterial, otherwise use liquid_object_or_lvf as LVF
-                                                                    // also see below for offset_vertex_data: if that's 0 and lt ≠ 2 → lvf = 2
+                                                                      // if > 41, an id into DB/LiquidObject. If below, LiquidVertexFormat, used in ADT/v18#instance_vertex_data Note hardcoded LO ids below.
+                                                                      // if >= 42, look up via DB/LiquidType and DB/LiquidMaterial, otherwise use liquid_object_or_lvf as LVF
+                                                                      // also see below for offset_vertex_data: if that's 0 and lt ≠ 2 → lvf = 2
                 float min_height_level = s.ReadFloat(ADTstream);  // used as height if no heightmap given and culling ᵘ
                 float max_height_level = s.ReadFloat(ADTstream);  // ≥ WoD ignores value and assumes to both be 0.0 for LVF = 2! ᵘ
                 int x_offset = ADTstream.ReadByte();    // The X offset of the liquid square (0-7)
@@ -71,9 +69,9 @@ public static partial class ADT {
                 int height = ADTstream.ReadByte();  // The height of the liquid square (1-8)
                                                     // The above four members are only used if liquid_object_or_lvf <= 41. Otherwise they are assumed 0, 0, 8, 8. (18179) 
                 int offset_exists_bitmap = s.ReadLong(ADTstream);   // not all tiles in the instances need to be filled. always 8*8 bits.
-                                                                  // offset can be 0 for all-exist. also see (and extend) Talk:ADT/v18#SMLiquidInstance
+                                                                    // offset can be 0 for all-exist. also see (and extend) Talk:ADT/v18#SMLiquidInstance
                 int offset_vertex_data = s.ReadLong(ADTstream);     // actual data format defined by LiquidMaterialRec::m_LVF via LiquidTypeRec::m_materialID
-                                                                  // if offset = 0 and liquidType ≠ 2, then let LVF = 2, i.e. some ocean shit
+                                                                    // if offset = 0 and liquidType ≠ 2, then let LVF = 2, i.e. some ocean shit
 
             }
             //attributes
@@ -86,13 +84,13 @@ public static partial class ADT {
         }
         ADTstream.Seek(chunkStartPosition + MH2Osize, SeekOrigin.Begin); // set stream location to right after MH2O
     }
-  
-    
-    private static void ReadMCNK(MemoryStream ADTstream, int MCNKchunkNumber, int MCNKsize)
+
+
+    public void ReadMCNK(MemoryStream ADTstream, int MCNKchunkNumber, int MCNKsize)
     {
         StreamTools s = new StreamTools();
         Flags f = new Flags();
-        MeshChunkData chunkData = new MeshChunkData();
+        ADTRootData.MeshChunkData chunkData = new ADTRootData.MeshChunkData();
         long MCNKchnkPos = ADTstream.Position;
         // <Header> - 128 bytes
         chunkData.flags = f.ReadMCNKflags(ADTstream);
@@ -101,7 +99,7 @@ public static partial class ADT {
         chunkData.IndexY = s.ReadLong(ADTstream);
         chunkData.nLayers = s.ReadLong(ADTstream);  // maximum 4
         int nDoodadRefs = s.ReadLong(ADTstream);
-        ulong holes_high_res = s.ReadUint64(ADTstream);  // only used with flags.high_res_holes
+        chunkData.holes_high_res = s.ReadUint64(ADTstream);  // only used with flags.high_res_holes
         int ofsLayer = s.ReadLong(ADTstream);
         int ofsRefs = s.ReadLong(ADTstream);
         int ofsAlpha = s.ReadLong(ADTstream);
@@ -110,10 +108,10 @@ public static partial class ADT {
         int sizeShadow = s.ReadLong(ADTstream);
         int areaid = s.ReadLong(ADTstream);  // in alpha: both zone id and sub zone id, as uint16s.
         int nMapObjRefs = s.ReadLong(ADTstream);
-        int holes_low_res = s.ReadShort(ADTstream);
+        chunkData.holes_low_res = s.ReadShort(ADTstream);
         int unknown_but_used = s.ReadShort(ADTstream);  // in alpha: padding
         byte[] ReallyLowQualityTextureingMap = new byte[16];  // uint2_t[8][8] "predTex", It is used to determine which detail doodads to show. Values are an array of two bit 
-        for (int b = 0; b<16; b++)
+        for (int b = 0; b < 16; b++)
         {
             ReallyLowQualityTextureingMap[b] = (byte)ADTstream.ReadByte();
         }
@@ -142,25 +140,25 @@ public static partial class ADT {
             streamPosition = ADTstream.Position + chunkSize;
             switch (chunkID)
             {
-                case (int)ADTchunkID.MCVT:
+                case (int)ChunkID.ADT.MCVT:
                     ReadMCVT(ADTstream, chunkData); // vertex heights
                     break;
-                case (int)ADTchunkID.MCLV:
+                case (int)ChunkID.ADT.MCLV:
                     ReadMCLV(ADTstream, chunkData); // chunk lighting
                     break;
-                case (int)ADTchunkID.MCCV:
+                case (int)ChunkID.ADT.MCCV:
                     ReadMCCV(ADTstream, chunkData); // vertex shading
                     break;
-                case (int)ADTchunkID.MCNR:
+                case (int)ChunkID.ADT.MCNR:
                     ReadMCNR(ADTstream, chunkData); // normals
                     break;
-                case (int)ADTchunkID.MCSE:
+                case (int)ChunkID.ADT.MCSE:
                     ReadMCSE(ADTstream, chunkData, chunkSize); // sound emitters
                     break;
-                case (int)ADTchunkID.MCBB:
+                case (int)ChunkID.ADT.MCBB:
                     ReadMCBB(ADTstream, chunkData, chunkSize);
                     break;
-                case (int)ADTchunkID.MCDD:
+                case (int)ChunkID.ADT.MCDD:
                     ReadMCDD(ADTstream, chunkData, chunkSize);
                     break;
                 default:
@@ -168,10 +166,10 @@ public static partial class ADT {
                     break;
             }
         }
-        meshBlockData.meshChunksData.Add(chunkData);
+        ADTRootData.meshBlockData.meshChunksData.Add(chunkData);
     }
-    
-    private static void ReadMFBO(MemoryStream ADTstream)
+
+    public void ReadMFBO(MemoryStream ADTstream)
     {
         StreamTools s = new StreamTools();
         short[,] planeMax = new short[3, 3];
@@ -191,12 +189,12 @@ public static partial class ADT {
             }
         }
     }
-    
+
     ////////////////////////////
     ////// MCNK Subchunks //////
     ////////////////////////////
 
-    private static void ReadMCVT(MemoryStream ADTstream, MeshChunkData chunkData)
+    public void ReadMCVT(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData)
     {
         StreamTools s = new StreamTools();
         for (int v = 1; v <= 145; v++)
@@ -204,8 +202,8 @@ public static partial class ADT {
             chunkData.VertexHeights.Add(s.ReadFloat(ADTstream));
         }
     }
- 
-    private static void ReadMCLV(MemoryStream ADTstream, MeshChunkData chunkData)
+
+    public void ReadMCLV(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData)
     {
         for (int v = 1; v <= 145; v++)
         {
@@ -220,8 +218,8 @@ public static partial class ADT {
         // In contrast to MCCV does not only color but also lightens up the vertices.
         // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
     } // chunk lighting
-    
-    private static void ReadMCCV(MemoryStream ADTstream, MeshChunkData chunkData)
+
+    public void ReadMCCV(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
 
@@ -242,8 +240,8 @@ public static partial class ADT {
             chunkData.VertexColors[col] = colorBGRA;
         }
     } // vertex shading
-    
-    private static void FillMCCV(MeshChunkData chunkData)
+
+    public void FillMCCV(ADTRootData.MeshChunkData chunkData)
     {
         chunkData.VertexColors = new Color32[145];
         for (int col = 0; col < 145; col++)
@@ -253,7 +251,7 @@ public static partial class ADT {
         }
     } // fill vertex shading with 127
 
-    private static void ReadMCNR(MemoryStream ADTstream, MeshChunkData chunkData)
+    public void ReadMCNR(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData)
     {
         StreamTools s = new StreamTools();
         chunkData.VertexNormals = new Vector3[145];
@@ -270,8 +268,8 @@ public static partial class ADT {
         // skip unused 13 byte padding //
         ADTstream.Seek(13, SeekOrigin.Current);
     }  // normals
-    
-    private static void ReadMCSE(MemoryStream ADTstream, MeshChunkData chunkData, int MCSEsize)
+
+    public void ReadMCSE(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData, int MCSEsize)
     {
         if (MCSEsize != 0)
         {
@@ -280,19 +278,34 @@ public static partial class ADT {
         }
     }
 
-    private static void ReadMCBB(MemoryStream ADTstream, MeshChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
+    public void ReadMCBB(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
     {
         //Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
         // skip for now
         ADTstream.Seek(MCBBsize, SeekOrigin.Current);
     }
 
-    private static void ReadMCDD(MemoryStream ADTstream, MeshChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
-                                                    // in live clients (32 bytes instead of 8) (?). if inlined to MCNK is low-res.
+    public void ReadMCDD(MemoryStream ADTstream, ADTRootData.MeshChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
+                                                                                                // in live clients (32 bytes instead of 8) (?). if inlined to MCNK is low-res.
     {
         //Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");
 
         // skip for now
         ADTstream.Seek(MCDDsize, SeekOrigin.Current);
     }
+
+    // Move the stream forward upon finding unknown chunks //
+    public void SkipUnknownChunk(MemoryStream ADTstream, int chunkID, int chunkSize)
+    {
+        try
+        {
+            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADT), chunkID)).ToString() + " | Skipped");
+        }
+        catch
+        {
+            Debug.Log("Missing chunk ID : " + chunkID);
+        }
+        ADTstream.Seek(chunkSize, SeekOrigin.Current);
+    }
+
 }

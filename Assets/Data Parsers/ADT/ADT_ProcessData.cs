@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -8,7 +9,7 @@ public static class ADT_ProcessData {
     // mesh handler //
     public static void GenerateMeshArrays()
     {
-        foreach (ADT.MeshChunkData chunkData in ADT.meshBlockData.meshChunksData)
+        foreach (ADTRootData.MeshChunkData chunkData in ADTRootData.meshBlockData.meshChunksData)
         {
             chunkData.VertexArray = new Vector3[145];
             int currentVertex = 0;
@@ -38,7 +39,135 @@ public static class ADT_ProcessData {
             currentVertex = 0;
 
             // triangles array //
-            chunkData.TriangleArray = ADT.Chunk_Triangles;
+            if (chunkData.holes_low_res == 0 && chunkData.holes_high_res == 0)
+            {
+                chunkData.TriangleArray = ADT.Chunk_Triangles;
+            }
+            else
+            {
+                if (chunkData.flags.high_res_holes)
+                {
+                    // high res holes //
+                    byte[] bytes = BitConverter.GetBytes(chunkData.holes_high_res);
+                    BitArray bits = new BitArray(bytes);
+                    bool[,] bitmap = new bool[8, 8];
+                    for (int i = 0; i < 8; i++)
+                        for (int j = 0; j < 8; j++)
+                            bitmap[i, j] = bits[(j * 8) + i];
+                    int[] triangles = new int[256 * 3];
+                    int triOffset = 0;
+                    //create 8 strips//
+                    for (int strip = 0; strip < 8; strip++)
+                    {
+                        //   case \/   //
+                        for (int t = 0; t < 8; t++)
+                        {
+                            if (!bitmap[t, strip])
+                            {
+                                triangles[triOffset + 0] = t + strip * 17;
+                                triangles[triOffset + 1] = t + 1 + strip * 17;
+                                triangles[triOffset + 2] = t + 9 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case /\   //
+                        for (int t1 = 0; t1 < 8; t1++)
+                        {
+                            if (!bitmap[t1, strip])
+                            {
+                                triangles[triOffset + 0] = t1 + (strip + 1) * 17;
+                                triangles[triOffset + 1] = t1 - 8 + (strip + 1) * 17;
+                                triangles[triOffset + 2] = t1 + 1 + (strip + 1) * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case >   //
+                        for (int t2 = 0; t2 < 8; t2++)
+                        {
+                            if (!bitmap[t2, strip])
+                            {
+                                triangles[triOffset + 0] = t2 + strip * 17;
+                                triangles[triOffset + 1] = t2 + 9 + strip * 17;
+                                triangles[triOffset + 2] = t2 + 17 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case <   //
+                        for (int t3 = 0; t3 < 8; t3++)
+                        {
+                            if (!bitmap[t3, strip])
+                            {
+                                triangles[triOffset + 0] = t3 + 9 + strip * 17;
+                                triangles[triOffset + 1] = t3 + 1 + strip * 17;
+                                triangles[triOffset + 2] = t3 + 18 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                    }
+                    chunkData.TriangleArray = triangles;
+                }
+                else
+                {
+                    // low res holes //
+                    byte[] bytes = BitConverter.GetBytes(chunkData.holes_low_res);
+                    BitArray bits = new BitArray(bytes);
+                    bool[,] bitmap = new bool[4, 4];
+                    for (int i = 0; i < 4; i++)
+                        for (int j = 0; j < 4; j++)
+                            bitmap[i,j] = bits[(j * 4) + i];
+                    int[] triangles = new int[256 * 3];
+                    int triOffset = 0;
+                    //create 8 strips//
+                    for (int strip = 0; strip < 8; strip++)
+                    {
+                        //   case \/   //
+                        for (int t = 0; t < 8; t++)
+                        {
+                            if (!bitmap[t / 2, strip / 2])
+                            {
+                                triangles[triOffset + 0] = t + strip * 17;
+                                triangles[triOffset + 1] = t + 1 + strip * 17;
+                                triangles[triOffset + 2] = t + 9 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case /\   //
+                        for (int t1 = 0; t1 < 8; t1++)
+                        {
+                            if (!bitmap[t1 / 2, strip / 2])
+                            {
+                                triangles[triOffset + 0] = t1 + (strip + 1) * 17;
+                                triangles[triOffset + 1] = t1 - 8 + (strip + 1) * 17;
+                                triangles[triOffset + 2] = t1 + 1 + (strip + 1) * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case >   //
+                        for (int t2 = 0; t2 < 8; t2++)
+                        {
+                            if (!bitmap[t2 / 2, strip / 2])
+                            {
+                                triangles[triOffset + 0] = t2 + strip * 17;
+                                triangles[triOffset + 1] = t2 + 9 + strip * 17;
+                                triangles[triOffset + 2] = t2 + 17 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                        //   case <   //
+                        for (int t3 = 0; t3 < 8; t3++)
+                        {
+                            if (!bitmap[t3 / 2, strip / 2])
+                            {
+                                triangles[triOffset + 0] = t3 + 9 + strip * 17;
+                                triangles[triOffset + 1] = t3 + 1 + strip * 17;
+                                triangles[triOffset + 2] = t3 + 18 + strip * 17;
+                                triOffset = triOffset + 3;
+                            }
+                        }
+                    }
+                    chunkData.TriangleArray = triangles;
+                }
+            }
 
             // UVW array //
             chunkData.UVArray = ADT.Chunk_UVs;

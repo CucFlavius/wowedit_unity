@@ -39,6 +39,9 @@ public static class Settings
     // Terrain Settings //
     public static bool showVertexColor = true;
 
+    // Terrain Importer //
+    //public static bool LoadWMOs = false;
+    //public static bool LoadM2s = false;
 
     public static void Save ()
     {

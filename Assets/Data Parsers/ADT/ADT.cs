@@ -212,13 +212,13 @@ public static partial class ADT
         ThreadWorkingMesh = true;
         long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        meshBlockData = new MeshBlockData();
-        meshBlockData.meshChunksData = new List<MeshChunkData>();
+        ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
+        ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();
 
         ParseADT_Main(Path, MapName, Coords);
         ADT_ProcessData.GenerateMeshArrays();
 
-        MeshBlockDataQueue.Enqueue(meshBlockData);
+        ADTRootData.MeshBlockDataQueue.Enqueue(ADTRootData.meshBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainMesh = (millisecondsStop - millisecondsStart) / 1000f;
@@ -248,19 +248,18 @@ public static partial class ADT
         ThreadWorkingTextures = false;
     }
 
-
     // Run Terrain Models Parser //
     public static void LoadTerrainModels (string Path, string MapName, Vector2 Coords)
     {
         ThreadWorkingModels = true;
         long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        modelBlockData = new ModelBlockData();
-
+        ADTObjData.modelBlockData = new ADTObjData.ModelBlockData();
+        ADTObjData.modelBlockData.terrainPos = Coords;
         if (ADTSettings.LoadWMOs || ADTSettings.LoadM2s)
             ParseADT_Obj(Path, MapName, Coords);
 
-        ModelBlockDataQueue.Enqueue(modelBlockData);
+        ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainModels = (millisecondsStop - millisecondsStart) / 1000f;
@@ -272,6 +271,8 @@ public static partial class ADT
     private static void ParseADT_Main(string Path, string MapName, Vector2 coords)  // MS version
     {
         StreamTools s = new StreamTools();
+        ADTRoot r = new ADTRoot();
+        ChunkID c = new ChunkID();
         string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
         string path = Casc.GetFile(ADTmainPath);
         byte[] ADTmainData = File.ReadAllBytes(path);
@@ -290,26 +291,26 @@ public static partial class ADT
 
                 switch (chunkID)
                 {
-                    case (int)ADTchunkID.MVER:
-                        ReadMVER(ms); // ADT file version
+                    case (int)ChunkID.ADT.MVER:
+                        r.ReadMVER(ms); // ADT file version
                         break;
-                    case (int)ADTchunkID.MHDR:
-                        ReadMHDR(ms); // Offsets for specific chunks 0000 if chunks don't exist.
+                    case (int)ChunkID.ADT.MHDR:
+                        r.ReadMHDR(ms); // Offsets for specific chunks 0000 if chunks don't exist.
                         break;
-                    case (int)ADTchunkID.MH2O:
-                        ReadMH2O(ms, chunkSize); // Water Data
+                    case (int)ChunkID.ADT.MH2O:
+                        r.ReadMH2O(ms, chunkSize); // Water Data
                         break;
-                    case (int)ADTchunkID.MCNK:
+                    case (int)ChunkID.ADT.MCNK:
                         {
-                            ReadMCNK(ms, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
+                            r.ReadMCNK(ms, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
                             MCNKchunkNumber++;
                         }
                         break;
-                    case (int)ADTchunkID.MFBO:
-                        ReadMFBO(ms); // FlightBounds plane & Death plane
+                    case (int)ChunkID.ADT.MFBO:
+                        r.ReadMFBO(ms); // FlightBounds plane & Death plane
                         break;
                     default:
-                        SkipUnknownChunk(ms, chunkID, chunkSize);
+                        r.SkipUnknownChunk(ms, chunkID, chunkSize);
                         break;
                 }
             }
@@ -341,29 +342,29 @@ public static partial class ADT
 
                 switch (chunkID)
                 {
-                    case (int)ADTchunkID.MVER:
-                        ReadMVER(ms); // ADT file version
+                    case (int)ChunkID.ADT.MVER:
+                        t.ReadMVER(ms); // ADT file version
                         break;
-                    case (int)ADTchunkID.MAMP:
+                    case (int)ChunkID.ADT.MAMP:
                         t.ReadMAMP(ms); // Single value - texture size = 64
                         break;
-                    case (int)ADTchunkID.MTEX:
+                    case (int)ChunkID.ADT.MTEX:
                         t.ReadMTEX(ms, chunkSize); // Texture Paths
                         break;
-                    case (int)ADTchunkID.MCNK:
+                    case (int)ChunkID.ADT.MCNK:
                         {
                             t.ReadMCNKtex(ms, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
                             MCNKchunkNumber++;
                         }
                         break;
-                    case (int)ADTchunkID.MTXF:
+                    case (int)ChunkID.ADT.MTXF:
                         t.ReadMTXF(ms, chunkSize); // Texture Paths
                         break;
-                    case (int)ADTchunkID.MTXP:
+                    case (int)ChunkID.ADT.MTXP:
                         t.ReadMTXP(ms, chunkSize); // Texture Paths
                         break;
                     default:
-                        SkipUnknownChunk(ms, chunkID, chunkSize);
+                        t.SkipUnknownChunk(ms, chunkID, chunkSize);
                         break;
                 }
             }
@@ -375,6 +376,7 @@ public static partial class ADT
     public static void ParseADT_Obj(string Path, string MapName, Vector2 coords)
     {
         StreamTools s = new StreamTools();
+        ADTObj o = new ADTObj();
         string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
         string path = Casc.GetFile(ADTobjPath);
 
@@ -393,30 +395,30 @@ public static partial class ADT
 
                 switch (chunkID)
                 {
-                    case (int)ADTchunkID.MVER:
-                        ReadMVER(ms); // ADT file version
+                    case (int)ChunkID.ADT.MVER:
+                        o.ReadMVER(ms); // ADT file version
                         break;
-                    case (int)ADTchunkID.MMDX:
-                        ReadMMDX(ms, chunkSize); // List of filenames for M2 models
+                    case (int)ChunkID.ADT.MMDX:
+                        o.ReadMMDX(ms, chunkSize); // List of filenames for M2 models
                         break;
-                    case (int)ADTchunkID.MMID:
-                        ReadMMID(ms, chunkSize); // List of offsets of model filenames in the MMDX chunk.
+                    case (int)ChunkID.ADT.MMID:
+                        o.ReadMMID(ms, chunkSize); // List of offsets of model filenames in the MMDX chunk.
                         break;
-                    case (int)ADTchunkID.MWMO:
-                        ReadMWMO(ms, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
+                    case (int)ChunkID.ADT.MWMO:
+                        o.ReadMWMO(ms, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
                         break;
-                    case (int)ADTchunkID.MWID:
-                        ReadMWID(ms, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
+                    case (int)ChunkID.ADT.MWID:
+                        o.ReadMWID(ms, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
                         break;
-                    case (int)ADTchunkID.MDDF:
-                        ReadMDDF(ms, chunkSize); // Placement information for doodads (M2 models).
+                    case (int)ChunkID.ADT.MDDF:
+                        o.ReadMDDF(ms, chunkSize); // Placement information for doodads (M2 models).
                         break;
-                    case (int)ADTchunkID.MODF:
-                        ReadMODF(ms, chunkSize); // Placement information for WMOs.
+                    case (int)ChunkID.ADT.MODF:
+                        o.ReadMODF(ms, chunkSize); // Placement information for WMOs.
                         break;
-                    case (int)ADTchunkID.MCNK:
+                    case (int)ChunkID.ADT.MCNK:
                         {
-                            ReadMCNKObj(ms, MapName, MCNKchunkNumber, chunkSize); // 256chunks
+                            o.ReadMCNKObj(ms, MapName, MCNKchunkNumber, chunkSize); // 256chunks
                             MCNKchunkNumber++;
                         }
                         break;
@@ -434,7 +436,7 @@ public static partial class ADT
     {
         try
         {
-            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADTchunkID), chunkID)).ToString() + " | Skipped");
+            //Debug.Log("Unknown chunk : " + (Enum.GetName(typeof(ADT), chunkID)).ToString() + " | Skipped");
         }
         catch
         {

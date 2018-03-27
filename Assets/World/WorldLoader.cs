@@ -102,6 +102,8 @@ public class WorldLoader : MonoBehaviour {
         ClearLoDArray(previousTerrainLod);
         //ClearLoDArray(currentTerrainLod);
 
+        playerSpawn = new Vector2(playerSpawn.y, playerSpawn.x);
+
         // position camera obj //
         Camera.transform.position = new Vector3((32-playerSpawn.x)*blockSize, 60f, (32-playerSpawn.y)*blockSize);
 

@@ -14,6 +14,9 @@ public class TerrainImport : MonoBehaviour {
     public GameObject PanelErrorMessage;
     public UnityEngine.UI.Text ErrorMessageText;
     public GameObject UIManager;
+    public UnityEngine.UI.Toggle wmoToggle;
+    public UnityEngine.UI.Toggle m2Toggle;
+
     public Dictionary<string ,GameObject> MapTabs = new Dictionary<string, GameObject>();
     public List<string> ExtractedMapList;
     public List<string> FilteredList;
@@ -61,6 +64,10 @@ public class TerrainImport : MonoBehaviour {
             minimap.pause = false;
         }
         TerrainImporterPanel.SetActive(true);
+
+        // reset toggles //
+        wmoToggle.isOn = ADTSettings.LoadWMOs;
+        m2Toggle.isOn = ADTSettings.LoadM2s;
     }
 
     public void GetMapList (string mapPath)
@@ -146,6 +153,7 @@ public class TerrainImport : MonoBehaviour {
         SelectPlayerBlockIcon.GetComponent<RectTransform>().localPosition = new Vector2(50,-50);
         SelectPlayerBlockIcon.GetComponent<RectTransform>().localScale = minimapBlock.transform.localScale;
         currentSelectedPlayerSpawn = minimapBlock.GetComponent<MinimapBlock>().minimapCoords;
+        //Debug.Log(currentSelectedPlayerSpawn);
     }
 
     public void ClickedLoadFull()
@@ -158,6 +166,16 @@ public class TerrainImport : MonoBehaviour {
         Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
         World.GetComponent<WorldLoader>().LoadFullWorld(selectedMapName, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);
+    }
+
+    public void Toggle_WMO(bool on)
+    {
+        ADTSettings.LoadWMOs = on;
+    }
+
+    public void Toggle_M2(bool on)
+    {
+        ADTSettings.LoadM2s = on;
     }
 
 }

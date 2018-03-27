@@ -5,7 +5,7 @@ using System.Text;
 
 class ChunkID
 {
-    public enum ADTchunkID // blame Fabi
+    public enum ADT // blame Fabi
     {
         MVER = 0x4d564552,
         MHDR = 0x4d484452,

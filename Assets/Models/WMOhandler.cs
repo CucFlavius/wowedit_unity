@@ -5,6 +5,7 @@ using UnityEngine;
 public class WMOhandler : MonoBehaviour {
 
     public TerrainHandler terrainHandler;
+    public bool busy;
     public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
     public GameObject WMObatchprefab;
     public static System.Threading.Thread WMOThread;
@@ -90,12 +91,20 @@ public class WMOhandler : MonoBehaviour {
                 WMOThreadRun(queueItem.objectDataPath, queueItem.uniqueID , queueItem.Position, queueItem.Rotation, queueItem.Scale);
             }
         }
+        else if (WMOThreadQueue.Count == 0)
+        {
+            busy = false;
+        }
 
         if (WMO.AllWMOData.Count > 0)
         {
             if (!WMOThread.IsAlive)
             {
-                CreateWMOObject();
+                if (!terrainHandler.frameBusy)
+                {
+                    terrainHandler.frameBusy = true;
+                    CreateWMOObject();
+                }
             }
         }
 
@@ -141,7 +150,6 @@ public class WMOhandler : MonoBehaviour {
 
         try
         {
-
             int nGroups = data.Info.nGroups;
             for (int g = 0; g < nGroups; g++)
             {
@@ -160,6 +168,7 @@ public class WMOhandler : MonoBehaviour {
 
                     // mesh //
                     BatchInstance.AddComponent<MeshRenderer>();
+                    BatchInstance.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
                     BatchInstance.AddComponent<MeshFilter>();
                     Mesh bmesh = new Mesh();
 
@@ -241,5 +250,6 @@ public class WMOhandler : MonoBehaviour {
         {
             Debug.Log("Error : Trying to Create WMO Object - " + data.dataPath);
         }
+        terrainHandler.frameBusy = false;
     }
 }
