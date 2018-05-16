@@ -33,7 +33,7 @@ public static partial class WMO
 public struct WMOMaterial
 {
     public MaterialFlags flags;
-    public WMOFragmentShader shader;
+    public int shader;
     public BlendingMode blendMode;
     public int texture1_offset;
     public RGBA color1;
@@ -167,13 +167,13 @@ public enum WMOFragmentShader
 
 public enum BlendingMode : ushort
 {
-    Opaque = 0,
+    Opaque = 0, //
     AlphaKey = 1,
     Alpha = 2,
     Additive = 3,
-    Modulate = 4,
-    Modulate2x = 5,
-    ModulateAdditive = 6,
+    Modulate = 4, //
+    Modulate2x = 5, //
+    ModulateAdditive = 6, //
     InvertedSourceAlphaAdditive = 7,
     InvertedSourceAlphaOpaque = 8,
     SourceAlphaOpaque = 9,

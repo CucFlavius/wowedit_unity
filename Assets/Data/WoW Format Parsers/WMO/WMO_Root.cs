@@ -87,7 +87,7 @@ public static partial class WMO
             WMOMaterial material = new WMOMaterial();
 
             material.flags = ReadMaterialFlags(WMOrootstream);
-            material.shader = (WMOFragmentShader)ReadLong(WMOrootstream);  // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
+            material.shader = ReadLong(WMOrootstream);  // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
             material.blendMode = (BlendingMode)ReadLong(WMOrootstream);         // Blending: see https://wowdev.wiki/Rendering#EGxBlend
 
             material.texture1_offset = ReadLong(WMOrootstream);                          // Diffuse Texture; offset into MOTX

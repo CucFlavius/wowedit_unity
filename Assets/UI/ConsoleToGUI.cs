@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class ConsoleToGUI : MonoBehaviour
 {
     public UnityEngine.UI.Text logText;
-    private string fullText;
+    private string fullText = "";
 
     struct Log
     {
@@ -20,6 +20,10 @@ public class ConsoleToGUI : MonoBehaviour
 
     private void Update()
     {
+        if (fullText.Length > 5000)
+        {
+            fullText = fullText.Substring(0, 4000);
+        }
         logText.text = fullText;
     }
 

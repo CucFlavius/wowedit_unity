@@ -1,4 +1,4 @@
-﻿Shader "WoWEdit/WoWTerrainUltraLow"
+﻿Shader "WoWEdit/Terrain/UltraLow"
 {
 	Properties
 	{

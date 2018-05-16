@@ -14,7 +14,8 @@ public class Test : MonoBehaviour {
 	
     void Delayed ()
     {
-        //wmoHandler.AddToQueue(@"world\wmo\zuldazar\troll\8tr_zandalari_pyramid.wmo", Vector3.zero, Quaternion.identity, Vector3.one);
-        //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\duskwood_barn\duskwood_barn.wmo", Vector3.zero, Quaternion.identity, Vector3.one);
+        //wmoHandler.AddToQueue(@"world\wmo\zuldazar\troll\8tr_zandalari_pyramid.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
+        //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\duskwood_barn\duskwood_barn.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
+        //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\stormwind\stormwind2_016.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
     }
 }

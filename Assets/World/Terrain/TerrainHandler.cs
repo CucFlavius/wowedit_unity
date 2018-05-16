@@ -257,7 +257,6 @@ public class TerrainHandler : MonoBehaviour
             LoadedQueueItems.Add(HTGroupItem);
 
             // request Objs //
-            //ADTObjQueue.Enqueue(HTGroupItem);
             ADTObjQueue.Add(HTGroupItem);
             currentLoadingObjBlock.Enqueue(HTGroupItem);
 
@@ -265,7 +264,6 @@ public class TerrainHandler : MonoBehaviour
             mapTextureQueue.Enqueue(HTGroupItem);
 
             // request the HTexture //
-            //ADTTexQueue.Enqueue(HTGroupItem);
             ADTTexQueue.Add(HTGroupItem);
             currentLoadingHTextureBlock.Enqueue(HTGroupItem);
 
@@ -531,129 +529,7 @@ public class TerrainHandler : MonoBehaviour
             WMOHandler.busy = true;
         }
     }
-    /*
-    IEnumerator CreateADTObject()
-    {
-        float startTime = Time.time;
 
-        // Get ADT Block Data //
-        ADT.BlockData data = ADT.AllBlockData.Dequeue();
-        QueueItem Gobject = currentLoadingBlocks.Dequeue();
-
-        //////////////////////////////////////////////
-        ///////////          WMO          ////////////
-        //////////////////////////////////////////////
-        if (ADTSettings.LoadWMOs)
-        {
-            GameObject WMO0 = new GameObject();
-            WMO0.transform.parent = Gobject.Block.transform;
-
-            // Create WMO Objects - Send work to the WMO thread //
-            foreach (ADT.WMOPlacementInfo wmoInfo in data.WMOInfo)
-            {
-                if (!LoadedUniqueWMOs.Contains(wmoInfo.uniqueID))
-                {
-                    LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
-                    ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
-                    string wmoPath = data.WMOPaths[data.WMOOffsets[wmoInfo.nameID]];
-                    Vector3 addPosition = new Vector3(wmoInfo.position.x + Gobject.Block.transform.position.x,
-                                                      wmoInfo.position.y + Gobject.Block.transform.position.y,
-                                                      wmoInfo.position.z + Gobject.Block.transform.position.z);
-                    WMOHandler.AddToQueue(wmoPath, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
-                }
-            }
-        }
-        //////////////////////////////////////////////
-        ///////////       Terrain        /////////////
-        //////////////////////////////////////////////
-
-        Gobject.Block.name = Gobject.mapName + "_" + Gobject.x + "_" + Gobject.y;
-
-        for (int i = 1; i <= 4; i++)
-        {
-            CreateChunkQuarter(i, data, Gobject.Block);
-            yield return null;
-        }
-        finishedTime = Time.time - startTime;
-    }
-    */
-
-    /*
-    //////////////////////////////
-    #region Create GameObject LoD1 (unused)
-    //////////////////////////////
-    
-    GameObject Chunk1 = Instantiate(ChunkPrefab);
-
-    // Object //
-    Chunk1.isStatic = true;
-    Chunk1.name = "LoD1_" + i.ToString();
-    Chunk1.transform.position = data.ChunksData[i].MeshPosition;
-    Chunk1.transform.SetParent(LoD1.transform);
-
-    // Mesh LoD1//
-    Mesh mesh1 = new Mesh();
-    Vector3[] lod1Verts = new Vector3[81];
-    Vector3[] lod1Normals = new Vector3[81];
-    Color32[] lod1VertexColors = new Color32[81];
-    int currentVert = 0;
-    int currentWriteVert = 0;
-    for (int v = 0; v < 17; v++)
-    {
-        if (v % 2 == 0)
-        {
-            for (int v1 = 0; v1 < 9; v1++)
-            {
-                lod1Verts[currentWriteVert] = data.ChunksData[i].VertexArray[currentVert];
-                lod1Normals[currentWriteVert] = data.ChunksData[i].VertexNormals[currentVert];
-                lod1VertexColors[currentWriteVert] = data.ChunksData[i].VertexColors[currentVert];
-                currentVert++;
-                currentWriteVert++;
-            }
-        }
-        else
-        {
-            currentVert = currentVert + 8;
-        }
-    }
-    mesh1.vertices = lod1Verts;
-    mesh1.triangles = ADT.Chunk_TrianglesLoD1;
-    mesh1.uv = ADT.Chunk_UVsLod1;
-    mesh1.normals = lod1Normals;
-    mesh1.colors32 = lod1VertexColors;
-    Chunk1.GetComponent<MeshFilter>().mesh = mesh1;
-
-    // LoD Array //
-    renderers1[i] = Chunk1.GetComponent<Renderer>();
-
-    // Material //
-    Chunk1.GetComponent<Renderer>().material = ChunkMaterial;
-    for (int ln = 0; ln < 4; ln++)
-    {
-        string diffuseName = "_layer" + ln;
-        if (DiffuseLayers[ln] != null)
-            Chunk1.GetComponent<Renderer>().material.SetTexture(diffuseName, LoadedTerrainTextures[DiffuseLayers[ln]]);
-        Chunk1.GetComponent<Renderer>().material.SetTextureScale(diffuseName, new Vector2(-1, -1));
-        string heightName = "_height" + ln;
-        if (HeightLayers[ln] != null)
-            Chunk1.GetComponent<Renderer>().material.SetTexture(heightName, LoadedHTerrainTextures[HeightLayers[ln]]);
-        Chunk1.GetComponent<Renderer>().material.SetTextureScale(heightName, new Vector2(-1, -1));
-        string alphaName = "_blend" + ln;
-        if (ln > 0 && AlphaLayers[ln] != null)
-            Chunk1.GetComponent<Renderer>().material.SetTexture(alphaName, AlphaLayers[ln]);
-    }
-
-    if (data.MTXP)
-    {
-        Chunk1.GetComponent<Renderer>().material.SetVector("heightScale", new Vector4(HeightScales[0], HeightScales[1], HeightScales[2], HeightScales[3]));
-        Chunk1.GetComponent<Renderer>().material.SetVector("heightOffset", new Vector4(heightOffsets[0], heightOffsets[1], heightOffsets[2], heightOffsets[3]));
-    }
-    if (ADTSettings.LoadShadowMaps)
-    {
-        Chunk1.GetComponent<Renderer>().material.SetTexture("_shadowMap", ShadowMap);
-    }
-    #endregion
-    */
 
     // Rotate a Color32 array of square size n by 90 degrees //
     static Color32[] RotateMatrix(Color32[] matrix, int n)
