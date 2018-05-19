@@ -59,64 +59,64 @@ public static partial class WMO
 
             switch (chunkID)
             {
-                case (int)WMOChunkID.MVER:
+                case (int)ChunkID.WMOChunkID.MVER:
                     ReadMVER(WMOrootstream); // root file version
                     break;
-                case (int)WMOChunkID.MOHD:
+                case (int)ChunkID.WMOChunkID.MOHD:
                     ReadMOHD(WMOrootstream); // root file header
                     break;
-                case (int)WMOChunkID.MOTX:
+                case (int)ChunkID.WMOChunkID.MOTX:
                     ReadMOTX(WMOrootstream, chunkSize); // texture paths
                     break;
-                case (int)WMOChunkID.MOMT:
+                case (int)ChunkID.WMOChunkID.MOMT:
                     ReadMOMT(WMOrootstream, chunkSize); // materials
                     break;
-                case (int)WMOChunkID.MOUV:
+                case (int)ChunkID.WMOChunkID.MOUV:
                     ReadMOUV(WMOrootstream); // texture animation // optional
                     break;
-                case (int)WMOChunkID.MOGN:
+                case (int)ChunkID.WMOChunkID.MOGN:
                     ReadMOGN(WMOrootstream, chunkSize); // list of group names
                     break;
-                case (int)WMOChunkID.MOGI:
+                case (int)ChunkID.WMOChunkID.MOGI:
                     ReadMOGI(WMOrootstream); // Group information for WMO groups
                     break;
-                case (int)WMOChunkID.MOSB:
+                case (int)ChunkID.WMOChunkID.MOSB:
                     ReadMOSB(WMOrootstream, chunkSize); // Skybox model filename
                     break;
-                case (int)WMOChunkID.MOPV:
+                case (int)ChunkID.WMOChunkID.MOPV:
                     ReadMOPV(WMOrootstream, chunkSize); // Portal vertices
                     break;
-                case (int)WMOChunkID.MOPT:
+                case (int)ChunkID.WMOChunkID.MOPT:
                     ReadMOPT(WMOrootstream); // Portal information
                     break;
-                case (int)WMOChunkID.MOPR:
+                case (int)ChunkID.WMOChunkID.MOPR:
                     ReadMOPR(WMOrootstream, chunkSize); // Portal references from groups
                     break;
-                case (int)WMOChunkID.MOVV:
+                case (int)ChunkID.WMOChunkID.MOVV:
                     ReadMOVV(WMOrootstream, chunkSize); // Visible block vertices
                     break;
-                case (int)WMOChunkID.MOVB:
+                case (int)ChunkID.WMOChunkID.MOVB:
                     ReadMOVB(WMOrootstream, chunkSize); // Visible block list
                     break;
-                case (int)WMOChunkID.MOLT:
+                case (int)ChunkID.WMOChunkID.MOLT:
                     ReadMOLT(WMOrootstream); // Lighting information.
                     break;
-                case (int)WMOChunkID.MODS:
+                case (int)ChunkID.WMOChunkID.MODS:
                     ReadMODS(WMOrootstream, chunkSize); // This chunk defines doodad sets.
                     break;
-                case (int)WMOChunkID.MODN:
+                case (int)ChunkID.WMOChunkID.MODN:
                     ReadMODN(WMOrootstream, chunkSize); //List of filenames for M2
                     break;
-                case (int)WMOChunkID.MODD:
+                case (int)ChunkID.WMOChunkID.MODD:
                     ReadMODD(WMOrootstream, chunkSize); // Information for doodad instances.
                     break;
-                case (int)WMOChunkID.MFOG:
+                case (int)ChunkID.WMOChunkID.MFOG:
                     ReadMFOG(WMOrootstream, chunkSize); // Fog information.
                     break;
-                case (int)WMOChunkID.MCVP:
+                case (int)ChunkID.WMOChunkID.MCVP:
                     ReadMCVP(WMOrootstream, chunkSize); // Convex Volume Planes.
                     break;
-                case (int)WMOChunkID.GFID:
+                case (int)ChunkID.WMOChunkID.GFID:
                     ReadGFID(WMOrootstream, chunkSize); // required when WMO is loaded from fileID
                     break;
                 default:
@@ -163,19 +163,19 @@ public static partial class WMO
                 streamPosition = WMOgroupstream.Position + chunkSize;
                 switch (chunkID)
                 {
-                    case (int)WMOChunkID.MOPY:
+                    case (int)ChunkID.WMOChunkID.MOPY:
                         ReadMOPY(WMOgroupstream, chunkSize); // Material info for triangles
                         break;
-                    case (int)WMOChunkID.MOVI:
+                    case (int)ChunkID.WMOChunkID.MOVI:
                         ReadMOVI(WMOgroupstream, chunkSize); // Vertex indices for triangles
                         break;
-                    case (int)WMOChunkID.MOVT:
+                    case (int)ChunkID.WMOChunkID.MOVT:
                         ReadMOVT(WMOgroupstream, chunkSize); // Vertices chunk
                         break;
-                    case (int)WMOChunkID.MONR:
+                    case (int)ChunkID.WMOChunkID.MONR:
                         ReadMONR(WMOgroupstream, chunkSize); // Normals chunk
                         break;
-                    case (int)WMOChunkID.MOTV:
+                    case (int)ChunkID.WMOChunkID.MOTV:
                         {
                             MOTVcount++;
                             if (MOTVcount == 1)
@@ -186,10 +186,10 @@ public static partial class WMO
                                 ReadMOTV3(WMOgroupstream, chunkSize);
                         }
                         break;
-                    case (int)WMOChunkID.MOBA:
+                    case (int)ChunkID.WMOChunkID.MOBA:
                         ReadMOBA(WMOgroupstream, chunkSize); // Render batches
                         break;
-                    case (int)WMOChunkID.MOCV:
+                    case (int)ChunkID.WMOChunkID.MOCV:
                         {
                             MOCVcount++;
                             if (MOCVcount == 1)

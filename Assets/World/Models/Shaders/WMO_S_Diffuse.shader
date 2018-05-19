@@ -1,4 +1,6 @@
-﻿///////////////////////////////////////////////////////
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+///////////////////////////////////////////////////////
 ///////////		   WMO Surface Shader		///////////
 ///////////				Diffuse				///////////
 ///////////////////////////////////////////////////////
@@ -38,8 +40,8 @@ Shader "WoWEdit/WMO/S_Diffuse"
 			float2 uv_MainTex;
 		};
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf (Input IN, inout SurfaceOutput o) 
 		{

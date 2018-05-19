@@ -223,4 +223,12 @@ public class StreamTools
         box.max = new Vector3(st.ReadFloat(stream), st.ReadFloat(stream), st.ReadFloat(stream));
         return box;
     }
+
+    public M2.M2Array ReadM2Array(MemoryStream stream)
+    {
+        M2.M2Array m2array;
+        m2array.size = ReadLong(stream);
+        m2array.offset = ReadLong(stream);
+        return m2array;
+    }
 }
