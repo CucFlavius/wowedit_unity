@@ -29,6 +29,8 @@ public static partial class M2
                 int chunkID = s.ReadLong(ms);
                 int chunkSize = s.ReadLong(ms);
 
+                streamPosition = ms.Position + chunkSize;
+
                 switch (chunkID)
                 {
                     case (int)ChunkID.M2ChunkID.MD21:
