@@ -30,6 +30,26 @@ public static partial class M2
         public List<Vector2> tex_coords = new List<Vector2>();
         public List<Vector2> tex_coords2 = new List<Vector2>();
     }
+
+    public class M2SkinSection
+    {
+        public List<UInt16> skinSectionId = new List<UInt16>();
+        public List<UInt16> Level = new List<UInt16>();
+        public List<UInt16> vertexStart = new List<UInt16>();
+        public List<UInt16> vertexCount = new List<UInt16>();
+        public List<UInt16> indexStart = new List<UInt16>();
+        public List<UInt16> indexCount = new List<UInt16>();
+        public List<UInt16> boneCount = new List<UInt16>();
+        public List<UInt16> boneComboIndex = new List<UInt16>();
+        public List<UInt16> boneInfluences = new List<UInt16>();
+
+        public List<UInt16> centerBoneIndex = new List<UInt16>();
+        public List<Vector3> centerPosition = new List<Vector3>();
+
+        // if ≥ BC
+        public List<Vector3> sortCenterPosition = new List<Vector3>();
+        public List<float> sortRadius = new List<float>();
+    }
 }
 
 public struct M2Array
@@ -49,17 +69,6 @@ public struct M2TrackBase
     public UInt16 trackType;
     public UInt16 loopIndex;
     M2Array sequenceTimes;
-}
-
-public struct M2Vertex
-{
-    public Vector3 pos;
-    public float[] bone_weights;
-    public int[] bone_indices;
-    public Vector3 normal;
-    // two textures, depending on shader used
-    public Vector2 tex_coords;
-    public Vector2 tex_coords2;
 }
 
 public struct M2Material
