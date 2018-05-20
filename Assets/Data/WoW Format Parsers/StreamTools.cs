@@ -207,7 +207,7 @@ public class StreamTools
     {
         StringBuilder sb = new StringBuilder();
         char c;
-        while ((c = System.Convert.ToChar(stream.ReadByte())) != 0)
+        while ((c = Convert.ToChar(stream.ReadByte())) != 0)
         {
             sb.Append(c);
         }
@@ -217,32 +217,36 @@ public class StreamTools
     // read bounding box //
     public BoundingBox ReadBoundingBox(MemoryStream stream)
     {
-        BoundingBox box = new BoundingBox();
-        StreamTools st = new StreamTools();
-        box.min = new Vector3(st.ReadFloat(stream), st.ReadFloat(stream), st.ReadFloat(stream));
-        box.max = new Vector3(st.ReadFloat(stream), st.ReadFloat(stream), st.ReadFloat(stream));
+        BoundingBox box = new BoundingBox
+        {
+            min = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
+            max = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream))
+        };
         return box;
     }
 
     public M2Array ReadM2Array(MemoryStream stream)
     {
-        M2Array m2array;
-        m2array.size = ReadLong(stream);
-        m2array.offset = ReadLong(stream);
+        M2Array m2array = new M2Array
+        {
+            size = ReadLong(stream),
+            offset = ReadLong(stream)
+        };
 
         return m2array;
     }
 
     public M2Vertex ReadM2Vertex(MemoryStream stream)
     {
-        M2Vertex m2vertex = new M2Vertex();
-
-        m2vertex.pos = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
-        m2vertex.bone_weights = new float[] { stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f };
-        m2vertex.bone_indices = new int[] { stream.ReadByte(), stream.ReadByte(), stream.ReadByte(), stream.ReadByte() };
-        m2vertex.normal = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
-        m2vertex.tex_coords = new Vector2(ReadFloat(stream), ReadFloat(stream));
-        m2vertex.tex_coords2 = new Vector2(ReadFloat(stream), ReadFloat(stream));
+        M2Vertex m2vertex = new M2Vertex
+        {
+            pos = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
+            bone_weights = new float[] { stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f },
+            bone_indices = new int[] { stream.ReadByte(), stream.ReadByte(), stream.ReadByte(), stream.ReadByte() },
+            normal = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
+            tex_coords = new Vector2(ReadFloat(stream), ReadFloat(stream)),
+            tex_coords2 = new Vector2(ReadFloat(stream), ReadFloat(stream))
+        };
 
         return m2vertex;
     }

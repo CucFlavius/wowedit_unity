@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class WMOhandler : MonoBehaviour {
@@ -8,7 +9,7 @@ public class WMOhandler : MonoBehaviour {
     public bool busy;
     public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
     public GameObject WMObatchprefab;
-    public static System.Threading.Thread WMOThread;
+    public static Thread WMOThread;
     public Material missingMaterial;
     public Material[] WMOmaterials; // 0 - diffuse, 1 - Specular, 2 - Metal, 3 - Environment Mapped, 4 - Opaque
 
@@ -59,7 +60,7 @@ public class WMOhandler : MonoBehaviour {
         {
             //ParseWMOBlock(); // nonthreaded - for testing purposes
             terrainHandler.LoadedWMOs.Add(objectDataPath, null);
-            WMOThread = new System.Threading.Thread(ParseWMOBlock);
+            WMOThread = new Thread(ParseWMOBlock);
             WMOThread.IsBackground = true;
             WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             WMOThread.Start();

@@ -21,7 +21,7 @@ public class Test : MonoBehaviour {
         //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\stormwind\stormwind2_016.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
         try
         {
-            m2Handler.AddToQueue(@"character\draenei\female\draeneifemale.m2", -1, Vector3.zero, Quaternion.identity, Vector3.one);
+            M2.Load(@"character\draenei\female\draeneifemale.m2", 1, Vector3.zero, Quaternion.identity, Vector3.one);
             Debug.Log("Model Loaded");
         }
         catch (Exception ex)

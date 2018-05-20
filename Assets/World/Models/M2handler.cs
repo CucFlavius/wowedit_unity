@@ -39,13 +39,14 @@ public class M2handler : MonoBehaviour
 		if (M2.AllM2Data.Count > 0)
         {
             CreateM2Object(M2.AllM2Data.Dequeue());
+            Debug.Log("Yep");
         }
 	}
 
     public void CreateM2Object(M2.M2Data m2Data)
     {
         GameObject m2Obj = new GameObject();
-        m2Obj.name = "";
+        m2Obj.name = "TestModel";
         m2Obj.AddComponent<MeshRenderer>();
         m2Obj.AddComponent<MeshFilter>();
         m2Obj.transform.position = Vector3.zero;
