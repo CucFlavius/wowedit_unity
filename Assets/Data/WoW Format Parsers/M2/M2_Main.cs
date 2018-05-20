@@ -5,16 +5,14 @@ using UnityEngine;
 
 public static partial class M2
 {
-    public static void ReadMD21(MemoryStream ms)
+    public static void ReadMD21(MemoryStream ms, M2Data m2Data)
     {
         long md20position = ms.Position;
 
         StreamTools s = new StreamTools();
-        int MD20 = s.ReadLong(ms);
-        int MD20Size = s.ReadLong(ms);
-
-        int magic = s.ReadLong(ms);                                     // "MD20". Legion uses a chunked file format starting with MD21.
+        int MD20 = s.ReadLong(ms);                                      // "MD20". Legion uses a chunked file format starting with MD21.                              
         int version = s.ReadLong(ms);
+
         M2Array name = s.ReadM2Array(ms);                               // should be globally unique, used to reload by name in internal clients
 
         var flags = s.ReadLong(ms);
@@ -57,10 +55,10 @@ public static partial class M2
         ms.Position = vertices.offset + md20position;
 
         List<M2Vertex> m2Vertices = new List<M2Vertex>();
+        m2Data.meshData = new MeshData();
+
         for (int v = 0; v < vertices.size; v++)
         {
-            //m2Vertices.Add(ReadM2Vertex(ms));
-
             m2Data.meshData.pos.Add(new Vector3(s.ReadFloat(ms), s.ReadFloat(ms), s.ReadFloat(ms)));
             m2Data.meshData.bone_weights.Add(new float[] { ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f });
             m2Data.meshData.bone_indices.Add(new int[] { ms.ReadByte(), ms.ReadByte(), ms.ReadByte(), ms.ReadByte() });

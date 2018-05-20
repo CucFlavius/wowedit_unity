@@ -12,7 +12,7 @@ public static partial class M2
 
     public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
-        m2Data = new M2Data();
+        M2Data m2Data = new M2Data();
 
         m2Data.dataPath = dataPath;
         m2Data.uniqueID = uniqueID;
@@ -32,15 +32,13 @@ public static partial class M2
         catch (Exception ex)
         {
             Debug.Log("Error : Trying to parse M2 - " + dataPath);
-            Debug.Log(ex.Message);
+            Debug.LogException(ex);
         }
     }
 
     private static void ParseM2_Root(string dataPath, M2Data m2Data)
     {
         StreamTools s = new StreamTools();
-
-        m2Data.meshData = new MeshData();
 
         string path = Casc.GetFile(dataPath);
         byte[] M2MainData = File.ReadAllBytes(path);
@@ -59,7 +57,7 @@ public static partial class M2
                 switch (chunkID)
                 {
                     case (int)ChunkID.M2ChunkID.MD21:
-                        ReadMD21(ms);
+                        ReadMD21(ms, m2Data);
                         break;
                     default:
                         SkipUnknownChunk(ms, chunkID, chunkSize);

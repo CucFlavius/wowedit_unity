@@ -7,9 +7,8 @@ using UnityEngine;
 public static partial class M2
 {
     public static Queue<M2Data> AllM2Data = new Queue<M2Data>();
-    public static M2Data m2Data = new M2Data();
 
-    public struct M2Data
+    public class M2Data
     {
         // Object //
         public string dataPath;
@@ -19,18 +18,18 @@ public static partial class M2
         public Vector3 scale;
 
         // Mesh //
-        public MeshData meshData;
+        public MeshData meshData = new MeshData();
     }
-}
 
-public class MeshData
-{
-    public List<Vector3> pos = new List<Vector3>();
-    public List<float[]> bone_weights = new List<float[]>();
-    public List<int[]> bone_indices = new List<int[]>();
-    public List<Vector3> normal = new List<Vector3>();
-    public List<Vector2> tex_coords = new List<Vector2>();
-    public List<Vector2> tex_coords2 = new List<Vector2>();
+    public class MeshData
+    {
+        public List<Vector3> pos = new List<Vector3>();
+        public List<float[]> bone_weights = new List<float[]>();
+        public List<int[]> bone_indices = new List<int[]>();
+        public List<Vector3> normal = new List<Vector3>();
+        public List<Vector2> tex_coords = new List<Vector2>();
+        public List<Vector2> tex_coords2 = new List<Vector2>();
+    }
 }
 
 public struct M2Array

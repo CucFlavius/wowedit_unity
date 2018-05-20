@@ -39,7 +39,6 @@ public class M2handler : MonoBehaviour
 		if (M2.AllM2Data.Count > 0)
         {
             CreateM2Object(M2.AllM2Data.Dequeue());
-            Debug.Log("Yep");
         }
 	}
 
@@ -50,8 +49,10 @@ public class M2handler : MonoBehaviour
         m2Obj.AddComponent<MeshRenderer>();
         m2Obj.AddComponent<MeshFilter>();
         m2Obj.transform.position = Vector3.zero;
+        m2Obj.transform.rotation = Quaternion.identity; // set rotation to 0 too for now
 
         Mesh m = new Mesh();
+
         m.vertices = m2Data.meshData.pos.ToArray();
         m.normals = m2Data.meshData.normal.ToArray();
         m.uv = m2Data.meshData.tex_coords.ToArray();
