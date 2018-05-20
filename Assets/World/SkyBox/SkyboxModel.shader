@@ -17,6 +17,7 @@ Shader "WoWEdit/SkyboxModel"
 		}
 
 		ZWrite Off
+		//ZTest Always
 
 		Blend SrcAlpha OneMinusSrcAlpha
 
