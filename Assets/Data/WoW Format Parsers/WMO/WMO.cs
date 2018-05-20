@@ -7,7 +7,6 @@ using UnityEngine;
 
 public static partial class WMO
 {
-
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
 

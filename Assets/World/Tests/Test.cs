@@ -7,7 +7,7 @@ using System;
 public class Test : MonoBehaviour {
 
     public WMOhandler wmoHandler;
-    //public M2handler m2Handler;
+    public M2handler m2Handler;
 
 	// Use this for initialization
 	void Start () {
@@ -21,13 +21,12 @@ public class Test : MonoBehaviour {
         //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\stormwind\stormwind2_016.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
         try
         {
-            M2.Load();
+            m2Handler.AddToQueue(@"character\draenei\female\draeneifemale.m2", -1, Vector3.zero, Quaternion.identity, Vector3.one);
+            Debug.Log("Model Loaded");
         }
         catch (Exception ex)
         {
             Debug.Log(ex.Message);
         }
-        
-
     }
 }

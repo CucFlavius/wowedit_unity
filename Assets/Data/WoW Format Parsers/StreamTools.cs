@@ -224,11 +224,26 @@ public class StreamTools
         return box;
     }
 
-    public M2.M2Array ReadM2Array(MemoryStream stream)
+    public M2Array ReadM2Array(MemoryStream stream)
     {
-        M2.M2Array m2array;
+        M2Array m2array;
         m2array.size = ReadLong(stream);
         m2array.offset = ReadLong(stream);
+
         return m2array;
+    }
+
+    public M2Vertex ReadM2Vertex(MemoryStream stream)
+    {
+        M2Vertex m2vertex = new M2Vertex();
+
+        m2vertex.pos = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
+        m2vertex.bone_weights = new float[] { stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f };
+        m2vertex.bone_indices = new int[] { stream.ReadByte(), stream.ReadByte(), stream.ReadByte(), stream.ReadByte() };
+        m2vertex.normal = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream));
+        m2vertex.tex_coords = new Vector2(ReadFloat(stream), ReadFloat(stream));
+        m2vertex.tex_coords2 = new Vector2(ReadFloat(stream), ReadFloat(stream));
+
+        return m2vertex;
     }
 }
