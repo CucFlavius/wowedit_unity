@@ -33,4 +33,13 @@ public static partial class M2
         public UInt16 loopIndex;
         M2Array sequenceTimes;
     }
+    
+    public struct M2Vertex 
+    { 
+        public C3Vector pos; 
+        public uint8 bone_weights[4]; 
+        public uint8 bone_indices[4]; 
+        public C3Vector normal; 
+        public C2Vector tex_coords[2]; // two textures, depending on shader used
+    }
 }
