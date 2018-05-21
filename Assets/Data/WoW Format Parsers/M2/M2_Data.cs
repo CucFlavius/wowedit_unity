@@ -34,6 +34,7 @@ public static partial class M2
 
     public class SubmeshData
     {
+        public int ID;
         public Vector3[] vertList;
         public Vector3[] normsList;
         public Vector2[] uvsList;

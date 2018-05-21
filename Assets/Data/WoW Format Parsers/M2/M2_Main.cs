@@ -54,7 +54,6 @@ public static partial class M2
 
         ms.Position = vertices.offset + md20position;
 
-        //List<M2Vertex> m2Vertices = new List<M2Vertex>();
         m2Data.meshData = new MeshData();
 
         for (int v = 0; v < vertices.size; v++)

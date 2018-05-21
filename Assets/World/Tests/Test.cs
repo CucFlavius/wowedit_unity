@@ -22,6 +22,7 @@ public class Test : MonoBehaviour {
         try
         {
             M2.Load(@"character\draenei\female\draeneifemale.m2", 1, Vector3.zero, Quaternion.identity, Vector3.one);
+            M2.Load(@"world\expansion05\doodads\ashran\6as_rock_c01.m2", 1, new Vector3 (1,0,0), Quaternion.identity, Vector3.one);
             Debug.Log("Model Loaded");
         }
         catch (Exception ex)

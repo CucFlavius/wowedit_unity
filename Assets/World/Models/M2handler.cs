@@ -52,11 +52,13 @@ public class M2handler : MonoBehaviour
         m2Object.transform.rotation = Quaternion.identity;
         m2Object.transform.SetParent(transform);
 
+        Debug.Log(m2Data.submeshData.Count);
+
         for (int batch = 0; batch < m2Data.submeshData.Count; batch++)
         {
             // m2 batch object //
             GameObject batchObj = new GameObject();
-            batchObj.name = "batch_" + batch;
+            batchObj.name = "batch_" + m2Data.submeshData[batch].ID;
             batchObj.AddComponent<MeshRenderer>();
             batchObj.AddComponent<MeshFilter>();
             batchObj.transform.position = Vector3.zero;
@@ -71,6 +73,8 @@ public class M2handler : MonoBehaviour
             m.uv = m2Data.submeshData[batch].uvsList;
             m.uv2 = m2Data.submeshData[batch].uvs2List;
             m.triangles = m2Data.submeshData[batch].triList;
+            m.name = "batch_" + m2Data.submeshData[batch].ID + "_mesh";
+
             batchObj.GetComponent<MeshFilter>().mesh = m;
         }
     }

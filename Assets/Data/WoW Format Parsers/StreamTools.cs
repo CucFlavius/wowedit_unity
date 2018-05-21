@@ -94,6 +94,16 @@ public class StreamTools
         return value;
     }
 
+    // 2 bytes to uint //
+    public int ReadUint16 (MemoryStream stream)
+    {
+        byte[] bytes = new byte[2];
+        int value;
+        stream.Read(bytes, 0, bytes.Length);
+        value = System.BitConverter.ToUInt16(bytes, 0);
+        return value;
+    }
+
     // 4 bytes to int //
     public int ReadLong(MemoryStream stream) 
     {

@@ -59,7 +59,7 @@ public static partial class M2
         int[] Indices = new int[indices.size];
         int[] Triangles = new int[triangles.size];
 
-        int[] submesh_Id = new int[submeshes.size];
+        int[] skinSectionId = new int[submeshes.size];
         int[] submesh_StartVertex = new int[submeshes.size];
         int[] submesh_NbrVerts = new int[submeshes.size];
         int[] submesh_StartTriangle = new int[submeshes.size];
@@ -83,17 +83,18 @@ public static partial class M2
         ms.Seek(submeshes.offset, SeekOrigin.Begin);
         for (var sub = 0; sub < submeshes.size; sub++)
         {
-            submesh_Id[sub] = s.ReadLong(ms);
-            submesh_StartVertex[sub] = s.ReadShort(ms);
+            skinSectionId[sub] = s.ReadShort(ms);                   // Mesh part ID, see below.
+            int Level = s.ReadShort(ms);                            // (level << 16) is added (|ed) to startTriangle and alike to avoid having to increase those fields to uint32s.
+            submesh_StartVertex[sub] = s.ReadShort(ms) + (Level << 16);
             submesh_NbrVerts[sub] = s.ReadShort(ms);
-            submesh_StartTriangle[sub] = s.ReadShort(ms);
+            submesh_StartTriangle[sub] = s.ReadUint16(ms) + (Level << 16);
             submesh_NbrTris[sub] = s.ReadShort(ms);
 
             ms.Position += 36;
         }
 
         /// Assemble Submeshes ///
-        /// 
+
         m2Data.submeshData = new List<SubmeshData>();
 
         for (int sm = 0; sm < submeshes.size; sm++)
@@ -114,15 +115,12 @@ public static partial class M2
             int[] triList = new int[submesh_NbrTris[sm]];
             for (var t = 0; t < submesh_NbrTris[sm]; t++)
             {
-                if ((t + submesh_StartTriangle[sm]) < Triangles.Length && sm < submesh_StartVertex.Length && sm < submesh_StartTriangle.Length && t < submesh_NbrTris[sm]
-                && t > 0 && sm > 0 && t + submesh_StartTriangle[sm] > 0)
-                {
-                    triList[t] = Triangles[t + submesh_StartTriangle[sm]] - submesh_StartVertex[sm];
-                }
+                triList[t] = Triangles[t + submesh_StartTriangle[sm]] - submesh_StartVertex[sm];
             }
 
             SubmeshData submeshData = new SubmeshData();
 
+            submeshData.ID = skinSectionId[sm];
             submeshData.vertList = vertList;
             submeshData.normsList = normsList;
             submeshData.uvsList = uvsList;
