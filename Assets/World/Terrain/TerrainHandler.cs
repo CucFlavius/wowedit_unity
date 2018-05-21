@@ -15,6 +15,7 @@ public class TerrainHandler : MonoBehaviour
     public GameObject ChunkPrefab;
     public GameObject BlockChunksPrefab;
     public GameObject WMOParent;
+    public GameObject M2Parent;
     public Material HChunkMaterial;
     public Material LChunkMaterial;
     public List<Material> LChunkMaterials;
@@ -45,6 +46,11 @@ public class TerrainHandler : MonoBehaviour
     public Dictionary<string, GameObject> LoadedWMOs = new Dictionary<string, GameObject>();
     public Dictionary<int, GameObject> ADTBlockWMOParents = new Dictionary<int, GameObject>();
     public List<int> LoadedUniqueWMOs = new List<int>();
+
+    public M2handler M2Handler;
+    public Dictionary<string, GameObject> LoadedM2s = new Dictionary<string, GameObject>();
+    public Dictionary<int, GameObject> ADTBlockM2Parents = new Dictionary<int, GameObject>();
+    public List<int> LoadedUniqueM2s = new List<int>();
 
     private QueueItem currentMapTexture;
     private QueueItem currentHTexture;
@@ -143,7 +149,7 @@ public class TerrainHandler : MonoBehaviour
             }
             if (ADTObjData.ModelBlockDataQueue.Count > 0 && !WMOHandler.busy)
             {
-                LoadWMOs();
+                LoadModels();
             }
         }
     }
@@ -489,7 +495,7 @@ public class TerrainHandler : MonoBehaviour
         frameBusy = false;
     }
 
-    private void LoadWMOs ()
+    private void LoadModels()
     {
         // Get ADT Block Data //
         ADTObjData.ModelBlockData data = ADTObjData.ModelBlockDataQueue.Dequeue();
@@ -526,10 +532,33 @@ public class TerrainHandler : MonoBehaviour
                     }
                 }
             }
+            if (SettingsTerrainImport.LoadM2s)
+            {
+                GameObject M20 = new GameObject();
+                Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
+                M20.name = "M2_" + terrainPos.x + "_" + terrainPos.y;
+                M20.transform.position = new Vector3(((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
+                M20.transform.parent = M2Parent.transform; // Gobject.Block.transform;
+
+                // Create m2 objects - send work to the m2 thread //
+                foreach (ADTObjData.M2PlacementInfo m2Info in data.M2Info)
+                {
+                    if (!LoadedUniqueM2s.Contains(m2Info.uniqueID))
+                    {
+                        LoadedUniqueM2s.Add(m2Info.uniqueID);
+                        ADTBlockM2Parents.Add(m2Info.uniqueID, M20);
+                        string m2Path = data.M2Paths[data.M2Offsets[m2Info.nameID]];
+                        Vector3 addPosition = new Vector3(m2Info.position.x,
+                                                          m2Info.position.y,
+                                                          m2Info.position.z);
+                        M2Handler.AddToQueue(m2Path, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+                    }
+                }
+            }
             WMOHandler.busy = true;
+            M2Handler.busy = true;
         }
     }
-
 
     // Rotate a Color32 array of square size n by 90 degrees //
     static Color32[] RotateMatrix(Color32[] matrix, int n)
