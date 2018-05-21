@@ -27,6 +27,7 @@ public static class Settings
      * [9] = WoWCustomGameSource
      */
 
+    public static string ListFileDownload = @"https://github.com/wowdev/wow-listfile/blob/master/listfile.txt";
 
     // World Settings //
     public static float worldScale = 10.0f;

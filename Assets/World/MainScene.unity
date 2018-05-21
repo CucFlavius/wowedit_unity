@@ -25903,6 +25903,7 @@ MonoBehaviour:
   BlockChunksPrefab: {fileID: 1934210482691920, guid: 9f637a4ea0b449947a6c6e34532b0939,
     type: 2}
   WMOParent: {fileID: 56}
+  M2Parent: {fileID: 0}
   HChunkMaterial: {fileID: 2100000, guid: bf41c91ee78f0e94c816b43810b9ef6d, type: 2}
   LChunkMaterial: {fileID: 2100000, guid: 68f88370c29e2db4bb2f9e8ad8f62c3a, type: 2}
   LChunkMaterials: []
@@ -25914,6 +25915,8 @@ MonoBehaviour:
   frameBusy: 0
   WMOHandler: {fileID: 1248}
   LoadedUniqueWMOs: 
+  M2Handler: {fileID: 0}
+  LoadedUniqueM2s: 
 --- !u!114 &1455
 MonoBehaviour:
   m_ObjectHideFlags: 0
