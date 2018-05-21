@@ -512,7 +512,7 @@ public class TerrainHandler : MonoBehaviour
                 Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
                 WMO0.name = "WMO_" + terrainPos.x + "_" + terrainPos.y;
                 WMO0.transform.position = new Vector3(((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
-                WMO0.transform.parent = WMOParent.transform; // Gobject.Block.transform;
+                WMO0.transform.parent = WMOParent.transform;
 
                 // Create WMO Objects - Send work to the WMO thread //
                 foreach (ADTObjData.WMOPlacementInfo wmoInfo in data.WMOInfo)
@@ -522,12 +522,9 @@ public class TerrainHandler : MonoBehaviour
                         LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
                         ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
                         string wmoPath = data.WMOPaths[data.WMOOffsets[wmoInfo.nameID]];
-                        //Vector3 addPosition = new Vector3(wmoInfo.position.x + Gobject.Block.transform.position.x,
-                        //                                  wmoInfo.position.y + Gobject.Block.transform.position.y,
-                        //                                  wmoInfo.position.z + Gobject.Block.transform.position.z);
-                        Vector3 addPosition = new Vector3(wmoInfo.position.x,// + WMO0.transform.position.x,
+                        Vector3 addPosition = new Vector3(wmoInfo.position.x,
                                                           wmoInfo.position.y,
-                                                          wmoInfo.position.z);// + WMO0.transform.position.z);
+                                                          wmoInfo.position.z);
                         WMOHandler.AddToQueue(wmoPath, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
                     }
                 }
@@ -538,7 +535,7 @@ public class TerrainHandler : MonoBehaviour
                 Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
                 M20.name = "M2_" + terrainPos.x + "_" + terrainPos.y;
                 M20.transform.position = new Vector3(((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
-                M20.transform.parent = M2Parent.transform; // Gobject.Block.transform;
+                M20.transform.parent = M2Parent.transform;
 
                 // Create m2 objects - send work to the m2 thread //
                 foreach (ADTObjData.M2PlacementInfo m2Info in data.M2Info)

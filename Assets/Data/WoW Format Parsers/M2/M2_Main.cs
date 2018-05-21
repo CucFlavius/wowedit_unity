@@ -58,7 +58,7 @@ public static partial class M2
 
         for (int v = 0; v < vertices.size; v++)
         {
-            Vector3 rawPosition = new Vector3(s.ReadFloat(ms), s.ReadFloat(ms), s.ReadFloat(ms));
+            Vector3 rawPosition = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
             m2Data.meshData.pos.Add(new Vector3(rawPosition.x, rawPosition.z, rawPosition.y));
             m2Data.meshData.bone_weights.Add(new float[] { ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f });
             m2Data.meshData.bone_indices.Add(new int[] { ms.ReadByte(), ms.ReadByte(), ms.ReadByte(), ms.ReadByte() });

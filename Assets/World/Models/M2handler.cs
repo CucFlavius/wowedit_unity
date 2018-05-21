@@ -49,7 +49,7 @@ public class M2handler : MonoBehaviour
 
         if (!terrainHandler.LoadedM2s.ContainsKey(objectDataPath))
         {
-            // ParseM2Block); //nonthreaded - for testing purposes
+            //ParseM2Block(); //nonthreaded - for testing purposes
             terrainHandler.LoadedM2s.Add(objectDataPath, null);
             M2Thread = new Thread(ParseM2Block);
             M2Thread.IsBackground = true;
@@ -135,39 +135,48 @@ public class M2handler : MonoBehaviour
         M2.Load(currentM2datapath, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
     }
 
-    public void CreateM2Object(M2.M2Data m2Data)
+    public void CreateM2Object(M2.M2Data data)
     {
         // m2 parent object //
-        GameObject m2Object = new GameObject();
-        m2Object.name = m2Data.dataPath;
-        m2Object.transform.position = Vector3.zero;
-        m2Object.transform.rotation = Quaternion.identity;
-        m2Object.transform.SetParent(transform);
+        GameObject M2Instance = new GameObject();
+        terrainHandler.LoadedM2s[data.dataPath] = M2Instance;
 
-        Debug.Log(m2Data.submeshData.Count);
+        LODGroup Lodgroup = terrainHandler.LoadedM2s[data.dataPath].AddComponent<LODGroup>();
+        LOD[] lods = new LOD[1];
+        Renderer[] renderers = new Renderer[data.submeshData.Count];
 
-        for (int batch = 0; batch < m2Data.submeshData.Count; batch++)
+        for (int batch = 0; batch < data.submeshData.Count; batch++)
         {
-            // m2 batch object //
+            // object //
             GameObject batchObj = new GameObject();
-            batchObj.name = "batch_" + m2Data.submeshData[batch].ID;
+            batchObj.name = "batch_" + data.submeshData[batch].ID;
             batchObj.AddComponent<MeshRenderer>();
             batchObj.AddComponent<MeshFilter>();
             batchObj.transform.position = Vector3.zero;
             batchObj.transform.rotation = Quaternion.identity;
             batchObj.GetComponent<MeshRenderer>().material = defaultMaterial;
-            batchObj.transform.SetParent(m2Object.transform);
+            batchObj.transform.SetParent(M2Instance.transform);
 
             // mesh //
             Mesh m = new Mesh();
-            m.vertices = m2Data.submeshData[batch].vertList;
-            m.normals = m2Data.submeshData[batch].normsList;
-            m.uv = m2Data.submeshData[batch].uvsList;
-            m.uv2 = m2Data.submeshData[batch].uvs2List;
-            m.triangles = m2Data.submeshData[batch].triList;
-            m.name = "batch_" + m2Data.submeshData[batch].ID + "_mesh";
+            m.vertices = data.submeshData[batch].vertList;
+            m.normals = data.submeshData[batch].normsList;
+            m.uv = data.submeshData[batch].uvsList;
+            m.uv2 = data.submeshData[batch].uvs2List;
+            m.triangles = data.submeshData[batch].triList;
+            m.name = "batch_" + data.submeshData[batch].ID + "_mesh";
 
             batchObj.GetComponent<MeshFilter>().mesh = m;
         }
+
+        terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
+        terrainHandler.LoadedM2s[data.dataPath].transform.position = data.position;
+        terrainHandler.LoadedM2s[data.dataPath].transform.rotation = data.rotation;
+        terrainHandler.LoadedM2s[data.dataPath].transform.localScale = data.scale;
+        if (data.uniqueID != -1)
+            terrainHandler.LoadedM2s[data.dataPath].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
+        terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
+
+        terrainHandler.frameBusy = false;
     }
 }

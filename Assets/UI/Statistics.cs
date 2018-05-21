@@ -7,6 +7,7 @@ public class Statistics : MonoBehaviour
 {
     public TerrainHandler terrainHandler;
     public WMOhandler wmoHandler;
+    public M2handler m2Handler;
     public UnityEngine.UI.Text statsText;
 
     private float PreviousParseADTRootSpeed;
@@ -110,7 +111,8 @@ public class Statistics : MonoBehaviour
                  //"\n" + RemainingHTexBlocks +
                  "\n" + "<b><color=silver>[WMO Queues]</color></b>" +
                  "\n" + "<b>ADTObj: </b>" + ADTObjData.ModelBlockDataQueue.Count +
-                 "\n" + "<b>WMO: </b>" + wmoHandler.WMOThreadQueue.Count;
+                 "\n" + "<b>Remaining WMO: </b>" + wmoHandler.WMOThreadQueue.Count +
+                 "\n" + "<b>Remaining M2: </b>" + m2Handler.M2ThreadQueue.Count;
     }
 
     //////////////////////
