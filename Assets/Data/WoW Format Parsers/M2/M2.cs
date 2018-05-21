@@ -90,7 +90,7 @@ public static partial class M2
         if (skinCount > 0)
         {
             // Load only skin00 for now //
-            string skinDataPath = directoryPath + @"\" + noExtension + fileNumber + ".skin";
+            string skinDataPath = directoryPath + @"\" + noExtension + "00" + ".skin";
             string skinPath = Casc.GetFile(skinDataPath);
             byte[] M2SkinData = File.ReadAllBytes(skinPath);
 
