@@ -19,6 +19,7 @@ public static partial class M2
 
         // Mesh //
         public MeshData meshData = new MeshData();
+        public List<SubmeshData> submeshData = new List<SubmeshData>();
     }
 
     public class MeshData
@@ -31,6 +32,16 @@ public static partial class M2
         public List<Vector2> tex_coords2 = new List<Vector2>();
     }
 
+    public class SubmeshData
+    {
+        public Vector3[] vertList;
+        public Vector3[] normsList;
+        public Vector2[] uvsList;
+        public Vector2[] uvs2List;
+        public int[] triList;
+    }
+
+    /*
     public class M2SkinSection
     {
         public List<UInt16> skinSectionId = new List<UInt16>();
@@ -50,6 +61,7 @@ public static partial class M2
         public List<Vector3> sortCenterPosition = new List<Vector3>();
         public List<float> sortRadius = new List<float>();
     }
+    */
 }
 
 public struct M2Array

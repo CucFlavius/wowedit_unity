@@ -35958,7 +35958,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainHandler: {fileID: 1454}
+  M2Parent: {fileID: 0}
   busy: 0
+  defaultMaterial: {fileID: 2100000, guid: 94bf8849202ccb3448d117d9c884cae2, type: 2}
 --- !u!1 &1944849090
 GameObject:
   m_ObjectHideFlags: 0

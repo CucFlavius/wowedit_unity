@@ -236,6 +236,7 @@ public class StreamTools
         return m2array;
     }
 
+    /*
     public M2Vertex ReadM2Vertex(MemoryStream stream)
     {
         M2Vertex m2vertex = new M2Vertex
@@ -250,4 +251,5 @@ public class StreamTools
 
         return m2vertex;
     }
+    */
 }
