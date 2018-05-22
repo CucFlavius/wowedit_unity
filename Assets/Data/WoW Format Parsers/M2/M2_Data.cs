@@ -87,17 +87,17 @@ public struct M2TrackBase
     M2Array sequenceTimes;
 }
 
-public struct M2Material
+public class M2Material
 {
-    public UInt16 flags;
-    public UInt16 blending_mode;
+    public List<UInt16> flags = new List<UInt16>();
+    public List<UInt16> blending_mode = new List<UInt16>();
 }
 
-public struct M2Texture
+public class M2Texture
 {
-    public int type;
-    public int flags;
-    public M2Array filename;
+    public List<int> type = new List<int>();
+    public List<int> flags = new List<int>();
+    public List<M2Array> filename = new List<M2Array>();
 }
 
 public enum M2RenderFlags

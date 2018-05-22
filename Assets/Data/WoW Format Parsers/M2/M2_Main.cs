@@ -70,7 +70,9 @@ public static partial class M2
 
         for (int t = 0; t < textures.size; t++)
         {
-
+            m2Data.m2Tex.type.Add(new int(s.ReadLong(ms)));
+            m2Data.m2Tex.flags.Add(s.ReadLong(ms));
+            m2Data.m2Tex.filename.Add(s.ReadM2Array(ms));
         }
     }
 
