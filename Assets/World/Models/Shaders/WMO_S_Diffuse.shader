@@ -9,7 +9,7 @@ Shader "WoWEdit/WMO/S_Diffuse"
 {
 	Properties 
 	{
-		_MainTex ("Albedo (RGB)", 2D) = "white" {}
+		_MainTex ("_MainTex", 2D) = "white" {}
 
 		[Header(Blending Mode)]
 		MySrcMode("SrcMode", Float) = 0

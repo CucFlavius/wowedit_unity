@@ -36420,7 +36420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainHandler: {fileID: 1454}
   busy: 0
-  defaultMaterial: {fileID: 2100000, guid: 94bf8849202ccb3448d117d9c884cae2, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 24c95bf33d5697f438d5ddc3f0489ee6, type: 2}
 --- !u!1 &1944849090
 GameObject:
   m_ObjectHideFlags: 0

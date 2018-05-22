@@ -54,7 +54,7 @@ public static partial class M2
         M2Array ribbon_emitters = s.ReadM2Array(ms);                    // Things swirling around. See the CoT-entrance for light-trails.
         M2Array particle_emitters = s.ReadM2Array(ms);
 
-        // Move stream to vertices offset //
+        // Vertices //
         ms.Position = vertices.offset + md20position;
 
         m2Data.meshData = new MeshData();
@@ -71,7 +71,7 @@ public static partial class M2
             m2Data.meshData.tex_coords2.Add(new Vector2(s.ReadFloat(ms), s.ReadFloat(ms)));
         }
 
-        // Move stream to textures offset //
+        // Textures //
         ms.Position = textures.offset + md20position;
 
         for (int t = 0; t < textures.size; t++)
@@ -94,8 +94,35 @@ public static partial class M2
             ms.Position = savePosition;
             m2Texture.filename = fileNameString;
 
+            Texture2Ddata texture2Ddata = new Texture2Ddata();
+
+            if (fileNameString.Length > 1)
+            {
+                string extractedPath = Casc.GetFile(fileNameString.TrimEnd(fileNameString[fileNameString.Length - 1]));
+                Stream stream = File.Open(extractedPath, FileMode.Open);
+                BLP blp = new BLP();
+                byte[] data = blp.GetUncompressed(stream, true);
+                BLPinfo info = blp.Info();
+                texture2Ddata.hasMipmaps = info.hasMipmaps;
+                texture2Ddata.width = info.width;
+                texture2Ddata.height = info.height;
+                texture2Ddata.textureFormat = info.textureFormat;
+                texture2Ddata.TextureData = data;
+                m2Texture.texture2Ddata = texture2Ddata;
+                stream.Close();
+                stream = null;
+            }
             m2Data.m2Tex.Add(m2Texture);
         }
+
+        // texture_lookup_table //
+        ms.Position = texture_lookup_table.offset + md20position;
+
+        for (int tl = 0; tl < texture_lookup_table.size; tl++)
+        {
+            m2Data.textureLookupTable.Add(s.ReadUint16(ms));
+        }
+
     }
 
     public static void SkipUnknownChunk(MemoryStream ms, int chunkID, int chunkSize)

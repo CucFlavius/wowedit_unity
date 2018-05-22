@@ -172,10 +172,35 @@ public class M2handler : MonoBehaviour
             m.uv = data.submeshData[batch].uvsList;
             m.uv2 = data.submeshData[batch].uvs2List;
             m.triangles = data.submeshData[batch].triList;
-            //m.triangles = m.triangles.Reverse().ToArray();
             m.name = "batch_" + data.submeshData[batch].ID + "_mesh";
-
             batchObj.GetComponent<MeshFilter>().mesh = m;
+
+            // texture //
+            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[batch].M2Batch_texture]].filename;
+            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[batch].M2Batch_texture]].texture2Ddata;
+
+            if (textureName != null && textureName != "" && tdata.TextureData != null)
+            {
+                if (LoadedM2Textures.ContainsKey(textureName))
+                {
+                    batchObj.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedM2Textures[textureName]);
+                }
+                else
+                {
+                    try
+                    {
+                        Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                        tex.LoadRawTextureData(tdata.TextureData);
+                        tex.Apply();
+                        LoadedM2Textures[textureName] = tex;
+                        batchObj.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+                    }
+                    catch
+                    {
+                        Debug.Log("Error: Loading RawTextureData @ M2handler");
+                    }
+                }
+            }
         }
 
         terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;

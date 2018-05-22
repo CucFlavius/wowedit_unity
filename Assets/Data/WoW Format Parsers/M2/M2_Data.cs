@@ -21,8 +21,12 @@ public static partial class M2
         public MeshData meshData = new MeshData();
         public List<SubmeshData> submeshData = new List<SubmeshData>();
 
+        // Material //
+        public List<M2BatchIndices> m2BatchIndices = new List<M2BatchIndices>();
+
         // Texture //
         public List<M2Texture> m2Tex = new List<M2Texture>();
+        public List<int> textureLookupTable = new List<int>();
     }
 
     public class MeshData
@@ -98,6 +102,23 @@ public class M2Texture
     public int type;
     public int flags;
     public string filename;
+    public Texture2Ddata texture2Ddata;
+}
+
+public class M2BatchIndices
+{
+    public int M2Batch_flags;
+    public int M2Batch_shader_id;
+    public int M2Batch_submesh_index;
+    public int M2Batch_submesh_index2;
+    public int M2Batch_color_index;
+    public int M2Batch_render_flags;
+    public int M2Batch_layer;
+    public int M2Batch_op_count;
+    public int M2Batch_texture;
+    public int M2Batch_tex_unit_number2;
+    public int M2Batch_transparency;
+    public int M2Batch_texture_anim;
 }
 
 public enum M2RenderFlags

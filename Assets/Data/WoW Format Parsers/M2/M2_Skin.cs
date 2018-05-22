@@ -24,34 +24,25 @@ public static partial class M2
 
         /// Read Batch Indices ///
 
-        int[] M2Batch_flags = new int[batches.size];
-        int[] M2Batch_shader_id = new int[batches.size];
-        int[] M2Batch_submesh_index = new int[batches.size];
-        int[] M2Batch_submesh_index2 = new int[batches.size];
-        int[] M2Batch_color_index = new int[batches.size];
-        int[] M2Batch_render_flags = new int[batches.size];
-        int[] M2Batch_layer = new int[batches.size];
-        int[] M2Batch_op_count = new int[batches.size];
-        int[] M2Batch_texture = new int[batches.size];
-        int[] M2Batch_tex_unit_number2 = new int[batches.size];
-        int[] M2Batch_transparency = new int[batches.size];
-        int[] M2Batch_texture_anim = new int[batches.size];
-
         ms.Seek(batches.offset, SeekOrigin.Begin);
         for (var batch = 0; batch < batches.size; batch++)
         {
-            M2Batch_flags[batch] = s.ReadShort(ms);                 // probably two uint8_t? -- Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: transparency something
-            M2Batch_shader_id[batch] = s.ReadShort(ms);             // See below.
-            M2Batch_submesh_index[batch] = s.ReadShort(ms);         // A duplicate entry of a submesh from the list above.
-            M2Batch_submesh_index2[batch] = s.ReadShort(ms);        // See below.
-            M2Batch_color_index[batch] = s.ReadShort(ms);           // A Color out of the Colors-Block or -1 if none.
-            M2Batch_render_flags[batch] = s.ReadShort(ms);          // The renderflags used on this texture-unit.
-            M2Batch_layer[batch] = s.ReadShort(ms);                 //
-            M2Batch_op_count[batch] = s.ReadShort(ms);              // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
-            M2Batch_texture[batch] = s.ReadShort(ms);               // Index into Texture lookup table
-            M2Batch_tex_unit_number2[batch] = s.ReadShort(ms);      // Index into the texture unit lookup table.
-            M2Batch_transparency[batch] = s.ReadShort(ms);          // Index into transparency lookup table.
-            M2Batch_texture_anim[batch] = s.ReadShort(ms);          // Index into uvanimation lookup table. 
+            M2BatchIndices m2BatchIndices = new M2BatchIndices();
+
+            m2BatchIndices.M2Batch_flags = s.ReadShort(ms);                 // probably two uint8_t? -- Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: transparency something
+            m2BatchIndices.M2Batch_shader_id = s.ReadShort(ms);             // See below.
+            m2BatchIndices.M2Batch_submesh_index = s.ReadShort(ms);         // A duplicate entry of a submesh from the list above.
+            m2BatchIndices.M2Batch_submesh_index2 = s.ReadShort(ms);        // See below.
+            m2BatchIndices.M2Batch_color_index = s.ReadShort(ms);           // A Color out of the Colors-Block or -1 if none.
+            m2BatchIndices.M2Batch_render_flags = s.ReadShort(ms);          // The renderflags used on this texture-unit.
+            m2BatchIndices.M2Batch_layer = s.ReadShort(ms);                 //
+            m2BatchIndices.M2Batch_op_count = s.ReadShort(ms);              // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
+            m2BatchIndices.M2Batch_texture = s.ReadShort(ms);               // Index into Texture lookup table
+            m2BatchIndices.M2Batch_tex_unit_number2 = s.ReadShort(ms);      // Index into the texture unit lookup table.
+            m2BatchIndices.M2Batch_transparency = s.ReadShort(ms);          // Index into transparency lookup table.
+            m2BatchIndices.M2Batch_texture_anim = s.ReadShort(ms);          // Index into uvanimation lookup table. 
+
+            m2Data.m2BatchIndices.Add(m2BatchIndices);
         }
 
         /// Read Mesh Data ///
