@@ -501,7 +501,7 @@ public class WorldLoader : MonoBehaviour {
             foreach (Transform child in TerrainParent.transform)
             {
                 child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
-                DiscordController.mapName = "";
+                DiscordController.mapName = null;
             }
             foreach (Transform child in M2Parent.transform)
             {
