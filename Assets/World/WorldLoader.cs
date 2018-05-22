@@ -484,6 +484,7 @@ public class WorldLoader : MonoBehaviour {
             foreach (Transform child in TerrainParent.transform)
             {
                 child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
+                DiscordController.mapName = "";
                 //GameObject.Destroy(child.gameObject);
             }
             foreach (Transform child in M2Parent.transform)

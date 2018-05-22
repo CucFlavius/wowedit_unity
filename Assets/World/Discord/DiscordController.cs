@@ -47,6 +47,17 @@ public class DiscordController : MonoBehaviour
 
     void Update()
     {
+        if (mapName == null)
+        {
+            presence.state = "Nothing";
+            DiscordRpc.UpdatePresence(presence);
+        }
+        else
+        {
+            presence.state = string.Format("{0}", mapName);
+            presence.startTimestamp = secondsSinceEpoch;
+            DiscordRpc.UpdatePresence(presence);
+        }
         DiscordRpc.RunCallbacks();            
     }
 
@@ -63,19 +74,6 @@ public class DiscordController : MonoBehaviour
         DiscordRpc.Initialize(applicationId, ref handlers, true, optionalSteamId);
 
         presence.details = "Editing:";
-
-        if (mapName == null)
-        {
-            presence.state = "Nothing";
-            DiscordRpc.UpdatePresence(presence);
-        }
-        else
-        {
-            presence.state = string.Format("{0}", mapName);
-            presence.startTimestamp = secondsSinceEpoch;
-            DiscordRpc.UpdatePresence(presence);
-        }
-
         presence.smallImageKey = "wow_editor_small";
         presence.smallImageText = "Editing";
         presence.largeImageKey = "wow_editor_large";
