@@ -176,8 +176,8 @@ public class M2handler : MonoBehaviour
             batchObj.GetComponent<MeshFilter>().mesh = m;
 
             // texture //
-            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[batch].M2Batch_texture]].filename;
-            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[batch].M2Batch_texture]].texture2Ddata;
+            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.submeshData.Count-batch-1].M2Batch_texture]].filename;
+            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.submeshData.Count-batch-1].M2Batch_texture]].texture2Ddata;
 
             if (textureName != null && textureName != "" && tdata.TextureData != null)
             {
