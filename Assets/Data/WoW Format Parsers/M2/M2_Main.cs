@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -23,6 +24,7 @@ public static partial class M2
         M2Array bones = s.ReadM2Array(ms);                              // MAX_BONES = 0x100 => Creature\SlimeGiant\GiantSlime.M2 has 312 bones(Wrath)
         M2Array key_bone_lookup = s.ReadM2Array(ms);                    // Lookup table for key skeletal bones.
         M2Array vertices = s.ReadM2Array(ms);
+        int num_skin_profiles = s.ReadLong(ms);
         M2Array colors = s.ReadM2Array(ms);                             // Color and alpha animations definitions.
         M2Array textures = s.ReadM2Array(ms);
         M2Array texture_weights = s.ReadM2Array(ms);                    // Transparency of textures.
@@ -52,10 +54,10 @@ public static partial class M2
         M2Array ribbon_emitters = s.ReadM2Array(ms);                    // Things swirling around. See the CoT-entrance for light-trails.
         M2Array particle_emitters = s.ReadM2Array(ms);
 
+        // Move stream to vertices offset //
         ms.Position = vertices.offset + md20position;
 
         m2Data.meshData = new MeshData();
-        m2Data.m2Tex = new M2Texture();
 
         for (int v = 0; v < vertices.size; v++)
         {
@@ -68,11 +70,30 @@ public static partial class M2
             m2Data.meshData.tex_coords2.Add(new Vector2(s.ReadFloat(ms), s.ReadFloat(ms)));
         }
 
+        // Move stream to textures offset //
+        ms.Position = textures.offset + md20position;
+
         for (int t = 0; t < textures.size; t++)
         {
-            m2Data.m2Tex.type.Add(new int(s.ReadLong(ms)));
-            m2Data.m2Tex.flags.Add(s.ReadLong(ms));
-            m2Data.m2Tex.filename.Add(s.ReadM2Array(ms));
+            M2Texture m2Texture = new M2Texture();
+
+            m2Texture.type = s.ReadLong(ms);
+            m2Texture.flags = s.ReadLong(ms);
+
+            M2Array filename = s.ReadM2Array(ms);
+
+            // seek to filename and read //
+            long savePosition = ms.Position;
+            ms.Position = filename.offset + md20position;
+            string fileNameString = "";
+            for (int n = 0; n < filename.size; n++)
+            {
+                fileNameString += Convert.ToChar(ms.ReadByte());
+            }
+            ms.Position = savePosition;
+            m2Texture.filename = fileNameString;
+
+            m2Data.m2Tex.Add(m2Texture);
         }
     }
 

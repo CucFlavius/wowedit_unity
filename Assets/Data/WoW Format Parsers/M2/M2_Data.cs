@@ -22,7 +22,7 @@ public static partial class M2
         public List<SubmeshData> submeshData = new List<SubmeshData>();
 
         // Texture //
-        public M2Texture m2Tex = new M2Texture();
+        public List<M2Texture> m2Tex = new List<M2Texture>();
     }
 
     public class MeshData
@@ -95,9 +95,9 @@ public class M2Material
 
 public class M2Texture
 {
-    public List<int> type = new List<int>();
-    public List<int> flags = new List<int>();
-    public List<M2Array> filename = new List<M2Array>();
+    public int type;
+    public int flags;
+    public string filename;
 }
 
 public enum M2RenderFlags

@@ -82,11 +82,11 @@ public class M2handler : MonoBehaviour
 
         if (M2.AllM2Data.Count > 0)
         {
-            if (!M2Thread.IsAlive)
-            {
+            //if (!M2Thread.IsAlive)
+            //{
                 terrainHandler.frameBusy = true;
                 CreateM2Object(M2.AllM2Data.Dequeue());
-            }
+            //}
         }
 
         if (M2Clones.Count > 0)
