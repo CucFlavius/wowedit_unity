@@ -23,6 +23,8 @@ public static partial class ADT
     public static List<Vector2[]> Chunk_UVs2;
     public static Vector2[] Chunk_UVsLod1;
 
+    public static bool working = false;
+
     // Run at Startup to Precalculate Some of the Chunk Mesh Data //
     public static void Initialize()
     {
@@ -224,7 +226,8 @@ public static partial class ADT
         ParseADT_Main(Path, MapName, Coords);
         ADT_ProcessData.GenerateMeshArrays();
 
-        ADTRootData.MeshBlockDataQueue.Enqueue(ADTRootData.meshBlockData);
+        if (working)
+            ADTRootData.MeshBlockDataQueue.Enqueue(ADTRootData.meshBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainMesh = (millisecondsStop - millisecondsStart) / 1000f;
@@ -246,7 +249,8 @@ public static partial class ADT
             ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
         ADT_ProcessData.Load_hTextures();
 
-        ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
+        if (working)
+            ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainTextures = (millisecondsStop - millisecondsStart) / 1000f;
@@ -265,7 +269,8 @@ public static partial class ADT
         if (SettingsTerrainImport.LoadWMOs || SettingsTerrainImport.LoadM2s)
             ParseADT_Obj(Path, MapName, Coords);
 
-        ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
+        if (working)
+            ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
 
         long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         finishedTimeTerrainModels = (millisecondsStop - millisecondsStart) / 1000f;

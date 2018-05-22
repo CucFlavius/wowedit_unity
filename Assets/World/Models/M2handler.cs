@@ -82,11 +82,14 @@ public class M2handler : MonoBehaviour
 
         if (M2.AllM2Data.Count > 0)
         {
-            //if (!M2Thread.IsAlive)
-            //{
-                terrainHandler.frameBusy = true;
-                CreateM2Object(M2.AllM2Data.Dequeue());
-            //}
+            if (M2Thread != null)
+            {
+                if (!M2Thread.IsAlive)
+                {
+                    terrainHandler.frameBusy = true;
+                    CreateM2Object(M2.AllM2Data.Dequeue());
+                }
+            }
         }
 
         if (M2Clones.Count > 0)
@@ -174,7 +177,12 @@ public class M2handler : MonoBehaviour
         terrainHandler.LoadedM2s[data.dataPath].transform.rotation = data.rotation;
         terrainHandler.LoadedM2s[data.dataPath].transform.localScale = data.scale;
         if (data.uniqueID != -1)
-            terrainHandler.LoadedM2s[data.dataPath].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
+        {
+            if (terrainHandler.ADTBlockM2Parents[data.uniqueID].transform != null)
+                terrainHandler.LoadedM2s[data.dataPath].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
+            else
+                Destroy(terrainHandler.LoadedM2s[data.dataPath]);
+        }
         terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
 
         terrainHandler.frameBusy = false;

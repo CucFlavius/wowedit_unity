@@ -100,6 +100,8 @@ public class WorldLoader : MonoBehaviour {
 
     public void LoadFullWorld (string map_name, Vector2 playerSpawn)
     {
+        ADT.working = true;
+        TerrainParent.GetComponent<TerrainHandler>().frameBusy = false;
         pullFrom = 0;
         MapName = map_name;
 

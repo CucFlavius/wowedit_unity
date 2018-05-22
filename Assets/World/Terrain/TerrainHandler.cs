@@ -104,7 +104,6 @@ public class TerrainHandler : MonoBehaviour
         if (ADTRootQueue.Count > 0 && !ADT.ThreadWorkingMesh)
         {
             ADT.ThreadWorkingMesh = true;
-            //QueueItem q = ADTRootQueue.Dequeue();
             QueueItem q = ADTRootQueue[0];
             ADTRootQueue.RemoveAt(0);
             ADTRootThreadRun(q);
@@ -143,11 +142,14 @@ public class TerrainHandler : MonoBehaviour
                 coHTBlock = StartCoroutine(AssembleHTBlock());
             }
             // if there's LTexture data ready
-            if (MapTexture.MapTextureDataQueue.count > 0)
+            if (MapTexture.MapTextureDataQueue != null)
             {
-                frameBusy = true;
-                working = true;
-                LoadLTexture();
+                if (MapTexture.MapTextureDataQueue.count > 0)
+                {
+                    frameBusy = true;
+                    working = true;
+                    LoadLTexture();
+                }
             }
             if (ADTTexData.TextureBlockDataQueue.Count > 0)
             {
@@ -170,7 +172,6 @@ public class TerrainHandler : MonoBehaviour
         item.x = x;
         item.y = y;
         item.Block = Block;
-        //ADTRootQueue.Enqueue(item);
         ADTRootQueue.Add(item);
         currentLoadingHTerrainBlock.Enqueue(item);
     }
@@ -606,20 +607,25 @@ public class TerrainHandler : MonoBehaviour
 
     public void StopLoading()
     {
-        StopCoroutine(coHTBlock);
-        StopCoroutine(coHTTexture);
+        if (coHTBlock != null)
+            StopCoroutine(coHTBlock);
+        if (coHTTexture != null)
+            StopCoroutine(coHTTexture);
 
-        ADTThread.Abort();
+        //ADTThread.Abort();
         ADTRThread.Abort();
         ADTTThread.Abort();
         ADTOThread.Abort();
         ADTMThread.Abort();
 
-    working = false;
+        working = false;
+        frameBusy = false;
+        ADT.working = false;
 
         ADTObjData.ModelBlockDataQueue.Clear();
         ADTRootData.MeshBlockDataQueue.Clear();
         ADTTexData.TextureBlockDataQueue.Clear();
+
         mapTextureQueue.Clear();
         LoadedQueueItems.Clear();
         ADTRootQueue.Clear();
@@ -628,11 +634,6 @@ public class TerrainHandler : MonoBehaviour
         LoadedTerrainTextures.Clear();
         LoadedHTerrainTextures.Clear();
 
-        frameBusy = false;
-        ADT.ThreadWorkingMesh = false;
-        ADT.ThreadWorkingTextures = false;
-        ADT.ThreadWorkingModels = false;
-        MapTexture.MapTextureThreadRunning = false;
         ADTRootQueue = new List<QueueItem>();
         ADTTexQueue = new List<QueueItem>();
         ADTObjQueue = new List<QueueItem>();
@@ -641,8 +642,7 @@ public class TerrainHandler : MonoBehaviour
         currentLoadingObjBlock = new Queue<QueueItem>();
         mapTextureQueue = new Queue<QueueItem>();
 
-        MinimapData.MinimapDataQueue.Clear();
-        MinimapData.dataExists = new MinimapData.MapAvailability();
-        MinimapData.mapAvailability = new MinimapData.MapAvailability[64, 64];
+        ADT.ThreadWorkingMesh = false;
+
     }
 }

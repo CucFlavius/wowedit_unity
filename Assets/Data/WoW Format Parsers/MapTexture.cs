@@ -39,7 +39,8 @@ public static class MapTexture
             mapTextureBlock.mapName = mapName;
             mapTextureBlock.coords = coords;
             mapTextureBlock.data = texture2Ddata;
-            MapTextureDataQueue.Enqueue(mapTextureBlock);
+            if (ADT.working)
+                MapTextureDataQueue.Enqueue(mapTextureBlock);
             MapTextureThreadRunning = false;
         }
     }
