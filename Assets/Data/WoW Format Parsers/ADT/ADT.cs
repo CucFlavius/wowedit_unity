@@ -212,6 +212,8 @@ public static partial class ADT
         ThreadWorkingMesh = true;
         long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
+        DiscordController.mapName = MapName;
+
         ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
         ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();
 

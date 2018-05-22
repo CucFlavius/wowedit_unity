@@ -8,6 +8,7 @@ public class WorldLoader : MonoBehaviour {
     public GameObject Camera; // get vector3 location
     public GameObject TerrainParent; // with terrain handler script
     public GameObject WMOParent;
+    public GameObject M2Parent;
     public GameObject ADTBlockObject;
     public GameObject ADTLowBlockObject;
     public TerrainImport terrainImport;
@@ -484,6 +485,11 @@ public class WorldLoader : MonoBehaviour {
             {
                 child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
                 //GameObject.Destroy(child.gameObject);
+            }
+            foreach (Transform child in M2Parent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+                //child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
             }
             Resources.UnloadUnusedAssets();
         }
