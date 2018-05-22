@@ -7,6 +7,7 @@ public class WMOhandler : MonoBehaviour {
 
     public TerrainHandler terrainHandler;
     public bool busy;
+    public bool working;
     public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
     public GameObject WMObatchprefab;
     public static Thread WMOThread;
@@ -146,275 +147,289 @@ public class WMOhandler : MonoBehaviour {
 
     public void CreateWMOObject()
     {
-        WMO.WMOData data = WMO.AllWMOData.Dequeue();
-        GameObject WMOinstance = new GameObject();
-        terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
-
-        int nGroups = data.Info.nGroups;
-        for (int g = 0; g < nGroups; g++)
+        if (terrainHandler.working)
         {
-            // group object //
-            GameObject GroupInstance = new GameObject();
-            GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
-            GroupInstance.name = data.groupsData[g].groupName;
+            WMO.WMOData data = WMO.AllWMOData.Dequeue();
+            GameObject WMOinstance = new GameObject();
+            terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
 
-            LODGroup Lodgroup = GroupInstance.AddComponent<LODGroup>();
-            LOD[] lods = new LOD[1];
-            Renderer[] renderers = new Renderer[data.groupsData[g].nBatches];
-
-            // Batches //
-            for (int bn = 0; bn < data.groupsData[g].nBatches; bn++)
+            int nGroups = data.Info.nGroups;
+            for (int g = 0; g < nGroups; g++)
             {
-                ////////////////////////////////
-                #region object
+                // group object //
+                GameObject GroupInstance = new GameObject();
+                GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
+                GroupInstance.name = data.groupsData[g].groupName;
 
-                GameObject BatchInstance = new GameObject();
-                BatchInstance.transform.SetParent(GroupInstance.transform);
-                BatchInstance.name = bn.ToString();
-                BatchInstance.transform.transform.eulerAngles = new Vector3(BatchInstance.transform.transform.eulerAngles.x, BatchInstance.transform.transform.eulerAngles.y - 180, GroupInstance.transform.transform.eulerAngles.z);
+                LODGroup Lodgroup = GroupInstance.AddComponent<LODGroup>();
+                LOD[] lods = new LOD[1];
+                Renderer[] renderers = new Renderer[data.groupsData[g].nBatches];
 
-                #endregion
-                ////////////////////////////////
-
-                ////////////////////////////////
-                #region mesh
-
-                BatchInstance.AddComponent<MeshRenderer>();
-                BatchInstance.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
-                renderers[bn] = BatchInstance.GetComponent<MeshRenderer>();
-                BatchInstance.AddComponent<MeshFilter>();
-                Mesh bmesh = new Mesh();
-
-                int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
-
-                Vector3[] batchVertices = new Vector3[batchVertSize];
-                Vector2[] batchUVs = new Vector2[batchVertSize];
-                Vector3[] batchNormals = new Vector3[batchVertSize];
-                Color32[] batchVertexColors = new Color32[batchVertSize];
-                List<int> batchTrianglesList = new List<int>();
-                int[] batchTriangles;
-
-                int arrayPosition = 0;
-                uint batch_startVertex = data.groupsData[g].batch_StartVertex[bn];
-                uint batch_endVertex = data.groupsData[g].batch_EndVertex[bn];
-                for (uint v = batch_startVertex; v <= batch_endVertex; v++)
+                // Batches //
+                for (int bn = 0; bn < data.groupsData[g].nBatches; bn++)
                 {
-                    batchVertices[arrayPosition] = data.groupsData[g].vertices[v];
-                    batchUVs[arrayPosition] = data.groupsData[g].UVs[v];
-                    batchNormals[arrayPosition] = data.groupsData[g].normals[v];
-                    if (!data.groupsData[g].flags.Hasvertexolors)
-                        batchVertexColors[arrayPosition] = new Color32(127, 127, 127, 127);
-                    else
-                        batchVertexColors[arrayPosition] = data.groupsData[g].vertexColors[(int)v];
-                    arrayPosition++;
-                }
+                    ////////////////////////////////
+                    #region object
 
-                uint batch_startIndex = data.groupsData[g].batch_StartIndex[bn];
-                uint batch_nIndices = data.groupsData[g].batch_nIndices[bn];
-                for (uint idx = batch_startIndex; idx <= batch_startIndex + batch_nIndices - 2; idx = idx + 3)
-                {
-                    uint in1 = data.groupsData[g].triangles[idx + 0];
-                    uint in2 = data.groupsData[g].triangles[idx + 1];
-                    uint in3 = data.groupsData[g].triangles[idx + 2];
-                    int a = (int)(in1 - batch_startVertex);
-                    int b = (int)(in2 - batch_startVertex);
-                    int c = (int)(in3 - batch_startVertex);
+                    GameObject BatchInstance = new GameObject();
+                    BatchInstance.transform.SetParent(GroupInstance.transform);
+                    BatchInstance.name = bn.ToString();
+                    BatchInstance.transform.transform.eulerAngles = new Vector3(BatchInstance.transform.transform.eulerAngles.x, BatchInstance.transform.transform.eulerAngles.y - 180, GroupInstance.transform.transform.eulerAngles.z);
 
-                    batchTrianglesList.Add(a);
-                    batchTrianglesList.Add(b);
-                    batchTrianglesList.Add(c);
-                }
-                batchTrianglesList.Reverse();
-                batchTriangles = batchTrianglesList.ToArray();
+                    #endregion
+                    ////////////////////////////////
 
-                bmesh.vertices = batchVertices;
-                bmesh.uv = batchUVs;
-                bmesh.normals = batchNormals;
-                bmesh.triangles = batchTriangles;
-                bmesh.colors32 = batchVertexColors;
-                BatchInstance.GetComponent<MeshFilter>().mesh = bmesh;
-                BatchInstance.GetComponent<MeshRenderer>().sharedMaterial = missingMaterial;
+                    ////////////////////////////////
+                    #region mesh
 
-                #endregion
-                ////////////////////////////////
+                    BatchInstance.AddComponent<MeshRenderer>();
+                    BatchInstance.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
+                    renderers[bn] = BatchInstance.GetComponent<MeshRenderer>();
+                    BatchInstance.AddComponent<MeshFilter>();
+                    Mesh bmesh = new Mesh();
 
-                ////////////////////////////////
-                #region material
+                    int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
 
-                string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].texture1_offset];
-                BatchInstance.GetComponent<Renderer>().material = WMOmaterials[data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader];
+                    Vector3[] batchVertices = new Vector3[batchVertSize];
+                    Vector2[] batchUVs = new Vector2[batchVertSize];
+                    Vector3[] batchNormals = new Vector3[batchVertSize];
+                    Color32[] batchVertexColors = new Color32[batchVertSize];
+                    List<int> batchTrianglesList = new List<int>();
+                    int[] batchTriangles;
 
-                ////////////////////////////////
-                #region Set Fragment Shader
-                
-                int shader = data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader;
-                switch (shader)
-                {
-                    case (int)WMOFragmentShader.Diffuse:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
-                            break;
-                        }
-                    case (int)WMOFragmentShader.Specular:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderSpecular", 1.0f);
-                            break;
-                        }
-                    case (int)WMOFragmentShader.Metal:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderMetal", 1.0f);
-                            break;
-                        }
-                    case (int)WMOFragmentShader.Env:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderEnv", 1.0f);
-                            break;
-                        }
-                    case (int)WMOFragmentShader.Opaque:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderOpaque", 1.0f);
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_AlphaToMask", 1.0f);
-                            break;
-                        }
-                    default:
-                        {
-                            BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
-                            break;
-                        }
-                }
-                
+                    int arrayPosition = 0;
+                    uint batch_startVertex = data.groupsData[g].batch_StartVertex[bn];
+                    uint batch_endVertex = data.groupsData[g].batch_EndVertex[bn];
+                    for (uint v = batch_startVertex; v <= batch_endVertex; v++)
+                    {
+                        batchVertices[arrayPosition] = data.groupsData[g].vertices[v];
+                        batchUVs[arrayPosition] = data.groupsData[g].UVs[v];
+                        batchNormals[arrayPosition] = data.groupsData[g].normals[v];
+                        if (!data.groupsData[g].flags.Hasvertexolors)
+                            batchVertexColors[arrayPosition] = new Color32(127, 127, 127, 127);
+                        else
+                            batchVertexColors[arrayPosition] = data.groupsData[g].vertexColors[(int)v];
+                        arrayPosition++;
+                    }
 
-                #endregion
-                ////////////////////////////////
+                    uint batch_startIndex = data.groupsData[g].batch_StartIndex[bn];
+                    uint batch_nIndices = data.groupsData[g].batch_nIndices[bn];
+                    for (uint idx = batch_startIndex; idx <= batch_startIndex + batch_nIndices - 2; idx = idx + 3)
+                    {
+                        uint in1 = data.groupsData[g].triangles[idx + 0];
+                        uint in2 = data.groupsData[g].triangles[idx + 1];
+                        uint in3 = data.groupsData[g].triangles[idx + 2];
+                        int a = (int)(in1 - batch_startVertex);
+                        int b = (int)(in2 - batch_startVertex);
+                        int c = (int)(in3 - batch_startVertex);
 
-                ////////////////////////////////
-                #region Set Material Flags
+                        batchTrianglesList.Add(a);
+                        batchTrianglesList.Add(b);
+                        batchTrianglesList.Add(c);
+                    }
+                    batchTrianglesList.Reverse();
+                    batchTriangles = batchTrianglesList.ToArray();
 
-                // F_UNCULLED //
-                int Culling = 2; // on (only front)
+                    bmesh.vertices = batchVertices;
+                    bmesh.uv = batchUVs;
+                    bmesh.normals = batchNormals;
+                    bmesh.triangles = batchTriangles;
+                    bmesh.colors32 = batchVertexColors;
+                    BatchInstance.GetComponent<MeshFilter>().mesh = bmesh;
+                    BatchInstance.GetComponent<MeshRenderer>().sharedMaterial = missingMaterial;
+
+                    #endregion
+                    ////////////////////////////////
+
+                    ////////////////////////////////
+                    #region material
+
+                    string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].texture1_offset];
+                    BatchInstance.GetComponent<Renderer>().material = WMOmaterials[data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader];
+
+                    ////////////////////////////////
+                    #region Set Fragment Shader
+
+                    int shader = data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader;
+                    switch (shader)
+                    {
+                        case (int)WMOFragmentShader.Diffuse:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
+                                break;
+                            }
+                        case (int)WMOFragmentShader.Specular:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderSpecular", 1.0f);
+                                break;
+                            }
+                        case (int)WMOFragmentShader.Metal:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderMetal", 1.0f);
+                                break;
+                            }
+                        case (int)WMOFragmentShader.Env:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderEnv", 1.0f);
+                                break;
+                            }
+                        case (int)WMOFragmentShader.Opaque:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderOpaque", 1.0f);
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_AlphaToMask", 1.0f);
+                                break;
+                            }
+                        default:
+                            {
+                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
+                                break;
+                            }
+                    }
+
+
+                    #endregion
+                    ////////////////////////////////
+
+                    ////////////////////////////////
+                    #region Set Material Flags
+
+                    // F_UNCULLED //
+                    int Culling = 2; // on (only front)
                     if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNCULLED)
                         Culling = 0; // off (both sides_
-                BatchInstance.GetComponent<Renderer>().material.SetFloat("F_UNCULLED", Culling);
-                // F_UNLIT //
-                if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT)
-                    BatchInstance.GetComponent<Renderer>().material.EnableKeyword("F_UNLIT");
-                //BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNLIT", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT ? 1 : 0);
-                // F_UNFOGGED //
-                BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNFOGGED", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNFOGGED ? 1 : 0);
+                    BatchInstance.GetComponent<Renderer>().material.SetFloat("F_UNCULLED", Culling);
+                    // F_UNLIT //
+                    if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT)
+                        BatchInstance.GetComponent<Renderer>().material.EnableKeyword("F_UNLIT");
+                    //BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNLIT", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT ? 1 : 0);
+                    // F_UNFOGGED //
+                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNFOGGED", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNFOGGED ? 1 : 0);
 
-                #endregion
-                ////////////////////////////////
+                    #endregion
+                    ////////////////////////////////
 
-                ////////////////////////////////
-                #region Set Blending Mode
+                    ////////////////////////////////
+                    #region Set Blending Mode
 
-                // set default blend: One Zero, basicly off
-                UnityEngine.Rendering.BlendMode source = UnityEngine.Rendering.BlendMode.One;
-                UnityEngine.Rendering.BlendMode destination = UnityEngine.Rendering.BlendMode.Zero;
+                    // set default blend: One Zero, basicly off
+                    UnityEngine.Rendering.BlendMode source = UnityEngine.Rendering.BlendMode.One;
+                    UnityEngine.Rendering.BlendMode destination = UnityEngine.Rendering.BlendMode.Zero;
 
-                BlendingMode blending = data.materials[data.groupsData[g].batchMaterialIDs[bn]].blendMode;
+                    BlendingMode blending = data.materials[data.groupsData[g].batchMaterialIDs[bn]].blendMode;
 
-                switch (blending)
-                {
-                    case BlendingMode.Opaque:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.One;
-                            destination = UnityEngine.Rendering.BlendMode.Zero;
-                            break;
-                        }
-                    case BlendingMode.AlphaKey:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.One;
-                            destination = UnityEngine.Rendering.BlendMode.Zero;
-                            break;
-                        }
-                    case BlendingMode.Alpha:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.SrcAlpha;
-                            destination = UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha;
-                            break;
-                        }
-                    case BlendingMode.Additive:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.One;
-                            destination = UnityEngine.Rendering.BlendMode.One;
-                            break;
-                        }
-                    case BlendingMode.Modulate:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.DstColor;
-                            destination = UnityEngine.Rendering.BlendMode.Zero;
-                            break;
-                        }
-                    case BlendingMode.Modulate2x:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.DstColor;
-                            destination = UnityEngine.Rendering.BlendMode.SrcColor;
-                            break;
-                        }
-                    case BlendingMode.ModulateAdditive:
-                        {
-                            source = UnityEngine.Rendering.BlendMode.DstColor;
-                            destination = UnityEngine.Rendering.BlendMode.One;
-                            break;
-                        }
-                    default:
-                        {
-                            Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + textureName);
-                            source = UnityEngine.Rendering.BlendMode.One;
-                            destination = UnityEngine.Rendering.BlendMode.Zero;
-                            break;
-                        }
-                }
-                BatchInstance.GetComponent<Renderer>().material.SetInt("MySrcMode", (int)source);
-                BatchInstance.GetComponent<Renderer>().material.SetInt("MyDstMode", (int)destination);
-
-                #endregion
-                ////////////////////////////////
-
-                ////////////////////////////////
-                #region Assign Textures
-
-                if (LoadedWMOTextures.ContainsKey(textureName))
-                {
-                    BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[textureName]);
-                }
-                else
-                {
-                    try
+                    switch (blending)
                     {
-                        Texture2Ddata tdata = data.textureData[textureName];
-                        Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                        tex.LoadRawTextureData(tdata.TextureData);
-                        tex.Apply();
-                        LoadedWMOTextures[textureName] = tex;
-                        BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+                        case BlendingMode.Opaque:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.One;
+                                destination = UnityEngine.Rendering.BlendMode.Zero;
+                                break;
+                            }
+                        case BlendingMode.AlphaKey:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.One;
+                                destination = UnityEngine.Rendering.BlendMode.Zero;
+                                break;
+                            }
+                        case BlendingMode.Alpha:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.SrcAlpha;
+                                destination = UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha;
+                                break;
+                            }
+                        case BlendingMode.Additive:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.One;
+                                destination = UnityEngine.Rendering.BlendMode.One;
+                                break;
+                            }
+                        case BlendingMode.Modulate:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.DstColor;
+                                destination = UnityEngine.Rendering.BlendMode.Zero;
+                                break;
+                            }
+                        case BlendingMode.Modulate2x:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.DstColor;
+                                destination = UnityEngine.Rendering.BlendMode.SrcColor;
+                                break;
+                            }
+                        case BlendingMode.ModulateAdditive:
+                            {
+                                source = UnityEngine.Rendering.BlendMode.DstColor;
+                                destination = UnityEngine.Rendering.BlendMode.One;
+                                break;
+                            }
+                        default:
+                            {
+                                Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + textureName);
+                                source = UnityEngine.Rendering.BlendMode.One;
+                                destination = UnityEngine.Rendering.BlendMode.Zero;
+                                break;
+                            }
                     }
-                    catch
-                    {
-                        Debug.Log("Error: Loading RawTextureData @ WMOhandler");
-                    }
-                }
-                #endregion
-                ////////////////////////////////
+                    BatchInstance.GetComponent<Renderer>().material.SetInt("MySrcMode", (int)source);
+                    BatchInstance.GetComponent<Renderer>().material.SetInt("MyDstMode", (int)destination);
 
-                #endregion
-                ////////////////////////////////
+                    #endregion
+                    ////////////////////////////////
+
+                    ////////////////////////////////
+                    #region Assign Textures
+
+                    if (LoadedWMOTextures.ContainsKey(textureName))
+                    {
+                        BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[textureName]);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Texture2Ddata tdata = data.textureData[textureName];
+                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            tex.LoadRawTextureData(tdata.TextureData);
+                            tex.Apply();
+                            LoadedWMOTextures[textureName] = tex;
+                            BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+                        }
+                        catch
+                        {
+                            Debug.Log("Error: Loading RawTextureData @ WMOhandler");
+                        }
+                    }
+                    #endregion
+                    ////////////////////////////////
+
+                    #endregion
+                    ////////////////////////////////
+                }
+
+                lods[0] = new LOD(.1f, renderers);
+                Lodgroup.SetLODs(lods);
+                Lodgroup.animateCrossFading = true;
+                Lodgroup.fadeMode = LODFadeMode.SpeedTree;
+                Lodgroup.RecalculateBounds();
             }
+            terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
+            terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
+            terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
+            if (data.uniqueID != -1)
+            {
+                if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
+                    terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
+                else
+                    Destroy(terrainHandler.LoadedWMOs[data.dataPath]);
+            }
+            terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
 
-            lods[0] = new LOD( .1f, renderers);
-            Lodgroup.SetLODs(lods);
-            Lodgroup.animateCrossFading = true;
-            Lodgroup.fadeMode = LODFadeMode.SpeedTree;
-            Lodgroup.RecalculateBounds();
+            terrainHandler.frameBusy = false;
         }
-        terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
-        terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
-        terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
-        if (data.uniqueID != -1)
-            terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
-        terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
+    }
 
-        terrainHandler.frameBusy = false;
+    public void StopLoading()
+    {
+        WMO.AllWMOData.Clear();
+        WMOThreadQueue.Clear();
     }
 }

@@ -26,7 +26,7 @@ public class ADTBlock : MonoBehaviour {
 
     public void UnloadAsset()
     {
-        for (int i = 0; i < 256; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             //Destroy(transform.GetChild(i).GetComponent<MeshFilter>().mesh);
             transform.GetChild(i).gameObject.SetActive(false);
@@ -36,17 +36,23 @@ public class ADTBlock : MonoBehaviour {
             {
                 try
                 {
-                    Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high.GetTexture("_blend" + ln));
+                    if (transform.GetChild(i).GetComponent<ADTChunk>().high != null)
+                        Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high.GetTexture("_blend" + ln));
                 }
                 catch
                 {
                     Debug.Log("Memory Cleaner - Error: Couldn't find " + "_blend" + ln);
                 }
             }
-            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low.GetTexture("_MainTex2"));
-            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low);
-            Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high);
-            Destroy(transform.GetChild(i).GetComponent<Renderer>().sharedMaterial);
+            if (transform.GetChild(i).GetComponent<ADTChunk>().low != null)
+            {
+                Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low.GetTexture("_MainTex2"));
+                Destroy(transform.GetChild(i).GetComponent<ADTChunk>().low);
+            }
+            if (transform.GetChild(i).GetComponent<ADTChunk>().high != null)
+                Destroy(transform.GetChild(i).GetComponent<ADTChunk>().high);
+            //if (transform.GetChild(i).GetComponent<Renderer>().sharedMaterial != null)
+                //DestroyImmediate(transform.GetChild(i).GetComponent<Renderer>().sharedMaterial, true);
         }
         Destroy(gameObject);
     }

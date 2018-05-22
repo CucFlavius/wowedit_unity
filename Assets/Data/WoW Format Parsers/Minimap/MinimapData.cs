@@ -24,7 +24,7 @@ public static class MinimapData
         public Vector2 coords;
         public byte[] minimapByteData;
         public BLPinfo textureInfo;
-    }
+    } 
 }
 
 

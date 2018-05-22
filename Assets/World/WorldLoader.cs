@@ -100,6 +100,7 @@ public class WorldLoader : MonoBehaviour {
 
     public void LoadFullWorld (string map_name, Vector2 playerSpawn)
     {
+        pullFrom = 0;
         MapName = map_name;
 
         // clear Matrix //
@@ -475,22 +476,37 @@ public class WorldLoader : MonoBehaviour {
         {
             terrainImport.currentSelectedPlayerSpawn = new Vector2(0, 0);
             LoadedADTBlocks.Clear();
+
+            // Stop working world threads //
+            TerrainParent.GetComponent<TerrainHandler>().StopLoading();
+            WMOParent.GetComponent<WMOhandler>().StopLoading();
+            M2Parent.GetComponent<M2handler>().StopLoading();
+
+            ADTMatrix = new int[maxWorldSize, maxWorldSize];
+            LoadedADTBlocks = new List<GameObject>();
+            ADTLowMatrix = new GameObject[maxWorldSize, maxWorldSize];
+            existingADTs = new bool[maxWorldSize, maxWorldSize];
+            previousTerrainLod = new int[maxWorldSize, maxWorldSize];
+            currentTerrainLod = new int[maxWorldSize, maxWorldSize];
+            pullFrom = 0;
+            // clear Matrix //
             ClearMatrix();
+
+
             foreach (Transform child in WMOParent.transform)
             {
+                //child.gameObject.GetComponent<WMOObject>().UnloadAsset();
                 GameObject.Destroy(child.gameObject);
-                //child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
             }
             foreach (Transform child in TerrainParent.transform)
             {
                 child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
                 DiscordController.mapName = "";
-                //GameObject.Destroy(child.gameObject);
             }
             foreach (Transform child in M2Parent.transform)
             {
+                //child.gameObject.GetComponent<M2Object>().UnloadAsset();
                 GameObject.Destroy(child.gameObject);
-                //child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
             }
             Resources.UnloadUnusedAssets();
         }

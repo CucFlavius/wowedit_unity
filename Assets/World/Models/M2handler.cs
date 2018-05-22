@@ -179,4 +179,10 @@ public class M2handler : MonoBehaviour
 
         terrainHandler.frameBusy = false;
     }
+
+    public void StopLoading()
+    {
+        M2.AllM2Data.Clear();
+        M2ThreadQueue.Clear();
+    }
 }

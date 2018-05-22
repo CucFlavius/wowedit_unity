@@ -7,7 +7,7 @@ public class DevTools : MonoBehaviour {
 
     public void Button_LoadTestMap (string id)
     {
-        World.ClearAllTerrain();
+        //World.ClearAllTerrain();
         string mapName = "";
         Vector2 currentSelectedPlayerSpawn = Vector2.zero;
 
@@ -62,4 +62,10 @@ public class DevTools : MonoBehaviour {
         MinimapThread.CompileMapList(mapName);
         World.LoadFullWorld(mapName, currentSelectedPlayerSpawn);
     }
+
+    public void Button_Reset ()
+    {
+        Application.LoadLevel(Application.loadedLevelName);
+    }
+
 }
