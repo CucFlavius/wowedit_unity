@@ -13,6 +13,7 @@ public static partial class M2
     public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         M2Data m2Data = new M2Data();
+        M2Texture m2Tex = new M2Texture();
 
         m2Data.dataPath = dataPath;
         m2Data.uniqueID = uniqueID;
@@ -24,7 +25,7 @@ public static partial class M2
         {
             ThreadWorking = true;
 
-            ParseM2_Root(dataPath, m2Data);
+            ParseM2_Root(dataPath, m2Data, m2Tex);
             ParseM2_Skin(dataPath, m2Data);
             AllM2Data.Enqueue(m2Data);
 
@@ -37,7 +38,7 @@ public static partial class M2
         }
     }
 
-    private static void ParseM2_Root(string dataPath, M2Data m2Data)
+    private static void ParseM2_Root(string dataPath, M2Data m2Data, M2Texture m2Tex)
     {
         StreamTools s = new StreamTools();
         string path = Casc.GetFile(dataPath);
@@ -57,7 +58,7 @@ public static partial class M2
                 switch (chunkID)
                 {
                     case (int)ChunkID.M2ChunkID.MD21:
-                        ReadMD21(ms, m2Data);
+                        ReadMD21(ms, m2Data, m2Tex);
                         break;
                     default:
                         SkipUnknownChunk(ms, chunkID, chunkSize);

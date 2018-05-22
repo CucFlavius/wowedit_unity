@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class DiscordController : MonoBehaviour
     public string optionalSteamId;
     public int callbackCalls;
     public static string mapName;
+    public static long secondsSinceEpoch;
     public DiscordRpc.DiscordUser joinRequest;
     public UnityEngine.Events.UnityEvent onConnect;
     public UnityEngine.Events.UnityEvent onDisconnect;
@@ -40,22 +42,12 @@ public class DiscordController : MonoBehaviour
 
     void Start()
     {
+        
     }
 
     void Update()
     {
-        DiscordRpc.RunCallbacks();
-        if (mapName == null)
-        {
-            presence.state = "Nothing yet";
-            DiscordRpc.UpdatePresence(presence);
-        }
-        else
-        {
-            presence.state = string.Format("{0}", mapName);
-            DiscordRpc.UpdatePresence(presence);
-        }
-            
+        DiscordRpc.RunCallbacks();            
     }
 
     void OnEnable()
@@ -70,8 +62,20 @@ public class DiscordController : MonoBehaviour
 
         DiscordRpc.Initialize(applicationId, ref handlers, true, optionalSteamId);
 
-        presence.details = "Working on:";
-        
+        presence.details = "Editing:";
+
+        if (mapName == null)
+        {
+            presence.state = "Nothing";
+            DiscordRpc.UpdatePresence(presence);
+        }
+        else
+        {
+            presence.state = string.Format("{0}", mapName);
+            presence.startTimestamp = secondsSinceEpoch;
+            DiscordRpc.UpdatePresence(presence);
+        }
+
         presence.smallImageKey = "wow_editor_small";
         presence.smallImageText = "Editing";
         presence.largeImageKey = "wow_editor_large";

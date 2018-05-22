@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static partial class M2
 {
-    public static void ReadMD21(MemoryStream ms, M2Data m2Data)
+    public static void ReadMD21(MemoryStream ms, M2Data m2Data, M2Texture m2Tex)
     {
         long md20position = ms.Position;
 
@@ -55,6 +55,7 @@ public static partial class M2
         ms.Position = vertices.offset + md20position;
 
         m2Data.meshData = new MeshData();
+        m2Data.m2Tex = new M2Texture();
 
         for (int v = 0; v < vertices.size; v++)
         {
@@ -65,6 +66,11 @@ public static partial class M2
             m2Data.meshData.normal.Add(new Vector3(s.ReadFloat(ms), s.ReadFloat(ms), s.ReadFloat(ms)));
             m2Data.meshData.tex_coords.Add(new Vector2(s.ReadFloat(ms), s.ReadFloat(ms)));
             m2Data.meshData.tex_coords2.Add(new Vector2(s.ReadFloat(ms), s.ReadFloat(ms)));
+        }
+
+        for (int t = 0; t < textures.size; t++)
+        {
+
         }
     }
 

@@ -20,6 +20,9 @@ public static partial class M2
         // Mesh //
         public MeshData meshData = new MeshData();
         public List<SubmeshData> submeshData = new List<SubmeshData>();
+
+        // Texture //
+        public M2Texture m2Tex = new M2Texture();
     }
 
     public class MeshData

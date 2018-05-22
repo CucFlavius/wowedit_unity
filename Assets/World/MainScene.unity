@@ -20796,7 +20796,7 @@ MonoBehaviour:
   Camera: {fileID: 159}
   TerrainParent: {fileID: 191}
   WMOParent: {fileID: 56}
-  M2Parent: {fileID: 0}
+  M2Parent: {fileID: 1911478138}
   ADTBlockObject: {fileID: 1959010497222844, guid: ac8f8b4121b33964284bf949723efc5c,
     type: 2}
   ADTLowBlockObject: {fileID: 1959010497222844, guid: aff84444b29d9264eb2c5160cf8c83b8,
