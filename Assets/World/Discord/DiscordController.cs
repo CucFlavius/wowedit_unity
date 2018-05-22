@@ -55,7 +55,6 @@ public class DiscordController : MonoBehaviour
         else
         {
             presence.state = string.Format("{0}", mapName);
-            presence.startTimestamp = secondsSinceEpoch;
             DiscordRpc.UpdatePresence(presence);
         }
         DiscordRpc.RunCallbacks();            
@@ -63,6 +62,9 @@ public class DiscordController : MonoBehaviour
 
     void OnEnable()
     {
+        TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+        secondsSinceEpoch = (int)t.TotalSeconds;
+
         Debug.Log("Discord: init");
         callbackCalls = 0;
 
@@ -78,6 +80,7 @@ public class DiscordController : MonoBehaviour
         presence.smallImageText = "Editing";
         presence.largeImageKey = "wow_editor_large";
         presence.largeImageText = "Working in WoW Editor";
+        presence.startTimestamp = secondsSinceEpoch;
 
         DiscordRpc.UpdatePresence(presence);
     }
@@ -90,7 +93,6 @@ public class DiscordController : MonoBehaviour
 
     void OnDestroy()
     {
-        Debug.Log("Discord: shutdown");
         DiscordRpc.Shutdown();
     }
 }

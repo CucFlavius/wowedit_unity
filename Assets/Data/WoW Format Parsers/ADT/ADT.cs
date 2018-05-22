@@ -211,13 +211,10 @@ public static partial class ADT
     // Run Terrain Mesh Parser //
     public static void LoadTerrainMesh (string Path, string MapName, Vector2 Coords)
     {
-        TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-
         ThreadWorkingMesh = true;
         long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
         DiscordController.mapName = MapName;
-        DiscordController.secondsSinceEpoch = (int)t.TotalSeconds;
 
 
         ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
