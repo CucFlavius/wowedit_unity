@@ -125,6 +125,7 @@ public static partial class M2
             submeshData.normsList = normsList;
             submeshData.uvsList = uvsList;
             submeshData.uvs2List = uvs2List;
+            Array.Reverse(triList);
             submeshData.triList = triList;
 
             m2Data.submeshData.Add(submeshData);

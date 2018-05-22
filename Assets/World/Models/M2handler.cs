@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -90,6 +91,10 @@ public class M2handler : MonoBehaviour
                     CreateM2Object(M2.AllM2Data.Dequeue());
                 }
             }
+            else
+            {
+                CreateM2Object(M2.AllM2Data.Dequeue());
+            }
         }
 
         if (M2Clones.Count > 0)
@@ -167,6 +172,7 @@ public class M2handler : MonoBehaviour
             m.uv = data.submeshData[batch].uvsList;
             m.uv2 = data.submeshData[batch].uvs2List;
             m.triangles = data.submeshData[batch].triList;
+            //m.triangles = m.triangles.Reverse().ToArray();
             m.name = "batch_" + data.submeshData[batch].ID + "_mesh";
 
             batchObj.GetComponent<MeshFilter>().mesh = m;
