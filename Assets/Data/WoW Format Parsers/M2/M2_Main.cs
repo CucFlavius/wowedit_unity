@@ -54,6 +54,44 @@ public static partial class M2
         M2Array ribbon_emitters = s.ReadM2Array(ms);                    // Things swirling around. See the CoT-entrance for light-trails.
         M2Array particle_emitters = s.ReadM2Array(ms);
 
+        // Bones //
+        ms.Position = bones.offset + md20position;
+        /*
+        for (int i = 0; i < 90; i++)
+        {
+            Debug.Log(s.ReadUint32(ms));
+            //ms.Position += 9 * 4;
+        }
+        */
+        
+        for (int cb = 0; cb < bones.size; cb++)
+        {
+            M2CompBone m2CompBone = new M2CompBone();
+
+            m2CompBone.key_bone_id = s.ReadUint32(ms);                    // Back-reference to the key bone lookup table. -1 if this is no key bone.
+            m2CompBone.flags = s.ReadUint32(ms);
+            m2CompBone.parent_bone = s.ReadUint16(ms);
+            m2CompBone.submesh_id = s.ReadUint16(ms);
+            m2CompBone.uDistToFurthDesc = s.ReadUint16(ms);
+            m2CompBone.uZRatioOfChain = s.ReadUint16(ms);
+
+            M2TrackBase translationM2track = s.ReadM2Track(ms);
+            M2TrackBase rotationM22track = s.ReadM2Track(ms);
+            M2TrackBase scaleM22tracky = s.ReadM2Track(ms);
+
+            m2CompBone.pivot = new Vector3(s.ReadFloat(ms), s.ReadFloat(ms), s.ReadFloat(ms));
+
+            m2Data.m2CompBone.Add(m2CompBone);
+        }
+        
+
+        // Key-Bone Lookup //
+        ms.Position = key_bone_lookup.offset + md20position;
+        for (int kbl = 0; kbl < key_bone_lookup.size; kbl++)
+        {
+            m2Data.key_bone_lookup.Add(s.ReadUint16(ms));
+        }
+
         // Vertices //
         ms.Position = vertices.offset + md20position;
 
@@ -129,6 +167,8 @@ public static partial class M2
         {
             m2Data.textureLookupTable.Add(s.ReadUint16(ms));
         }
+
+
 
     }
 

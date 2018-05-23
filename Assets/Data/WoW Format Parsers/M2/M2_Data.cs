@@ -7,6 +7,10 @@ using UnityEngine;
 public static partial class M2
 {
     public static Queue<M2Data> AllM2Data = new Queue<M2Data>();
+    public static string[] KeyBoneLookupList = {"ArmL","ArmR", "ShoulderL", "ShoulderR", "SpineLow", "Waist", "Head", "Jaw", "IndexFingerR",
+            "MiddleFingerR", "PinkyFingerR", "RingFingerR", "ThumbR", "IndexFingerL", "MiddleFingerL", "PinkyFingerL", "RingFingerL",
+            "ThumbL", "$BTH", "$CSR", "$CSL", "_Breath", "_Name", "_NameMount", "$CHD", "$CCH", "Root", "Wheel1", "Wheel2", "Wheel3",
+            "Wheel4", "Wheel5", "Wheel6", "Wheel7", "Wheel8"};
 
     public class M2Data
     {
@@ -27,6 +31,10 @@ public static partial class M2
         // Texture //
         public List<M2Texture> m2Tex = new List<M2Texture>();
         public List<int> textureLookupTable = new List<int>();
+
+        // Bones //
+        public List<M2CompBone> m2CompBone = new List<M2CompBone>();
+        public List<int> key_bone_lookup = new List<int>();
     }
 
     public class MeshData
@@ -86,9 +94,10 @@ public struct M2Bounds
 
 public struct M2TrackBase
 {
-    public UInt16 trackType;
-    public UInt16 loopIndex;
-    M2Array sequenceTimes;
+    public int Interpolationtype;
+    public int GlobalSequenceID;
+    public M2Array Timestamps;
+    public M2Array Values;
 }
 
 public class M2Material
@@ -121,6 +130,20 @@ public class M2BatchIndices
     public int M2Batch_texture_anim;
 }
 
+public class M2CompBone
+{
+    public int key_bone_id;
+    public int flags;
+    public int parent_bone;
+    public int submesh_id;
+    public int uDistToFurthDesc;
+    public int uZRatioOfChain;
+    public Vector3 translation;
+    public Quaternion rotation;
+    public Vector3 scale;
+    public Vector3 pivot;
+}
+
 public enum M2RenderFlags
 {
     unlit           = 0x001,
@@ -144,4 +167,12 @@ public enum M2BlendingMode
     Fade        = 5,
     DeepRunTram = 6,
     WoDPlus     = 7
+}
+
+public enum InterpolationType : ushort
+{
+    None = 0,
+    Linear = 1,
+    Hermite = 2,
+    Bezier = 3
 }

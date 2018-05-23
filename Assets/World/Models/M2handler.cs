@@ -153,6 +153,13 @@ public class M2handler : MonoBehaviour
         LOD[] lods = new LOD[1];
         Renderer[] renderers = new Renderer[data.submeshData.Count];
 
+        // Meshes //
+        GameObject MeshesRoot = new GameObject();
+        MeshesRoot.name = "Meshes";
+        MeshesRoot.transform.position = Vector3.zero;
+        MeshesRoot.transform.rotation = Quaternion.identity;
+        MeshesRoot.transform.SetParent(M2Instance.transform);
+
         for (int batch = 0; batch < data.submeshData.Count; batch++)
         {
             // object //
@@ -164,7 +171,7 @@ public class M2handler : MonoBehaviour
             batchObj.transform.position = Vector3.zero;
             batchObj.transform.rotation = Quaternion.identity;
             batchObj.GetComponent<MeshRenderer>().material = defaultMaterial;
-            batchObj.transform.SetParent(M2Instance.transform);
+            batchObj.transform.SetParent(MeshesRoot.transform);
 
             // mesh //
             Mesh m = new Mesh();
@@ -177,8 +184,8 @@ public class M2handler : MonoBehaviour
             batchObj.GetComponent<MeshFilter>().mesh = m;
 
             // texture //
-            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.submeshData.Count-batch-1].M2Batch_texture]].filename;
-            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.submeshData.Count-batch-1].M2Batch_texture]].texture2Ddata;
+            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[batch].M2Batch_submesh_index].M2Batch_texture]].filename;
+            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[batch].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
 
             if (textureName != null && textureName != "" && tdata.TextureData != null)
             {
@@ -203,6 +210,31 @@ public class M2handler : MonoBehaviour
                 }
             }
         }
+    
+        // Bones //
+        GameObject BonesRoot = new GameObject();
+        BonesRoot.name = "Bones";
+        BonesRoot.transform.position = Vector3.zero;
+        BonesRoot.transform.rotation = Quaternion.identity;
+        BonesRoot.transform.SetParent(M2Instance.transform);
+
+        Transform[] bones = new Transform[data.m2CompBone.Count];
+        Matrix4x4[] bindPoses = new Matrix4x4[data.m2CompBone.Count];
+        for (int boneN = 0; boneN < data.m2CompBone.Count; boneN++)
+        {
+            // name //
+            string name = "bone_" + boneN;
+            int key_bone_id = data.m2CompBone[boneN].key_bone_id;
+            if (key_bone_id != -1)
+            {
+                if (data.key_bone_lookup[key_bone_id] < (M2.KeyBoneLookupList.Length - 1))
+                    name = "bone_" + M2.KeyBoneLookupList[data.key_bone_lookup[key_bone_id]];
+            }
+
+            bones[boneN] = new GameObject(name).transform;
+            bones[boneN].SetParent(BonesRoot.transform);
+        }
+
 
         terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
         terrainHandler.LoadedM2s[data.dataPath].transform.position = data.position;

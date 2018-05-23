@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class StreamTools
 {
-    public int getUintFrom4Bits (bool[] bits)
+    public int getUintFrom4Bits(bool[] bits)
     {
         int v = 0;
         bool a = bits[0];
@@ -18,9 +18,9 @@ public class StreamTools
             v = 0;
         else if (!a && !b && !c && d)
             v = 1;
-        else if(!a && !b && c && !d)
+        else if (!a && !b && c && !d)
             v = 2;
-        else if(!a && !b && c && d)
+        else if (!a && !b && c && d)
             v = 3;
         else if (!a && b && !c && !d)
             v = 4;
@@ -62,7 +62,7 @@ public class StreamTools
     }
 
     // 4 byte to 4 chars //
-    public string ReadFourCC(MemoryStream stream) 
+    public string ReadFourCC(MemoryStream stream)
     {
         string str = "";
         for (int i = 1; i <= 4; i++)
@@ -85,7 +85,7 @@ public class StreamTools
     }
 
     // 2 bytes to int //
-    public int ReadShort(MemoryStream stream) 
+    public int ReadShort(MemoryStream stream)
     {
         byte[] bytes = new byte[2];
         int value;
@@ -95,7 +95,7 @@ public class StreamTools
     }
 
     // 2 bytes to uint //
-    public int ReadUint16 (MemoryStream stream)
+    public int ReadUint16(MemoryStream stream)
     {
         byte[] bytes = new byte[2];
         int value;
@@ -105,7 +105,7 @@ public class StreamTools
     }
 
     // 4 bytes to int //
-    public int ReadLong(MemoryStream stream) 
+    public int ReadLong(MemoryStream stream)
     {
         byte[] bytes = new byte[4];
         int value;
@@ -114,8 +114,19 @@ public class StreamTools
         return value;
     }
 
+    // 4 bytes to uint //
+    public int ReadUint32(MemoryStream stream)
+    {
+        byte[] bytes = new byte[4];
+        int value;
+        stream.Read(bytes, 0, bytes.Length);
+        value = (int)System.BitConverter.ToUInt32(bytes, 0);
+        return value;
+    }
+
+
     // 4 bytes to float //
-    public float ReadFloat(MemoryStream stream) 
+    public float ReadFloat(MemoryStream stream)
     {
         byte[] bytes = new byte[4];
         float value;
@@ -125,7 +136,7 @@ public class StreamTools
     }
 
     // 8 bytes to ulong //
-    public ulong ReadUint64(MemoryStream stream) 
+    public ulong ReadUint64(MemoryStream stream)
     {
         byte[] bytes = new byte[8];
         ulong value;
@@ -244,6 +255,18 @@ public class StreamTools
         };
 
         return m2array;
+    }
+
+    public M2TrackBase ReadM2Track(MemoryStream stream)
+    {
+        M2TrackBase m2TrackBase = new M2TrackBase
+        {
+            Interpolationtype = ReadUint16(stream),
+            GlobalSequenceID = ReadUint16(stream),
+            Timestamps = ReadM2Array(stream),
+            Values = ReadM2Array(stream)
+        };
+        return m2TrackBase;
     }
 
     /*
