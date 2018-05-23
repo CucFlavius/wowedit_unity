@@ -157,6 +157,7 @@ public class M2handler : MonoBehaviour
         {
             // object //
             GameObject batchObj = new GameObject();
+            batchObj.isStatic = true;
             batchObj.name = "batch_" + data.submeshData[batch].ID;
             batchObj.AddComponent<MeshRenderer>();
             batchObj.AddComponent<MeshFilter>();

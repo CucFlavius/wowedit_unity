@@ -55,24 +55,28 @@ public static partial class WMO
             string path = ReadNullTerminatedString(WMOrootstream);
             if (path != "" )//&& !wmoData.textureData.ContainsKey(path))
             {
-                //Debug.Log(path);
                 wmoData.texturePaths.Add(position, path);
-                string extractedPath = Casc.GetFile(path);
-                if (File.Exists(extractedPath))
+                if (!LoadedBLPs.Contains(path))
                 {
-                    Stream stream = File.Open(extractedPath, FileMode.Open);
-                    BLP blp = new BLP();
-                    byte[] data = blp.GetUncompressed(stream, true);
-                    BLPinfo info = blp.Info();
-                    Texture2Ddata texture2Ddata = new Texture2Ddata();
-                    texture2Ddata.hasMipmaps = info.hasMipmaps;
-                    texture2Ddata.width = info.width;
-                    texture2Ddata.height = info.height;
-                    texture2Ddata.textureFormat = info.textureFormat;
-                    texture2Ddata.TextureData = data;
-                    wmoData.textureData[path] = texture2Ddata;
-                    stream.Close();
-                    stream = null;
+                    string extractedPath = Casc.GetFile(path);
+                    if (File.Exists(extractedPath))
+                    {
+                        Stream stream = File.Open(extractedPath, FileMode.Open);
+                        BLP blp = new BLP();
+                        byte[] data = blp.GetUncompressed(stream, true);
+                        BLPinfo info = blp.Info();
+                        Texture2Ddata texture2Ddata = new Texture2Ddata();
+                        texture2Ddata.hasMipmaps = info.hasMipmaps;
+                        texture2Ddata.width = info.width;
+                        texture2Ddata.height = info.height;
+                        texture2Ddata.textureFormat = info.textureFormat;
+                        texture2Ddata.TextureData = data;
+                        wmoData.textureData[path] = texture2Ddata;
+                        stream.Close();
+                        stream.Dispose();
+                        stream = null;
+                    }
+                    LoadedBLPs.Add(path);
                 }
             }
         }

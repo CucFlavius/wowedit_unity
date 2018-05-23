@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour {
 
     public GameObject Panel_DataSourceManager;
+    public GameObject Panel_Settings;
 
 	// Use this for initialization
 	void Start () {
@@ -24,6 +25,12 @@ public class UIManager : MonoBehaviour {
     {
         Panel_DataSourceManager.SetActive(true);
         Panel_DataSourceManager.GetComponent<DataSourceManager>().Initialize();
+    }
+
+    public void Button_Settings()
+    {
+        Panel_Settings.SetActive(true);
+        Panel_Settings.GetComponent<SettingsWindow>().Initialize();
     }
 
     ///////////////////////////////

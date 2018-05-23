@@ -9,6 +9,7 @@ public static partial class WMO
 {
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
+    public static List<string> LoadedBLPs = new List<string>();
 
     public static void Load (string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {

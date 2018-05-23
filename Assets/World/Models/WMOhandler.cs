@@ -158,6 +158,7 @@ public class WMOhandler : MonoBehaviour {
             {
                 // group object //
                 GameObject GroupInstance = new GameObject();
+                GroupInstance.isStatic = true;
                 GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
                 GroupInstance.name = data.groupsData[g].groupName;
 
@@ -172,6 +173,7 @@ public class WMOhandler : MonoBehaviour {
                     #region object
 
                     GameObject BatchInstance = new GameObject();
+                    BatchInstance.isStatic = true;
                     BatchInstance.transform.SetParent(GroupInstance.transform);
                     BatchInstance.name = bn.ToString();
                     BatchInstance.transform.transform.eulerAngles = new Vector3(BatchInstance.transform.transform.eulerAngles.x, BatchInstance.transform.transform.eulerAngles.y - 180, GroupInstance.transform.transform.eulerAngles.z);

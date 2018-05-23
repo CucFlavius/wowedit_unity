@@ -92,25 +92,32 @@ public static partial class M2
                 fileNameString += Convert.ToChar(ms.ReadByte());
             }
             ms.Position = savePosition;
-            m2Texture.filename = fileNameString;
+
+            string fileNameStringFix = fileNameString.TrimEnd(fileNameString[fileNameString.Length - 1]);
+            m2Texture.filename = fileNameStringFix;
 
             Texture2Ddata texture2Ddata = new Texture2Ddata();
 
-            if (fileNameString.Length > 1)
+            if (fileNameStringFix.Length > 1)
             {
-                string extractedPath = Casc.GetFile(fileNameString.TrimEnd(fileNameString[fileNameString.Length - 1]));
-                Stream stream = File.Open(extractedPath, FileMode.Open);
-                BLP blp = new BLP();
-                byte[] data = blp.GetUncompressed(stream, true);
-                BLPinfo info = blp.Info();
-                texture2Ddata.hasMipmaps = info.hasMipmaps;
-                texture2Ddata.width = info.width;
-                texture2Ddata.height = info.height;
-                texture2Ddata.textureFormat = info.textureFormat;
-                texture2Ddata.TextureData = data;
-                m2Texture.texture2Ddata = texture2Ddata;
-                stream.Close();
-                stream = null;
+                if (!LoadedBLPs.Contains(fileNameStringFix))
+                {
+                    string extractedPath = Casc.GetFile(fileNameStringFix);
+                    Stream stream = File.Open(extractedPath, FileMode.Open);
+                    BLP blp = new BLP();
+                    byte[] data = blp.GetUncompressed(stream, true);
+                    BLPinfo info = blp.Info();
+                    texture2Ddata.hasMipmaps = info.hasMipmaps;
+                    texture2Ddata.width = info.width;
+                    texture2Ddata.height = info.height;
+                    texture2Ddata.textureFormat = info.textureFormat;
+                    texture2Ddata.TextureData = data;
+                    m2Texture.texture2Ddata = texture2Ddata;
+                    stream.Close();
+                    stream.Dispose();
+                    stream = null;
+                    LoadedBLPs.Add(fileNameString);
+                }
             }
             m2Data.m2Tex.Add(m2Texture);
         }

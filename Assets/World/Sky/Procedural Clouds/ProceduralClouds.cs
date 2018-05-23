@@ -16,9 +16,11 @@ public class ProceduralClouds : MonoBehaviour
 
     private ProceduralNoiseProject.PerlinNoise noise;
 
+    private float nextActionTime = 0.0f;
+    public float updatePeriod = 2.0f;
+
     //REFERENCES
     Texture2D mask;
-
 
     void Start()
     {
@@ -28,7 +30,7 @@ public class ProceduralClouds : MonoBehaviour
         pix = new Color[noiseTex.width * noiseTex.height];
         rend.material.mainTexture = noiseTex;
     }
-    void CalcNoise()
+    IEnumerator CalcNoise()
     {
         float y = 0.0F;
         while (y < noiseTex.height)
@@ -50,14 +52,19 @@ public class ProceduralClouds : MonoBehaviour
                 x++;
             }
             y++;
+            yield return null;
         }
         noiseTex.SetPixels(pix);
         noiseTex.Apply();
     }
     void Update()
     {
-        zCoord = Time.time/50;
-        CalcNoise();
+        zCoord = Time.time/20;
+        if (Time.time > nextActionTime)
+        {
+            nextActionTime += updatePeriod;
+            StartCoroutine(CalcNoise());
+        }
     }
 
 }
