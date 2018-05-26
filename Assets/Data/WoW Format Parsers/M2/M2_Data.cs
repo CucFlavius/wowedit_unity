@@ -24,6 +24,7 @@ public static partial class M2
         // Mesh //
         public MeshData meshData = new MeshData();
         public List<SubmeshData> submeshData = new List<SubmeshData>();
+        public BoundingBox bounding_box;
 
         // Material //
         public List<M2BatchIndices> m2BatchIndices = new List<M2BatchIndices>();
@@ -34,6 +35,7 @@ public static partial class M2
 
         // Bones //
         public List<M2CompBone> m2CompBone = new List<M2CompBone>();
+        public List<int> bone_lookup_table = new List<int>();
         public List<int> key_bone_lookup = new List<int>();
     }
 
@@ -55,6 +57,22 @@ public static partial class M2
         public Vector2[] uvsList;
         public Vector2[] uvs2List;
         public int[] triList;
+        public int submesh_StartVertex;
+
+        public BoneWeights[] boneWeights;
+        public int submesh_boneCount;
+        public int submesh_boneComboIndex;
+        public int submesh_boneInfluences;
+        public int submesh_centerBoneIndex;
+        public Vector3 submesh_centerPosition;
+        public Vector3 submesh_sortCenterPosition;
+        float submesh_sortRadius;
+    }
+
+    public class BoneWeights
+    {
+        public int[] boneIndex;// = new int[4] {0,0,0,0};
+        public float[] boneWeight;// = new float[4] {0f,0f,0f,0f};
     }
 
     /*

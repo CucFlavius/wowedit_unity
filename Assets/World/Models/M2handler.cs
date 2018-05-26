@@ -145,72 +145,15 @@ public class M2handler : MonoBehaviour
 
     public void CreateM2Object(M2.M2Data data)
     {
-        // m2 parent object //
+        // M2 Object //
         GameObject M2Instance = new GameObject();
         terrainHandler.LoadedM2s[data.dataPath] = M2Instance;
 
+        // LoD Group //
         LODGroup Lodgroup = terrainHandler.LoadedM2s[data.dataPath].AddComponent<LODGroup>();
         LOD[] lods = new LOD[1];
         Renderer[] renderers = new Renderer[data.submeshData.Count];
 
-        // Meshes //
-        GameObject MeshesRoot = new GameObject();
-        MeshesRoot.name = "Meshes";
-        MeshesRoot.transform.position = Vector3.zero;
-        MeshesRoot.transform.rotation = Quaternion.identity;
-        MeshesRoot.transform.SetParent(M2Instance.transform);
-
-        for (int batch = 0; batch < data.submeshData.Count; batch++)
-        {
-            // object //
-            GameObject batchObj = new GameObject();
-            batchObj.isStatic = true;
-            batchObj.name = "batch_" + data.submeshData[batch].ID;
-            batchObj.AddComponent<MeshRenderer>();
-            batchObj.AddComponent<MeshFilter>();
-            batchObj.transform.position = Vector3.zero;
-            batchObj.transform.rotation = Quaternion.identity;
-            batchObj.GetComponent<MeshRenderer>().material = defaultMaterial;
-            batchObj.transform.SetParent(MeshesRoot.transform);
-
-            // mesh //
-            Mesh m = new Mesh();
-            m.vertices = data.submeshData[batch].vertList;
-            m.normals = data.submeshData[batch].normsList;
-            m.uv = data.submeshData[batch].uvsList;
-            m.uv2 = data.submeshData[batch].uvs2List;
-            m.triangles = data.submeshData[batch].triList;
-            m.name = "batch_" + data.submeshData[batch].ID + "_mesh";
-            batchObj.GetComponent<MeshFilter>().mesh = m;
-
-            // texture //
-            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[batch].M2Batch_submesh_index].M2Batch_texture]].filename;
-            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[batch].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
-
-            if (textureName != null && textureName != "" && tdata.TextureData != null)
-            {
-                if (LoadedM2Textures.ContainsKey(textureName))
-                {
-                    batchObj.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedM2Textures[textureName]);
-                }
-                else
-                {
-                    try
-                    {
-                        Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                        tex.LoadRawTextureData(tdata.TextureData);
-                        tex.Apply();
-                        LoadedM2Textures[textureName] = tex;
-                        batchObj.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
-                    }
-                    catch
-                    {
-                        Debug.Log("Error: Loading RawTextureData @ M2handler");
-                    }
-                }
-            }
-        }
-    
         // Bones //
         GameObject BonesRoot = new GameObject();
         BonesRoot.name = "Bones";
@@ -219,7 +162,8 @@ public class M2handler : MonoBehaviour
         BonesRoot.transform.SetParent(M2Instance.transform);
 
         Transform[] bones = new Transform[data.m2CompBone.Count];
-        Matrix4x4[] bindPoses = new Matrix4x4[data.m2CompBone.Count];
+        Dictionary<int, GameObject> hierarchyList = new Dictionary<int, GameObject>();
+
         for (int boneN = 0; boneN < data.m2CompBone.Count; boneN++)
         {
             // name //
@@ -228,13 +172,111 @@ public class M2handler : MonoBehaviour
             if (key_bone_id != -1)
             {
                 if (data.key_bone_lookup[key_bone_id] < (M2.KeyBoneLookupList.Length - 1))
-                    name = "bone_" + M2.KeyBoneLookupList[data.key_bone_lookup[key_bone_id]];
+                    name = "bone_" + M2.KeyBoneLookupList[key_bone_id];
             }
 
             bones[boneN] = new GameObject(name).transform;
-            bones[boneN].SetParent(BonesRoot.transform);
+            if (data.m2CompBone[boneN].parent_bone == -1)
+                {
+                    bones[boneN].SetParent(BonesRoot.transform);
+                }
+            else
+                bones[boneN].SetParent(bones[data.m2CompBone[boneN].parent_bone]);
+
+            bones[boneN].transform.position = data.m2CompBone[boneN].pivot;
         }
 
+        // Mesh //
+        GameObject MesheObject = new GameObject();
+        MesheObject.name = "Mesh";
+        MesheObject.transform.position = Vector3.zero;
+        MesheObject.transform.rotation = Quaternion.identity;
+        MesheObject.transform.SetParent(M2Instance.transform);
+        Mesh m = new Mesh();
+        m.vertices = data.meshData.pos.ToArray();
+        m.normals = data.meshData.normal.ToArray();
+        m.uv = data.meshData.tex_coords.ToArray();
+        m.uv2 = data.meshData.tex_coords2.ToArray();
+        m.subMeshCount = data.submeshData.Count;
+
+        // Submeshes //
+        for (int batch = 0; batch < data.submeshData.Count; batch++)
+        {
+            m.SetTriangles(data.submeshData[batch].triList, batch, true);
+        }
+
+        // Skinned Mesh Renderer //
+        SkinnedMeshRenderer rend = MesheObject.AddComponent<SkinnedMeshRenderer>();
+        rend.sharedMesh = m;
+        rend.bones = bones;
+        rend.rootBone = BonesRoot.transform.GetChild(0);
+
+        // Bounds //
+        Bounds meshBounds = new Bounds();
+        meshBounds.min = data.bounding_box.min;
+        meshBounds.max = data.bounding_box.max;
+        m.bounds = meshBounds;
+        rend.localBounds = meshBounds;
+
+        // Bone Weights //
+        BoneWeight[] weights = new BoneWeight[m.vertices.Length];
+        for (int bw = 0; bw < m.vertices.Length; bw++)
+        {
+            weights[bw].boneIndex0 = data.meshData.bone_indices[bw][0];
+            weights[bw].weight0 = data.meshData.bone_weights[bw][0];
+            weights[bw].boneIndex1 = data.meshData.bone_indices[bw][1];
+            weights[bw].weight1 = data.meshData.bone_weights[bw][1];
+            weights[bw].boneIndex2 = data.meshData.bone_indices[bw][2];
+            weights[bw].weight2 = data.meshData.bone_weights[bw][2];
+            weights[bw].boneIndex3 = data.meshData.bone_indices[bw][3];
+            weights[bw].weight3 = data.meshData.bone_weights[bw][3];
+        }
+        m.boneWeights = weights;
+
+        // Bind Poses //
+        Matrix4x4[] bindPoses = new Matrix4x4[bones.Length];
+        for (int bp = 0; bp < bindPoses.Length; bp++)
+        {
+            bindPoses[bp] = bones[bp].worldToLocalMatrix * transform.localToWorldMatrix;
+        }
+        m.bindposes = bindPoses;
+
+        // Materials //
+        Material[] materials = new Material[data.submeshData.Count];
+        for (int matD = 0; matD < materials.Length; matD++) { materials[matD] = defaultMaterial; }  // fill with default material
+        rend.materials = materials;
+
+        // Textures //
+        for (int tex = 0; tex < data.submeshData.Count; tex++)
+        {
+            string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].filename;
+            Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
+            if (textureName != null && textureName != "" && tdata.TextureData != null)
+            {
+                if (LoadedM2Textures.ContainsKey(textureName))
+                {
+                    materials[tex].SetTexture("_MainTex", LoadedM2Textures[textureName]);
+                }
+                else
+                {
+                    try
+                    {
+                        Texture2D texture = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                        texture.LoadRawTextureData(tdata.TextureData);
+                        texture.Apply();
+                        LoadedM2Textures[textureName] = texture;
+                        materials[tex].SetTexture("_MainTex", texture);
+                    }
+                    catch
+                    {
+                        Debug.Log("Error: Loading RawTextureData @ M2handler");
+                    }
+                }
+            }
+        }
+
+        // DEBUG - Draw Bones //
+        BonesRoot.AddComponent<DrawBones>();
 
         terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
         terrainHandler.LoadedM2s[data.dataPath].transform.position = data.position;

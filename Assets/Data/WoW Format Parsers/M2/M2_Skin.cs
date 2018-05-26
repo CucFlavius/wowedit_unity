@@ -22,8 +22,17 @@ public static partial class M2
                                                     // Values seen : 256, 64, 53, 21
         M2Array shadow_batches = s.ReadM2Array(ms);
 
-        /// Read Batch Indices ///
+        /*
+        // Bones //
+        ms.Seek(bones.offset, SeekOrigin.Begin);
+        Debug.Log(bones.size);
+        for (var bn = 0; bn < 4; bn++)
+        {
+            ms.ReadByte()
+        }
+        */
 
+        /// Read Batches ///
         ms.Seek(batches.offset, SeekOrigin.Begin);
         for (var batch = 0; batch < batches.size; batch++)
         {
@@ -45,43 +54,63 @@ public static partial class M2
             m2Data.m2BatchIndices.Add(m2BatchIndices);
         }
 
-        /// Read Mesh Data ///
+        // Read SubMesh Data //
 
         int[] Indices = new int[indices.size];
         int[] Triangles = new int[triangles.size];
 
-        int[] skinSectionId = new int[submeshes.size];
-        int[] submesh_StartVertex = new int[submeshes.size];
-        int[] submesh_NbrVerts = new int[submeshes.size];
-        int[] submesh_StartTriangle = new int[submeshes.size];
-        int[] submesh_NbrTris = new int[submeshes.size];
+        int[] skinSectionId = new int[submeshes.size];                          // Mesh part ID, see below.
+        int[] submesh_StartVertex = new int[submeshes.size];                    // Starting vertex number.
+        int[] submesh_NbrVerts = new int[submeshes.size];                       // Number of vertices.
+        int[] submesh_StartTriangle = new int[submeshes.size];                  // Starting triangle index (that's 3* the number of triangles drawn so far).
+        int[] submesh_NbrTris = new int[submeshes.size];                        // Number of triangle indices.
 
-        // indices //
+        int[] submesh_boneCount = new int[submeshes.size];                      // Number of elements in the bone lookup table. Max seems to be 256 in Wrath. Shall be ≠ 0.
+        int[] submesh_boneComboIndex = new int[submeshes.size];                 // Starting index in the bone lookup table.
+        int[] submesh_boneInfluences = new int[submeshes.size];                 // <= 4
+                                                                                // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
+                                                                                // In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
+                                                                                // Highest number of bones referenced by a vertex of this submesh. 3.3.5a and suspectedly all other client revisions. -- Skarn
+        int[] submesh_centerBoneIndex = new int[submeshes.size];
+        Vector3[] submesh_centerPosition = new Vector3[submeshes.size];         // Average position of all the vertices in the sub mesh.
+        Vector3[] submesh_sortCenterPosition = new Vector3[submeshes.size];     // The center of the box when an axis aligned box is built around the vertices in the submesh.
+        float[] submesh_sortRadius = new float[submeshes.size];                 // Distance of the vertex farthest from CenterBoundingBox.
+
+        /// Indices ///
         ms.Seek(indices.offset, SeekOrigin.Begin);
         for (var ind = 0; ind < indices.size; ind++)
         {
             Indices[ind] = s.ReadShort(ms);
         }
 
-        // triangles //
+        /// triangles ///
         ms.Seek(triangles.offset, SeekOrigin.Begin);
         for (var tri = 0; tri < triangles.size; tri++)
         {
             Triangles[tri] = s.ReadShort(ms);
         }
 
-        // submeshes //
+        /// submeshes ///
+        Debug.Log("submeshes.size - " + submeshes.size);
         ms.Seek(submeshes.offset, SeekOrigin.Begin);
         for (var sub = 0; sub < submeshes.size; sub++)
         {
-            skinSectionId[sub] = s.ReadShort(ms);                   // Mesh part ID, see below.
-            int Level = s.ReadShort(ms);                            // (level << 16) is added (|ed) to startTriangle and alike to avoid having to increase those fields to uint32s.
-            submesh_StartVertex[sub] = s.ReadShort(ms) + (Level << 16);
-            submesh_NbrVerts[sub] = s.ReadShort(ms);
+            skinSectionId[sub] = s.ReadUint16(ms);
+            int Level = s.ReadUint16(ms);                            // (level << 16) is added (|ed) to startTriangle and alike to avoid having to increase those fields to uint32s.
+            submesh_StartVertex[sub] = s.ReadUint16(ms) + (Level << 16);
+            submesh_NbrVerts[sub] = s.ReadUint16(ms);
             submesh_StartTriangle[sub] = s.ReadUint16(ms) + (Level << 16);
-            submesh_NbrTris[sub] = s.ReadShort(ms);
+            submesh_NbrTris[sub] = s.ReadUint16(ms);
 
-            ms.Position += 36;
+            submesh_boneCount[sub] = s.ReadUint16(ms);
+            submesh_boneComboIndex[sub] = s.ReadUint16(ms);
+            submesh_boneInfluences[sub] = s.ReadUint16(ms);
+            submesh_centerBoneIndex[sub] = s.ReadUint16(ms);
+            Vector3 raw_centerPosition = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
+            submesh_centerPosition[sub] = new Vector3(-raw_centerPosition.x, raw_centerPosition.z, -raw_centerPosition.y);
+            Vector3 raw_sortCenterPosition = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
+            submesh_sortCenterPosition[sub] = new Vector3(-raw_sortCenterPosition.x, raw_sortCenterPosition.z, -raw_sortCenterPosition.y);
+            submesh_sortRadius[sub] = s.ReadFloat(ms);
         }
 
         /// Assemble Submeshes ///
@@ -94,20 +123,39 @@ public static partial class M2
             Vector3[] normsList = new Vector3[submesh_NbrVerts[sm]];
             Vector2[] uvsList = new Vector2[submesh_NbrVerts[sm]];
             Vector2[] uvs2List = new Vector2[submesh_NbrVerts[sm]];
-            
+
+            BoneWeights[] boneWeights = new BoneWeights[submesh_NbrVerts[sm]];
+
             for (int vn = 0; vn < submesh_NbrVerts[sm]; vn++)
             {
                 vertList[vn] = m2Data.meshData.pos[vn + submesh_StartVertex[sm]];
                 normsList[vn] = m2Data.meshData.normal[vn + submesh_StartVertex[sm]];
                 uvsList[vn] = m2Data.meshData.tex_coords[vn + submesh_StartVertex[sm]];
                 uvs2List[vn] = m2Data.meshData.tex_coords2[vn + submesh_StartVertex[sm]];
+
+                BoneWeights boneWeightVert = new BoneWeights();
+                //Debug.Log(submesh_boneInfluences[sm]);
+                int[] boneIndex = new int[4];
+                float[] boneWeight = new float[4];
+
+                for (int bn = 0; bn < 4; bn++)
+                {
+                    //m2Data.bone_lookup_table[sm]
+                    boneIndex[bn] = m2Data.meshData.bone_indices[vn + submesh_boneComboIndex[sm]][bn];
+                    boneWeight[bn] = m2Data.meshData.bone_weights[vn + submesh_boneComboIndex[sm]][bn];
+                }
+                boneWeightVert.boneIndex = boneIndex;
+                boneWeightVert.boneWeight = boneWeight;
+                boneWeights[vn] = boneWeightVert;
             }
 
             int[] triList = new int[submesh_NbrTris[sm]];
             for (var t = 0; t < submesh_NbrTris[sm]; t++)
             {
-                triList[t] = Triangles[t + submesh_StartTriangle[sm]] - submesh_StartVertex[sm];
+                //triList[t] = Triangles[t + submesh_StartTriangle[sm]] - submesh_StartVertex[sm];  // using Separate Meshes, reset first triangle to index 0;
+                triList[t] = Triangles[t + submesh_StartTriangle[sm]];                              // using Unity Submeshes, don't reset first triangle to index 0;
             }
+
 
             SubmeshData submeshData = new SubmeshData();
 
@@ -118,8 +166,14 @@ public static partial class M2
             submeshData.uvs2List = uvs2List;
             Array.Reverse(triList);
             submeshData.triList = triList;
-
+            submeshData.submesh_StartVertex = submesh_StartVertex[sm];
+            submeshData.boneWeights = boneWeights;
+            submeshData.submesh_boneCount = submesh_boneCount[sm];
+            submeshData.submesh_boneInfluences = submesh_boneInfluences[sm];
             m2Data.submeshData.Add(submeshData);
         }
+
+        /// Assemble Bone Data ///
+        /// 
     }
 }

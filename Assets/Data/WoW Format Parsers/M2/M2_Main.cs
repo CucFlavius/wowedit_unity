@@ -37,7 +37,7 @@ public static partial class M2
         M2Array transparency_lookup_table = s.ReadM2Array(ms);
         M2Array texture_transforms_lookup_table = s.ReadM2Array(ms);
 
-        BoundingBox bounding_box = s.ReadBoundingBox(ms);               // min/max( [1].z, 2.0277779f ) - 0.16f seems to be the maximum camera height
+        m2Data.bounding_box = s.ReadBoundingBox(ms);                    // min/max( [1].z, 2.0277779f ) - 0.16f seems to be the maximum camera height
         float bounding_sphere_radius = s.ReadFloat(ms);                 // detail doodad draw dist = clamp (bounding_sphere_radius * detailDoodadDensityFade * detailDoodadDist, …)
         BoundingBox collision_box = s.ReadBoundingBox(ms);
         float collision_sphere_radius = s.ReadFloat(ms);
@@ -56,21 +56,13 @@ public static partial class M2
 
         // Bones //
         ms.Position = bones.offset + md20position;
-        /*
-        for (int i = 0; i < 90; i++)
-        {
-            Debug.Log(s.ReadUint32(ms));
-            //ms.Position += 9 * 4;
-        }
-        */
-        
         for (int cb = 0; cb < bones.size; cb++)
         {
             M2CompBone m2CompBone = new M2CompBone();
 
-            m2CompBone.key_bone_id = s.ReadUint32(ms);                    // Back-reference to the key bone lookup table. -1 if this is no key bone.
+            m2CompBone.key_bone_id = s.ReadLong(ms);                    // Back-reference to the key bone lookup table. -1 if this is no key bone.
             m2CompBone.flags = s.ReadUint32(ms);
-            m2CompBone.parent_bone = s.ReadUint16(ms);
+            m2CompBone.parent_bone = s.ReadShort(ms);
             m2CompBone.submesh_id = s.ReadUint16(ms);
             m2CompBone.uDistToFurthDesc = s.ReadUint16(ms);
             m2CompBone.uZRatioOfChain = s.ReadUint16(ms);
@@ -79,30 +71,36 @@ public static partial class M2
             M2TrackBase rotationM22track = s.ReadM2Track(ms);
             M2TrackBase scaleM22tracky = s.ReadM2Track(ms);
 
-            m2CompBone.pivot = new Vector3(s.ReadFloat(ms), s.ReadFloat(ms), s.ReadFloat(ms));
+            Vector3 pivotRaw = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
+            m2CompBone.pivot = new Vector3(-pivotRaw.x, pivotRaw.z, -pivotRaw.y);
 
             m2Data.m2CompBone.Add(m2CompBone);
         }
-        
+
+        // Bone Lookup Table //
+        ms.Position = bone_lookup_table.offset + md20position;
+        for (int blt = 0; blt < key_bone_lookup.size; blt++)
+        {
+            m2Data.bone_lookup_table.Add(s.ReadUint16(ms));
+        }
 
         // Key-Bone Lookup //
         ms.Position = key_bone_lookup.offset + md20position;
         for (int kbl = 0; kbl < key_bone_lookup.size; kbl++)
         {
-            m2Data.key_bone_lookup.Add(s.ReadUint16(ms));
+            m2Data.key_bone_lookup.Add(s.ReadShort(ms));
         }
 
         // Vertices //
         ms.Position = vertices.offset + md20position;
-
         m2Data.meshData = new MeshData();
-
         for (int v = 0; v < vertices.size; v++)
         {
             Vector3 rawPosition = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
             m2Data.meshData.pos.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
             m2Data.meshData.bone_weights.Add(new float[] { ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f, ms.ReadByte() / 255.0f });
-            m2Data.meshData.bone_indices.Add(new int[] { ms.ReadByte(), ms.ReadByte(), ms.ReadByte(), ms.ReadByte() });
+            m2Data.meshData.bone_indices.Add(new int[] {ms.ReadByte(), ms.ReadByte(), ms.ReadByte(), ms.ReadByte() });
+            //Debug.Log(m2Data.meshData.bone_indices[v][0] + " " + m2Data.meshData.bone_indices[v][1] + " " + m2Data.meshData.bone_indices[v][2] + " " + m2Data.meshData.bone_indices[v][3]);
             Vector3 rawnormal = new Vector3(s.ReadFloat(ms) * Settings.worldScale, s.ReadFloat(ms) * Settings.worldScale, s.ReadFloat(ms) * Settings.worldScale);
             m2Data.meshData.normal.Add(new Vector3(-rawnormal.x, rawnormal.z, -rawnormal.y));
             m2Data.meshData.tex_coords.Add(new Vector2(s.ReadFloat(ms), s.ReadFloat(ms)));
@@ -111,7 +109,6 @@ public static partial class M2
 
         // Textures //
         ms.Position = textures.offset + md20position;
-
         for (int t = 0; t < textures.size; t++)
         {
             M2Texture m2Texture = new M2Texture();
@@ -162,13 +159,10 @@ public static partial class M2
 
         // texture_lookup_table //
         ms.Position = texture_lookup_table.offset + md20position;
-
         for (int tl = 0; tl < texture_lookup_table.size; tl++)
         {
             m2Data.textureLookupTable.Add(s.ReadUint16(ms));
         }
-
-
 
     }
 

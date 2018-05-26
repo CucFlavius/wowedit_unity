@@ -238,10 +238,12 @@ public class StreamTools
     // read bounding box //
     public BoundingBox ReadBoundingBox(MemoryStream stream)
     {
+        Vector3 rawMin = new Vector3(ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale);
+        Vector3 rawMax = new Vector3(ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale);
         BoundingBox box = new BoundingBox
         {
-            min = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
-            max = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream))
+            min = new Vector3(-rawMin.x, rawMin.z, -rawMin.y),
+            max = new Vector3(-rawMax.x, rawMax.z, -rawMax.y)
         };
         return box;
     }
