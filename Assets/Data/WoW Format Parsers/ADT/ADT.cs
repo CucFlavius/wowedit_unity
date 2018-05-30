@@ -216,7 +216,6 @@ public static partial class ADT
 
         DiscordController.mapName = MapName;
 
-
         ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
         ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();
 

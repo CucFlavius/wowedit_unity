@@ -23,21 +23,21 @@ public class DiscordController : MonoBehaviour
     public void ReadyCallback(ref DiscordRpc.DiscordUser connectedUser)
     {
         ++callbackCalls;
-        Debug.Log(string.Format("Discord: connected to {0}#{1}", connectedUser.username, connectedUser.discriminator));
+        //Debug.Log(string.Format("Discord: connected to {0}#{1}", connectedUser.username, connectedUser.discriminator));
         onConnect.Invoke();
     }
 
     public void DisconnectedCallback(int errorCode, string message)
     {
         ++callbackCalls;
-        Debug.Log(string.Format("Discord: disconnect {0}: {1}", errorCode, message));
+        //Debug.Log(string.Format("Discord: disconnect {0}: {1}", errorCode, message));
         onDisconnect.Invoke();
     }
 
     public void ErrorCallback(int errorCode, string message)
     {
         ++callbackCalls;
-        Debug.Log(string.Format("Discord: error {0}: {1}", errorCode, message));
+        //Debug.Log(string.Format("Discord: error {0}: {1}", errorCode, message));
     }
 
     void Start()
@@ -65,7 +65,7 @@ public class DiscordController : MonoBehaviour
         TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
         secondsSinceEpoch = (int)t.TotalSeconds;
 
-        Debug.Log("Discord: init");
+        //Debug.Log("Discord: init");
         callbackCalls = 0;
 
         handlers = new DiscordRpc.EventHandlers();

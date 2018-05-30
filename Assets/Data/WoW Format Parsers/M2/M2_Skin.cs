@@ -22,16 +22,6 @@ public static partial class M2
                                                     // Values seen : 256, 64, 53, 21
         M2Array shadow_batches = s.ReadM2Array(ms);
 
-        /*
-        // Bones //
-        ms.Seek(bones.offset, SeekOrigin.Begin);
-        Debug.Log(bones.size);
-        for (var bn = 0; bn < 4; bn++)
-        {
-            ms.ReadByte()
-        }
-        */
-
         /// Read Batches ///
         ms.Seek(batches.offset, SeekOrigin.Begin);
         for (var batch = 0; batch < batches.size; batch++)
@@ -91,7 +81,6 @@ public static partial class M2
         }
 
         /// submeshes ///
-        Debug.Log("submeshes.size - " + submeshes.size);
         ms.Seek(submeshes.offset, SeekOrigin.Begin);
         for (var sub = 0; sub < submeshes.size; sub++)
         {
@@ -114,9 +103,7 @@ public static partial class M2
         }
 
         /// Assemble Submeshes ///
-
         m2Data.submeshData = new List<SubmeshData>();
-
         for (int sm = 0; sm < submeshes.size; sm++)
         {
             Vector3[] vertList = new Vector3[submesh_NbrVerts[sm]];
@@ -134,13 +121,11 @@ public static partial class M2
                 uvs2List[vn] = m2Data.meshData.tex_coords2[vn + submesh_StartVertex[sm]];
 
                 BoneWeights boneWeightVert = new BoneWeights();
-                //Debug.Log(submesh_boneInfluences[sm]);
                 int[] boneIndex = new int[4];
                 float[] boneWeight = new float[4];
 
                 for (int bn = 0; bn < 4; bn++)
                 {
-                    //m2Data.bone_lookup_table[sm]
                     boneIndex[bn] = m2Data.meshData.bone_indices[vn + submesh_boneComboIndex[sm]][bn];
                     boneWeight[bn] = m2Data.meshData.bone_weights[vn + submesh_boneComboIndex[sm]][bn];
                 }

@@ -49,52 +49,51 @@ public static class CascInitialize  {
 
     private static void CASCInitThread()
     {
-        //while (ThreadRunning)
-        //{
-            CurrentDataVersion = Settings.Data[3];
-            Working = true;
+        CurrentDataVersion = Settings.Data[3];
+        Working = true;
 
-            EncryptionKeys.ParseKeyFile(Settings.ApplicationPath + @"\ListFiles\keys1.txt"); /// will need more keys maybe ///
+        EncryptionKeys.ParseKeyFile(Settings.ApplicationPath + @"\ListFiles\keys1.txt"); /// will need more keys maybe ///
 
-            Casc.ClearData();
+        Casc.ClearData();
             
-            CurrentWorkerText = "Reading WoW Folder";
-            Casc.ReadWoWFolder();                    // check for correct wow data path
-            CurrentWorkerPercent = .05f;
+        CurrentWorkerText = "Reading WoW Folder";
+        Casc.ReadWoWFolder();                    // check for correct wow data path
+        CurrentWorkerPercent = .05f;
 
-            CurrentWorkerText = "Find Build Config";
-            Casc.FindWoWBuildConfig();
-            CurrentWorkerPercent = .10f;
+        CurrentWorkerText = "Find Build Config";
+        Casc.FindWoWBuildConfig();
+        CurrentWorkerPercent = .10f;
 
-            CurrentWorkerText = "Reading IDX files";
-            Casc.ReadWoWIDXfiles();              // read the IDX files
-            Debug.Log("LocalIndexData Size : " + IndexBlockParser.LocalIndexData.Count);
-            CurrentWorkerPercent = .25f;
+        CurrentWorkerText = "Reading IDX files";
+        Casc.ReadWoWIDXfiles();              // read the IDX files
+        Debug.Log("LocalIndexData Size : " + IndexBlockParser.LocalIndexData.Count);
+        CurrentWorkerPercent = .25f;
 
-            CurrentWorkerText = "Loading Encoding File";
-            Casc.LoadEncodingFile();                // Locate and extract encoding file from the data files using the MD5 found in build configuration file
-            Debug.Log("Encoding File Size : " + Casc.EncodingData.Count);
-            CurrentWorkerPercent = .40f;
+        CurrentWorkerText = "Loading Encoding File";
+        Casc.LoadEncodingFile();                // Locate and extract encoding file from the data files using the MD5 found in build configuration file
+        Debug.Log("Encoding File Size : " + Casc.EncodingData.Count);
+        CurrentWorkerPercent = .40f;
 
-            CurrentWorkerText = "Loading Root File";
-            Casc.LoadWoWRootFile();
-            Debug.Log("Root Data Size : " + Casc.MyRootData.Count);
-            CurrentWorkerPercent = .55f;
+        CurrentWorkerText = "Loading Root File";
+        Casc.LoadWoWRootFile();
+        Debug.Log("Root Data Size : " + Casc.MyRootData.Count);
+        CurrentWorkerPercent = .55f;
 
-            CurrentWorkerText = "Loading the Filelist";
-            Casc.LoadFilelist();
-            CurrentWorkerPercent = .75f;
+        CurrentWorkerText = "Loading the Filelist";
+        Casc.LoadFilelist();
+        CurrentWorkerPercent = .75f;
 
-            CurrentWorkerText = "Sorting the Filelist";
-            Casc.LoadTreeData();
-            CurrentWorkerPercent = .90f;
+        CurrentWorkerText = "Sorting the Filelist";
+        Casc.LoadTreeData();
+        CurrentWorkerPercent = .90f;
 
-            Working_InitializationFinished = true;
-            Initialized = true;
-            TerrainImport.Initialized = false;
-            CASCThread.Abort();
-            CASCThread = null;
-            ThreadRunning = false;
-        //}
+        Working_InitializationFinished = true;
+        Initialized = true;
+        TerrainImport.Initialized = false;
+        CASCThread.Abort();
+        CASCThread = null;
+        ThreadRunning = false;
+
+        DB2.Initialize();
     }
 }

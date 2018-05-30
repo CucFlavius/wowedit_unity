@@ -13,11 +13,8 @@ public static partial class M2
         StreamTools s = new StreamTools();
         int MD20 = s.ReadLong(ms);                                      // "MD20". Legion uses a chunked file format starting with MD21.                              
         int version = s.ReadLong(ms);
-
         M2Array name = s.ReadM2Array(ms);                               // should be globally unique, used to reload by name in internal clients
-
         var flags = s.ReadLong(ms);
-
         M2Array global_loops = s.ReadM2Array(ms);                       // Timestamps used in global looping animations.
         M2Array sequences = s.ReadM2Array(ms);                          // Information about the animations in the model.
         M2Array sequences_lookups = s.ReadM2Array(ms);                  // Mapping of sequence IDs to the entries in the Animation sequences block.
@@ -54,8 +51,17 @@ public static partial class M2
         M2Array ribbon_emitters = s.ReadM2Array(ms);                    // Things swirling around. See the CoT-entrance for light-trails.
         M2Array particle_emitters = s.ReadM2Array(ms);
 
+        // Name //
+        ms.Position = name.offset + md20position;
+        for (int n = 0; n < name.size; n++)
+            m2Data.name += Convert.ToChar(ms.ReadByte());
+
+
         // Bones //
         ms.Position = bones.offset + md20position;
+        M2TrackBase[] translationM2track = new M2TrackBase[bones.size];
+        M2TrackBase[] rotationM22track = new M2TrackBase[bones.size];
+        M2TrackBase[] scaleM22track = new M2TrackBase[bones.size];
         for (int cb = 0; cb < bones.size; cb++)
         {
             M2CompBone m2CompBone = new M2CompBone();
@@ -67,15 +73,128 @@ public static partial class M2
             m2CompBone.uDistToFurthDesc = s.ReadUint16(ms);
             m2CompBone.uZRatioOfChain = s.ReadUint16(ms);
 
-            M2TrackBase translationM2track = s.ReadM2Track(ms);
-            M2TrackBase rotationM22track = s.ReadM2Track(ms);
-            M2TrackBase scaleM22tracky = s.ReadM2Track(ms);
+            translationM2track[cb] = s.ReadM2Track(ms);
+            rotationM22track[cb] = s.ReadM2Track(ms);
+            scaleM22track[cb] = s.ReadM2Track(ms);
 
             Vector3 pivotRaw = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
             m2CompBone.pivot = new Vector3(-pivotRaw.x, pivotRaw.z, -pivotRaw.y);
 
             m2Data.m2CompBone.Add(m2CompBone);
         }
+
+
+        // Animations //
+        int numberOfAnimations = 0;
+        for (int ab = 0; ab < bones.size; ab++)
+        {
+            List<Animation_Vector3> bone_position_animations = new List<Animation_Vector3>();
+            List<Animation_Quaternion> bone_rotation_animations = new List<Animation_Quaternion>();
+            List<Animation_Vector3> bone_scale_animations = new List<Animation_Vector3>();
+
+            // Position //
+            int numberOfPositionAnimations = translationM2track[ab].Timestamps.size;
+            if (numberOfAnimations < numberOfPositionAnimations) numberOfAnimations = numberOfPositionAnimations;
+            for (int at = 0; at < numberOfPositionAnimations; at++)
+            {
+                Animation bone_animation = new Animation();
+                Animation_Vector3 positions = new Animation_Vector3();
+
+                // Timestamps //
+                List<int> timeStamps = new List<int>();
+                ms.Position = translationM2track[ab].Timestamps.offset + md20position;
+                M2Array m2AnimationOffset = s.ReadM2Array(ms);
+                ms.Position = m2AnimationOffset.offset;
+                for (int t = 0; t < m2AnimationOffset.size; t++)
+                {
+                    timeStamps.Add(s.ReadLong(ms));
+                }
+                positions.timeStamps = timeStamps;
+
+                // Values //
+                List<Vector3> values = new List<Vector3>();
+                ms.Position = translationM2track[ab].Values.offset + md20position;
+                M2Array m2AnimationValues = s.ReadM2Array(ms);
+                ms.Position = m2AnimationValues.offset;
+                for (int t = 0; t < m2AnimationValues.size; t++)
+                {
+                    Vector3 rawPosition = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
+                    values.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
+                }
+                positions.values = values;
+                bone_position_animations.Add(positions);
+            }
+
+
+            // Rotation //
+            int numberOfRotationAnimations = rotationM22track[ab].Timestamps.size;
+            if (numberOfAnimations < numberOfRotationAnimations) numberOfAnimations = numberOfRotationAnimations;
+            for (int ar = 0; ar < numberOfRotationAnimations; ar++)
+            {
+                Animation_Quaternion rotations = new Animation_Quaternion();
+
+                // Timestamps //
+                List<int> timeStamps = new List<int>();
+                ms.Position = rotationM22track[ab].Timestamps.offset + md20position;
+                M2Array m2AnimationOffset = s.ReadM2Array(ms);
+                ms.Position = m2AnimationOffset.offset;
+                for (int t = 0; t < m2AnimationOffset.size; t++)
+                {
+                    timeStamps.Add(s.ReadLong(ms));
+                }
+                rotations.timeStamps = timeStamps;
+
+                // Values //
+                List<Quaternion> values = new List<Quaternion>();
+                ms.Position = rotationM22track[ab].Values.offset + md20position;
+                M2Array m2AnimationValues = s.ReadM2Array(ms);
+                ms.Position = m2AnimationValues.offset;
+                for (int t = 0; t < m2AnimationValues.size; t++)
+                {
+                    Quaternion rawRotation = s.ReadQuaternion16(ms);
+                    values.Add(new Quaternion(rawRotation.x, rawRotation.y, rawRotation.z, rawRotation.w));
+                }
+                rotations.values = values;
+                bone_rotation_animations.Add(rotations);
+            }
+
+            // Scale //
+            int numberOfScaleAnimations = scaleM22track[ab].Timestamps.size;
+            if (numberOfAnimations < numberOfScaleAnimations) numberOfAnimations = numberOfScaleAnimations;
+            for (int aS = 0; aS < numberOfScaleAnimations; aS++)
+            {
+                Animation_Vector3 scales = new Animation_Vector3();
+
+                // Timestamps //
+                List<int> timeStamps = new List<int>();
+                ms.Position = scaleM22track[ab].Timestamps.offset + md20position;
+                M2Array m2AnimationOffset = s.ReadM2Array(ms);
+                ms.Position = m2AnimationOffset.offset;
+                for (int t = 0; t < m2AnimationOffset.size; t++)
+                {
+                    timeStamps.Add(s.ReadLong(ms));
+                }
+                scales.timeStamps = timeStamps;
+
+                // Values //
+                List<Vector3> values = new List<Vector3>();
+                ms.Position = scaleM22track[ab].Values.offset + md20position;
+                M2Array m2AnimationValues = s.ReadM2Array(ms);
+                ms.Position = m2AnimationValues.offset;
+                for (int t = 0; t < m2AnimationValues.size; t++)
+                {
+                    Vector3 rawScale = new Vector3(s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale, s.ReadFloat(ms) / Settings.worldScale);
+                    values.Add(new Vector3(-rawScale.x, rawScale.z, -rawScale.y));
+                }
+                scales.values = values;
+                bone_scale_animations.Add(scales);
+            }
+            //Debug.Log(numberOfPositionAnimations + " " + numberOfRotationAnimations + " " + numberOfScaleAnimations);
+            m2Data.position_animations.Add(bone_position_animations);
+            m2Data.rotation_animations.Add(bone_rotation_animations);
+            m2Data.scale_animations.Add(bone_scale_animations);
+        }
+        m2Data.numberOfAnimations = numberOfAnimations;
 
         // Bone Lookup Table //
         ms.Position = bone_lookup_table.offset + md20position;

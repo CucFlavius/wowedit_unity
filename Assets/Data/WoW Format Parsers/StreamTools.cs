@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 
@@ -145,6 +146,16 @@ public class StreamTools
         return value;
     }
 
+    // 8 bytes to ulong //
+    public long ReadInt64(MemoryStream stream)
+    {
+        byte[] bytes = new byte[8];
+        long value;
+        stream.Read(bytes, 0, bytes.Length);
+        value = System.BitConverter.ToInt64(bytes, 0);
+        return value;
+    }
+
     // bit array to int //
     public int GetIntFromBitArray(BitArray bitArray)
     {
@@ -263,28 +274,98 @@ public class StreamTools
     {
         M2TrackBase m2TrackBase = new M2TrackBase
         {
-            Interpolationtype = ReadUint16(stream),
-            GlobalSequenceID = ReadUint16(stream),
+            interpolationtype = (InterpolationType)ReadUint16(stream),
+            GlobalSequenceID = ReadShort(stream),
             Timestamps = ReadM2Array(stream),
             Values = ReadM2Array(stream)
         };
+        //Debug.Log(m2TrackBase.Timestamps.size);
         return m2TrackBase;
     }
 
-    /*
-    public M2Vertex ReadM2Vertex(MemoryStream stream)
+    public Quaternion ReadQuaternion16(MemoryStream stream)
     {
-        M2Vertex m2vertex = new M2Vertex
-        {
-            pos = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
-            bone_weights = new float[] { stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f, stream.ReadByte() / 255.0f },
-            bone_indices = new int[] { stream.ReadByte(), stream.ReadByte(), stream.ReadByte(), stream.ReadByte() },
-            normal = new Vector3(ReadFloat(stream), ReadFloat(stream), ReadFloat(stream)),
-            tex_coords = new Vector2(ReadFloat(stream), ReadFloat(stream)),
-            tex_coords2 = new Vector2(ReadFloat(stream), ReadFloat(stream))
-        };
+        short x = (short)ReadShort(stream);
+        short y = (short)ReadShort(stream);
+        short z = (short)ReadShort(stream);
+        short w = (short)ReadShort(stream);
 
-        return m2vertex;
+        return new Quaternion
+        (
+            ShortQuatValueToFloat(x),
+            ShortQuatValueToFloat(y),
+            ShortQuatValueToFloat(z),
+            ShortQuatValueToFloat(w)
+        );
     }
-    */
+
+    public float ShortQuatValueToFloat(short inShort)
+    {
+        return inShort / (float)short.MaxValue;
+    }
+
+    public string ReadCString(MemoryStream ms)
+    {
+        return ReadCString(ms, Encoding.UTF8);
+    }
+
+    public string ReadCString(MemoryStream ms, Encoding encoding)
+    {
+        var bytes = new System.Collections.Generic.List<byte>();
+        byte b;
+        while ((b = (byte)ms.ReadByte()) != 0)
+            bytes.Add(b);
+        return encoding.GetString(bytes.ToArray());
+    }
+
+
+    public T[] ReadArray<T>(MemoryStream ms) where T : struct
+    {
+        int numBytes = (int)ReadInt64(ms);
+
+        byte[] result = new byte[numBytes];
+        ms.Read(result, 0, numBytes);
+
+        ms.Position += (0 - numBytes) & 0x07;
+        return FastStruct<T>.ReadArray(result);
+    }
+
+    public T[] ReadArray<T>(MemoryStream ms, int size) where T : struct
+    {
+        int numBytes = Marshal.SizeOf<T>() * size;
+
+        byte[] result = new byte[numBytes];
+        ms.Read(result, 0, numBytes);
+
+        return FastStruct<T>.ReadArray(result);
+    }
+
+
+    public T Read<T>(MemoryStream ms) where T : struct
+    {
+        int size = FastStruct<T>.Size;
+        byte[] result = new byte[size];
+        ms.Read(result, 0, size);
+        return FastStruct<T>.ArrayToStructure(result);
+    }
+
+    private byte[] m_array;
+    private int m_readPos;
+    private int m_readOffset;
+
+    public uint ReadUInt32(int numBits)
+    {
+        uint result = FastStruct<uint>.ArrayToStructure(ref m_array[m_readOffset + (m_readPos >> 3)]) << (32 - numBits - (m_readPos & 7)) >> (32 - numBits);
+        m_readPos += numBits;
+        return result;
+    }
+
+    public DB2.Value32 ReadValue32(MemoryStream ms, int numBits)
+    {
+        unsafe
+        {
+            ulong result = ReadUInt32(numBits);
+            return *(DB2.Value32*)&result;
+        }
+    }
 }

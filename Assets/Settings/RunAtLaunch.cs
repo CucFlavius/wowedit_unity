@@ -19,9 +19,7 @@ public class RunAtLaunch : MonoBehaviour {
         Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
         {
-            //File.Create("Settings.ini");
             File.WriteAllLines("Settings.ini", Settings.Data);
-            SettingsInit();
         }
         else
         {
@@ -38,12 +36,14 @@ public class RunAtLaunch : MonoBehaviour {
             {
                 File.WriteAllLines("Settings.ini", Settings.Data);  // defaults
             }
-            SettingsInit();
         }
-
-        //Debug.Log(Settings.worldScale);
-
+        SettingsInit();
         ADT.Initialize();
+
+        if (Settings.Data[2] == Settings.WoWSource.Extracted.ToString())
+        {
+            DB2.Initialize();
+        }
 
     }
 
@@ -99,18 +99,18 @@ public class RunAtLaunch : MonoBehaviour {
         Settings.Save();
         CheckDataSource();
     }
-
+        
     public void CheckDataSource()
     {
         if (Settings.Data[2] == null || Settings.Data[2] == "")
         {
             // open Data Source Manager //
             DataSourceManagerPanel.SetActive(true);
-            DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
         }
 
         if (Settings.Data[2] == "0") // game mode //
         {
+            DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             CascInitialize.Start();
         }
     }

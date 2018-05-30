@@ -148,6 +148,7 @@ public class M2handler : MonoBehaviour
         // M2 Object //
         GameObject M2Instance = new GameObject();
         terrainHandler.LoadedM2s[data.dataPath] = M2Instance;
+        terrainHandler.LoadedM2s[data.dataPath].name = data.name;
 
         // LoD Group //
         LODGroup Lodgroup = terrainHandler.LoadedM2s[data.dataPath].AddComponent<LODGroup>();
@@ -241,9 +242,48 @@ public class M2handler : MonoBehaviour
         }
         m.bindposes = bindPoses;
 
+        // Animations //
+        Animation anim = M2Instance.AddComponent<Animation>();
+
+        AnimationClip[] clips = new AnimationClip[data.numberOfAnimations];
+
+        /*
+        for (int a = 0; a < data.numberOfAnimations; a++)
+        {
+            AnimationClip clip = new AnimationClip();
+            for (int p = 0; p < data.position_animations.Count; p++)
+            {
+                AnimationCurve position_x_curve = new AnimationCurve();
+                AnimationCurve position_y_curve = new AnimationCurve();
+                AnimationCurve position_z_curve = new AnimationCurve();
+                Keyframe[] position_x_keyframes = new Keyframe[data.position_animations[p][a].timeStamps.Count];
+                Keyframe[] position_y_keyframes = new Keyframe[data.position_animations[p][a].timeStamps.Count];
+                Keyframe[] position_z_keyframes = new Keyframe[data.position_animations[p][a].timeStamps.Count];
+                for (int t = 0; t < position_x_keyframes.Length; t++)
+                {
+                    position_x_keyframes[t] = new Keyframe(data.position_animations[p][a].timeStamps[t], data.position_animations[p][a].values[t].x);
+                    position_y_keyframes[t] = new Keyframe(data.position_animations[p][a].timeStamps[t], data.position_animations[p][a].values[t].y);
+                    position_z_keyframes[t] = new Keyframe(data.position_animations[p][a].timeStamps[t], data.position_animations[p][a].values[t].z);
+                }
+                position_x_curve.keys = position_x_keyframes;
+                position_y_curve.keys = position_y_keyframes;
+                position_z_curve.keys = position_z_keyframes;
+                clip.SetCurve(bones[p].name, typeof(Transform), "m_LocalPosition.x", position_x_curve);
+                clip.SetCurve(bones[p].name, typeof(Transform), "m_LocalPosition.y", position_y_curve);
+                clip.SetCurve(bones[p].name, typeof(Transform), "m_LocalPosition.z", position_z_curve);
+            }
+
+            clip.legacy = true;
+            clip.wrapMode = WrapMode.Loop;
+            anim.AddClip(clip
+                , "anim_" + a);
+        }
+        anim.Play("anim_0");
+        */
+
         // Materials //
         Material[] materials = new Material[data.submeshData.Count];
-        for (int matD = 0; matD < materials.Length; matD++) { materials[matD] = defaultMaterial; }  // fill with default material
+        for (int matD = 0; matD < materials.Length; matD++) { materials[matD] = new Material(Shader.Find("WoWEdit/WMO/S_Diffuse")); ; }  // fill with default material
         rend.materials = materials;
 
         // Textures //
@@ -278,7 +318,7 @@ public class M2handler : MonoBehaviour
         // DEBUG - Draw Bones //
         BonesRoot.AddComponent<DrawBones>();
 
-        terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
+        // Object Transforms //
         terrainHandler.LoadedM2s[data.dataPath].transform.position = data.position;
         terrainHandler.LoadedM2s[data.dataPath].transform.rotation = data.rotation;
         terrainHandler.LoadedM2s[data.dataPath].transform.localScale = data.scale;
@@ -289,7 +329,6 @@ public class M2handler : MonoBehaviour
             else
                 Destroy(terrainHandler.LoadedM2s[data.dataPath]);
         }
-        terrainHandler.LoadedM2s[data.dataPath].name = data.dataPath;
 
         terrainHandler.frameBusy = false;
     }

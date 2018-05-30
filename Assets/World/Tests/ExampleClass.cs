@@ -75,6 +75,11 @@ public class ExampleClass : MonoBehaviour
         rend.bones = bones;
         rend.sharedMesh = mesh;
 
+
+
+
+
+
         // Assign a simple waving animation to the bottom bone
         AnimationCurve curve = new AnimationCurve();
         curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 3, 0, 0), new Keyframe(2, 0.0F, 0, 0) };

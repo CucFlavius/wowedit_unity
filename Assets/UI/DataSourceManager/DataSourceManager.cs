@@ -12,32 +12,31 @@ public class DataSourceManager : MonoBehaviour {
 
     public Dropdown DropdownGame;
     public Dropdown DropdownOnline;
+    public Dropdown DropdownDefinitions;
     public InputField Extracted;
     public GameObject terrainImport;
     public GameObject FolderBrowser;
     public UnityEngine.UI.Text FolderBrowser_SelectedFolderText;
 
-    private List<string> DropdownGameList = new List<string>();
-
     public void Initialize ()
     {
         // Update Game List //
-        DropdownGameList.Clear();
+        Settings.DropdownGameList.Clear();
         if (Settings.Data[4] != null)
-            DropdownGameList.Add(Settings.Data[4]);
+            Settings.DropdownGameList.Add(Settings.Data[4]);
         if (Settings.Data[5] != null )
-            DropdownGameList.Add(Settings.Data[5]);
+            Settings.DropdownGameList.Add(Settings.Data[5]);
         if (Settings.Data[6] != null )
-            DropdownGameList.Add(Settings.Data[6]);
+            Settings.DropdownGameList.Add(Settings.Data[6]);
 
         // Add custom game path to the list //
         if (Settings.Data[9] != null && Settings.Data[9].Length > 1)
-            DropdownGameList.Add(Settings.Data[9]);
+            Settings.DropdownGameList.Add(Settings.Data[9]);
         DropdownGame.ClearOptions();
-        DropdownGame.AddOptions(DropdownGameList);
+        DropdownGame.AddOptions(Settings.DropdownGameList);
 
         // select previously used //
-        for (int v = 0; v < DropdownGameList.Count; v++)
+        for (int v = 0; v < Settings.DropdownGameList.Count; v++)
         {
             if (DropdownGame.options[v].text == Settings.Data[3])
             {
@@ -61,6 +60,29 @@ public class DataSourceManager : MonoBehaviour {
         {
             Extracted.text = Settings.Data[8];
         }
+
+        // Update Definitions List //
+        Settings.DropdownDefinitionsList.Clear();
+        List<string> elements = new List<string>(Settings.DB2XMLDefinitions.Keys);
+        foreach (string element in elements)
+        {
+            string[] splits1 = element.Replace(" ", ".").Split(new char[] { '.' });
+            string version = splits1[0] + "_" + splits1[1] + splits1[2] + splits1[3] + "_" + splits1[4].Trim('(').Trim(')');
+            Settings.DropdownDefinitionsList.Add(version);
+        }
+        DropdownDefinitions.ClearOptions();
+        DropdownDefinitions.AddOptions(Settings.DropdownDefinitionsList);
+
+        // select stored definition //
+        for (int v = 0; v < Settings.DB2XMLDefinitions.Count; v++)
+        {
+            if (DropdownDefinitions.options[v].text == Settings.Data[10])
+            {
+                DropdownDefinitions.value = v;
+            }
+        }
+
+        //Settings.SetDefaultDefinitions(Settings.Data[4]);
     }
 
     public void Ok ()
@@ -94,9 +116,11 @@ public class DataSourceManager : MonoBehaviour {
                 gameObject.SetActive(false);
             }
         }
-
         if (Settings.Data[2] == "2")
             terrainImport.GetComponent<TerrainImport>().Initialize();
+        Settings.SelectedDefinitions = DropdownDefinitions.options[DropdownDefinitions.value].text;
+        Settings.Data[10] = Settings.SelectedDefinitions;
+        DB2.InitializeDefinitions();
     }
 
     public void AddButon ()
@@ -108,15 +132,15 @@ public class DataSourceManager : MonoBehaviour {
     public void AddGamePath ()
     {
         string tempPath = FolderBrowser_SelectedFolderText.text + @"\";
-        if (!DropdownGameList.Contains(tempPath))
+        if (!Settings.DropdownGameList.Contains(tempPath))
         {
             if (CheckValidWoWPath(tempPath))
             {
                 // correct path //
                 Settings.Data[9] = tempPath;
-                DropdownGameList.Add(tempPath);
+                Settings.DropdownGameList.Add(tempPath);
                 DropdownGame.ClearOptions();
-                DropdownGame.AddOptions(DropdownGameList);
+                DropdownGame.AddOptions(Settings.DropdownGameList);
             }
             else
             {
@@ -144,13 +168,15 @@ public class DataSourceManager : MonoBehaviour {
     public bool CheckValidWoWPath (string path)
     {
         if (File.Exists(path + "Wow-64.exe") || File.Exists(path + "WowB-64.exe") || File.Exists(path + "WowT-64.exe"))
-        {
-            print("yep");
             return true;
-        }
         else
-        {
             return false;
-        }
     }
+
+    public void SelectedDifferentGame (int id)
+    {
+        //Settings.SetDefaultDefinitions(DropdownGame.options[id].text);
+    }
+
+
 }

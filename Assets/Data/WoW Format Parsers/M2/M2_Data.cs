@@ -20,6 +20,7 @@ public static partial class M2
         public Vector3 position;
         public Quaternion rotation;
         public Vector3 scale;
+        public string name;
 
         // Mesh //
         public MeshData meshData = new MeshData();
@@ -37,6 +38,13 @@ public static partial class M2
         public List<M2CompBone> m2CompBone = new List<M2CompBone>();
         public List<int> bone_lookup_table = new List<int>();
         public List<int> key_bone_lookup = new List<int>();
+
+        // Animations //
+        public int numberOfAnimations;
+        public List<List<Animation_Vector3>> position_animations = new List<List<Animation_Vector3>>();
+        public List<List<Animation_Quaternion>> rotation_animations = new List<List<Animation_Quaternion>>();
+        public List<List<Animation_Vector3>> scale_animations = new List<List<Animation_Vector3>>();
+
     }
 
     public class MeshData
@@ -75,27 +83,24 @@ public static partial class M2
         public float[] boneWeight;// = new float[4] {0f,0f,0f,0f};
     }
 
-    /*
-    public class M2SkinSection
+    public class Animation_Vector3
     {
-        public List<UInt16> skinSectionId = new List<UInt16>();
-        public List<UInt16> Level = new List<UInt16>();
-        public List<UInt16> vertexStart = new List<UInt16>();
-        public List<UInt16> vertexCount = new List<UInt16>();
-        public List<UInt16> indexStart = new List<UInt16>();
-        public List<UInt16> indexCount = new List<UInt16>();
-        public List<UInt16> boneCount = new List<UInt16>();
-        public List<UInt16> boneComboIndex = new List<UInt16>();
-        public List<UInt16> boneInfluences = new List<UInt16>();
-
-        public List<UInt16> centerBoneIndex = new List<UInt16>();
-        public List<Vector3> centerPosition = new List<Vector3>();
-
-        // if ≥ BC
-        public List<Vector3> sortCenterPosition = new List<Vector3>();
-        public List<float> sortRadius = new List<float>();
+        public bool animationExists;
+        public List<int> timeStamps;
+        public List<Vector3> values;
     }
-    */
+
+    public class Animation_Quaternion
+    {
+        public List<int> timeStamps;
+        public List<Quaternion> values;
+    }
+
+    public class Keyframe
+    {
+        public int timeStamp;
+        public float value;
+    }
 }
 
 public struct M2Array
@@ -112,7 +117,7 @@ public struct M2Bounds
 
 public struct M2TrackBase
 {
-    public int Interpolationtype;
+    public InterpolationType interpolationtype;
     public int GlobalSequenceID;
     public M2Array Timestamps;
     public M2Array Values;
@@ -156,11 +161,9 @@ public class M2CompBone
     public int submesh_id;
     public int uDistToFurthDesc;
     public int uZRatioOfChain;
-    public Vector3 translation;
-    public Quaternion rotation;
-    public Vector3 scale;
     public Vector3 pivot;
 }
+
 
 public enum M2RenderFlags
 {
@@ -193,4 +196,18 @@ public enum InterpolationType : ushort
     Linear = 1,
     Hermite = 2,
     Bezier = 3
+}
+
+public enum KeyframeProperty : ushort
+{
+    PositionX = 0,
+    PositionY = 1,
+    PositionZ = 2,
+    RotationX = 3,
+    RotationY = 4,
+    RotationZ = 5,
+    RotationW = 6,
+    ScaleX = 7,
+    ScaleY = 8,
+    ScaleZ = 9
 }
