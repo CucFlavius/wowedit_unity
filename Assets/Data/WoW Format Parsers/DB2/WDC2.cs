@@ -61,7 +61,7 @@ public static class WDC2
             }
             else
             {
-                ms.Read(recordsData, 0, header.off)
+                
             }
         }
     }
