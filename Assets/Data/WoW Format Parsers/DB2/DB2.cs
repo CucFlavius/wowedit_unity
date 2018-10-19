@@ -50,6 +50,11 @@ public static partial class DB2
             {
                 WDC2.Read(fileName, fileData);
             }
+            // WDC 3 //
+            if (fileData[3] == Convert.ToByte('3'))
+            {
+                WDC3.Read(fileName, fileData);
+            }
         }
 
         // WDB //
