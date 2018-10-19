@@ -135,6 +135,6 @@ Using Unity 2018.2.13f1
 | WDC1 | WDC1 Support | ✓ | % |
 | WDC2 | WDC2 Support | % | X |
 | WDC3 | WDC3 Support | % | X |
-      
+
 The main source of information when i comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
 Big thanks to the guys who made and update the wiki.
