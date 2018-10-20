@@ -1,7 +1,7 @@
 # wowedit_unity
 An attempt at recreating the World of Warcraft Editor used by Blizzard Entertainment to create the environments for the game.
 My version's purpose is for the aiding of creating machinima / Creating custom environments using WoW's assets / exporting models etc.
-Using Unity 2018.2.13f1
+Using Unity 2018.1.0f2
 
 ### Current Progress on importing WoW Data:
 
