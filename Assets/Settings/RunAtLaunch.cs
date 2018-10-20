@@ -15,7 +15,7 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-        // Network.Disconnect();
+        Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
         {
