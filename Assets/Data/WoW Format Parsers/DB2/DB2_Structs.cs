@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 public static partial class DB2
 {
+
+    public interface IDB2Row
+    {
+        int Id { get; set; }
+        BitReader Data { get; set; }
+        void GetField<T>(FieldCache<T>[] fields, T entry);
+        IDB2Row Clone();
+    }
+
     public struct wdc1_db2_header
     {
         public int magic;                  // 'WDC1'
@@ -20,7 +30,7 @@ public static partial class DB2
         public int max_id;
         public int locale;                 // as seen in TextWowEnum
         public int copy_table_size;
-        public DB2Flags flags;                  // possible values are listed in Known Flag Meanings
+        public DB2Flags flags;             // possible values are listed in Known Flag Meanings
         public int id_index;               // this is the index of the field containing ID values; this is ignored if flags & 0x04 != 0
         public int total_field_count;      // from WDC1 onwards, this value seems to always be the same as the 'field_count' value
         public int bitpacked_data_offset;  // relative position in record where bitpacked data begins; not important for parsing the file
@@ -33,14 +43,69 @@ public static partial class DB2
         public int relationship_data_size;
     };
 
-    public enum DB2Flags
+    public class DB2Reader : IEnumerable<KeyValuePair<int, IDB2Row>>
+    {
+        public int RecordsCount { get; protected set; }
+        public int FieldsCount { get; protected set; }
+        public int RecordSize { get; protected set; }
+        public int StringTableSize { get; protected set; }
+        public uint TableHash { get; protected set; }
+        public uint LayoutHash { get; protected set; }
+        public int MinIndex { get; protected set; }
+        public int MaxIndex { get; protected set; }
+        public int IdFieldIndex { get; protected set; }
+        public DB2Flags Flags { get; protected set; }
+
+        protected FieldMetaData[] m_meta;
+        public FieldMetaData[] Meta => m_meta;
+
+        protected int[] m_indexData;
+        public int[] IndexData => m_indexData;
+
+        protected ColumnMetaData[] m_columnMeta;
+        public ColumnMetaData[] ColumnMeta => m_columnMeta;
+
+        protected Value32[][] m_palletData;
+        public Value32[][] PalletData => m_palletData;
+
+        protected Dictionary<int, Value32>[] m_commonData;
+        public Dictionary<int, Value32>[] CommonData => m_commonData;
+
+        public Dictionary<long, string> StringTable => m_stringsTable;
+
+        protected Dictionary<int, IDB2Row> _Records = new Dictionary<int, IDB2Row>();
+
+        // Normal Records Data
+        protected byte[] recordsData;
+        protected Dictionary<long, string> m_stringsTable;
+
+        // Sparse records data
+        public offset_map_entry[] sparseEntries;
+
+        public bool HasRow(int id)
+        {
+            return _Records.ContainsKey(id);
+        }
+
+        public IEnumerator<KeyValuePair<int, IDB2Row>> GetEnumerator()
+        {
+            return _Records.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _Records.GetEnumerator();
+        }
+    }
+
+    public enum DB2Flags : short
     {
         None = 0x0,
-        Sparse = 0x1,
-        SecondaryKey = 0x2,
-        Index = 0x4,
-        Unknown1 = 0x8,
-        Unknown2 = 0x10
+        OffsetMap = 0x1,
+        RelationshipData = 0x2,
+        IndexMap = 0x4,
+        Unknown = 0x8,
+        Compressed = 0x10
     }
 
     public struct field_structure
@@ -48,6 +113,12 @@ public static partial class DB2
         public int size;
         public int offset;
     };
+
+    public struct FieldMetaData
+    {
+        public short Bits;
+        public short Offset;
+    }
 
     public struct record_data
     {
@@ -182,12 +253,19 @@ public static partial class DB2
         }
     }
 
-    public interface IDB2Row
+    public struct field_storage_info
     {
-        int Id { get; set; }
-        int RecordIndex { get; set; }
-        void GetFields<T>(FieldCache<T>[] fields, T entry);
-        IDB2Row Clone();
+        public ushort field_offset_bits;
+        public ushort field_size_bits; // very important for reading bitpacked fields; size is the sum of all array pieces in bits - for example, uint32[3] will appear here as '96'
+        // additional_data_size is the size in bytes of the corresponding section in
+        // common_data or pallet_data.  These sections are in the same order as the
+        // field_info, so to find the offset, add up the additional_data_size of any
+        // previous fields which are stored in the same block (common_data or
+        // pallet_data).
+        public int additional_data_size;
+        public int storage_type;
+        public int val1;
+        public int val2;
+        public int val3;
     }
-
 }

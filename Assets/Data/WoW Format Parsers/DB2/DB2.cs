@@ -37,26 +37,52 @@ public static partial class DB2
 
         // Check DB2 Version //
 
-        // WDC //
-        if (fileData[0] == Convert.ToByte('W') && fileData[1] == Convert.ToByte('D') && fileData[2] == Convert.ToByte('C'))
+        //// WDC //
+        //if (fileData[0] == Convert.ToByte('W') && fileData[1] == Convert.ToByte('D') && fileData[2] == Convert.ToByte('C'))
+        //{
+        //    // WDC 1 //
+        //    if (fileData[3] == Convert.ToByte('1'))
+        //    {
+        //        WDC1.Read(fileName, fileData);
+        //    }
+        //    // WDC 2 //
+        //    if (fileData[3] == Convert.ToByte('2'))
+        //    {
+        //        WDC2.Read(fileName, fileData);
+        //    }
+        //    // WDC 3 //
+        //    if (fileData[3] == Convert.ToByte('3'))
+        //    {
+        //        WDC3.Read(fileName, fileData);
+        //    }
+        //}
+        var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using (var bin = new BinaryReader(stream))
         {
-            // WDC 1 //
-            if (fileData[3] == Convert.ToByte('1'))
+            var identifier = new string(bin.ReadChars(4));
+            stream.Position = 0;
+            switch (identifier)
             {
+<<<<<<< HEAD
+                case "WDC2":
+                    WDC2.Read(fileName, stream);
+                    break;
+=======
                 WDC1.Read(fileName, fileData);
             }
             // WDC 2 //
             if (fileData[3] == Convert.ToByte('2'))
             {
                 WDC2.Read(fileName, fileData);
+>>>>>>> 4d5993a84f318bd801f9e78e2acf32078f5495a4
             }
         }
 
-        // WDB //
-        else
-        {
-            Debug.LogWarning("Warning: " + "DB2 Format not supported: " + fileData[0] + fileData[1] + fileData[2] + fileData[3] + fileName);
-        }
+        //// WDB //
+        //else
+        //{
+        //    Debug.LogWarning("Warning: " + "DB2 Format not supported: " + fileData[0] + fileData[1] + fileData[2] + fileData[3] + fileName);
+        //}
     }
 
     public class BitReader

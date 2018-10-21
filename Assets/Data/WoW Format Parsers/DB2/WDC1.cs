@@ -41,7 +41,7 @@ public static partial class WDC1
                 fields[f] = field;
             }
 
-            if (!header.flags.HasFlag(DB2.DB2Flags.Sparse))
+            if (!header.flags.HasFlag(DB2.DB2Flags.OffsetMap))
             {
                 /// Normal records ///
 
