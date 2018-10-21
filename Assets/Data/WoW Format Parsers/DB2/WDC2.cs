@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEngine;
 
-<<<<<<< HEAD
 public static class WDC2
 {
     private const int HeaderSize = 72;
@@ -23,13 +24,4 @@ public static class WDC2
             
         }
     }
-=======
-public static class WDC2 {
-
-    public static void Read(string fileName, byte[] fileData)
-    {
-
-    }
-
->>>>>>> 4d5993a84f318bd801f9e78e2acf32078f5495a4
 }

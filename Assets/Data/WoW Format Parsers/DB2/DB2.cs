@@ -63,18 +63,9 @@ public static partial class DB2
             stream.Position = 0;
             switch (identifier)
             {
-<<<<<<< HEAD
                 case "WDC2":
                     WDC2.Read(fileName, stream);
                     break;
-=======
-                WDC1.Read(fileName, fileData);
-            }
-            // WDC 2 //
-            if (fileData[3] == Convert.ToByte('2'))
-            {
-                WDC2.Read(fileName, fileData);
->>>>>>> 4d5993a84f318bd801f9e78e2acf32078f5495a4
             }
         }
 
