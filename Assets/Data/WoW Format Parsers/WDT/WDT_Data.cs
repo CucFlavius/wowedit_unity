@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -14,6 +15,6 @@ public static partial class WDT  {
         public bool[,] HasADT = new bool[64,64];
     }
 
-    public static Dictionary<string, WDTflagsdata> Flags = new Dictionary<string, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
+    public static Dictionary<string, WDTflagsdata> Flags = new Dictionary<string, WDTflagsdata>(StringComparer.InvariantCultureIgnoreCase); // flags in a mapname dictionary (one wdt per map)
 
 }

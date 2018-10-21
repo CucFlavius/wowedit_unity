@@ -87,7 +87,7 @@ public class DiscordController : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.Log("Discord: shutdown");
+        //Debug.Log("Discord: shutdown");
         DiscordRpc.Shutdown();
     }
 

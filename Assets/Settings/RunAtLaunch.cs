@@ -8,6 +8,7 @@ public class RunAtLaunch : MonoBehaviour {
     // Object References
     public GameObject FolderBrowserDialog;
     public GameObject DataSourceManagerPanel;
+    public GameObject DatabaseViewPanel;
 
     /// <summary>
     ///  Run this code at launch
@@ -15,7 +16,6 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-        Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
         {
@@ -44,7 +44,13 @@ public class RunAtLaunch : MonoBehaviour {
         {
             DB2.Initialize();
         }
+        DB2.InitializeDefinitions();
+        Invoke("RunDelayed", 0.1f);
+    }
 
+    public void RunDelayed()
+    {
+        DatabaseViewPanel.GetComponent<DatabaseView>().Initialize();
     }
 
     private void SettingsInit()

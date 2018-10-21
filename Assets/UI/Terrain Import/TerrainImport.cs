@@ -124,7 +124,7 @@ public class TerrainImport : MonoBehaviour
         {
             foreach (KeyValuePair<string, GameObject> entry in MapTabs)
             {
-                if (entry.Key.Contains(filter.ToLower()))
+                if (StringComparer(entry.Key,filter))
                 {
                     entry.Value.SetActive(true);
                 }
@@ -134,6 +134,15 @@ public class TerrainImport : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool StringComparer(string s1, string s2)
+    {
+        string capTestStr = s1.ToUpper();
+        if (capTestStr.Contains(s2.ToUpper()))
+            return true;
+
+        return false;
     }
 
     #endregion

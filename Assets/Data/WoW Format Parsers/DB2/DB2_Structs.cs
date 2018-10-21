@@ -40,7 +40,7 @@ public static partial class DB2
         SecondaryKey = 0x2,
         Index = 0x4,
         Unknown1 = 0x8,
-        Unknown2 = 0x10
+        Compressed = 0x10
     }
 
     public struct field_structure

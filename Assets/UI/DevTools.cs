@@ -22,7 +22,7 @@ public class DevTools : MonoBehaviour {
             case "Wrath":
                 {
                     mapName = "northrend";
-                    currentSelectedPlayerSpawn = new Vector2(24, 36);
+                    currentSelectedPlayerSpawn = new Vector2(39, 24);
                 }
                 break;
             case "Cata":

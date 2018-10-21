@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿//////////////////////////////////////////////////////////////////////////
+//      Unity Editor Extension                                          //
+//      Menu -> WoWEdit -> DB2 -> Get Latest Definitions                //
+//      Parses XML DB2 Definitions and hardcodes them to C# classes     //
+//////////////////////////////////////////////////////////////////////////
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.IO;
-using System;
 
 public class DB2_Definitions_Updater : MonoBehaviour
 {

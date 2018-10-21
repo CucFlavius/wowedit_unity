@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour {
 
     public GameObject Panel_DataSourceManager;
     public GameObject Panel_Settings;
+    public GameObject Panel_DatabaseView;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +32,12 @@ public class UIManager : MonoBehaviour {
     {
         Panel_Settings.SetActive(true);
         Panel_Settings.GetComponent<SettingsWindow>().Initialize();
+    }
+
+    public void Button_DatabaseView ()
+    {
+        Panel_DatabaseView.SetActive(true);
+        Panel_DatabaseView.GetComponent<DatabaseView>().Initialize();
     }
 
     ///////////////////////////////
