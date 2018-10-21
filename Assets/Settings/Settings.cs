@@ -43,6 +43,11 @@ public static class Settings
     // Terrain Settings //
     public static bool showVertexColor = true;
 
+    // Terrain Importer //
+    //public static bool LoadWMOs = false;
+    //public static bool LoadM2s = false;
+
+    // DB2 Definitions //
     public static Dictionary<string, string> DB2XMLDefinitions = new Dictionary<string, string>()
     {
         { @"Legion 7.3.5 (25632).xml", @"https://raw.githubusercontent.com/WowDevTools/WDBXEditor/master/WDBXEditor/Definitions/Legion%207.3.5%20(25632).xml"},
@@ -51,6 +56,7 @@ public static class Settings
     };
     public static string SelectedDefinitions = "";
     public static List<string> DropdownDefinitionsList = new List<string>();
+
     public static List<string> DropdownGameList = new List<string>();
 
     public static void Save ()
@@ -94,24 +100,16 @@ public static class Settings
             if (objPTR != null)
             {
                 Data[6] = objPTR.ToString();
-                string wowVersion = GetWoWVersion(objPTR + "WowB.exe");
-                if (wowVersion != null)
-                    availableInstalls.Add(objPTR.ToString(), wowVersion);
+                availableInstalls.Add(objPTR.ToString(), GetWoWVersion(objPTR + "WowB.exe"));
             }
         }
     }
 
     public static string GetWoWVersion (string exePath)
     {
-        if (File.Exists(exePath))
-        {
-            string versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(exePath).FileVersion;
-            return versionInfo;
-        }
-        else
-        {
-            return null;
-        }
+        string versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(exePath).FileVersion;
+        //Debug.Log(versionInfo);
+        return versionInfo;
     }
 
     public enum WoWSource : uint
@@ -121,5 +119,37 @@ public static class Settings
         Extracted = 2
     }
 
- 
+    /*
+
+    public static void SetDefaultDefinitions(string currentSelection)
+    {
+        
+        if (Data[2] == WoWSource.Game.ToString())
+        {
+            Debug.Log("yeah");
+            if (availableInstalls.ContainsKey(currentSelection))
+            {
+                string versionRaw = availableInstalls[currentSelection];
+                string[] splits = versionRaw.Split(new char[]{'.'});
+                int versionAvalue1 = int.Parse(splits[0] + splits[1] + splits[2]);
+                int versionAvalue2 = int.Parse(splits[3]);
+                Debug.Log(versionAvalue1 + " " + versionAvalue2);
+
+                foreach (string version in DropdownDefinitionsList)
+                {
+                    //int versionBvalue1 = version
+                    Debug.Log(version);
+                }
+            }
+        }
+        else
+        {
+            List<string> elements = new List<string>(DB2XMLDefinitions.Keys);
+            string[] splits1 = elements[0].Replace(" ", ".").Split(new char[] { '.' });
+            string version = splits1[0] + "_" + splits1[1] + splits1[2] + splits1[3] + "_" + splits1[4].Trim('(').Trim(')');
+            SelectedDefinitions = version;
+        }
+    }
+
+    */
 }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 public static class MinimapThread
@@ -55,9 +53,7 @@ public static class MinimapThread
                 // ADT files //
                 if (MinimapData.dataExists.ADT)
                 {
-                    string keyword = mapName + "_" + x + "_" + y + ".adt";
-                    
-                    if (ADTs.Any(s => s.Equals(keyword, StringComparison.OrdinalIgnoreCase)))
+                    if (ADTs.Contains(mapName + "_" + x + "_" + y + ".adt"))
                         MinimapData.mapAvailability[x, y].ADT = true;
                     else
                         MinimapData.mapAvailability[x, y].ADT = false;
@@ -65,8 +61,7 @@ public static class MinimapThread
                 // Minimap files //
                 if (MinimapData.dataExists.Minimap)
                 {
-                    string keyword = "map" + x + "_" + y + ".blp";
-                    if (Minimaps.Any(s => s.Equals(keyword, StringComparison.OrdinalIgnoreCase)))
+                    if (Minimaps.Contains("map" + x + "_" + y + ".blp"))
                         MinimapData.mapAvailability[x, y].Minimap = true;
                     else
                         MinimapData.mapAvailability[x, y].Minimap = false;

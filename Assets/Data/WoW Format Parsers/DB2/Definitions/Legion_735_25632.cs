@@ -4,6066 +4,6066 @@ public static partial class DB2
 	{
 		public class _Achievement
 		{
-			public string Title;
-			public string Description;
-			public string Reward;
-			public uint Flags;
-			public ushort MapID;
-			public ushort Supercedes;
-			public ushort Category;
-			public ushort UIOrder;
-			public ushort SharesCriteria;
-			public byte Faction;
-			public byte Points;
-			public byte MinimumCriteria;
-			public int ID;
-			public uint IconFileDataID;
-			public uint CriteriaTree;
+			string Title;
+			string Description;
+			string Reward;
+			uint Flags;
+			ushort MapID;
+			ushort Supercedes;
+			ushort Category;
+			ushort UIOrder;
+			ushort SharesCriteria;
+			byte Faction;
+			byte Points;
+			byte MinimumCriteria;
+			int ID;
+			uint IconFileDataID;
+			uint CriteriaTree;
 		}
 		public class _Achievement_category
 		{
-			public string Field0;
-			public ushort Field1;
-			public byte Field2;
-			public int ID;
+			string Field0;
+			ushort Field1;
+			byte Field2;
+			int ID;
 		}
 		public class _Adventurejournal
 		{
-			public int ID;
-			public string Field01;
-			public string Field02;
-			public string Field03;
-			public string Field04;
-			public string Field05;
-			public int Field06;
-			public int Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public ushort Field0A;
-			public ushort[] Field0B = new ushort[2];
-			public ushort Field0C;
-			public ushort Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
-			public byte Field11;
-			public byte Field12;
-			public byte[] Field13 = new byte[2];
-			public byte Field14;
-			public int Field15;
-			public byte Field16;
+			int ID;
+			string Field01;
+			string Field02;
+			string Field03;
+			string Field04;
+			string Field05;
+			int Field06;
+			int Field07;
+			ushort Field08;
+			ushort Field09;
+			ushort Field0A;
+			ushort[] Field0B = new ushort[2];
+			ushort Field0C;
+			ushort Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
+			byte Field11;
+			byte Field12;
+			byte[] Field13 = new byte[2];
+			byte Field14;
+			int Field15;
+			byte Field16;
 		}
 		public class _Adventuremappoi
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public float[] Field3 = new float[2];
-			public int Field4;
-			public byte Field5;
-			public ushort Field6;
-			public int Field7;
-			public byte Field8;
-			public ushort Field9;
-			public byte FieldA;
-			public ushort FieldB;
-			public int FieldC;
-			public ushort FieldD;
+			int ID;
+			string Field1;
+			string Field2;
+			float[] Field3 = new float[2];
+			int Field4;
+			byte Field5;
+			ushort Field6;
+			int Field7;
+			byte Field8;
+			ushort Field9;
+			byte FieldA;
+			ushort FieldB;
+			int FieldC;
+			ushort FieldD;
 		}
 		public class _alliedrace
 		{
-			public int field0;
-			public int ID;
-			public byte field2;
-			public ushort field3;
-			public int field4;
-			public int field5;
-			public int field6;
-			public ushort field7;
+			int field0;
+			int ID;
+			byte field2;
+			ushort field3;
+			int field4;
+			int field5;
+			int field6;
+			ushort field7;
 		}
 		public class _Alliedrace
 		{
-			public int Field0;
-			public int ID;
-			public byte Field2;
-			public ushort Field3;
-			public int Field4;
+			int Field0;
+			int ID;
+			byte Field2;
+			ushort Field3;
+			int Field4;
 		}
 		public class _alliedraceracialability
 		{
-			public int ID;
-			public string field1;
-			public string field2;
-			public byte field3;
-			public int field4;
+			int ID;
+			string field1;
+			string field2;
+			byte field3;
+			int field4;
 		}
 		public class _Alliedraceracialability
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public int Field3;
+			int ID;
+			string Field1;
+			string Field2;
+			int Field3;
 		}
 		public class _Animationdata
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _AnimKit
 		{
-			public int ID;
-			public uint OneShotDuration;
-			public ushort OneShotStopAnimKitID;
-			public ushort LowDefAnimKitID;
+			int ID;
+			uint OneShotDuration;
+			ushort OneShotStopAnimKitID;
+			ushort LowDefAnimKitID;
 		}
 		public class _Animkitboneset
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Animkitbonesetalias
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
+			int ID;
+			byte Field1;
+			byte Field2;
 		}
 		public class _Animkitconfig
 		{
-			public int ID;
-			public int Field1;
+			int ID;
+			int Field1;
 		}
 		public class _Animkitconfigboneset
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _Animkitpriority
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Animkitreplacement
 		{
-			public ushort Field0;
-			public ushort Field1;
-			public ushort Field2;
-			public int ID;
+			ushort Field0;
+			ushort Field1;
+			ushort Field2;
+			int ID;
 		}
 		public class _Animkitsegment
 		{
-			public int ID;
-			public int Field01;
-			public int Field02;
-			public int Field03;
-			public float Field04;
-			public int Field05;
-			public ushort Field06;
-			public ushort Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public ushort Field0A;
-			public ushort Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
-			public byte Field11;
-			public int Field12;
+			int ID;
+			int Field01;
+			int Field02;
+			int Field03;
+			float Field04;
+			int Field05;
+			ushort Field06;
+			ushort Field07;
+			ushort Field08;
+			ushort Field09;
+			ushort Field0A;
+			ushort Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
+			byte Field11;
+			int Field12;
 		}
 		public class _Animreplacement
 		{
-			public ushort Field0;
-			public ushort Field1;
-			public ushort Field2;
-			public int ID;
+			ushort Field0;
+			ushort Field1;
+			ushort Field2;
+			int ID;
 		}
 		public class _Animreplacementset
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Areafarclipoverride
 		{
-			public int Field0;
-			public float Field1;
-			public float Field2;
-			public int Field3;
-			public int ID;
+			int Field0;
+			float Field1;
+			float Field2;
+			int Field3;
+			int ID;
 		}
 		public class _AreaGroupMember
 		{
-			public int ID;
-			public ushort AreaID;
+			int ID;
+			ushort AreaID;
 		}
 		public class _Areapoi
 		{
-			public int ID;
-			public string Field01;
-			public string Field02;
-			public int Field03;
-			public float[] Field04 = new float[3];
-			public int Field05;
-			public int Field06;
-			public ushort Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public ushort Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public ushort Field0D;
-			public ushort Field0E;
-			public int Field0F;
-			public int Field10;
+			int ID;
+			string Field01;
+			string Field02;
+			int Field03;
+			float[] Field04 = new float[3];
+			int Field05;
+			int Field06;
+			ushort Field07;
+			ushort Field08;
+			ushort Field09;
+			ushort Field0A;
+			byte Field0B;
+			byte Field0C;
+			ushort Field0D;
+			ushort Field0E;
+			int Field0F;
+			int Field10;
 		}
 		public class _Areapoistate
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
-			public int Field4;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
+			int Field4;
 		}
 		public class _AreaTable
 		{
-			public int ID;
-			public string ZoneName;
-			public string AreaName;
-			public uint[] Flags = new uint[2];
-			public float AmbientMultiplier;
-			public ushort MapID;
-			public ushort ParentAreaID;
-			public short AreaBit;
-			public ushort AmbienceID;
-			public ushort ZoneMusic;
-			public ushort IntroSound;
-			public ushort[] LiquidTypeID = new ushort[4];
-			public ushort UWZoneMusic;
-			public ushort UWAmbience;
-			public ushort PvPCombatWorldStateID;
-			public byte SoundProviderPref;
-			public byte SoundProviderPrefUnderwater;
-			public byte ExplorationLevel;
-			public byte FactionGroupMask;
-			public byte MountFlags;
-			public byte WildBattlePetLevelMin;
-			public byte WildBattlePetLevelMax;
-			public byte WindSettingsID;
-			public uint UWIntroSound;
+			int ID;
+			string ZoneName;
+			string AreaName;
+			uint[] Flags = new uint[2];
+			float AmbientMultiplier;
+			ushort MapID;
+			ushort ParentAreaID;
+			short AreaBit;
+			ushort AmbienceID;
+			ushort ZoneMusic;
+			ushort IntroSound;
+			ushort[] LiquidTypeID = new ushort[4];
+			ushort UWZoneMusic;
+			ushort UWAmbience;
+			ushort PvPCombatWorldStateID;
+			byte SoundProviderPref;
+			byte SoundProviderPrefUnderwater;
+			byte ExplorationLevel;
+			byte FactionGroupMask;
+			byte MountFlags;
+			byte WildBattlePetLevelMin;
+			byte WildBattlePetLevelMax;
+			byte WindSettingsID;
+			uint UWIntroSound;
 		}
 		public class _AreaTrigger
 		{
 			UnityEngine.Vector3 Unknown;
-			public float Radius;
-			public float BoxLength;
-			public float BoxWidth;
-			public float BoxHeight;
-			public float BoxYaw;
-			public ushort MapID;
-			public ushort PhaseID;
-			public ushort PhaseGroupID;
-			public ushort ShapeID;
-			public ushort AreaTriggerActionSetID;
-			public byte PhaseUseFlags;
-			public byte ShapeType;
-			public byte Flag;
-			public int ID;
+			float Radius;
+			float BoxLength;
+			float BoxWidth;
+			float BoxHeight;
+			float BoxYaw;
+			ushort MapID;
+			ushort PhaseID;
+			ushort PhaseGroupID;
+			ushort ShapeID;
+			ushort AreaTriggerActionSetID;
+			byte PhaseUseFlags;
+			byte ShapeType;
+			byte Flag;
+			int ID;
 		}
 		public class _Areatriggeractionset
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Areatriggerbox
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
+			int ID;
+			float[] Field1 = new float[3];
 		}
 		public class _Areatriggercylinder
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
 		}
 		public class _Areatriggersphere
 		{
-			public int ID;
-			public float Field1;
+			int ID;
+			float Field1;
 		}
 		public class _ArmorLocation
 		{
-			public int ID;
-			public float[] Modifier = new float[5];
+			int ID;
+			float[] Modifier = new float[5];
 		}
 		public class _Artifact
 		{
-			public int ID;
-			public string Name;
-			public uint BarConnectedColor;
-			public uint BarDisconnectedColor;
-			public uint TitleColor;
-			public ushort ClassUiTextureKitID;
-			public ushort SpecID;
-			public byte ArtifactCategoryID;
-			public byte Flags;
-			public uint UiModelSceneID;
-			public uint SpellVisualKitID;
+			int ID;
+			string Name;
+			uint BarConnectedColor;
+			uint BarDisconnectedColor;
+			uint TitleColor;
+			ushort ClassUiTextureKitID;
+			ushort SpecID;
+			byte ArtifactCategoryID;
+			byte Flags;
+			uint UiModelSceneID;
+			uint SpellVisualKitID;
 		}
 		public class _ArtifactAppearance
 		{
-			public string Name;
-			public uint SwatchColor;
-			public float ModelDesaturation;
-			public float ModelAlpha;
-			public uint ShapeshiftDisplayID;
-			public ushort ArtifactAppearanceSetID;
-			public ushort Unknown;
-			public byte DisplayIndex;
-			public byte AppearanceModID;
-			public byte Flags;
-			public byte ModifiesShapeshiftFormDisplay;
-			public int ID;
-			public uint PlayerConditionID;
-			public uint ItemAppearanceID;
-			public uint AltItemAppearanceID;
+			string Name;
+			uint SwatchColor;
+			float ModelDesaturation;
+			float ModelAlpha;
+			uint ShapeshiftDisplayID;
+			ushort ArtifactAppearanceSetID;
+			ushort Unknown;
+			byte DisplayIndex;
+			byte AppearanceModID;
+			byte Flags;
+			byte ModifiesShapeshiftFormDisplay;
+			int ID;
+			uint PlayerConditionID;
+			uint ItemAppearanceID;
+			uint AltItemAppearanceID;
 		}
 		public class _ArtifactAppearanceSet
 		{
-			public string Name;
-			public string Name2;
-			public ushort UiCameraID;
-			public ushort AltHandUICameraID;
-			public byte DisplayIndex;
-			public byte AttachmentPoint;
-			public byte Flags;
-			public int ID;
+			string Name;
+			string Name2;
+			ushort UiCameraID;
+			ushort AltHandUICameraID;
+			byte DisplayIndex;
+			byte AttachmentPoint;
+			byte Flags;
+			int ID;
 		}
 		public class _ArtifactCategory
 		{
-			public int ID;
-			public ushort ArtifactKnowledgeCurrencyID;
-			public ushort ArtifactKnowledgeMultiplierCurveID;
+			int ID;
+			ushort ArtifactKnowledgeCurrencyID;
+			ushort ArtifactKnowledgeMultiplierCurveID;
 		}
 		public class _ArtifactPower
 		{
-			public float[] Pos = new float[2];
-			public byte ArtifactID;
-			public byte Flags;
-			public byte MaxRank;
-			public byte ArtifactTier;
-			public int ID;
-			public int RelicType;
+			float[] Pos = new float[2];
+			byte ArtifactID;
+			byte Flags;
+			byte MaxRank;
+			byte ArtifactTier;
+			int ID;
+			int RelicType;
 		}
 		public class _ArtifactPowerLink
 		{
-			public int ID;
-			public ushort FromArtifactPowerID;
-			public ushort ToArtifactPowerID;
+			int ID;
+			ushort FromArtifactPowerID;
+			ushort ToArtifactPowerID;
 		}
 		public class _ArtifactPowerPicker
 		{
-			public int ID;
-			public uint PlayerConditionID;
+			int ID;
+			uint PlayerConditionID;
 		}
 		public class _ArtifactPowerRank
 		{
-			public int ID;
-			public uint SpellID;
-			public float Value;
-			public ushort Unknown;
-			public byte Rank;
+			int ID;
+			uint SpellID;
+			float Value;
+			ushort Unknown;
+			byte Rank;
 		}
 		public class _ArtifactQuestXP
 		{
-			public int ID;
-			public uint[] Exp = new uint[10];
+			int ID;
+			uint[] Exp = new uint[10];
 		}
 		public class _Artifacttier
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Artifactunlock
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public int Field3;
-			public ushort Field4;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			int Field3;
+			ushort Field4;
 		}
 		public class _AuctionHouse
 		{
-			public int ID;
-			public string Name;
-			public ushort FactionID;
-			public byte DepositRate;
-			public byte ConsignmentRate;
+			int ID;
+			string Name;
+			ushort FactionID;
+			byte DepositRate;
+			byte ConsignmentRate;
 		}
 		public class _BankBagSlotPrices
 		{
-			public int ID;
-			public uint Cost;
+			int ID;
+			uint Cost;
 		}
 		public class _BannedAddons
 		{
-			public int ID;
-			public string Name;
-			public string Version;
-			public byte Flags;
+			int ID;
+			string Name;
+			string Version;
+			byte Flags;
 		}
 		public class _BarberShopStyle
 		{
-			public string DisplayName;
-			public string Description;
-			public float CostModifier;
-			public byte Type;
-			public byte Race;
-			public byte Sex;
-			public byte Data;
-			public int ID;
+			string DisplayName;
+			string Description;
+			float CostModifier;
+			byte Type;
+			byte Race;
+			byte Sex;
+			byte Data;
+			int ID;
 		}
 		public class _BattlemasterList
 		{
-			public int ID;
-			public string Name;
-			public string GameType;
-			public string ShortDescription;
-			public string LongDescription;
-			public uint IconFileDataID;
-			public ushort[] MapID = new ushort[16];
-			public ushort HolidayWorldState;
-			public ushort PlayerConditionID;
-			public byte InstanceType;
-			public byte GroupsAllowed;
-			public byte MaxGroupSize;
-			public byte MinLevel;
-			public byte MaxLevel;
-			public byte RatedPlayers;
-			public byte MinPlayers;
-			public byte MaxPlayers;
-			public byte Flags;
+			int ID;
+			string Name;
+			string GameType;
+			string ShortDescription;
+			string LongDescription;
+			uint IconFileDataID;
+			ushort[] MapID = new ushort[16];
+			ushort HolidayWorldState;
+			ushort PlayerConditionID;
+			byte InstanceType;
+			byte GroupsAllowed;
+			byte MaxGroupSize;
+			byte MinLevel;
+			byte MaxLevel;
+			byte RatedPlayers;
+			byte MinPlayers;
+			byte MaxPlayers;
+			byte Flags;
 		}
 		public class _Battlepetability
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public int Field3;
-			public ushort Field4;
-			public byte Field5;
-			public byte Field6;
-			public int Field7;
+			int ID;
+			string Field1;
+			string Field2;
+			int Field3;
+			ushort Field4;
+			byte Field5;
+			byte Field6;
+			int Field7;
 		}
 		public class _Battlepetabilityeffect
 		{
-			public ushort Field0;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort[] Field4 = new ushort[6];
-			public byte Field5;
-			public int ID;
+			ushort Field0;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort[] Field4 = new ushort[6];
+			byte Field5;
+			int ID;
 		}
 		public class _Battlepetabilitystate
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _Battlepetabilityturn
 		{
-			public ushort Field0;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public int ID;
+			ushort Field0;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			int ID;
 		}
 		public class _BattlePetBreedQuality
 		{
-			public int ID;
-			public float Modifier;
-			public byte Quality;
+			int ID;
+			float Modifier;
+			byte Quality;
 		}
 		public class _BattlePetBreedState
 		{
-			public int ID;
-			public short Value;
-			public byte State;
+			int ID;
+			short Value;
+			byte State;
 		}
 		public class _Battlepetdisplayoverride
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public byte Field4;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			byte Field4;
 		}
 		public class _Battlepeteffectproperties
 		{
-			public int ID;
-			public string[] Field1 = new string[6];
-			public ushort Field2;
-			public byte[] Field3 = new byte[6];
+			int ID;
+			string[] Field1 = new string[6];
+			ushort Field2;
+			byte[] Field3 = new byte[6];
 		}
 		public class _BattlePetSpecies
 		{
-			public string SourceText;
-			public string Description;
-			public uint CreatureID;
-			public uint IconFileID;
-			public uint SummonSpellID;
-			public ushort Flags;
-			public byte PetType;
-			public byte Source;
-			public int ID;
-			public uint CardModelSceneID;
-			public uint LoadoutModelSceneID;
+			string SourceText;
+			string Description;
+			uint CreatureID;
+			uint IconFileID;
+			uint SummonSpellID;
+			ushort Flags;
+			byte PetType;
+			byte Source;
+			int ID;
+			uint CardModelSceneID;
+			uint LoadoutModelSceneID;
 		}
 		public class _BattlePetSpeciesState
 		{
-			public int ID;
-			public int Value;
-			public byte State;
+			int ID;
+			int Value;
+			byte State;
 		}
 		public class _Battlepetspeciesxability
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Battlepetstate
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Battlepetvisual
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			string Field1;
+			int Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Beameffect
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public float Field3;
-			public int Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public ushort Field8;
-			public ushort Field9;
-			public ushort FieldA;
+			int ID;
+			int Field1;
+			float Field2;
+			float Field3;
+			int Field4;
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			ushort Field8;
+			ushort Field9;
+			ushort FieldA;
 		}
 		public class _Bonewindmodifiermodel
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
+			int ID;
+			int Field1;
+			int Field2;
 		}
 		public class _Bonewindmodifiers
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public float Field2;
+			int ID;
+			float[] Field1 = new float[3];
+			float Field2;
 		}
 		public class _Bounty
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
 		}
 		public class _Bountyset
 		{
-			public int ID;
-			public ushort Field1;
-			public int Field2;
+			int ID;
+			ushort Field1;
+			int Field2;
 		}
 		public class _BroadcastText
 		{
-			public int ID;
-			public string MaleText;
-			public string FemaleText;
-			public ushort[] EmoteID = new ushort[3];
-			public ushort[] EmoteDelay = new ushort[3];
-			public ushort UnkEmoteID;
-			public byte Language;
-			public byte Type;
-			public uint PlayerConditionID;
-			public uint[] SoundID = new uint[2];
+			int ID;
+			string MaleText;
+			string FemaleText;
+			ushort[] EmoteID = new ushort[3];
+			ushort[] EmoteDelay = new ushort[3];
+			ushort UnkEmoteID;
+			byte Language;
+			byte Type;
+			uint PlayerConditionID;
+			uint[] SoundID = new uint[2];
 		}
 		public class _Cameraeffect
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Cameraeffectentry
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public float Field05;
-			public float Field06;
-			public float Field07;
-			public float Field08;
-			public ushort Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public byte Field0F;
+			int ID;
+			float Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			float Field05;
+			float Field06;
+			float Field07;
+			float Field08;
+			ushort Field09;
+			byte Field0A;
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			byte Field0F;
 		}
 		public class _Cameramode
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public float[] Field2 = new float[3];
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public ushort Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public byte FieldB;
+			int ID;
+			float[] Field1 = new float[3];
+			float[] Field2 = new float[3];
+			float Field3;
+			float Field4;
+			float Field5;
+			ushort Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			byte FieldB;
 		}
 		public class _Castableraidbuffs
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Celestialbody
 		{
-			public int Field0;
-			public int Field1;
-			public int[] Field2 = new int[2];
-			public int Field3;
-			public int Field4;
-			public int[] Field5 = new int[2];
-			public float[] Field6 = new float[2];
-			public float[] Field7 = new float[2];
-			public float Field8;
-			public float[] Field9 = new float[2];
-			public float FieldA;
-			public float[] FieldB = new float[3];
-			public float FieldC;
-			public ushort FieldD;
-			public int ID;
+			int Field0;
+			int Field1;
+			int[] Field2 = new int[2];
+			int Field3;
+			int Field4;
+			int[] Field5 = new int[2];
+			float[] Field6 = new float[2];
+			float[] Field7 = new float[2];
+			float Field8;
+			float[] Field9 = new float[2];
+			float FieldA;
+			float[] FieldB = new float[3];
+			float FieldC;
+			ushort FieldD;
+			int ID;
 		}
 		public class _Cfg_categories
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Cfg_configs
 		{
-			public int ID;
-			public float Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			float Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Cfg_regions
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public float Field3;
-			public ushort Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			int Field2;
+			float Field3;
+			ushort Field4;
+			byte Field5;
 		}
 		public class _Characterfaceboneset
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			int Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _CharacterFacialHairStyles
 		{
-			public int ID;
-			public uint[] Geoset = new uint[5];
-			public byte RaceID;
-			public byte SexID;
-			public byte VariationID;
+			int ID;
+			uint[] Geoset = new uint[5];
+			byte RaceID;
+			byte SexID;
+			byte VariationID;
 		}
 		public class _Characterloadout
 		{
-			public int ID;
-			public ulong Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			ulong Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Characterloadoutitem
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _Characterserviceinfo
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public string Field3;
-			public string Field4;
-			public int Field5;
-			public int Field6;
-			public string Field7;
-			public int Field8;
-			public int Field9;
-			public int FieldA;
-			public int FieldB;
+			int ID;
+			string Field1;
+			string Field2;
+			string Field3;
+			string Field4;
+			int Field5;
+			int Field6;
+			string Field7;
+			int Field8;
+			int Field9;
+			int FieldA;
+			int FieldB;
 		}
 		public class _Charbaseinfo
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
+			int ID;
+			byte Field1;
+			byte Field2;
 		}
 		public class _CharBaseSection
 		{
-			public int ID;
-			public byte Variation;
-			public byte ResolutionVariation;
-			public byte Resolution;
+			int ID;
+			byte Variation;
+			byte ResolutionVariation;
+			byte Resolution;
 		}
 		public class _Charcomponenttexturelayouts
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _Charcomponenttexturesections
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Charhairgeosets
 		{
-			public int ID;
-			public int RootGeosetID;
-			public byte Race;
-			public byte Sex;
-			public byte CharSection_ID;
-			public byte Flag;
-			public byte Expansion;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public int FieldA;
+			int ID;
+			int RootGeosetID;
+			byte Race;
+			byte Sex;
+			byte CharSection_ID;
+			byte Flag;
+			byte Expansion;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			int FieldA;
 		}
 		public class _CharSections
 		{
-			public int ID;
-			public uint[] TextureFileDataID = new uint[3];
-			public ushort Flags;
-			public byte RaceID;
-			public byte SexID;
-			public byte BaseSection;
-			public byte VariationIndex;
-			public byte ColorIndex;
+			int ID;
+			uint[] TextureFileDataID = new uint[3];
+			ushort Flags;
+			byte RaceID;
+			byte SexID;
+			byte BaseSection;
+			byte VariationIndex;
+			byte ColorIndex;
 		}
 		public class _Charshipment
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public byte Field8;
-			public byte Field9;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			ushort Field6;
+			ushort Field7;
+			byte Field8;
+			byte Field9;
 		}
 		public class _Charshipmentcontainer
 		{
-			public int ID;
-			public string Field01;
-			public string Field02;
-			public int Field03;
-			public ushort Field04;
-			public ushort Field05;
-			public ushort Field06;
-			public ushort Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
+			int ID;
+			string Field01;
+			string Field02;
+			int Field03;
+			ushort Field04;
+			ushort Field05;
+			ushort Field06;
+			ushort Field07;
+			ushort Field08;
+			ushort Field09;
+			byte Field0A;
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
 		}
 		public class _CharStartOutfit
 		{
-			public int ID;
-			public int[] ItemID = new int[24];
-			public uint PetDisplayID;
-			public byte ClassID;
-			public byte GenderID;
-			public byte OutfitID;
-			public byte PetFamilyID;
+			int ID;
+			int[] ItemID = new int[24];
+			uint PetDisplayID;
+			byte ClassID;
+			byte GenderID;
+			byte OutfitID;
+			byte PetFamilyID;
 		}
 		public class _CharTitles
 		{
-			public int ID;
-			public string NameMale;
-			public string NameFemale;
-			public ushort MaskID;
-			public byte Flags;
+			int ID;
+			string NameMale;
+			string NameFemale;
+			ushort MaskID;
+			byte Flags;
 		}
 		public class _ChatChannels
 		{
-			public int ID;
-			public string Name;
-			public string Shortcut;
-			public uint Flags;
-			public byte FactionGroup;
+			int ID;
+			string Name;
+			string Shortcut;
+			uint Flags;
+			byte FactionGroup;
 		}
 		public class _Chatprofanity
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _ChrClasses
 		{
-			public string PetNameToken;
-			public string Name;
-			public string NameFemale;
-			public string NameMale;
-			public string Filename;
-			public uint CreateScreenFileDataID;
-			public uint SelectScreenFileDataID;
-			public uint IconFileDataID;
-			public uint LowResScreenFileDataID;
-			public uint StartingLevel;
-			public ushort Flags;
-			public ushort CinematicSequenceID;
-			public ushort DefaultSpec;
-			public byte PowerType;
-			public byte SpellClassSet;
-			public byte AttackPowerPerStrength;
-			public byte AttackPowerPerAgility;
-			public byte RangedAttackPowerPerAgility;
-			public byte Unk1;
-			public int ID;
+			string PetNameToken;
+			string Name;
+			string NameFemale;
+			string NameMale;
+			string Filename;
+			uint CreateScreenFileDataID;
+			uint SelectScreenFileDataID;
+			uint IconFileDataID;
+			uint LowResScreenFileDataID;
+			uint StartingLevel;
+			ushort Flags;
+			ushort CinematicSequenceID;
+			ushort DefaultSpec;
+			byte PowerType;
+			byte SpellClassSet;
+			byte AttackPowerPerStrength;
+			byte AttackPowerPerAgility;
+			byte RangedAttackPowerPerAgility;
+			byte Unk1;
+			int ID;
 		}
 		public class _ChrClassesXPowerTypes
 		{
-			public int ID;
-			public byte PowerType;
+			int ID;
+			byte PowerType;
 		}
 		public class _Chrclassracesex
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
-			public byte Field6;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
+			byte Field6;
 		}
 		public class _Chrclasstitle
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			int Field2;
+			byte Field3;
 		}
 		public class _Chrclassuidisplay
 		{
-			public int ID;
-			public byte Field1;
-			public ushort Field2;
-			public int Field3;
+			int ID;
+			byte Field1;
+			ushort Field2;
+			int Field3;
 		}
 		public class _Chrclassvillain
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Chrcustomization
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
-			public byte Field4;
-			public int[] Field5 = new int[3];
+			int ID;
+			string Field1;
+			int Field2;
+			byte Field3;
+			byte Field4;
+			int[] Field5 = new int[3];
 		}
 		public class _ChrRaces
 		{
-			public string ClientPrefix;
-			public string ClientFileString;
-			public string Name;
-			public string NameFemale;
-			public string LowercaseName;
-			public string LowercaseNameFemale;
-			public uint Flags;
-			public uint MaleDisplayID;
-			public uint FemaleDisplayID;
-			public uint CreateScreenFileDataID;
-			public uint SelectScreenFileDataID;
-			public float[] MaleCustomizeOffset = new float[3];
-			public float[] FemaleCustomizeOffset = new float[3];
-			public uint LowResScreenFileDataID;
-			public uint StartingLevel;
-			public uint UIDisplayOrder;
-			public ushort FactionID;
-			public ushort ResSicknessSpellID;
-			public ushort SplashSoundID;
-			public ushort CinematicSequenceID;
-			public byte BaseLanguage;
-			public byte CreatureType;
-			public byte TeamID;
-			public byte RaceRelated;
-			public byte UnalteredVisualRaceID;
-			public byte CharComponentTextureLayoutID;
-			public byte DefaultClassID;
-			public byte NeutralRaceID;
-			public byte ItemAppearanceFrameRaceID;
-			public byte CharComponentTexLayoutHiResID;
-			public int ID;
-			public uint HighResMaleDisplayID;
-			public uint HighResFemaleDisplayID;
-			public uint HeritageArmorAchievementID;
-			public uint MaleCorpseBonesModelFileDataID;
-			public uint FemaleCorpseBonesModelFileDataID;
-			public uint[] AlteredFormTransitionSpellVisualID = new uint[3];
-			public uint[] AlteredFormTransitionSpellVisualKitID = new uint[3];
+			string ClientPrefix;
+			string ClientFileString;
+			string Name;
+			string NameFemale;
+			string LowercaseName;
+			string LowercaseNameFemale;
+			uint Flags;
+			uint MaleDisplayID;
+			uint FemaleDisplayID;
+			uint CreateScreenFileDataID;
+			uint SelectScreenFileDataID;
+			float[] MaleCustomizeOffset = new float[3];
+			float[] FemaleCustomizeOffset = new float[3];
+			uint LowResScreenFileDataID;
+			uint StartingLevel;
+			uint UIDisplayOrder;
+			ushort FactionID;
+			ushort ResSicknessSpellID;
+			ushort SplashSoundID;
+			ushort CinematicSequenceID;
+			byte BaseLanguage;
+			byte CreatureType;
+			byte TeamID;
+			byte RaceRelated;
+			byte UnalteredVisualRaceID;
+			byte CharComponentTextureLayoutID;
+			byte DefaultClassID;
+			byte NeutralRaceID;
+			byte ItemAppearanceFrameRaceID;
+			byte CharComponentTexLayoutHiResID;
+			int ID;
+			uint HighResMaleDisplayID;
+			uint HighResFemaleDisplayID;
+			uint HeritageArmorAchievementID;
+			uint MaleCorpseBonesModelFileDataID;
+			uint FemaleCorpseBonesModelFileDataID;
+			uint[] AlteredFormTransitionSpellVisualID = new uint[3];
+			uint[] AlteredFormTransitionSpellVisualKitID = new uint[3];
 		}
 		public class _ChrSpecialization
 		{
-			public string Name;
-			public string Name2;
-			public string Description;
-			public uint[] MasterySpellID = new uint[2];
-			public byte ClassID;
-			public byte OrderIndex;
-			public byte PetTalentType;
-			public byte Role;
-			public byte PrimaryStatOrder;
-			public int ID;
-			public uint IconFileDataID;
-			public uint Flags;
-			public uint AnimReplacementSetID;
+			string Name;
+			string Name2;
+			string Description;
+			uint[] MasterySpellID = new uint[2];
+			byte ClassID;
+			byte OrderIndex;
+			byte PetTalentType;
+			byte Role;
+			byte PrimaryStatOrder;
+			int ID;
+			uint IconFileDataID;
+			uint Flags;
+			uint AnimReplacementSetID;
 		}
 		public class _Chrupgradebucket
 		{
-			public ushort Field0;
-			public int ID;
+			ushort Field0;
+			int ID;
 		}
 		public class _Chrupgradebucketspell
 		{
-			public int ID;
-			public int Field1;
+			int ID;
+			int Field1;
 		}
 		public class _Chrupgradetier
 		{
-			public int Field0;
-			public byte Field1;
-			public byte Field2;
-			public int ID;
+			int Field0;
+			byte Field1;
+			byte Field2;
+			int ID;
 		}
 		public class _CinematicCamera
 		{
-			public int ID;
-			public uint SoundID;
-			public float[] Origin = new float[3];
-			public float OriginFacing;
-			public uint ModelFileDataID;
+			int ID;
+			uint SoundID;
+			float[] Origin = new float[3];
+			float OriginFacing;
+			uint ModelFileDataID;
 		}
 		public class _CinematicSequences
 		{
-			public int ID;
-			public uint SoundID;
-			public ushort[] Camera = new ushort[8];
+			int ID;
+			uint SoundID;
+			ushort[] Camera = new ushort[8];
 		}
 		public class _Cloakdampening
 		{
-			public int ID;
-			public float[] Field1 = new float[5];
-			public float[] Field2 = new float[5];
-			public int[] Field3 = new int[2];
-			public float[] Field4 = new float[2];
-			public float Field5;
-			public float Field6;
-			public float Field7;
+			int ID;
+			float[] Field1 = new float[5];
+			float[] Field2 = new float[5];
+			int[] Field3 = new int[2];
+			float[] Field4 = new float[2];
+			float Field5;
+			float Field6;
+			float Field7;
 		}
 		public class _Combatcondition
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort[] Field4 = new ushort[2];
-			public ushort[] Field5 = new ushort[2];
-			public byte[] Field6 = new byte[2];
-			public byte[] Field7 = new byte[2];
-			public byte Field8;
-			public byte[] Field9 = new byte[2];
-			public byte[] FieldA = new byte[2];
-			public byte FieldB;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort[] Field4 = new ushort[2];
+			ushort[] Field5 = new ushort[2];
+			byte[] Field6 = new byte[2];
+			byte[] Field7 = new byte[2];
+			byte Field8;
+			byte[] Field9 = new byte[2];
+			byte[] FieldA = new byte[2];
+			byte FieldB;
 		}
 		public class _Commentatorstartlocation
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public ushort Field2;
+			int ID;
+			float[] Field1 = new float[3];
+			ushort Field2;
 		}
 		public class _Commentatortrackedcooldown
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public int Field3;
+			int ID;
+			byte Field1;
+			byte Field2;
+			int Field3;
 		}
 		public class _Componentmodelfiledata
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Componenttexturefiledata
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Configurationwarning
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _Contribution
 		{
-			public string Field0;
-			public string Field1;
-			public int ID;
-			public int Field3;
-			public int[] Field4 = new int[4];
-			public byte Field5;
+			string Field0;
+			string Field1;
+			int ID;
+			int Field3;
+			int[] Field4 = new int[4];
+			byte Field5;
 		}
 		public class _ConversationLine
 		{
-			public int ID;
-			public uint BroadcastTextID;
-			public uint SpellVisualKitID;
-			public uint Duration;
-			public ushort NextLineID;
-			public ushort Unk1;
-			public byte Yell;
-			public byte Unk2;
-			public byte Unk3;
+			int ID;
+			uint BroadcastTextID;
+			uint SpellVisualKitID;
+			uint Duration;
+			ushort NextLineID;
+			ushort Unk1;
+			byte Yell;
+			byte Unk2;
+			byte Unk3;
 		}
 		public class _Creature
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public string Field3;
-			public string Field4;
-			public int[] Field5 = new int[3];
-			public int Field6;
-			public int[] Field7 = new int[4];
-			public float[] Field8 = new float[4];
-			public byte Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public byte FieldC;
+			int ID;
+			string Field1;
+			string Field2;
+			string Field3;
+			string Field4;
+			int[] Field5 = new int[3];
+			int Field6;
+			int[] Field7 = new int[4];
+			float[] Field8 = new float[4];
+			byte Field9;
+			byte FieldA;
+			byte FieldB;
+			byte FieldC;
 		}
 		public class _Creaturedifficulty
 		{
-			public int ID;
-			public int[] Field1 = new int[7];
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			int[] Field1 = new int[7];
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _CreatureDisplayInfo
 		{
-			public int ID;
-			public float CreatureModelScale;
-			public ushort ModelID;
-			public ushort NPCSoundID;
-			public byte SizeClass;
-			public byte Flags;
-			public byte Gender;
-			public uint ExtendedDisplayInfoID;
-			public uint PortraitTextureFileDataID;
-			public byte CreatureModelAlpha;
-			public ushort SoundID;
-			public float PlayerModelScale;
-			public uint PortraitCreatureDisplayInfoID;
-			public byte BloodID;
-			public ushort ParticleColorID;
-			public uint CreatureGeosetData;
-			public ushort ObjectEffectPackageID;
-			public ushort AnimReplacementSetID;
-			public byte UnarmedWeaponSubclass;
-			public uint StateSpellVisualKitID;
-			public float InstanceOtherPlayerPetScale;
-			public uint MountSpellVisualKitID;
-			public uint[] TextureVariation = new uint[3];
+			int ID;
+			float CreatureModelScale;
+			ushort ModelID;
+			ushort NPCSoundID;
+			byte SizeClass;
+			byte Flags;
+			byte Gender;
+			uint ExtendedDisplayInfoID;
+			uint PortraitTextureFileDataID;
+			byte CreatureModelAlpha;
+			ushort SoundID;
+			float PlayerModelScale;
+			uint PortraitCreatureDisplayInfoID;
+			byte BloodID;
+			ushort ParticleColorID;
+			uint CreatureGeosetData;
+			ushort ObjectEffectPackageID;
+			ushort AnimReplacementSetID;
+			byte UnarmedWeaponSubclass;
+			uint StateSpellVisualKitID;
+			float InstanceOtherPlayerPetScale;
+			uint MountSpellVisualKitID;
+			uint[] TextureVariation = new uint[3];
 		}
 		public class _SDReplacementModel
 		{
-			public int ID;
-			public int SdFileDataId;
+			int ID;
+			int SdFileDataId;
 		}
 		public class _Creaturedisplayinfocond
 		{
-			public int ID;
-			public ulong Field1;
-			public int[] Field2 = new int[2];
-			public int[] Field3 = new int[2];
-			public int[] Field4 = new int[2];
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public ushort Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public byte FieldC;
-			public ushort FieldD;
-			public int[] FieldE = new int[3];
+			int ID;
+			ulong Field1;
+			int[] Field2 = new int[2];
+			int[] Field3 = new int[2];
+			int[] Field4 = new int[2];
+			byte Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			ushort Field9;
+			byte FieldA;
+			byte FieldB;
+			byte FieldC;
+			ushort FieldD;
+			int[] FieldE = new int[3];
 		}
 		public class _Creaturedisplayinfoevt
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			byte Field3;
 		}
 		public class _CreatureDisplayInfoExtra
 		{
-			public int ID;
-			public uint FileDataID;
-			public uint HDFileDataID;
-			public byte DisplayRaceID;
-			public byte DisplaySexID;
-			public byte DisplayClassID;
-			public byte SkinID;
-			public byte FaceID;
-			public byte HairStyleID;
-			public byte HairColorID;
-			public byte FacialHairID;
-			public byte[] CustomDisplayOption = new byte[3];
-			public byte Flags;
+			int ID;
+			uint FileDataID;
+			uint HDFileDataID;
+			byte DisplayRaceID;
+			byte DisplaySexID;
+			byte DisplayClassID;
+			byte SkinID;
+			byte FaceID;
+			byte HairStyleID;
+			byte HairColorID;
+			byte FacialHairID;
+			byte[] CustomDisplayOption = new byte[3];
+			byte Flags;
 		}
 		public class _Creaturedisplayinfotrn
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public int Field3;
-			public uint Field4;
-			public int Field5;
+			int ID;
+			int Field1;
+			float Field2;
+			int Field3;
+			uint Field4;
+			int Field5;
 		}
 		public class _Creaturedispxuicamera
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _CreatureFamily
 		{
-			public int ID;
-			public string Name;
-			public float MinScale;
-			public float MaxScale;
-			public uint IconFileDataID;
-			public ushort[] SkillLine = new ushort[2];
-			public ushort PetFoodMask;
-			public byte MinScaleLevel;
-			public byte MaxScaleLevel;
-			public byte PetTalentType;
+			int ID;
+			string Name;
+			float MinScale;
+			float MaxScale;
+			uint IconFileDataID;
+			ushort[] SkillLine = new ushort[2];
+			ushort PetFoodMask;
+			byte MinScaleLevel;
+			byte MaxScaleLevel;
+			byte PetTalentType;
 		}
 		public class _Creatureimmunities
 		{
-			public int ID;
-			public int[] Field1 = new int[2];
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
-			public int[] Field8 = new int[8];
-			public int[] Field9 = new int[16];
+			int ID;
+			int[] Field1 = new int[2];
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
+			int[] Field8 = new int[8];
+			int[] Field9 = new int[16];
 		}
 		public class _CreatureModelData
 		{
-			public int ID;
-			public float ModelScale;
-			public float FootprintTextureLength;
-			public float FootprintTextureWidth;
-			public float FootprintParticleScale;
-			public float CollisionWidth;
-			public float CollisionHeight;
-			public float MountHeight;
-			public float[] GeoBoxMin = new float[3];
-			public float[] GeoBoxMax = new float[3];
-			public float WorldEffectScale;
-			public float AttachedEffectScale;
-			public float MissileCollisionRadius;
-			public float MissileCollisionPush;
-			public float MissileCollisionRaise;
-			public float OverrideLootEffectScale;
-			public float OverrideNameScale;
-			public float OverrideSelectionRadius;
-			public float TamedPetBaseScale;
-			public float HoverHeight;
-			public uint Flags;
-			public uint FileDataID;
-			public uint SizeClass;
-			public uint BloodID;
-			public uint FootprintTextureID;
-			public uint FoleyMaterialID;
-			public uint FootstepEffectID;
-			public uint DeathThudEffectID;
-			public uint SoundID;
-			public uint CreatureGeosetDataID;
+			int ID;
+			float ModelScale;
+			float FootprintTextureLength;
+			float FootprintTextureWidth;
+			float FootprintParticleScale;
+			float CollisionWidth;
+			float CollisionHeight;
+			float MountHeight;
+			float[] GeoBoxMin = new float[3];
+			float[] GeoBoxMax = new float[3];
+			float WorldEffectScale;
+			float AttachedEffectScale;
+			float MissileCollisionRadius;
+			float MissileCollisionPush;
+			float MissileCollisionRaise;
+			float OverrideLootEffectScale;
+			float OverrideNameScale;
+			float OverrideSelectionRadius;
+			float TamedPetBaseScale;
+			float HoverHeight;
+			uint Flags;
+			uint FileDataID;
+			uint SizeClass;
+			uint BloodID;
+			uint FootprintTextureID;
+			uint FoleyMaterialID;
+			uint FootstepEffectID;
+			uint DeathThudEffectID;
+			uint SoundID;
+			uint CreatureGeosetDataID;
 		}
 		public class _Creaturemovementinfo
 		{
-			public int ID;
-			public float Field1;
+			int ID;
+			float Field1;
 		}
 		public class _Creaturesounddata
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public byte Field03;
-			public uint Field04;
-			public int Field05;
-			public uint Field06;
-			public uint Field07;
-			public int Field08;
-			public uint Field09;
-			public uint Field0A;
-			public uint Field0B;
-			public uint Field0C;
-			public uint Field0D;
-			public uint Field0E;
-			public uint Field0F;
-			public uint Field10;
-			public uint Field11;
-			public uint Field12;
-			public uint Field13;
-			public uint Field14;
-			public uint Field15;
-			public uint Field16;
-			public uint Field17;
-			public uint Field18;
-			public uint Field19;
-			public uint Field1A;
-			public uint Field1B;
-			public uint Field1C;
-			public uint Field1D;
-			public uint Field1E;
-			public uint Field1F;
-			public uint Field20;
-			public uint Field21;
-			public uint Field22;
-			public uint Field23;
-			public uint[] Field24 = new uint[5];
-			public uint[] Field25 = new uint[4];
+			int ID;
+			float Field01;
+			float Field02;
+			byte Field03;
+			uint Field04;
+			int Field05;
+			uint Field06;
+			uint Field07;
+			int Field08;
+			uint Field09;
+			uint Field0A;
+			uint Field0B;
+			uint Field0C;
+			uint Field0D;
+			uint Field0E;
+			uint Field0F;
+			uint Field10;
+			uint Field11;
+			uint Field12;
+			uint Field13;
+			uint Field14;
+			uint Field15;
+			uint Field16;
+			uint Field17;
+			uint Field18;
+			uint Field19;
+			uint Field1A;
+			uint Field1B;
+			uint Field1C;
+			uint Field1D;
+			uint Field1E;
+			uint Field1F;
+			uint Field20;
+			uint Field21;
+			uint Field22;
+			uint Field23;
+			uint[] Field24 = new uint[5];
+			uint[] Field25 = new uint[4];
 		}
 		public class _CreatureType
 		{
-			public int ID;
-			public string Name;
-			public byte Flags;
+			int ID;
+			string Name;
+			byte Flags;
 		}
 		public class _Creaturexcontribution
 		{
-			public int ID;
-			public int Field1;
+			int ID;
+			int Field1;
 		}
 		public class _Criteria
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public byte FieldB;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			ushort Field5;
+			ushort Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			byte FieldB;
 		}
 		public class _CriteriaTree
 		{
-			public int ID;
-			public string Description;
-			public uint Amount;
-			public ushort Flags;
-			public byte Operator;
-			public uint CriteriaID;
-			public uint Parent;
-			public int OrderIndex;
+			int ID;
+			string Description;
+			uint Amount;
+			ushort Flags;
+			byte Operator;
+			uint CriteriaID;
+			uint Parent;
+			int OrderIndex;
 		}
 		public class _Criteriatreexeffect
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Currencycategory
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _CurrencyTypes
 		{
-			public int ID;
-			public string Name;
-			public string Description;
-			public uint MaxQty;
-			public uint MaxEarnablePerWeek;
-			public uint Flags;
-			public byte CategoryID;
-			public byte SpellCategory;
-			public byte Quality;
-			public uint InventoryIconFileDataID;
-			public uint SpellWeight;
+			int ID;
+			string Name;
+			string Description;
+			uint MaxQty;
+			uint MaxEarnablePerWeek;
+			uint Flags;
+			byte CategoryID;
+			byte SpellCategory;
+			byte Quality;
+			uint InventoryIconFileDataID;
+			uint SpellWeight;
 		}
 		public class _Curve
 		{
-			public int ID;
-			public byte Type;
-			public byte Unused;
+			int ID;
+			byte Type;
+			byte Unused;
 		}
 		public class _CurvePoint
 		{
-			public int ID;
-			public float X;
-			public float Y;
-			public ushort CurveID;
-			public byte Index;
+			int ID;
+			float X;
+			float Y;
+			ushort CurveID;
+			byte Index;
 		}
 		public class _DBCache
 		{
-			public int ID;
+			int ID;
 		}
 		public class _Deaththudlookups
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public ushort Field3;
-			public int Field4;
+			int ID;
+			byte Field1;
+			byte Field2;
+			ushort Field3;
+			int Field4;
 		}
 		public class _Decalproperties
 		{
-			public int ID;
-			public int Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public float Field05;
-			public float Field06;
-			public float Field07;
-			public float Field08;
-			public float Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public ushort Field0C;
-			public ushort Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
+			int ID;
+			int Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			float Field05;
+			float Field06;
+			float Field07;
+			float Field08;
+			float Field09;
+			byte Field0A;
+			byte Field0B;
+			ushort Field0C;
+			ushort Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
 		}
 		public class _DestructibleModelData
 		{
-			public int ID;
-			public ushort StateDamagedDisplayID;
-			public ushort StateDestroyedDisplayID;
-			public ushort StateRebuildingDisplayID;
-			public ushort StateSmokeDisplayID;
-			public ushort HealEffectSpeed;
-			public byte StateDamagedImpactEffectDoodadSet;
-			public byte StateDamagedAmbientDoodadSet;
-			public byte StateDamagedNameSet;
-			public byte StateDestroyedDestructionDoodadSet;
-			public byte StateDestroyedImpactEffectDoodadSet;
-			public byte StateDestroyedAmbientDoodadSet;
-			public byte StateDestroyedNameSet;
-			public byte StateRebuildingDestructionDoodadSet;
-			public byte StateRebuildingImpactEffectDoodadSet;
-			public byte StateRebuildingAmbientDoodadSet;
-			public byte StateRebuildingNameSet;
-			public byte StateSmokeInitDoodadSet;
-			public byte StateSmokeAmbientDoodadSet;
-			public byte StateSmokeNameSet;
-			public byte EjectDirection;
-			public byte DoNotHighlight;
-			public byte HealEffect;
+			int ID;
+			ushort StateDamagedDisplayID;
+			ushort StateDestroyedDisplayID;
+			ushort StateRebuildingDisplayID;
+			ushort StateSmokeDisplayID;
+			ushort HealEffectSpeed;
+			byte StateDamagedImpactEffectDoodadSet;
+			byte StateDamagedAmbientDoodadSet;
+			byte StateDamagedNameSet;
+			byte StateDestroyedDestructionDoodadSet;
+			byte StateDestroyedImpactEffectDoodadSet;
+			byte StateDestroyedAmbientDoodadSet;
+			byte StateDestroyedNameSet;
+			byte StateRebuildingDestructionDoodadSet;
+			byte StateRebuildingImpactEffectDoodadSet;
+			byte StateRebuildingAmbientDoodadSet;
+			byte StateRebuildingNameSet;
+			byte StateSmokeInitDoodadSet;
+			byte StateSmokeAmbientDoodadSet;
+			byte StateSmokeNameSet;
+			byte EjectDirection;
+			byte DoNotHighlight;
+			byte HealEffect;
 		}
 		public class _Deviceblacklist
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _Devicedefaultsettings
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public byte Field3;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _Difficulty
 		{
-			public int ID;
-			public string Name;
-			public ushort GroupSizeHealthCurveID;
-			public ushort GroupSizeDmgCurveID;
-			public ushort GroupSizeSpellPointsCurveID;
-			public byte FallbackDifficultyID;
-			public byte InstanceType;
-			public byte MinPlayers;
-			public byte MaxPlayers;
-			public byte OldEnumValue;
-			public byte Flags;
-			public byte ToggleDifficultyID;
-			public byte ItemBonusTreeModID;
-			public byte OrderIndex;
+			int ID;
+			string Name;
+			ushort GroupSizeHealthCurveID;
+			ushort GroupSizeDmgCurveID;
+			ushort GroupSizeSpellPointsCurveID;
+			byte FallbackDifficultyID;
+			byte InstanceType;
+			byte MinPlayers;
+			byte MaxPlayers;
+			byte OldEnumValue;
+			byte Flags;
+			byte ToggleDifficultyID;
+			byte ItemBonusTreeModID;
+			byte OrderIndex;
 		}
 		public class _Dissolveeffect
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public byte Field9;
-			public byte FieldA;
-			public ushort FieldB;
-			public int FieldC;
-			public int FieldD;
-			public byte FieldE;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			byte Field9;
+			byte FieldA;
+			ushort FieldB;
+			int FieldC;
+			int FieldD;
+			byte FieldE;
 		}
 		public class _Driverblacklist
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			int Field1;
+			int Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _DungeonEncounter
 		{
-			public string Name;
-			public uint CreatureDisplayID;
-			public ushort MapID;
-			public byte DifficultyID;
-			public byte Bit;
-			public byte Flags;
-			public int ID;
-			public int OrderIndex;
-			public uint TextureFileDataID;
+			string Name;
+			uint CreatureDisplayID;
+			ushort MapID;
+			byte DifficultyID;
+			byte Bit;
+			byte Flags;
+			int ID;
+			int OrderIndex;
+			uint TextureFileDataID;
 		}
 		public class _Dungeonmap
 		{
-			public float[] Field0 = new float[2];
-			public float[] Field1 = new float[2];
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public int ID;
+			float[] Field0 = new float[2];
+			float[] Field1 = new float[2];
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			int ID;
 		}
 		public class _Dungeonmapchunk
 		{
-			public int ID;
-			public float Field1;
-			public int Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
+			int ID;
+			float Field1;
+			int Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
 		}
 		public class _DurabilityCosts
 		{
-			public int ID;
-			public ushort[] WeaponSubClassCost = new ushort[21];
-			public ushort[] ArmorSubClassCost = new ushort[8];
+			int ID;
+			ushort[] WeaponSubClassCost = new ushort[21];
+			ushort[] ArmorSubClassCost = new ushort[8];
 		}
 		public class _DurabilityQuality
 		{
-			public int ID;
-			public float QualityMod;
+			int ID;
+			float QualityMod;
 		}
 		public class _Edgegloweffect
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public float Field9;
-			public float FieldA;
-			public byte FieldB;
-			public ushort FieldC;
-			public int FieldD;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			float Field9;
+			float FieldA;
+			byte FieldB;
+			ushort FieldC;
+			int FieldD;
 		}
 		public class _Emotes
 		{
-			public int ID;
-			public long RaceMask;
-			public string EmoteSlashCommand;
-			public uint SpellVisualKitID;
-			public uint EmoteFlags;
-			public ushort AnimID;
-			public byte EmoteSpecProc;
-			public uint EmoteSpecProcParam;
-			public uint EmoteSoundID;
-			public int ClassMask;
+			int ID;
+			long RaceMask;
+			string EmoteSlashCommand;
+			uint SpellVisualKitID;
+			uint EmoteFlags;
+			ushort AnimID;
+			byte EmoteSpecProc;
+			uint EmoteSpecProcParam;
+			uint EmoteSoundID;
+			int ClassMask;
 		}
 		public class _EmotesText
 		{
-			public int ID;
-			public string Name;
-			public ushort EmoteID;
+			int ID;
+			string Name;
+			ushort EmoteID;
 		}
 		public class _Emotestextdata
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _EmotesTextSound
 		{
-			public int ID;
-			public byte RaceId;
-			public byte SexId;
-			public byte ClassId;
-			public uint SoundId;
+			int ID;
+			byte RaceId;
+			byte SexId;
+			byte ClassId;
+			uint SoundId;
 		}
 		public class _Environmentaldamage
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _Exhaustion
 		{
-			public string Field0;
-			public string Field1;
-			public int Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public int ID;
+			string Field0;
+			string Field1;
+			int Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			int ID;
 		}
 		public class _Faction
 		{
-			public ulong[] ReputationRaceMask = new ulong[4];
-			public string Name;
-			public string Description;
-			public int ID;
-			public int[] ReputationBase = new int[4];
-			public float ParentFactionModIn;
-			public float ParentFactionModOut;
-			public uint[] ReputationMax = new uint[4];
-			public short ReputationIndex;
-			public ushort[] ReputationClassMask = new ushort[4];
-			public ushort[] ReputationFlags = new ushort[4];
-			public ushort ParentFactionID;
-			public ushort ParagonFactionID;
-			public byte ParentFactionCapIn;
-			public byte ParentFactionCapOut;
-			public byte Expansion;
-			public byte Flags;
-			public byte FriendshipRepID;
+			ulong[] ReputationRaceMask = new ulong[4];
+			string Name;
+			string Description;
+			int ID;
+			int[] ReputationBase = new int[4];
+			float ParentFactionModIn;
+			float ParentFactionModOut;
+			uint[] ReputationMax = new uint[4];
+			short ReputationIndex;
+			ushort[] ReputationClassMask = new ushort[4];
+			ushort[] ReputationFlags = new ushort[4];
+			ushort ParentFactionID;
+			ushort ParagonFactionID;
+			byte ParentFactionCapIn;
+			byte ParentFactionCapOut;
+			byte Expansion;
+			byte Flags;
+			byte FriendshipRepID;
 		}
 		public class _Factiongroup
 		{
-			public string Field0;
-			public string Field1;
-			public int ID;
-			public byte Field3;
-			public int Field4;
-			public int Field5;
+			string Field0;
+			string Field1;
+			int ID;
+			byte Field3;
+			int Field4;
+			int Field5;
 		}
 		public class _FactionTemplate
 		{
-			public int ID;
-			public ushort Faction;
-			public ushort Flags;
-			public ushort[] Enemies = new ushort[4];
-			public ushort[] Friends = new ushort[4];
-			public byte Mask;
-			public byte FriendMask;
-			public byte EnemyMask;
+			int ID;
+			ushort Faction;
+			ushort Flags;
+			ushort[] Enemies = new ushort[4];
+			ushort[] Friends = new ushort[4];
+			byte Mask;
+			byte FriendMask;
+			byte EnemyMask;
 		}
 		public class _Footprinttextures
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public int Field3;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			int Field3;
 		}
 		public class _Footstepterrainlookup
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public uint Field3;
-			public uint Field4;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			uint Field3;
+			uint Field4;
 		}
 		public class _Friendshiprepreaction
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _Friendshipreputation
 		{
-			public string Field0;
-			public int Field1;
-			public ushort Field2;
-			public int ID;
+			string Field0;
+			int Field1;
+			ushort Field2;
+			int ID;
 		}
 		public class _Fullscreeneffect
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public int Field05;
-			public float Field06;
-			public float Field07;
-			public float Field08;
-			public float Field09;
-			public float Field0A;
-			public int Field0B;
-			public float Field0C;
-			public float Field0D;
-			public float Field0E;
-			public float Field0F;
-			public float Field10;
-			public int Field11;
-			public float Field12;
-			public float Field13;
-			public int Field14;
-			public int Field15;
-			public float Field16;
-			public float Field17;
-			public byte Field18;
-			public ushort Field19;
-			public ushort Field1A;
-			public int Field1B;
+			int ID;
+			float Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			int Field05;
+			float Field06;
+			float Field07;
+			float Field08;
+			float Field09;
+			float Field0A;
+			int Field0B;
+			float Field0C;
+			float Field0D;
+			float Field0E;
+			float Field0F;
+			float Field10;
+			int Field11;
+			float Field12;
+			float Field13;
+			int Field14;
+			int Field15;
+			float Field16;
+			float Field17;
+			byte Field18;
+			ushort Field19;
+			ushort Field1A;
+			int Field1B;
 		}
 		public class _Gameobjectartkit
 		{
-			public int ID;
-			public int Field1;
-			public int[] Field2 = new int[3];
+			int ID;
+			int Field1;
+			int[] Field2 = new int[3];
 		}
 		public class _Gameobjectdiffanimmap
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _GameObjectDisplayInfo
 		{
-			public int ID;
-			public uint FileDataID;
-			public float[] GeoBoxMin = new float[3];
-			public float[] GeoBoxMax = new float[3];
-			public float OverrideLootEffectScale;
-			public float OverrideNameScale;
-			public ushort ObjectEffectPackageID;
+			int ID;
+			uint FileDataID;
+			float[] GeoBoxMin = new float[3];
+			float[] GeoBoxMax = new float[3];
+			float OverrideLootEffectScale;
+			float OverrideNameScale;
+			ushort ObjectEffectPackageID;
 		}
 		public class _Gameobjectdisplayinfoxsoundkit
 		{
-			public int ID;
-			public byte Field1;
-			public uint Field2;
+			int ID;
+			byte Field1;
+			uint Field2;
 		}
 		public class _GameObjects
 		{
-			public string Name;
-			public float[] Position = new float[3];
-			public float RotationX;
-			public float RotationY;
-			public float RotationZ;
-			public float RotationW;
-			public float Size;
-			public int[] Data = new int[8];
-			public ushort MapID;
-			public ushort DisplayID;
-			public ushort PhaseID;
-			public ushort PhaseGroupID;
-			public byte PhaseUseFlags;
-			public byte Type;
-			public int ID;
+			string Name;
+			float[] Position = new float[3];
+			float RotationX;
+			float RotationY;
+			float RotationZ;
+			float RotationW;
+			float Size;
+			int[] Data = new int[8];
+			ushort MapID;
+			ushort DisplayID;
+			ushort PhaseID;
+			ushort PhaseGroupID;
+			byte PhaseUseFlags;
+			byte Type;
+			int ID;
 		}
 		public class _Gametips
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _GarrAbility
 		{
-			public string Name;
-			public string Description;
-			public uint IconFileDataID;
-			public ushort Flags;
-			public ushort OtherFactionGarrAbilityID;
-			public byte GarrAbilityCategoryID;
-			public byte FollowerTypeID;
-			public int ID;
+			string Name;
+			string Description;
+			uint IconFileDataID;
+			ushort Flags;
+			ushort OtherFactionGarrAbilityID;
+			byte GarrAbilityCategoryID;
+			byte FollowerTypeID;
+			int ID;
 		}
 		public class _Garrabilitycategory
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Garrabilityeffect
 		{
-			public float Field0;
-			public float Field1;
-			public float Field2;
-			public int Field3;
-			public ushort Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public int ID;
+			float Field0;
+			float Field1;
+			float Field2;
+			int Field3;
+			ushort Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			int ID;
 		}
 		public class _GarrBuilding
 		{
-			public int ID;
-			public string NameAlliance;
-			public string NameHorde;
-			public string Description;
-			public string Tooltip;
-			public uint HordeGameObjectID;
-			public uint AllianceGameObjectID;
-			public uint IconFileDataID;
-			public ushort CostCurrencyID;
-			public ushort HordeTexPrefixKitID;
-			public ushort AllianceTexPrefixKitID;
-			public ushort AllianceActivationScenePackageID;
-			public ushort HordeActivationScenePackageID;
-			public ushort FollowerRequiredGarrAbilityID;
-			public ushort FollowerGarrAbilityEffectID;
-			public short CostMoney;
-			public byte Unknown;
-			public byte Type;
-			public byte Level;
-			public byte Flags;
-			public byte MaxShipments;
-			public byte GarrTypeID;
-			public int BuildDuration;
-			public int CostCurrencyAmount;
-			public int BonusAmount;
+			int ID;
+			string NameAlliance;
+			string NameHorde;
+			string Description;
+			string Tooltip;
+			uint HordeGameObjectID;
+			uint AllianceGameObjectID;
+			uint IconFileDataID;
+			ushort CostCurrencyID;
+			ushort HordeTexPrefixKitID;
+			ushort AllianceTexPrefixKitID;
+			ushort AllianceActivationScenePackageID;
+			ushort HordeActivationScenePackageID;
+			ushort FollowerRequiredGarrAbilityID;
+			ushort FollowerGarrAbilityEffectID;
+			short CostMoney;
+			byte Unknown;
+			byte Type;
+			byte Level;
+			byte Flags;
+			byte MaxShipments;
+			byte GarrTypeID;
+			int BuildDuration;
+			int CostCurrencyAmount;
+			int BonusAmount;
 		}
 		public class _Garrbuildingdoodadset
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _GarrBuildingPlotInst
 		{
-			public float[] LandmarkOffset = new float[2];
-			public ushort UiTextureAtlasMemberID;
-			public ushort GarrSiteLevelPlotInstID;
-			public byte GarrBuildingID;
-			public int ID;
+			float[] LandmarkOffset = new float[2];
+			ushort UiTextureAtlasMemberID;
+			ushort GarrSiteLevelPlotInstID;
+			byte GarrBuildingID;
+			int ID;
 		}
 		public class _GarrClassSpec
 		{
-			public string NameMale;
-			public string NameFemale;
-			public string NameGenderless;
-			public ushort ClassAtlasID;
-			public ushort GarrFollItemSetID;
-			public byte Limit;
-			public byte Flags;
-			public int ID;
+			string NameMale;
+			string NameFemale;
+			string NameGenderless;
+			ushort ClassAtlasID;
+			ushort GarrFollItemSetID;
+			byte Limit;
+			byte Flags;
+			int ID;
 		}
 		public class _Garrclassspecplayercond
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
-			public byte Field6;
+			int ID;
+			string Field1;
+			int Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
+			byte Field6;
 		}
 		public class _Garrencounter
 		{
-			public string Field0;
-			public int Field1;
-			public float Field2;
-			public float Field3;
-			public int Field4;
-			public int ID;
-			public byte Field6;
+			string Field0;
+			int Field1;
+			float Field2;
+			float Field3;
+			int Field4;
+			int ID;
+			byte Field6;
 		}
 		public class _Garrencountersetxencounter
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Garrencounterxmechanic
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
+			int ID;
+			byte Field1;
+			byte Field2;
 		}
 		public class _Garrfollitemsetmember
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public byte Field3;
+			int ID;
+			int Field1;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _GarrFollower
 		{
-			public string HordeSourceText;
-			public string AllianceSourceText;
-			public string Name;
-			public uint HordeCreatureID;
-			public uint AllianceCreatureID;
-			public uint HordePortraitIconID;
-			public uint AlliancePortraitIconID;
-			public uint HordeAddedBroadcastTextID;
-			public uint AllianceAddedBroadcastTextID;
-			public ushort HordeGarrFollItemSetID;
-			public ushort AllianceGarrFollItemSetID;
-			public ushort ItemLevelWeapon;
-			public ushort ItemLevelArmor;
-			public ushort HordeListPortraitTextureKitID;
-			public ushort AllianceListPortraitTextureKitID;
-			public byte FollowerTypeID;
-			public byte HordeUiAnimRaceInfoID;
-			public byte AllianceUiAnimRaceInfoID;
-			public byte Quality;
-			public byte HordeGarrClassSpecID;
-			public byte AllianceGarrClassSpecID;
-			public byte Level;
-			public byte Unknown1;
-			public byte Flags;
-			public byte Unknown2;
-			public byte Unknown3;
-			public byte GarrTypeID;
-			public byte MaxDurability;
-			public byte Class;
-			public byte HordeFlavorTextGarrStringID;
-			public byte AllianceFlavorTextGarrStringID;
-			public int ID;
+			string HordeSourceText;
+			string AllianceSourceText;
+			string Name;
+			uint HordeCreatureID;
+			uint AllianceCreatureID;
+			uint HordePortraitIconID;
+			uint AlliancePortraitIconID;
+			uint HordeAddedBroadcastTextID;
+			uint AllianceAddedBroadcastTextID;
+			ushort HordeGarrFollItemSetID;
+			ushort AllianceGarrFollItemSetID;
+			ushort ItemLevelWeapon;
+			ushort ItemLevelArmor;
+			ushort HordeListPortraitTextureKitID;
+			ushort AllianceListPortraitTextureKitID;
+			byte FollowerTypeID;
+			byte HordeUiAnimRaceInfoID;
+			byte AllianceUiAnimRaceInfoID;
+			byte Quality;
+			byte HordeGarrClassSpecID;
+			byte AllianceGarrClassSpecID;
+			byte Level;
+			byte Unknown1;
+			byte Flags;
+			byte Unknown2;
+			byte Unknown3;
+			byte GarrTypeID;
+			byte MaxDurability;
+			byte Class;
+			byte HordeFlavorTextGarrStringID;
+			byte AllianceFlavorTextGarrStringID;
+			int ID;
 		}
 		public class _Garrfollowerlevelxp
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Garrfollowerquality
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			int Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Garrfollowertype
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Garrfolloweruicreature
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			int Field1;
+			float Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _GarrFollowerXAbility
 		{
-			public int ID;
-			public ushort GarrAbilityID;
-			public byte FactionIndex;
+			int ID;
+			ushort GarrAbilityID;
+			byte FactionIndex;
 		}
 		public class _Garrfollsupportspell
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			byte Field3;
 		}
 		public class _Garritemlevelupgradedata
 		{
-			public int ID;
-			public byte Field1;
-			public int Field2;
-			public ushort Field3;
-			public int Field4;
+			int ID;
+			byte Field1;
+			int Field2;
+			ushort Field3;
+			int Field4;
 		}
 		public class _Garrmechanic
 		{
-			public int ID;
-			public float Field1;
-			public byte Field2;
-			public ushort Field3;
+			int ID;
+			float Field1;
+			byte Field2;
+			ushort Field3;
 		}
 		public class _Garrmechanicsetxmechanic
 		{
-			public byte Field0;
-			public int ID;
+			byte Field0;
+			int ID;
 		}
 		public class _Garrmechanictype
 		{
-			public string Field0;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
-			public int ID;
+			string Field0;
+			string Field1;
+			int Field2;
+			byte Field3;
+			int ID;
 		}
 		public class _Garrmission
 		{
-			public string Field00;
-			public string Field01;
-			public string Field02;
-			public int Field03;
-			public int Field04;
-			public float[] Field05 = new float[2];
-			public float[] Field06 = new float[2];
-			public ushort Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
-			public byte Field11;
-			public byte Field12;
-			public int ID;
-			public uint Field14;
-			public uint Field15;
-			public uint Field16;
-			public uint Field17;
-			public uint Field18;
-			public uint Field19;
-			public uint Field1A;
-			public uint Field1B;
+			string Field00;
+			string Field01;
+			string Field02;
+			int Field03;
+			int Field04;
+			float[] Field05 = new float[2];
+			float[] Field06 = new float[2];
+			ushort Field07;
+			ushort Field08;
+			ushort Field09;
+			byte Field0A;
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
+			byte Field11;
+			byte Field12;
+			int ID;
+			uint Field14;
+			uint Field15;
+			uint Field16;
+			uint Field17;
+			uint Field18;
+			uint Field19;
+			uint Field1A;
+			uint Field1B;
 		}
 		public class _Garrmissiontexture
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public ushort Field2;
+			int ID;
+			float[] Field1 = new float[2];
+			ushort Field2;
 		}
 		public class _Garrmissiontype
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Garrmissionxencounter
 		{
-			public byte Field0;
-			public int ID;
-			public ushort Field2;
-			public byte Field3;
+			byte Field0;
+			int ID;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _Garrmissionxfollower
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _Garrmssnbonusability
 		{
-			public int ID;
-			public float Field1;
-			public int Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			float Field1;
+			int Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _GarrPlot
 		{
-			public int ID;
-			public string Name;
-			public uint AllianceConstructionGameObjectID;
-			public uint HordeConstructionGameObjectID;
-			public byte GarrPlotUICategoryID;
-			public byte PlotType;
-			public byte Flags;
-			public uint MinCount;
-			public uint MaxCount;
+			int ID;
+			string Name;
+			uint AllianceConstructionGameObjectID;
+			uint HordeConstructionGameObjectID;
+			byte GarrPlotUICategoryID;
+			byte PlotType;
+			byte Flags;
+			uint MinCount;
+			uint MaxCount;
 		}
 		public class _GarrPlotBuilding
 		{
-			public int ID;
-			public byte GarrPlotID;
-			public byte GarrBuildingID;
+			int ID;
+			byte GarrPlotID;
+			byte GarrBuildingID;
 		}
 		public class _GarrPlotInstance
 		{
-			public int ID;
-			public string Name;
-			public byte GarrPlotID;
+			int ID;
+			string Name;
+			byte GarrPlotID;
 		}
 		public class _Garrplotuicategory
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _GarrSiteLevel
 		{
-			public int ID;
-			public float[] TownHall = new float[2];
-			public ushort MapID;
-			public ushort SiteID;
-			public ushort MovieID;
-			public ushort UpgradeResourceCost;
-			public ushort UpgradeMoneyCost;
-			public byte Level;
-			public byte UITextureKitID;
-			public byte Level2;
+			int ID;
+			float[] TownHall = new float[2];
+			ushort MapID;
+			ushort SiteID;
+			ushort MovieID;
+			ushort UpgradeResourceCost;
+			ushort UpgradeMoneyCost;
+			byte Level;
+			byte UITextureKitID;
+			byte Level2;
 		}
 		public class _GarrSiteLevelPlotInst
 		{
-			public int ID;
-			public float[] Landmark = new float[2];
-			public ushort GarrSiteLevelID;
-			public byte GarrPlotInstanceID;
-			public byte Unknown;
+			int ID;
+			float[] Landmark = new float[2];
+			ushort GarrSiteLevelID;
+			byte GarrPlotInstanceID;
+			byte Unknown;
 		}
 		public class _Garrspecialization
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public int Field3;
-			public float[] Field4 = new float[2];
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			string Field1;
+			string Field2;
+			int Field3;
+			float[] Field4 = new float[2];
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Garrstring
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Garrtalent
 		{
-			public string Field00;
-			public string Field01;
-			public int Field02;
-			public int Field03;
-			public byte Field04;
-			public byte Field05;
-			public byte Field06;
-			public int ID;
-			public int Field08;
-			public int Field09;
-			public int Field0A;
-			public int Field0B;
-			public int Field0C;
-			public int Field0D;
-			public int Field0E;
-			public int Field0F;
-			public int Field10;
-			public int Field11;
-			public int Field12;
-			public int Field13;
+			string Field00;
+			string Field01;
+			int Field02;
+			int Field03;
+			byte Field04;
+			byte Field05;
+			byte Field06;
+			int ID;
+			int Field08;
+			int Field09;
+			int Field0A;
+			int Field0B;
+			int Field0C;
+			int Field0D;
+			int Field0E;
+			int Field0F;
+			int Field10;
+			int Field11;
+			int Field12;
+			int Field13;
 		}
 		public class _Garrtalenttree
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Garrtype
 		{
-			public int ID;
-			public byte Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
-			public int[] Field5 = new int[2];
+			int ID;
+			byte Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
+			int[] Field5 = new int[2];
 		}
 		public class _Garruianimclassinfo
 		{
-			public int ID;
-			public float Field1;
-			public byte Field2;
-			public byte Field3;
-			public int Field4;
-			public int Field5;
-			public int Field6;
+			int ID;
+			float Field1;
+			byte Field2;
+			byte Field3;
+			int Field4;
+			int Field5;
+			int Field6;
 		}
 		public class _Garruianimraceinfo
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public float Field9;
-			public float FieldA;
-			public float FieldB;
-			public float FieldC;
-			public byte FieldD;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			float Field9;
+			float FieldA;
+			float FieldB;
+			float FieldC;
+			byte FieldD;
 		}
 		public class _GemProperties
 		{
-			public int ID;
-			public uint Type;
-			public ushort EnchantID;
-			public ushort MinItemLevel;
+			int ID;
+			uint Type;
+			ushort EnchantID;
+			ushort MinItemLevel;
 		}
 		public class _Globalstrings
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			string Field2;
+			byte Field3;
 		}
 		public class _GlyphBindableSpell
 		{
-			public int ID;
-			public uint SpellID;
+			int ID;
+			uint SpellID;
 		}
 		public class _Glyphexclusivecategory
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _GlyphProperties
 		{
-			public int ID;
-			public uint SpellID;
-			public ushort SpellIconID;
-			public byte Type;
-			public byte GlyphExclusiveCategoryID;
+			int ID;
+			uint SpellID;
+			ushort SpellIconID;
+			byte Type;
+			byte GlyphExclusiveCategoryID;
 		}
 		public class _GlyphRequiredSpec
 		{
-			public int ID;
-			public ushort ChrSpecializationID;
+			int ID;
+			ushort ChrSpecializationID;
 		}
 		public class _Gmsurveyanswers
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _Gmsurveycurrentsurvey
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Gmsurveyquestions
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Gmsurveysurveys
 		{
-			public int ID;
-			public byte[] Field1 = new byte[15];
+			int ID;
+			byte[] Field1 = new byte[15];
 		}
 		public class _Groundeffectdoodad
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public byte Field3;
-			public int Field4;
+			int ID;
+			float Field1;
+			float Field2;
+			byte Field3;
+			int Field4;
 		}
 		public class _Groundeffecttexture
 		{
-			public int ID;
-			public ushort[] Field1 = new ushort[4];
-			public byte[] Field2 = new byte[4];
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			ushort[] Field1 = new ushort[4];
+			byte[] Field2 = new byte[4];
+			byte Field3;
+			byte Field4;
 		}
 		public class _Groupfinderactivity
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public byte FieldC;
-			public byte FieldD;
-			public byte FieldE;
+			int ID;
+			string Field1;
+			string Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			byte FieldB;
+			byte FieldC;
+			byte FieldD;
+			byte FieldE;
 		}
 		public class _Groupfinderactivitygrp
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _Groupfindercategory
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _GuildColorBackground
 		{
-			public int ID;
-			public byte Red;
-			public byte Green;
-			public byte Blue;
+			int ID;
+			byte Red;
+			byte Green;
+			byte Blue;
 		}
 		public class _GuildColorBorder
 		{
-			public int ID;
-			public byte Red;
-			public byte Green;
-			public byte Blue;
+			int ID;
+			byte Red;
+			byte Green;
+			byte Blue;
 		}
 		public class _GuildColorEmblem
 		{
-			public int ID;
-			public byte Red;
-			public byte Green;
-			public byte Blue;
+			int ID;
+			byte Red;
+			byte Green;
+			byte Blue;
 		}
 		public class _GuildPerkSpells
 		{
-			public int ID;
-			public uint SpellID;
+			int ID;
+			uint SpellID;
 		}
 		public class _Heirloom
 		{
-			public string SourceText;
-			public uint ItemID;
-			public uint[] OldItem = new uint[2];
-			public uint NextDifficultyItemID;
-			public uint[] UpgradeItemID = new uint[3];
-			public ushort[] ItemBonusListID = new ushort[3];
-			public byte Flags;
-			public byte Source;
-			public int ID;
+			string SourceText;
+			uint ItemID;
+			uint[] OldItem = new uint[2];
+			uint NextDifficultyItemID;
+			uint[] UpgradeItemID = new uint[3];
+			ushort[] ItemBonusListID = new ushort[3];
+			byte Flags;
+			byte Source;
+			int ID;
 		}
 		public class _Helmetanimscaling
 		{
-			public int ID;
-			public float Field1;
-			public int Field2;
+			int ID;
+			float Field1;
+			int Field2;
 		}
 		public class _Helmetgeosetvisdata
 		{
-			public int ID;
-			public int[] Field1 = new int[9];
+			int ID;
+			int[] Field1 = new int[9];
 		}
 		public class _Highlightcolor
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Holidaydescriptions
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Holidaynames
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Holidays
 		{
-			public int ID;
-			public uint[] Date = new uint[16];
-			public ushort[] Duration = new ushort[10];
-			public ushort Region;
-			public byte Looping;
-			public byte[] CalendarFlags = new byte[10];
-			public byte Priority;
-			public byte CalendarFilterType;
-			public byte Flags;
-			public uint HolidayNameID;
-			public uint HolidayDescriptionID;
-			public int[] TextureFileDataID = new int[3];
+			int ID;
+			uint[] Date = new uint[16];
+			ushort[] Duration = new ushort[10];
+			ushort Region;
+			byte Looping;
+			byte[] CalendarFlags = new byte[10];
+			byte Priority;
+			byte CalendarFilterType;
+			byte Flags;
+			uint HolidayNameID;
+			uint HolidayDescriptionID;
+			int[] TextureFileDataID = new int[3];
 		}
 		public class _ImportPriceArmor
 		{
-			public int ID;
-			public float ClothFactor;
-			public float LeatherFactor;
-			public float MailFactor;
-			public float PlateFactor;
+			int ID;
+			float ClothFactor;
+			float LeatherFactor;
+			float MailFactor;
+			float PlateFactor;
 		}
 		public class _ImportPriceQuality
 		{
-			public int ID;
-			public float Factor;
+			int ID;
+			float Factor;
 		}
 		public class _ImportPriceShield
 		{
-			public int ID;
-			public float Factor;
+			int ID;
+			float Factor;
 		}
 		public class _ImportPriceWeapon
 		{
-			public int ID;
-			public float Factor;
+			int ID;
+			float Factor;
 		}
 		public class _Invasionclientdata
 		{
-			public string Field0;
-			public float[] Field1 = new float[2];
-			public int ID;
-			public ushort Field3;
-			public int Field4;
-			public int Field5;
-			public ushort Field6;
-			public byte Field7;
-			public ushort Field8;
+			string Field0;
+			float[] Field1 = new float[2];
+			int ID;
+			ushort Field3;
+			int Field4;
+			int Field5;
+			ushort Field6;
+			byte Field7;
+			ushort Field8;
 		}
 		public class _Item
 		{
-			public int ID;
-			public uint FileDataID;
-			public byte Class;
-			public byte SubClass;
-			public byte SoundOverrideSubclass;
-			public byte Material;
-			public byte InventoryType;
-			public byte Sheath;
-			public byte GroupSoundsID;
+			int ID;
+			uint FileDataID;
+			byte Class;
+			byte SubClass;
+			byte SoundOverrideSubclass;
+			byte Material;
+			byte InventoryType;
+			byte Sheath;
+			byte GroupSoundsID;
 		}
 		public class _ItemAppearance
 		{
-			public int ID;
-			public uint DisplayID;
-			public uint IconFileDataID;
-			public uint UIOrder;
-			public byte ObjectComponentSlot;
+			int ID;
+			uint DisplayID;
+			uint IconFileDataID;
+			uint UIOrder;
+			byte ObjectComponentSlot;
 		}
 		public class _Itemappearancexuicamera
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _ItemArmorQuality
 		{
-			public int ID;
-			public float[] QualityMod = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] QualityMod = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemArmorShield
 		{
-			public int ID;
-			public float[] Quality = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] Quality = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemArmorTotal
 		{
-			public int ID;
-			public float[] Value = new float[4];
-			public ushort ItemLevel;
+			int ID;
+			float[] Value = new float[4];
+			ushort ItemLevel;
 		}
 		public class _ItemBagFamily
 		{
-			public int ID;
-			public string Name;
+			int ID;
+			string Name;
 		}
 		public class _ItemBonus
 		{
-			public int ID;
-			public int[] Value = new int[3];
-			public ushort BonusListID;
-			public byte Type;
-			public byte Index;
+			int ID;
+			int[] Value = new int[3];
+			ushort BonusListID;
+			byte Type;
+			byte Index;
 		}
 		public class _ItemBonusListLevelDelta
 		{
-			public short Delta;
-			public int ID;
+			short Delta;
+			int ID;
 		}
 		public class _ItemBonusTreeNode
 		{
-			public int ID;
-			public ushort SubTreeID;
-			public ushort BonusListID;
-			public ushort ItemLevelSelectorID;
-			public byte BonusTreeModID;
+			int ID;
+			ushort SubTreeID;
+			ushort BonusListID;
+			ushort ItemLevelSelectorID;
+			byte BonusTreeModID;
 		}
 		public class _ItemChildEquipment
 		{
-			public int ID;
-			public uint AltItemID;
-			public byte AltEquipmentSlot;
+			int ID;
+			uint AltItemID;
+			byte AltEquipmentSlot;
 		}
 		public class _ItemClass
 		{
-			public int ID;
-			public string Name;
-			public float PriceMod;
-			public byte OldEnumValue;
-			public byte Flags;
+			int ID;
+			string Name;
+			float PriceMod;
+			byte OldEnumValue;
+			byte Flags;
 		}
 		public class _Itemcontextpickerentry
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
 		}
 		public class _ItemCurrencyCost
 		{
-			public int ID;
-			public uint ItemId;
+			int ID;
+			uint ItemId;
 		}
 		public class _ItemDamageAmmo
 		{
-			public int ID;
-			public float[] DPS = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] DPS = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemDamageOneHand
 		{
-			public int ID;
-			public float[] DPS = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] DPS = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemDamageOneHandCaster
 		{
-			public int ID;
-			public float[] DPS = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] DPS = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemDamageTwoHand
 		{
-			public int ID;
-			public float[] DPS = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] DPS = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemDamageTwoHandCaster
 		{
-			public int ID;
-			public float[] DPS = new float[7];
-			public ushort ItemLevel;
+			int ID;
+			float[] DPS = new float[7];
+			ushort ItemLevel;
 		}
 		public class _ItemDisenchantLoot
 		{
-			public int ID;
-			public ushort MinItemLevel;
-			public ushort MaxItemLevel;
-			public ushort RequiredDisenchantSkill;
-			public byte ItemSubClass;
-			public byte ItemQuality;
-			public byte Expansion;
+			int ID;
+			ushort MinItemLevel;
+			ushort MaxItemLevel;
+			ushort RequiredDisenchantSkill;
+			byte ItemSubClass;
+			byte ItemQuality;
+			byte Expansion;
 		}
 		public class _Itemdisplayinfo
 		{
-			public int ID;
-			public int Field01;
-			public int Field02;
-			public int ItemVisualID;
-			public int Field04;
-			public int Field05;
-			public int Field06;
-			public int Field07;
-			public int Field08;
-			public int Field09;
-			public int Field0A;
-			public int[] Modelfiledata = new int[2];
-			public int[] Texturefiledata = new int[2];
-			public int[] Field0D = new int[4];
-			public int[] Field0E = new int[4];
-			public int[] GeosetFlag = new int[2];
+			int ID;
+			int Field01;
+			int Field02;
+			int ItemVisualID;
+			int Field04;
+			int Field05;
+			int Field06;
+			int Field07;
+			int Field08;
+			int Field09;
+			int Field0A;
+			int[] Modelfiledata = new int[2];
+			int[] Texturefiledata = new int[2];
+			int[] Field0D = new int[4];
+			int[] Field0E = new int[4];
+			int[] GeosetFlag = new int[2];
 		}
 		public class _Itemdisplayinfomaterialres
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _Itemdisplayxuicamera
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _ItemEffect
 		{
-			public int ID;
-			public uint SpellID;
-			public int Cooldown;
-			public int CategoryCooldown;
-			public short Charges;
-			public ushort Category;
-			public ushort ChrSpecializationID;
-			public byte OrderIndex;
-			public byte Trigger;
+			int ID;
+			uint SpellID;
+			int Cooldown;
+			int CategoryCooldown;
+			short Charges;
+			ushort Category;
+			ushort ChrSpecializationID;
+			byte OrderIndex;
+			byte Trigger;
 		}
 		public class _ItemExtendedCost
 		{
-			public int ID;
-			public uint[] RequiredItem = new uint[5];
-			public uint[] RequiredCurrencyCount = new uint[5];
-			public ushort[] RequiredItemCount = new ushort[5];
-			public ushort RequiredPersonalArenaRating;
-			public ushort[] RequiredCurrency = new ushort[5];
-			public byte RequiredArenaSlot;
-			public byte RequiredFactionId;
-			public byte RequiredFactionStanding;
-			public byte RequirementFlags;
-			public byte RequiredAchievement;
+			int ID;
+			uint[] RequiredItem = new uint[5];
+			uint[] RequiredCurrencyCount = new uint[5];
+			ushort[] RequiredItemCount = new ushort[5];
+			ushort RequiredPersonalArenaRating;
+			ushort[] RequiredCurrency = new ushort[5];
+			byte RequiredArenaSlot;
+			byte RequiredFactionId;
+			byte RequiredFactionStanding;
+			byte RequirementFlags;
+			byte RequiredAchievement;
 		}
 		public class _Itemgroupsounds
 		{
-			public int ID;
-			public int[] Field1 = new int[4];
+			int ID;
+			int[] Field1 = new int[4];
 		}
 		public class _ItemLevelSelector
 		{
-			public int ID;
-			public ushort ItemLevel;
-			public ushort ItemLevelSelectorQualitySetID;
+			int ID;
+			ushort ItemLevel;
+			ushort ItemLevelSelectorQualitySetID;
 		}
 		public class _ItemLevelSelectorQuality
 		{
-			public int ID;
-			public uint ItemBonusListID;
-			public byte Quality;
+			int ID;
+			uint ItemBonusListID;
+			byte Quality;
 		}
 		public class _ItemLevelSelectorQualitySet
 		{
-			public int ID;
-			public ushort ItemLevelMin;
-			public ushort ItemLevelMax;
+			int ID;
+			ushort ItemLevelMin;
+			ushort ItemLevelMax;
 		}
 		public class _ItemLimitCategory
 		{
-			public int ID;
-			public string Name;
-			public byte Quantity;
-			public byte Flags;
+			int ID;
+			string Name;
+			byte Quantity;
+			byte Flags;
 		}
 		public class _Itemlimitcategorycondition
 		{
-			public int ID;
-			public byte Field1;
-			public ushort Field2;
+			int ID;
+			byte Field1;
+			ushort Field2;
 		}
 		public class _ItemModifiedAppearance
 		{
-			public uint ItemID;
-			public int ID;
-			public byte AppearanceModID;
-			public ushort AppearanceID;
-			public byte Index;
-			public byte SourceType;
+			uint ItemID;
+			int ID;
+			byte AppearanceModID;
+			ushort AppearanceID;
+			byte Index;
+			byte SourceType;
 		}
 		public class _Itemmodifiedappearanceextra
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			int Field1;
+			int Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Itemnamedescription
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
+			int ID;
+			string Field1;
+			int Field2;
 		}
 		public class _Itempetfood
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _ItemPriceBase
 		{
-			public int ID;
-			public float ArmorFactor;
-			public float WeaponFactor;
-			public ushort ItemLevel;
+			int ID;
+			float ArmorFactor;
+			float WeaponFactor;
+			ushort ItemLevel;
 		}
 		public class _ItemRandomProperties
 		{
-			public int ID;
-			public string Name;
-			public ushort[] Enchantment = new ushort[5];
+			int ID;
+			string Name;
+			ushort[] Enchantment = new ushort[5];
 		}
 		public class _ItemRandomSuffix
 		{
-			public int ID;
-			public string Name;
-			public ushort[] Enchantment = new ushort[5];
-			public ushort[] AllocationPct = new ushort[5];
+			int ID;
+			string Name;
+			ushort[] Enchantment = new ushort[5];
+			ushort[] AllocationPct = new ushort[5];
 		}
 		public class _Itemrangeddisplayinfo
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public ushort Field3;
-			public int Field4;
+			int ID;
+			int Field1;
+			byte Field2;
+			ushort Field3;
+			int Field4;
 		}
 		public class _ItemSearchName
 		{
-			public ulong AllowableRace;
-			public string Name;
-			public int ID;
-			public uint[] Flags = new uint[3];
-			public ushort ItemLevel;
-			public byte Quality;
-			public byte RequiredExpansion;
-			public byte RequiredLevel;
-			public ushort RequiredReputationFaction;
-			public byte RequiredReputationRank;
-			public int AllowableClass;
-			public ushort RequiredSkill;
-			public ushort RequiredSkillRank;
-			public uint RequiredSpell;
+			ulong AllowableRace;
+			string Name;
+			int ID;
+			uint[] Flags = new uint[3];
+			ushort ItemLevel;
+			byte Quality;
+			byte RequiredExpansion;
+			byte RequiredLevel;
+			ushort RequiredReputationFaction;
+			byte RequiredReputationRank;
+			int AllowableClass;
+			ushort RequiredSkill;
+			ushort RequiredSkillRank;
+			uint RequiredSpell;
 		}
 		public class _ItemSet
 		{
-			public int ID;
-			public string Name;
-			public uint[] ItemID = new uint[17];
-			public ushort RequiredSkillRank;
-			public uint RequiredSkill;
-			public uint Flags;
+			int ID;
+			string Name;
+			uint[] ItemID = new uint[17];
+			ushort RequiredSkillRank;
+			uint RequiredSkill;
+			uint Flags;
 		}
 		public class _ItemSetSpell
 		{
-			public int ID;
-			public uint SpellID;
-			public ushort ChrSpecID;
-			public byte Threshold;
+			int ID;
+			uint SpellID;
+			ushort ChrSpecID;
+			byte Threshold;
 		}
 		public class _ItemSparse
 		{
-			public int ID;
-			public long AllowableRace;
-			public string Name;
-			public string Name2;
-			public string Name3;
-			public string Name4;
-			public string Description;
-			public uint[] Flags = new uint[4];
-			public float Unk1;
-			public float Unk2;
-			public uint BuyCount;
-			public uint BuyPrice;
-			public uint SellPrice;
-			public uint RequiredSpell;
-			public uint MaxCount;
-			public uint Stackable;
-			public int[] ItemStatAllocation = new int[10];
-			public float[] ItemStatSocketCostMultiplier = new float[10];
-			public float RangedModRange;
-			public uint BagFamily;
-			public float ArmorDamageModifier;
-			public uint Duration;
-			public float StatScalingFactor;
-			public short AllowableClass;
-			public ushort ItemLevel;
-			public ushort RequiredSkill;
-			public ushort RequiredSkillRank;
-			public ushort RequiredReputationFaction;
-			public short[] ItemStatValue = new short[10];
-			public ushort ScalingStatDistribution;
-			public ushort Delay;
-			public ushort PageText;
-			public ushort StartQuest;
-			public ushort LockID;
-			public ushort RandomProperty;
-			public ushort RandomSuffix;
-			public ushort ItemSet;
-			public ushort Area;
-			public ushort Map;
-			public ushort TotemCategory;
-			public ushort SocketBonus;
-			public ushort GemProperties;
-			public ushort ItemLimitCategory;
-			public ushort HolidayID;
-			public ushort RequiredTransmogHolidayID;
-			public ushort ItemNameDescriptionID;
-			public byte Quality;
-			public byte InventoryType;
-			public byte RequiredLevel;
-			public byte RequiredHonorRank;
-			public byte RequiredCityRank;
-			public byte RequiredReputationRank;
-			public byte ContainerSlots;
-			public byte[] ItemStatType = new byte[10];
-			public byte DamageType;
-			public byte Bonding;
-			public byte LanguageID;
-			public byte PageMaterial;
-			public byte Material;
-			public byte Sheath;
-			public byte[] SocketColor = new byte[3];
-			public byte CurrencySubstitutionID;
-			public byte CurrencySubstitutionCount;
-			public byte ArtifactID;
-			public byte RequiredExpansion;
+			int ID;
+			long AllowableRace;
+			string Name;
+			string Name2;
+			string Name3;
+			string Name4;
+			string Description;
+			uint[] Flags = new uint[4];
+			float Unk1;
+			float Unk2;
+			uint BuyCount;
+			uint BuyPrice;
+			uint SellPrice;
+			uint RequiredSpell;
+			uint MaxCount;
+			uint Stackable;
+			int[] ItemStatAllocation = new int[10];
+			float[] ItemStatSocketCostMultiplier = new float[10];
+			float RangedModRange;
+			uint BagFamily;
+			float ArmorDamageModifier;
+			uint Duration;
+			float StatScalingFactor;
+			short AllowableClass;
+			ushort ItemLevel;
+			ushort RequiredSkill;
+			ushort RequiredSkillRank;
+			ushort RequiredReputationFaction;
+			short[] ItemStatValue = new short[10];
+			ushort ScalingStatDistribution;
+			ushort Delay;
+			ushort PageText;
+			ushort StartQuest;
+			ushort LockID;
+			ushort RandomProperty;
+			ushort RandomSuffix;
+			ushort ItemSet;
+			ushort Area;
+			ushort Map;
+			ushort TotemCategory;
+			ushort SocketBonus;
+			ushort GemProperties;
+			ushort ItemLimitCategory;
+			ushort HolidayID;
+			ushort RequiredTransmogHolidayID;
+			ushort ItemNameDescriptionID;
+			byte Quality;
+			byte InventoryType;
+			byte RequiredLevel;
+			byte RequiredHonorRank;
+			byte RequiredCityRank;
+			byte RequiredReputationRank;
+			byte ContainerSlots;
+			byte[] ItemStatType = new byte[10];
+			byte DamageType;
+			byte Bonding;
+			byte LanguageID;
+			byte PageMaterial;
+			byte Material;
+			byte Sheath;
+			byte[] SocketColor = new byte[3];
+			byte CurrencySubstitutionID;
+			byte CurrencySubstitutionCount;
+			byte ArtifactID;
+			byte RequiredExpansion;
 		}
 		public class _ItemSpec
 		{
-			public int ID;
-			public ushort SpecID;
-			public byte MinLevel;
-			public byte MaxLevel;
-			public byte ItemType;
-			public byte PrimaryStat;
-			public byte SecondaryStat;
+			int ID;
+			ushort SpecID;
+			byte MinLevel;
+			byte MaxLevel;
+			byte ItemType;
+			byte PrimaryStat;
+			byte SecondaryStat;
 		}
 		public class _ItemSpecOverride
 		{
-			public int ID;
-			public ushort SpecID;
+			int ID;
+			ushort SpecID;
 		}
 		public class _Itemsubclass
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
+			int ID;
+			string Field1;
+			string Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
 		}
 		public class _Itemsubclassmask
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			int Field2;
+			byte Field3;
 		}
 		public class _ItemUpgrade
 		{
-			public int ID;
-			public uint CurrencyCost;
-			public ushort PrevItemUpgradeID;
-			public ushort CurrencyID;
-			public byte ItemUpgradePathID;
-			public byte ItemLevelBonus;
+			int ID;
+			uint CurrencyCost;
+			ushort PrevItemUpgradeID;
+			ushort CurrencyID;
+			byte ItemUpgradePathID;
+			byte ItemLevelBonus;
 		}
 		public class _Itemvisuals
 		{
-			public int ID;
-			public int[] Field1 = new int[5];
+			int ID;
+			int[] Field1 = new int[5];
 		}
 		public class _ItemXBonusTree
 		{
-			public int ID;
-			public ushort BonusTreeID;
+			int ID;
+			ushort BonusTreeID;
 		}
 		public class _Journalencounter
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public float[] Field3 = new float[2];
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public int FieldB;
+			int ID;
+			string Field1;
+			string Field2;
+			float[] Field3 = new float[2];
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			int FieldB;
 		}
 		public class _Journalencountercreature
 		{
-			public string Field0;
-			public string Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public ushort Field5;
-			public byte Field6;
-			public int ID;
+			string Field0;
+			string Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			ushort Field5;
+			byte Field6;
+			int ID;
 		}
 		public class _Journalencounteritem
 		{
-			public int Field0;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public int ID;
+			int Field0;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			int ID;
 		}
 		public class _Journalencountersection
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public int Field6;
-			public ushort Field7;
-			public ushort Field8;
-			public ushort Field9;
-			public ushort FieldA;
-			public ushort FieldB;
-			public ushort FieldC;
-			public byte FieldD;
-			public byte FieldE;
-			public byte FieldF;
+			int ID;
+			string Field1;
+			string Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			int Field6;
+			ushort Field7;
+			ushort Field8;
+			ushort Field9;
+			ushort FieldA;
+			ushort FieldB;
+			ushort FieldC;
+			byte FieldD;
+			byte FieldE;
+			byte FieldF;
 		}
 		public class _Journalencounterxdifficulty
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Journalencounterxmaploc
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public byte Field2;
-			public ushort Field3;
-			public int Field4;
-			public int Field5;
+			int ID;
+			float[] Field1 = new float[2];
+			byte Field2;
+			ushort Field3;
+			int Field4;
+			int Field5;
 		}
 		public class _Journalinstance
 		{
-			public string Field0;
-			public string Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public byte Field8;
-			public byte Field9;
-			public int ID;
+			string Field0;
+			string Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			ushort Field6;
+			ushort Field7;
+			byte Field8;
+			byte Field9;
+			int ID;
 		}
 		public class _Journalitemxdifficulty
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Journalsectionxdifficulty
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _Journaltier
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Journaltierxinstance
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _Keychain
 		{
-			public int ID;
-			public byte[] Key = new byte[32];
+			int ID;
+			byte[] Key = new byte[32];
 		}
 		public class _Keystoneaffix
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public int Field3;
+			int ID;
+			string Field1;
+			string Field2;
+			int Field3;
 		}
 		public class _Languages
 		{
-			public string Field0;
-			public int ID;
+			string Field0;
+			int ID;
 		}
 		public class _Languagewords
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
+			int ID;
+			string Field1;
+			byte Field2;
 		}
 		public class _Lfgdungeonexpansion
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
-			public byte Field6;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
+			byte Field6;
 		}
 		public class _Lfgdungeongroup
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _LFGDungeons
 		{
-			public int ID;
-			public string Name;
-			public string Description;
-			public uint Flags;
-			public float MinItemLevel;
-			public ushort MaxLevel;
-			public ushort TargetLevelMax;
-			public ushort MapID;
-			public ushort RandomID;
-			public ushort ScenarioID;
-			public ushort LastBossJournalEncounterID;
-			public ushort BonusReputationAmount;
-			public ushort MentorItemLevel;
-			public ushort PlayerConditionID;
-			public byte MinLevel;
-			public byte TargetLevel;
-			public byte TargetLevelMin;
-			public byte DifficultyID;
-			public byte Type;
-			public byte Faction;
-			public byte Expansion;
-			public byte OrderIndex;
-			public byte GroupID;
-			public byte CountTank;
-			public byte CountHealer;
-			public byte CountDamage;
-			public byte MinCountTank;
-			public byte MinCountHealer;
-			public byte MinCountDamage;
-			public byte SubType;
-			public byte MentorCharLevel;
-			public int TextureFileDataID;
-			public int RewardIconFileDataID;
-			public int ProposalTextureFileDataID;
+			int ID;
+			string Name;
+			string Description;
+			uint Flags;
+			float MinItemLevel;
+			ushort MaxLevel;
+			ushort TargetLevelMax;
+			ushort MapID;
+			ushort RandomID;
+			ushort ScenarioID;
+			ushort LastBossJournalEncounterID;
+			ushort BonusReputationAmount;
+			ushort MentorItemLevel;
+			ushort PlayerConditionID;
+			byte MinLevel;
+			byte TargetLevel;
+			byte TargetLevelMin;
+			byte DifficultyID;
+			byte Type;
+			byte Faction;
+			byte Expansion;
+			byte OrderIndex;
+			byte GroupID;
+			byte CountTank;
+			byte CountHealer;
+			byte CountDamage;
+			byte MinCountTank;
+			byte MinCountHealer;
+			byte MinCountDamage;
+			byte SubType;
+			byte MentorCharLevel;
+			int TextureFileDataID;
+			int RewardIconFileDataID;
+			int ProposalTextureFileDataID;
 		}
 		public class _Lfgdungeonsgroupingmap
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _Lfgrolerequirement
 		{
-			public int ID;
-			public byte Field1;
-			public int Field2;
+			int ID;
+			byte Field1;
+			int Field2;
 		}
 		public class _Light
 		{
-			public int ID;
-			public float[] Pos = new float[3];
-			public float FalloffStart;
-			public float FalloffEnd;
-			public ushort MapID;
-			public ushort[] LightParamsID = new ushort[8];
+			int ID;
+			float[] Pos = new float[3];
+			float FalloffStart;
+			float FalloffEnd;
+			ushort MapID;
+			ushort[] LightParamsID = new ushort[8];
 		}
 		public class _Lightdata
 		{
-			public int ID;
-			public int Field01;
-			public int Field02;
-			public int Field03;
-			public int Field04;
-			public int Field05;
-			public int Field06;
-			public int Field07;
-			public int Field08;
-			public int Field09;
-			public int Field0A;
-			public int Field0B;
-			public int Field0C;
-			public int Field0D;
-			public int Field0E;
-			public int Field0F;
-			public int Field10;
-			public int Field11;
-			public int Field12;
-			public float Field13;
-			public float Field14;
-			public float Field15;
-			public float Field16;
-			public float Field17;
-			public float Field18;
-			public float Field19;
-			public float Field1A;
-			public float Field1B;
-			public int Field1C;
-			public int Field1D;
-			public int Field1E;
-			public int Field1F;
-			public int Field20;
-			public int Field21;
-			public ushort Field22;
+			int ID;
+			int Field01;
+			int Field02;
+			int Field03;
+			int Field04;
+			int Field05;
+			int Field06;
+			int Field07;
+			int Field08;
+			int Field09;
+			int Field0A;
+			int Field0B;
+			int Field0C;
+			int Field0D;
+			int Field0E;
+			int Field0F;
+			int Field10;
+			int Field11;
+			int Field12;
+			float Field13;
+			float Field14;
+			float Field15;
+			float Field16;
+			float Field17;
+			float Field18;
+			float Field19;
+			float Field1A;
+			float Field1B;
+			int Field1C;
+			int Field1D;
+			int Field1E;
+			int Field1F;
+			int Field20;
+			int Field21;
+			ushort Field22;
 		}
 		public class _Lightparams
 		{
-			public float Field00;
-			public float Field04;
-			public float Field08;
-			public float Field0C;
-			public float Field10;
-			public int[] Field14 = new int[3];
-			public ushort LightSkyboxID;
-			public byte Field22;
-			public byte Field23;
-			public byte Field24;
-			public int ID;
+			float Field00;
+			float Field04;
+			float Field08;
+			float Field0C;
+			float Field10;
+			int[] Field14 = new int[3];
+			ushort LightSkyboxID;
+			byte Field22;
+			byte Field23;
+			byte Field24;
+			int ID;
 		}
 		public class _Lightskybox
 		{
-			public int ID;
-			public string SkyboxPathName;
-			public int Field2;
-			public int Field3;
-			public byte Field4;
+			int ID;
+			string SkyboxPathName;
+			int Field2;
+			int Field3;
+			byte Field4;
 		}
 		public class _Liquidmaterial
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
+			int ID;
+			byte Field1;
+			byte Field2;
 		}
 		public class _Liquidobject
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			float Field1;
+			float Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _LiquidType
 		{
-			public int ID;
-			public string Name;
-			public string[] Texture = new string[6];
-			public uint SpellID;
-			public float MaxDarkenDepth;
-			public float FogDarkenIntensity;
-			public float AmbDarkenIntensity;
-			public float DirDarkenIntensity;
-			public float ParticleScale;
-			public uint[] Color = new uint[2];
-			public float[] Float = new float[18];
-			public uint[] Int = new uint[4];
-			public ushort Flags;
-			public ushort LightID;
-			public byte Type;
-			public byte ParticleMovement;
-			public byte ParticleTexSlots;
-			public byte MaterialID;
-			public byte[] DepthTexCount = new byte[6];
-			public uint SoundID;
+			int ID;
+			string Name;
+			string[] Texture = new string[6];
+			uint SpellID;
+			float MaxDarkenDepth;
+			float FogDarkenIntensity;
+			float AmbDarkenIntensity;
+			float DirDarkenIntensity;
+			float ParticleScale;
+			uint[] Color = new uint[2];
+			float[] Float = new float[18];
+			uint[] Int = new uint[4];
+			ushort Flags;
+			ushort LightID;
+			byte Type;
+			byte ParticleMovement;
+			byte ParticleTexSlots;
+			byte MaterialID;
+			byte[] DepthTexCount = new byte[6];
+			uint SoundID;
 		}
 		public class _Loadingscreens
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Loadingscreentaxisplines
 		{
-			public int ID;
-			public float[] Field1 = new float[10];
-			public float[] Field2 = new float[10];
-			public ushort Field3;
-			public ushort Field4;
-			public byte Field5;
+			int ID;
+			float[] Field1 = new float[10];
+			float[] Field2 = new float[10];
+			ushort Field3;
+			ushort Field4;
+			byte Field5;
 		}
 		public class _Locale
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			int Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Location
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public float[] Field2 = new float[3];
+			int ID;
+			float[] Field1 = new float[3];
+			float[] Field2 = new float[3];
 		}
 		public class _Lock
 		{
-			public int ID;
-			public uint[] Index = new uint[8];
-			public ushort[] Skill = new ushort[8];
-			public byte[] Type = new byte[8];
-			public byte[] Action = new byte[8];
+			int ID;
+			uint[] Index = new uint[8];
+			ushort[] Skill = new ushort[8];
+			byte[] Type = new byte[8];
+			byte[] Action = new byte[8];
 		}
 		public class _Locktype
 		{
-			public string Field0;
-			public string Field1;
-			public string Field2;
-			public string Field3;
-			public int ID;
+			string Field0;
+			string Field1;
+			string Field2;
+			string Field3;
+			int ID;
 		}
 		public class _Lookatcontroller
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public ushort Field05;
-			public ushort Field06;
-			public ushort Field07;
-			public ushort Field08;
-			public byte Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public ushort Field0F;
-			public int Field10;
-			public byte Field11;
-			public int Field12;
+			int ID;
+			float Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			ushort Field05;
+			ushort Field06;
+			ushort Field07;
+			ushort Field08;
+			byte Field09;
+			byte Field0A;
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			ushort Field0F;
+			int Field10;
+			byte Field11;
+			int Field12;
 		}
 		public class _MailTemplate
 		{
-			public int ID;
-			public string Body;
+			int ID;
+			string Body;
 		}
 		public class _Managedworldstate
 		{
-			public int Field0;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public int Field6;
-			public int Field7;
-			public int Field8;
-			public int ID;
+			int Field0;
+			int Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			int Field6;
+			int Field7;
+			int Field8;
+			int ID;
 		}
 		public class _Managedworldstatebuff
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Managedworldstateinput
 		{
-			public int ID;
-			public byte Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			byte Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Manifestinterfaceactionicon
 		{
-			public int ID;
+			int ID;
 		}
 		public class _Manifestinterfacedata
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
+			int ID;
+			string Field1;
+			string Field2;
 		}
 		public class _Manifestinterfaceitemicon
 		{
-			public int ID;
+			int ID;
 		}
 		public class _Manifestinterfacetocdata
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Manifestmp3
 		{
-			public int ID;
+			int ID;
 		}
 		public class _Map
 		{
-			public int ID;
-			public string Directory;
-			public string MapName;
-			public string MapDescription0;
-			public string MapDescription1;
-			public string ShortDescription;
-			public string LongDescription;
-			public uint[] Flags = new uint[2];
-			public float MinimapIconScale;
-			public float[] CorpsePos = new float[2];
-			public ushort AreaTableID;
-			public ushort LoadingScreenID;
-			public ushort CorpseMapID;
-			public ushort TimeOfDayOverride;
-			public ushort ParentMapID;
-			public ushort CosmeticParentMapID;
-			public ushort WindSettingsID;
-			public byte InstanceType;
-			public byte unk5;
-			public byte ExpansionID;
-			public byte MaxPlayers;
-			public byte TimeOffset;
+			int ID;
+			string Directory;
+			string MapName;
+			string MapDescription0;
+			string MapDescription1;
+			string ShortDescription;
+			string LongDescription;
+			uint[] Flags = new uint[2];
+			float MinimapIconScale;
+			float[] CorpsePos = new float[2];
+			ushort AreaTableID;
+			ushort LoadingScreenID;
+			ushort CorpseMapID;
+			ushort TimeOfDayOverride;
+			ushort ParentMapID;
+			ushort CosmeticParentMapID;
+			ushort WindSettingsID;
+			byte InstanceType;
+			byte unk5;
+			byte ExpansionID;
+			byte MaxPlayers;
+			byte TimeOffset;
 		}
 		public class _Mapcelestialbody
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _Mapchallengemode
 		{
-			public string Field0;
-			public int ID;
-			public ushort Field2;
-			public ushort[] Field3 = new ushort[3];
-			public byte Field4;
+			string Field0;
+			int ID;
+			ushort Field2;
+			ushort[] Field3 = new ushort[3];
+			byte Field4;
 		}
 		public class _MapDifficulty
 		{
-			public int ID;
-			public string Message_lang;
-			public byte DifficultyID;
-			public byte RaidDurationType;
-			public byte MaxPlayers;
-			public byte LockID;
-			public byte Flags;
-			public byte ItemBonusTreeModID;
-			public uint Context;
+			int ID;
+			string Message_lang;
+			byte DifficultyID;
+			byte RaidDurationType;
+			byte MaxPlayers;
+			byte LockID;
+			byte Flags;
+			byte ItemBonusTreeModID;
+			uint Context;
 		}
 		public class _Mapdifficultyxcondition
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _Maploadingscreen
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public float[] Field2 = new float[2];
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			float[] Field1 = new float[2];
+			float[] Field2 = new float[2];
+			ushort Field3;
+			byte Field4;
 		}
 		public class _Marketingpromotionsxlocale
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			string Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Material
 		{
-			public int ID;
-			public byte Field1;
-			public ushort Field2;
-			public int Field3;
-			public int Field4;
+			int ID;
+			byte Field1;
+			ushort Field2;
+			int Field3;
+			int Field4;
 		}
 		public class _Minortalent
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
+			int ID;
+			int Field1;
+			int Field2;
 		}
 		public class _Missiletargeting
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float[] Field8 = new float[2];
-			public float Field9;
-			public int FieldA;
-			public int FieldB;
-			public int[] FieldC = new int[2];
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float[] Field8 = new float[2];
+			float Field9;
+			int FieldA;
+			int FieldB;
+			int[] FieldC = new int[2];
 		}
 		public class _Modelanimcloakdampening
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _Modelfiledata
 		{
-			public byte Field0;
-			public int ID;
-			public ushort Field2;
+			byte Field0;
+			int ID;
+			ushort Field2;
 		}
 		public class _Modelribbonquality
 		{
-			public int ID;
-			public byte Field1;
+			int ID;
+			byte Field1;
 		}
 		public class _ModifierTree
 		{
-			public int ID;
-			public uint[] Asset = new uint[2];
-			public uint Parent;
-			public byte Type;
-			public byte Unk700;
-			public byte Operator;
-			public byte Amount;
+			int ID;
+			uint[] Asset = new uint[2];
+			uint Parent;
+			byte Type;
+			byte Unk700;
+			byte Operator;
+			byte Amount;
 		}
 		public class _Mount
 		{
-			public string Name;
-			public string Description;
-			public string SourceDescription;
-			public uint SpellId;
-			public float CameraPivotMultiplier;
-			public ushort MountTypeId;
-			public ushort Flags;
-			public byte Source;
-			public int ID;
-			public uint PlayerConditionId;
-			public int UiModelSceneID;
+			string Name;
+			string Description;
+			string SourceDescription;
+			uint SpellId;
+			float CameraPivotMultiplier;
+			ushort MountTypeId;
+			ushort Flags;
+			byte Source;
+			int ID;
+			uint PlayerConditionId;
+			int UiModelSceneID;
 		}
 		public class _MountCapability
 		{
-			public uint RequiredSpell;
-			public uint SpeedModSpell;
-			public ushort RequiredRidingSkill;
-			public ushort RequiredArea;
-			public short RequiredMap;
-			public byte Flags;
-			public int ID;
-			public uint RequiredAura;
+			uint RequiredSpell;
+			uint SpeedModSpell;
+			ushort RequiredRidingSkill;
+			ushort RequiredArea;
+			short RequiredMap;
+			byte Flags;
+			int ID;
+			uint RequiredAura;
 		}
 		public class _MountTypeXCapability
 		{
-			public int ID;
-			public ushort MountTypeID;
-			public ushort MountCapabilityID;
-			public byte OrderIndex;
+			int ID;
+			ushort MountTypeID;
+			ushort MountCapabilityID;
+			byte OrderIndex;
 		}
 		public class _MountXDisplay
 		{
-			public int ID;
-			public uint DisplayID;
-			public uint PlayerConditionID;
+			int ID;
+			uint DisplayID;
+			uint PlayerConditionID;
 		}
 		public class _Movie
 		{
-			public int ID;
-			public uint AudioFileDataID;
-			public uint SubtitleFileDataID;
-			public byte Volume;
-			public byte KeyID;
+			int ID;
+			uint AudioFileDataID;
+			uint SubtitleFileDataID;
+			byte Volume;
+			byte KeyID;
 		}
 		public class _Moviefiledata
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Movievariation
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _NameGen
 		{
-			public int ID;
-			public string Name;
-			public byte Race;
-			public byte Sex;
+			int ID;
+			string Name;
+			byte Race;
+			byte Sex;
 		}
 		public class _NamesProfanity
 		{
-			public int ID;
-			public string Name;
-			public byte Language;
+			int ID;
+			string Name;
+			byte Language;
 		}
 		public class _NamesReserved
 		{
-			public int ID;
-			public string Name;
+			int ID;
+			string Name;
 		}
 		public class _NamesReservedLocale
 		{
-			public int ID;
-			public string Name;
-			public byte LocaleMask;
+			int ID;
+			string Name;
+			byte LocaleMask;
 		}
 		public class _Npcmodelitemslotdisplayinfo
 		{
-			public int ID;
-			public int DisplayID;
-			public byte Slot;
+			int ID;
+			int DisplayID;
+			byte Slot;
 		}
 		public class _Npcsounds
 		{
-			public int ID;
-			public int[] Field1 = new int[4];
+			int ID;
+			int[] Field1 = new int[4];
 		}
 		public class _Objecteffect
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public int Field7;
-			public int Field8;
+			int ID;
+			float[] Field1 = new float[3];
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			int Field7;
+			int Field8;
 		}
 		public class _Objecteffectmodifier
 		{
-			public int ID;
-			public float[] Field1 = new float[4];
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			float[] Field1 = new float[4];
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Objecteffectpackageelem
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Outlineeffect
 		{
-			public int ID;
-			public float Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
-			public int Field6;
+			int ID;
+			float Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
+			int Field6;
 		}
 		public class _OverrideSpellData
 		{
-			public int ID;
-			public uint[] SpellID = new uint[10];
-			public uint PlayerActionbarFileDataID;
-			public byte Flags;
+			int ID;
+			uint[] SpellID = new uint[10];
+			uint PlayerActionbarFileDataID;
+			byte Flags;
 		}
 		public class _Pagetextmaterial
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Paperdollitemframe
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public int Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			int Field3;
 		}
 		public class _Paragonreputation
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public ushort Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			ushort Field3;
 		}
 		public class _Particlecolor
 		{
-			public int ID;
-			public int[] Field1 = new int[3];
-			public int[] Field2 = new int[3];
-			public int[] Field3 = new int[3];
+			int ID;
+			int[] Field1 = new int[3];
+			int[] Field2 = new int[3];
+			int[] Field3 = new int[3];
 		}
 		public class _Path
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Pathnode
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Pathnodeproperty
 		{
-			public ushort Field0;
-			public ushort Field1;
-			public byte Field2;
-			public int ID;
-			public int Field4;
+			ushort Field0;
+			ushort Field1;
+			byte Field2;
+			int ID;
+			int Field4;
 		}
 		public class _Pathproperty
 		{
-			public int Field0;
-			public ushort Field1;
-			public byte Field2;
-			public int ID;
+			int Field0;
+			ushort Field1;
+			byte Field2;
+			int ID;
 		}
 		public class _Phase
 		{
-			public int ID;
-			public ushort Flags;
+			int ID;
+			ushort Flags;
 		}
 		public class _Phaseshiftzonesounds
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public ushort FieldA;
-			public ushort FieldB;
-			public byte FieldC;
-			public byte FieldD;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			ushort FieldA;
+			ushort FieldB;
+			byte FieldC;
+			byte FieldD;
 		}
 		public class _PhaseXPhaseGroup
 		{
-			public int ID;
-			public ushort PhaseID;
+			int ID;
+			ushort PhaseID;
 		}
 		public class _PlayerCondition
 		{
-			public long RaceMask;
-			public string FailureDescription;
-			public int ID;
-			public byte Flags;
-			public ushort MinLevel;
-			public ushort MaxLevel;
-			public int ClassMask;
-			public byte Gender;
-			public byte NativeGender;
-			public uint SkillLogic;
-			public byte LanguageID;
-			public byte MinLanguage;
-			public int MaxLanguage;
-			public ushort MaxFactionID;
-			public byte MaxReputation;
-			public uint ReputationLogic;
-			public byte Unknown1;
-			public byte MinPVPRank;
-			public byte MaxPVPRank;
-			public byte PvpMedal;
-			public uint PrevQuestLogic;
-			public uint CurrQuestLogic;
-			public uint CurrentCompletedQuestLogic;
-			public uint SpellLogic;
-			public uint ItemLogic;
-			public byte ItemFlags;
-			public uint AuraSpellLogic;
-			public ushort WorldStateExpressionID;
-			public byte WeatherID;
-			public byte PartyStatus;
-			public byte LifetimeMaxPVPRank;
-			public uint AchievementLogic;
-			public uint LfgLogic;
-			public uint AreaLogic;
-			public uint CurrencyLogic;
-			public ushort QuestKillID;
-			public uint QuestKillLogic;
-			public byte MinExpansionLevel;
-			public byte MaxExpansionLevel;
-			public byte MinExpansionTier;
-			public byte MaxExpansionTier;
-			public byte MinGuildLevel;
-			public byte MaxGuildLevel;
-			public byte PhaseUseFlags;
-			public ushort PhaseID;
-			public uint PhaseGroupID;
-			public int MinAvgItemLevel;
-			public int MaxAvgItemLevel;
-			public ushort MinAvgEquippedItemLevel;
-			public ushort MaxAvgEquippedItemLevel;
-			public byte ChrSpecializationIndex;
-			public byte ChrSpecializationRole;
-			public byte PowerType;
-			public byte PowerTypeComp;
-			public byte PowerTypeValue;
-			public uint ModifierTreeID;
-			public int MainHandItemSubclassMask;
-			public ushort[] SkillID = new ushort[4];
-			public ushort[] MinSkill = new ushort[4];
-			public ushort[] MaxSkill = new ushort[4];
-			public uint[] MinFactionID = new uint[3];
-			public byte[] MinReputation = new byte[3];
-			public ushort[] PrevQuestID = new ushort[4];
-			public ushort[] CurrQuestID = new ushort[4];
-			public ushort[] CurrentCompletedQuestID = new ushort[4];
-			public int[] SpellID = new int[4];
-			public int[] ItemID = new int[4];
-			public uint[] ItemCount = new uint[4];
-			public ushort[] Explored = new ushort[2];
-			public uint[] Time = new uint[2];
-			public uint[] AuraSpellID = new uint[4];
-			public byte[] AuraCount = new byte[4];
-			public ushort[] Achievement = new ushort[4];
-			public byte[] LfgStatus = new byte[4];
-			public byte[] LfgCompare = new byte[4];
-			public uint[] LfgValue = new uint[4];
-			public ushort[] AreaID = new ushort[4];
-			public uint[] CurrencyID = new uint[4];
-			public uint[] CurrencyCount = new uint[4];
-			public uint[] QuestKillMonster = new uint[6];
-			public int[] MovementFlags = new int[2];
+			long RaceMask;
+			string FailureDescription;
+			int ID;
+			byte Flags;
+			ushort MinLevel;
+			ushort MaxLevel;
+			int ClassMask;
+			byte Gender;
+			byte NativeGender;
+			uint SkillLogic;
+			byte LanguageID;
+			byte MinLanguage;
+			int MaxLanguage;
+			ushort MaxFactionID;
+			byte MaxReputation;
+			uint ReputationLogic;
+			byte Unknown1;
+			byte MinPVPRank;
+			byte MaxPVPRank;
+			byte PvpMedal;
+			uint PrevQuestLogic;
+			uint CurrQuestLogic;
+			uint CurrentCompletedQuestLogic;
+			uint SpellLogic;
+			uint ItemLogic;
+			byte ItemFlags;
+			uint AuraSpellLogic;
+			ushort WorldStateExpressionID;
+			byte WeatherID;
+			byte PartyStatus;
+			byte LifetimeMaxPVPRank;
+			uint AchievementLogic;
+			uint LfgLogic;
+			uint AreaLogic;
+			uint CurrencyLogic;
+			ushort QuestKillID;
+			uint QuestKillLogic;
+			byte MinExpansionLevel;
+			byte MaxExpansionLevel;
+			byte MinExpansionTier;
+			byte MaxExpansionTier;
+			byte MinGuildLevel;
+			byte MaxGuildLevel;
+			byte PhaseUseFlags;
+			ushort PhaseID;
+			uint PhaseGroupID;
+			int MinAvgItemLevel;
+			int MaxAvgItemLevel;
+			ushort MinAvgEquippedItemLevel;
+			ushort MaxAvgEquippedItemLevel;
+			byte ChrSpecializationIndex;
+			byte ChrSpecializationRole;
+			byte PowerType;
+			byte PowerTypeComp;
+			byte PowerTypeValue;
+			uint ModifierTreeID;
+			int MainHandItemSubclassMask;
+			ushort[] SkillID = new ushort[4];
+			ushort[] MinSkill = new ushort[4];
+			ushort[] MaxSkill = new ushort[4];
+			uint[] MinFactionID = new uint[3];
+			byte[] MinReputation = new byte[3];
+			ushort[] PrevQuestID = new ushort[4];
+			ushort[] CurrQuestID = new ushort[4];
+			ushort[] CurrentCompletedQuestID = new ushort[4];
+			int[] SpellID = new int[4];
+			int[] ItemID = new int[4];
+			uint[] ItemCount = new uint[4];
+			ushort[] Explored = new ushort[2];
+			uint[] Time = new uint[2];
+			uint[] AuraSpellID = new uint[4];
+			byte[] AuraCount = new byte[4];
+			ushort[] Achievement = new ushort[4];
+			byte[] LfgStatus = new byte[4];
+			byte[] LfgCompare = new byte[4];
+			uint[] LfgValue = new uint[4];
+			ushort[] AreaID = new ushort[4];
+			uint[] CurrencyID = new uint[4];
+			uint[] CurrencyCount = new uint[4];
+			uint[] QuestKillMonster = new uint[6];
+			int[] MovementFlags = new int[2];
 		}
 		public class _Positioner
 		{
-			public int ID;
-			public float Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			float Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Positionerstate
 		{
-			public int ID;
-			public float Field1;
-			public byte Field2;
-			public ushort Field3;
-			public byte Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public int Field8;
+			int ID;
+			float Field1;
+			byte Field2;
+			ushort Field3;
+			byte Field4;
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			int Field8;
 		}
 		public class _Positionerstateentry
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public ushort FieldB;
+			int ID;
+			float Field1;
+			float Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			ushort FieldB;
 		}
 		public class _PowerDisplay
 		{
-			public int ID;
-			public string GlobalStringBaseTag;
-			public byte PowerType;
-			public byte Red;
-			public byte Green;
-			public byte Blue;
+			int ID;
+			string GlobalStringBaseTag;
+			byte PowerType;
+			byte Red;
+			byte Green;
+			byte Blue;
 		}
 		public class _PowerType
 		{
-			public int ID;
-			public string PowerTypeToken;
-			public string PowerCostToken;
-			public float RegenerationPeace;
-			public float RegenerationCombat;
-			public short MaxPower;
-			public ushort RegenerationDelay;
-			public ushort Flags;
-			public byte PowerTypeEnum;
-			public byte RegenerationMin;
-			public byte RegenerationCenter;
-			public byte RegenerationMax;
-			public byte UIModifier;
+			int ID;
+			string PowerTypeToken;
+			string PowerCostToken;
+			float RegenerationPeace;
+			float RegenerationCombat;
+			short MaxPower;
+			ushort RegenerationDelay;
+			ushort Flags;
+			byte PowerTypeEnum;
+			byte RegenerationMin;
+			byte RegenerationCenter;
+			byte RegenerationMax;
+			byte UIModifier;
 		}
 		public class _PrestigeLevelInfo
 		{
-			public int ID;
-			public string PrestigeText;
-			public uint IconID;
-			public byte PrestigeLevel;
-			public byte Flags;
+			int ID;
+			string PrestigeText;
+			uint IconID;
+			byte PrestigeLevel;
+			byte Flags;
 		}
 		public class _Pvpbrackettypes
 		{
-			public int ID;
-			public byte Field1;
-			public int[] Field2 = new int[4];
+			int ID;
+			byte Field1;
+			int[] Field2 = new int[4];
 		}
 		public class _PVPDifficulty
 		{
-			public int ID;
-			public byte BracketID;
-			public byte MinLevel;
-			public byte MaxLevel;
+			int ID;
+			byte BracketID;
+			byte MinLevel;
+			byte MaxLevel;
 		}
 		public class _Pvpitem
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _PvpReward
 		{
-			public int ID;
-			public uint HonorLevel;
-			public uint Prestige;
-			public uint RewardPackID;
+			int ID;
+			uint HonorLevel;
+			uint Prestige;
+			uint RewardPackID;
 		}
 		public class _Pvpscalingeffect
 		{
-			public int ID;
-			public float Field1;
-			public byte Field2;
-			public ushort Field3;
+			int ID;
+			float Field1;
+			byte Field2;
+			ushort Field3;
 		}
 		public class _Pvpscalingeffecttype
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Pvptalent
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public int Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public ushort Field9;
-			public byte FieldA;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			int Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			ushort Field9;
+			byte FieldA;
 		}
 		public class _Pvptalentunlock
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _QuestFactionReward
 		{
-			public int ID;
-			public short[] QuestRewFactionValue = new short[10];
+			int ID;
+			short[] QuestRewFactionValue = new short[10];
 		}
 		public class _Questfeedbackeffect
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
+			int ID;
+			int Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
 		}
 		public class _Questinfo
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Questline
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Questlinexquest
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public byte Field3;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			byte Field3;
 		}
 		public class _QuestMoneyReward
 		{
-			public int ID;
-			public uint[] Money = new uint[10];
+			int ID;
+			uint[] Money = new uint[10];
 		}
 		public class _Questobjective
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public int Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			string Field1;
+			int Field2;
+			int Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _QuestPackageItem
 		{
-			public int ID;
-			public uint ItemID;
-			public ushort QuestPackageID;
-			public byte FilterType;
-			public uint ItemCount;
+			int ID;
+			uint ItemID;
+			ushort QuestPackageID;
+			byte FilterType;
+			uint ItemCount;
 		}
 		public class _Questpoiblob
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public int Field5;
-			public ushort Field6;
-			public byte Field7;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			int Field5;
+			ushort Field6;
+			byte Field7;
 		}
 		public class _Questpoipoint
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _QuestSort
 		{
-			public int ID;
-			public string SortName;
-			public byte SortOrder;
+			int ID;
+			string SortName;
+			byte SortOrder;
 		}
 		public class _QuestV2
 		{
-			public int ID;
-			public ushort UniqueBitFlag;
+			int ID;
+			ushort UniqueBitFlag;
 		}
 		public class _Questv2clitask
 		{
-			public ulong Field00;
-			public string Field01;
-			public string Field02;
-			public int Field03;
-			public ushort Field04;
-			public ushort Field05;
-			public ushort Field06;
-			public ushort[] Field07 = new ushort[3];
-			public ushort Field08;
-			public ushort Field09;
-			public byte Field0A;
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public byte Field0E;
-			public byte Field0F;
-			public byte Field10;
-			public byte Field11;
-			public byte Field12;
-			public byte Field13;
-			public int ID;
-			public int Field15;
-			public int Field16;
-			public int Field17;
+			ulong Field00;
+			string Field01;
+			string Field02;
+			int Field03;
+			ushort Field04;
+			ushort Field05;
+			ushort Field06;
+			ushort[] Field07 = new ushort[3];
+			ushort Field08;
+			ushort Field09;
+			byte Field0A;
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			byte Field0E;
+			byte Field0F;
+			byte Field10;
+			byte Field11;
+			byte Field12;
+			byte Field13;
+			int ID;
+			int Field15;
+			int Field16;
+			int Field17;
 		}
 		public class _Questxgroupactivity
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _QuestXP
 		{
-			public int ID;
-			public ushort[] Exp = new ushort[10];
+			int ID;
+			ushort[] Exp = new ushort[10];
 		}
 		public class _RandPropPoints
 		{
-			public int ID;
-			public uint[] EpicPropertiesPoints = new uint[5];
-			public uint[] RarePropertiesPoints = new uint[5];
-			public uint[] UncommonPropertiesPoints = new uint[5];
+			int ID;
+			uint[] EpicPropertiesPoints = new uint[5];
+			uint[] RarePropertiesPoints = new uint[5];
+			uint[] UncommonPropertiesPoints = new uint[5];
 		}
 		public class _Relicslottierrequirement
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			int Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Relictalent
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public int Field4;
-			public byte Field5;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			int Field4;
+			byte Field5;
 		}
 		public class _Researchbranch
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public ushort Field3;
-			public byte Field4;
-			public int Field5;
-			public int Field6;
+			int ID;
+			string Field1;
+			int Field2;
+			ushort Field3;
+			byte Field4;
+			int Field5;
+			int Field6;
 		}
 		public class _Researchfield
 		{
-			public string Field0;
-			public byte Field1;
-			public int ID;
+			string Field0;
+			byte Field1;
+			int ID;
 		}
 		public class _Researchproject
 		{
-			public string Field0;
-			public string Field1;
-			public int Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
-			public int ID;
-			public int Field7;
-			public byte Field8;
+			string Field0;
+			string Field1;
+			int Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
+			int ID;
+			int Field7;
+			byte Field8;
 		}
 		public class _Researchsite
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			int Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _Resistances
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public ushort Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			ushort Field3;
 		}
 		public class _RewardPack
 		{
-			public int ID;
-			public uint Money;
-			public float ArtifactXPMultiplier;
-			public byte ArtifactXPDifficulty;
-			public byte ArtifactCategoryID;
-			public uint TitleID;
-			public uint Unused;
+			int ID;
+			uint Money;
+			float ArtifactXPMultiplier;
+			byte ArtifactXPDifficulty;
+			byte ArtifactCategoryID;
+			uint TitleID;
+			uint Unused;
 		}
 		public class _Rewardpackxcurrencytype
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _RewardPackXItem
 		{
-			public int ID;
-			public uint ItemID;
-			public uint Amount;
+			int ID;
+			uint ItemID;
+			uint Amount;
 		}
 		public class _Ribbonquality
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _RulesetItemUpgrade
 		{
-			public int ID;
-			public uint ItemID;
-			public ushort ItemUpgradeID;
+			int ID;
+			uint ItemID;
+			ushort ItemUpgradeID;
 		}
 		public class _SandboxScaling
 		{
-			public int ID;
-			public uint MinLevel;
-			public uint MaxLevel;
-			public uint Flags;
+			int ID;
+			uint MinLevel;
+			uint MaxLevel;
+			uint Flags;
 		}
 		public class _ScalingStatDistribution
 		{
-			public int ID;
-			public ushort ItemLevelCurveID;
-			public uint MinLevel;
-			public uint MaxLevel;
+			int ID;
+			ushort ItemLevelCurveID;
+			uint MinLevel;
+			uint MaxLevel;
 		}
 		public class _Scenario
 		{
-			public int ID;
-			public string Name;
-			public ushort Data;
-			public byte Flags;
-			public byte Type;
+			int ID;
+			string Name;
+			ushort Data;
+			byte Flags;
+			byte Type;
 		}
 		public class _Scenarioevententry
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _ScenarioStep
 		{
-			public int ID;
-			public string Description;
-			public string Name;
-			public ushort ScenarioID;
-			public ushort PreviousStepID;
-			public ushort QuestRewardID;
-			public byte Step;
-			public byte Flags;
-			public uint CriteriaTreeID;
-			public uint BonusRequiredStepID;
+			int ID;
+			string Description;
+			string Name;
+			ushort ScenarioID;
+			ushort PreviousStepID;
+			ushort QuestRewardID;
+			byte Step;
+			byte Flags;
+			uint CriteriaTreeID;
+			uint BonusRequiredStepID;
 		}
 		public class _SceneScript
 		{
-			public int ID;
-			public ushort PrevScriptId;
-			public ushort NextScriptId;
+			int ID;
+			ushort PrevScriptId;
+			ushort NextScriptId;
 		}
 		public class _SceneScriptGlobalText
 		{
-			public int ID;
-			public string Name;
-			public string Script;
+			int ID;
+			string Name;
+			string Script;
 		}
 		public class _SceneScriptPackage
 		{
-			public int ID;
-			public string Name;
+			int ID;
+			string Name;
 		}
 		public class _Scenescriptpackagemember
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _SceneScriptText
 		{
-			public int ID;
-			public string Name;
-			public string Script;
+			int ID;
+			string Name;
+			string Script;
 		}
 		public class _Scheduledinterval
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public int Field3;
-			public int Field4;
-			public byte Field5;
+			int ID;
+			int Field1;
+			byte Field2;
+			int Field3;
+			int Field4;
+			byte Field5;
 		}
 		public class _Scheduledworldstate
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public int Field3;
-			public int Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			int Field3;
+			int Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
 		}
 		public class _Scheduledworldstategroup
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public ushort Field5;
+			int ID;
+			int Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			ushort Field5;
 		}
 		public class _Scheduledworldstatexuniqcat
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Screeneffect
 		{
-			public int ID;
-			public string Field1;
-			public int[] Field2 = new int[4];
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public int FieldB;
-			public ushort FieldC;
+			int ID;
+			string Field1;
+			int[] Field2 = new int[4];
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			int FieldB;
+			ushort FieldC;
 		}
 		public class _Screenlocation
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Seamlesssite
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _Servermessages
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Shadowyeffect
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public int Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public ushort FieldC;
-			public byte FieldD;
+			int ID;
+			int Field1;
+			int Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			int Field9;
+			byte FieldA;
+			byte FieldB;
+			ushort FieldC;
+			byte FieldD;
 		}
 		public class _SkillLine
 		{
-			public int ID;
-			public string DisplayName;
-			public string Description;
-			public string AlternateVerb;
-			public ushort Flags;
-			public byte CategoryID;
-			public byte CanLink;
-			public uint IconFileDataID;
-			public uint ParentSkillLineID;
+			int ID;
+			string DisplayName;
+			string Description;
+			string AlternateVerb;
+			ushort Flags;
+			byte CategoryID;
+			byte CanLink;
+			uint IconFileDataID;
+			uint ParentSkillLineID;
 		}
 		public class _SkillLineAbility
 		{
-			public ulong RaceMask;
-			public int ID;
-			public uint SpellID;
-			public uint SupercedesSpell;
-			public ushort SkillLine;
-			public ushort TrivialSkillLineRankHigh;
-			public ushort TrivialSkillLineRankLow;
-			public ushort UniqueBit;
-			public ushort TradeSkillCategoryID;
-			public byte NumSkillUps;
-			public int ClassMask;
-			public ushort MinSkillLineRank;
-			public byte AcquireMethod;
-			public byte Flags;
+			ulong RaceMask;
+			int ID;
+			uint SpellID;
+			uint SupercedesSpell;
+			ushort SkillLine;
+			ushort TrivialSkillLineRankHigh;
+			ushort TrivialSkillLineRankLow;
+			ushort UniqueBit;
+			ushort TradeSkillCategoryID;
+			byte NumSkillUps;
+			int ClassMask;
+			ushort MinSkillLineRank;
+			byte AcquireMethod;
+			byte Flags;
 		}
 		public class _SkillRaceClassInfo
 		{
-			public int ID;
-			public long RaceMask;
-			public ushort SkillID;
-			public ushort Flags;
-			public ushort SkillTierID;
-			public byte Availability;
-			public byte MinLevel;
-			public int ClassMask;
+			int ID;
+			long RaceMask;
+			ushort SkillID;
+			ushort Flags;
+			ushort SkillTierID;
+			byte Availability;
+			byte MinLevel;
+			int ClassMask;
 		}
 		public class _Soundambience
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public int[] Field4 = new int[2];
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			int[] Field4 = new int[2];
 		}
 		public class _Soundambienceflavor
 		{
-			public int ID;
-			public int Field1;
-			public uint Field2;
+			int ID;
+			int Field1;
+			uint Field2;
 		}
 		public class _Soundbus
 		{
-			public float Field0;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public int ID;
+			float Field0;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			int ID;
 		}
 		public class _Soundbusoverride
 		{
-			public int ID;
-			public float Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public ushort Field5;
-			public ushort Field6;
+			int ID;
+			float Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			ushort Field5;
+			ushort Field6;
 		}
 		public class _Soundemitterpillpoints
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public ushort Field2;
+			int ID;
+			float[] Field1 = new float[3];
+			ushort Field2;
 		}
 		public class _Soundemitters
 		{
-			public string Field0;
-			public float[] Field1 = new float[3];
-			public float[] Field2 = new float[3];
-			public ushort Field3;
-			public ushort Field4;
-			public byte Field5;
-			public byte Field6;
-			public byte Field7;
-			public int ID;
-			public int Field9;
-			public byte FieldA;
+			string Field0;
+			float[] Field1 = new float[3];
+			float[] Field2 = new float[3];
+			ushort Field3;
+			ushort Field4;
+			byte Field5;
+			byte Field6;
+			byte Field7;
+			int ID;
+			int Field9;
+			byte FieldA;
 		}
 		public class _Soundenvelope
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			int Field1;
+			int Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Soundfilter
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Soundfilterelem
 		{
-			public int ID;
-			public float[] Field1 = new float[9];
-			public byte Field2;
+			int ID;
+			float[] Field1 = new float[9];
+			byte Field2;
 		}
 		public class _SoundKit
 		{
-			public int ID;
-			public float VolumeFloat;
-			public float MinDistance;
-			public float DistanceCutoff;
-			public ushort Flags;
-			public ushort SoundEntriesAdvancedID;
-			public byte SoundType;
-			public byte DialogType;
-			public byte EAXDef;
-			public float VolumeVariationPlus;
-			public float VolumeVariationMinus;
-			public float PitchVariationPlus;
-			public float PitchVariationMinus;
-			public float PitchAdjust;
-			public ushort BusOverwriteID;
-			public byte Unk700;
+			int ID;
+			float VolumeFloat;
+			float MinDistance;
+			float DistanceCutoff;
+			ushort Flags;
+			ushort SoundEntriesAdvancedID;
+			byte SoundType;
+			byte DialogType;
+			byte EAXDef;
+			float VolumeVariationPlus;
+			float VolumeVariationMinus;
+			float PitchVariationPlus;
+			float PitchVariationMinus;
+			float PitchAdjust;
+			ushort BusOverwriteID;
+			byte Unk700;
 		}
 		public class _Soundkitadvanced
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public float Field05;
-			public int Field06;
-			public int Field07;
-			public float Field08;
-			public byte Field09;
-			public uint Field0A;
-			public int Field0B;
-			public int Field0C;
-			public int Field0D;
-			public int Field0E;
-			public int Field0F;
-			public int Field10;
-			public int Field11;
-			public int Field12;
-			public int Field13;
-			public int Field14;
-			public float Field15;
-			public float Field16;
-			public float Field17;
-			public float Field18;
-			public float Field19;
-			public float Field1A;
-			public float Field1B;
-			public float Field1C;
-			public int Field1D;
-			public int Field1E;
-			public int Field1F;
-			public int Field20;
-			public int Field21;
-			public int Field22;
-			public int Field23;
-			public int Field24;
-			public int Field25;
-			public int Field26;
-			public int Field27;
+			int ID;
+			float Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			float Field05;
+			int Field06;
+			int Field07;
+			float Field08;
+			byte Field09;
+			uint Field0A;
+			int Field0B;
+			int Field0C;
+			int Field0D;
+			int Field0E;
+			int Field0F;
+			int Field10;
+			int Field11;
+			int Field12;
+			int Field13;
+			int Field14;
+			float Field15;
+			float Field16;
+			float Field17;
+			float Field18;
+			float Field19;
+			float Field1A;
+			float Field1B;
+			float Field1C;
+			int Field1D;
+			int Field1E;
+			int Field1F;
+			int Field20;
+			int Field21;
+			int Field22;
+			int Field23;
+			int Field24;
+			int Field25;
+			int Field26;
+			int Field27;
 		}
 		public class _Soundkitchild
 		{
-			public int ID;
-			public uint Field1;
-			public int Field2;
+			int ID;
+			uint Field1;
+			int Field2;
 		}
 		public class _Soundkitentry
 		{
-			public int ID;
-			public uint Field1;
-			public int Field2;
-			public byte Field3;
-			public float Field4;
+			int ID;
+			uint Field1;
+			int Field2;
+			byte Field3;
+			float Field4;
 		}
 		public class _Soundkitfallback
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
+			int ID;
+			ushort Field1;
+			ushort Field2;
 		}
 		public class _Soundkitname
 		{
-			public int ID;
-			public string Name;
+			int ID;
+			string Name;
 		}
 		public class _Soundoverride
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _Soundproviderpreferences
 		{
-			public int ID;
-			public string Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public float Field05;
-			public float Field06;
-			public float Field07;
-			public float Field08;
-			public float Field09;
-			public float Field0A;
-			public float Field0B;
-			public float Field0C;
-			public float Field0D;
-			public float Field0E;
-			public float Field0F;
-			public float Field10;
-			public ushort Field11;
-			public ushort Field12;
-			public ushort Field13;
-			public ushort Field14;
-			public ushort Field15;
-			public byte Field16;
-			public byte Field17;
+			int ID;
+			string Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			float Field05;
+			float Field06;
+			float Field07;
+			float Field08;
+			float Field09;
+			float Field0A;
+			float Field0B;
+			float Field0C;
+			float Field0D;
+			float Field0E;
+			float Field0F;
+			float Field10;
+			ushort Field11;
+			ushort Field12;
+			ushort Field13;
+			ushort Field14;
+			ushort Field15;
+			byte Field16;
+			byte Field17;
 		}
 		public class _Sourceinfo
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _Spammessages
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _SpecializationSpells
 		{
-			public string Description;
-			public uint SpellID;
-			public uint OverridesSpellID;
-			public ushort SpecID;
-			public byte OrderIndex;
-			public int ID;
+			string Description;
+			uint SpellID;
+			uint OverridesSpellID;
+			ushort SpecID;
+			byte OrderIndex;
+			int ID;
 		}
 		public class _Spell
 		{
-			public int ID;
-			public string Name;
-			public string NameSubtext;
-			public string Description;
-			public string AuraDescription;
+			int ID;
+			string Name;
+			string NameSubtext;
+			string Description;
+			string AuraDescription;
 		}
 		public class _Spellactionbarpref
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _Spellactivationoverlay
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
-			public float Field4;
-			public int[] Field5 = new int[4];
-			public byte Field6;
-			public byte Field7;
-			public ushort Field8;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
+			float Field4;
+			int[] Field5 = new int[4];
+			byte Field6;
+			byte Field7;
+			ushort Field8;
 		}
 		public class _SpellAuraOptions
 		{
-			public int ID;
-			public uint ProcCharges;
-			public uint ProcTypeMask;
-			public uint ProcCategoryRecovery;
-			public ushort CumulativeAura;
-			public ushort SpellProcsPerMinuteID;
-			public byte DifficultyID;
-			public byte ProcChance;
+			int ID;
+			uint ProcCharges;
+			uint ProcTypeMask;
+			uint ProcCategoryRecovery;
+			ushort CumulativeAura;
+			ushort SpellProcsPerMinuteID;
+			byte DifficultyID;
+			byte ProcChance;
 		}
 		public class _SpellAuraRestrictions
 		{
-			public int ID;
-			public uint CasterAuraSpell;
-			public uint TargetAuraSpell;
-			public uint ExcludeCasterAuraSpell;
-			public uint ExcludeTargetAuraSpell;
-			public byte DifficultyID;
-			public byte CasterAuraState;
-			public byte TargetAuraState;
-			public byte ExcludeCasterAuraState;
-			public byte ExcludeTargetAuraState;
+			int ID;
+			uint CasterAuraSpell;
+			uint TargetAuraSpell;
+			uint ExcludeCasterAuraSpell;
+			uint ExcludeTargetAuraSpell;
+			byte DifficultyID;
+			byte CasterAuraState;
+			byte TargetAuraState;
+			byte ExcludeCasterAuraState;
+			byte ExcludeTargetAuraState;
 		}
 		public class _Spellauravisibility
 		{
-			public byte Field0;
-			public byte Field1;
-			public int ID;
+			byte Field0;
+			byte Field1;
+			int ID;
 		}
 		public class _Spellauravisxchrspec
 		{
-			public int ID;
-			public ushort Field1;
+			int ID;
+			ushort Field1;
 		}
 		public class _SpellCastingRequirements
 		{
-			public int ID;
-			public uint SpellID;
-			public ushort MinFactionID;
-			public ushort RequiredAreasID;
-			public ushort RequiresSpellFocus;
-			public byte FacingCasterFlags;
-			public byte MinReputation;
-			public byte RequiredAuraVision;
+			int ID;
+			uint SpellID;
+			ushort MinFactionID;
+			ushort RequiredAreasID;
+			ushort RequiresSpellFocus;
+			byte FacingCasterFlags;
+			byte MinReputation;
+			byte RequiredAuraVision;
 		}
 		public class _SpellCastTimes
 		{
-			public int ID;
-			public int CastTime;
-			public int MinCastTime;
-			public short CastTimePerLevel;
+			int ID;
+			int CastTime;
+			int MinCastTime;
+			short CastTimePerLevel;
 		}
 		public class _SpellCategories
 		{
-			public int ID;
-			public ushort Category;
-			public ushort StartRecoveryCategory;
-			public ushort ChargeCategory;
-			public byte DifficultyID;
-			public byte DefenseType;
-			public byte DispelType;
-			public byte Mechanic;
-			public byte PreventionType;
+			int ID;
+			ushort Category;
+			ushort StartRecoveryCategory;
+			ushort ChargeCategory;
+			byte DifficultyID;
+			byte DefenseType;
+			byte DispelType;
+			byte Mechanic;
+			byte PreventionType;
 		}
 		public class _SpellCategory
 		{
-			public int ID;
-			public string Name;
-			public int ChargeRecoveryTime;
-			public byte Flags;
-			public byte UsesPerWeek;
-			public byte MaxCharges;
-			public uint ChargeCategoryType;
+			int ID;
+			string Name;
+			int ChargeRecoveryTime;
+			byte Flags;
+			byte UsesPerWeek;
+			byte MaxCharges;
+			uint ChargeCategoryType;
 		}
 		public class _Spellchaineffects
 		{
-			public int ID;
-			public float Field01;
-			public float Field02;
-			public float Field03;
-			public int Field04;
-			public int Field05;
-			public float Field06;
-			public float Field07;
-			public float Field08;
-			public float Field09;
-			public float Field0A;
-			public float Field0B;
-			public float Field0C;
-			public float Field0D;
-			public float Field0E;
-			public float Field0F;
-			public float Field10;
-			public float Field11;
-			public float Field12;
-			public float Field13;
-			public float Field14;
-			public float Field15;
-			public float Field16;
-			public float Field17;
-			public float Field18;
-			public float Field19;
-			public float Field1A;
-			public float Field1B;
-			public float Field1C;
-			public float Field1D;
-			public float Field1E;
-			public float Field1F;
-			public float Field20;
-			public float Field21;
-			public float Field22;
-			public float Field23;
-			public float[] Field24 = new float[3];
-			public float[] Field25 = new float[3];
-			public float[] Field26 = new float[3];
-			public float[] Field27 = new float[3];
-			public int Field28;
-			public float Field29;
-			public float Field2A;
-			public float Field2B;
-			public float Field2C;
-			public ushort Field2D;
-			public ushort Field2E;
-			public ushort[] Field2F = new ushort[11];
-			public ushort Field30;
-			public byte Field31;
-			public byte Field32;
-			public byte Field33;
-			public byte Field34;
-			public byte Field35;
-			public byte Field36;
-			public byte Field37;
-			public byte Field38;
-			public byte Field39;
-			public byte Field3A;
-			public int Field3B;
-			public int[] Field3C = new int[3];
+			int ID;
+			float Field01;
+			float Field02;
+			float Field03;
+			int Field04;
+			int Field05;
+			float Field06;
+			float Field07;
+			float Field08;
+			float Field09;
+			float Field0A;
+			float Field0B;
+			float Field0C;
+			float Field0D;
+			float Field0E;
+			float Field0F;
+			float Field10;
+			float Field11;
+			float Field12;
+			float Field13;
+			float Field14;
+			float Field15;
+			float Field16;
+			float Field17;
+			float Field18;
+			float Field19;
+			float Field1A;
+			float Field1B;
+			float Field1C;
+			float Field1D;
+			float Field1E;
+			float Field1F;
+			float Field20;
+			float Field21;
+			float Field22;
+			float Field23;
+			float[] Field24 = new float[3];
+			float[] Field25 = new float[3];
+			float[] Field26 = new float[3];
+			float[] Field27 = new float[3];
+			int Field28;
+			float Field29;
+			float Field2A;
+			float Field2B;
+			float Field2C;
+			ushort Field2D;
+			ushort Field2E;
+			ushort[] Field2F = new ushort[11];
+			ushort Field30;
+			byte Field31;
+			byte Field32;
+			byte Field33;
+			byte Field34;
+			byte Field35;
+			byte Field36;
+			byte Field37;
+			byte Field38;
+			byte Field39;
+			byte Field3A;
+			int Field3B;
+			int[] Field3C = new int[3];
 		}
 		public class _SpellClassOptions
 		{
-			public int ID;
-			public uint SpellID;
-			public int[] SpellClassMask = new int[4];
-			public byte SpellClassSet;
-			public uint ModalNextSpell;
+			int ID;
+			uint SpellID;
+			int[] SpellClassMask = new int[4];
+			byte SpellClassSet;
+			uint ModalNextSpell;
 		}
 		public class _SpellCooldowns
 		{
-			public int ID;
-			public uint CategoryRecoveryTime;
-			public uint RecoveryTime;
-			public uint StartRecoveryTime;
-			public byte DifficultyID;
+			int ID;
+			uint CategoryRecoveryTime;
+			uint RecoveryTime;
+			uint StartRecoveryTime;
+			byte DifficultyID;
 		}
 		public class _Spelldescriptionvariables
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Spelldispeltype
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			string Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _SpellDuration
 		{
-			public int ID;
-			public int Duration;
-			public int MaxDuration;
-			public int DurationPerLevel;
+			int ID;
+			int Duration;
+			int MaxDuration;
+			int DurationPerLevel;
 		}
 		public class _SpellEffect
 		{
-			public int ID;
-			public uint Effect;
-			public int EffectBasePoints;
-			public uint EffectIndex;
-			public uint EffectAura;
-			public uint DifficultyID;
-			public float EffectAmplitude;
-			public uint EffectAuraPeriod;
-			public float EffectBonusCoefficient;
-			public float EffectChainAmplitude;
-			public uint EffectChainTargets;
-			public int EffectDieSides;
-			public uint EffectItemType;
-			public uint EffectMechanic;
-			public float EffectPointsPerResource;
-			public float EffectRealPointsPerLevel;
-			public uint EffectTriggerSpell;
-			public float EffectPosFacing;
-			public uint EffectAttributes;
-			public float BonusCoefficientFromAP;
-			public float PvPMultiplier;
-			public float Coefficient;
-			public float Variance;
-			public float ResourceCoefficient;
-			public float GroupSizeCoefficient;
-			public int[] EffectSpellClassMask = new int[4];
-			public int EffectMiscValue;
-			public int EffectMiscValueB;
-			public uint EffectRadiusIndex;
-			public uint EffectRadiusMaxIndex;
-			public uint[] ImplicitTarget = new uint[2];
+			int ID;
+			uint Effect;
+			int EffectBasePoints;
+			uint EffectIndex;
+			uint EffectAura;
+			uint DifficultyID;
+			float EffectAmplitude;
+			uint EffectAuraPeriod;
+			float EffectBonusCoefficient;
+			float EffectChainAmplitude;
+			uint EffectChainTargets;
+			int EffectDieSides;
+			uint EffectItemType;
+			uint EffectMechanic;
+			float EffectPointsPerResource;
+			float EffectRealPointsPerLevel;
+			uint EffectTriggerSpell;
+			float EffectPosFacing;
+			uint EffectAttributes;
+			float BonusCoefficientFromAP;
+			float PvPMultiplier;
+			float Coefficient;
+			float Variance;
+			float ResourceCoefficient;
+			float GroupSizeCoefficient;
+			int[] EffectSpellClassMask = new int[4];
+			int EffectMiscValue;
+			int EffectMiscValueB;
+			uint EffectRadiusIndex;
+			uint EffectRadiusMaxIndex;
+			uint[] ImplicitTarget = new uint[2];
 		}
 		public class _Spelleffectemission
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public ushort Field3;
-			public byte Field4;
+			int ID;
+			float Field1;
+			float Field2;
+			ushort Field3;
+			byte Field4;
 		}
 		public class _SpellEquippedItems
 		{
-			public int ID;
-			public uint SpellID;
-			public int EquippedItemInventoryTypeMask;
-			public int EquippedItemSubClassMask;
-			public byte EquippedItemClass;
+			int ID;
+			uint SpellID;
+			int EquippedItemInventoryTypeMask;
+			int EquippedItemSubClassMask;
+			byte EquippedItemClass;
 		}
 		public class _Spellflyout
 		{
-			public int ID;
-			public ulong Field1;
-			public string Field2;
-			public string Field3;
-			public byte Field4;
-			public ushort Field5;
-			public int Field6;
+			int ID;
+			ulong Field1;
+			string Field2;
+			string Field3;
+			byte Field4;
+			ushort Field5;
+			int Field6;
 		}
 		public class _Spellflyoutitem
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _SpellFocusObject
 		{
-			public int ID;
-			public string Name;
+			int ID;
+			string Name;
 		}
 		public class _SpellInterrupts
 		{
-			public int ID;
-			public byte DifficultyID;
-			public ushort InterruptFlags;
-			public uint[] AuraInterruptFlags = new uint[2];
-			public uint[] ChannelInterruptFlags = new uint[2];
+			int ID;
+			byte DifficultyID;
+			ushort InterruptFlags;
+			uint[] AuraInterruptFlags = new uint[2];
+			uint[] ChannelInterruptFlags = new uint[2];
 		}
 		public class _SpellItemEnchantment
 		{
-			public int ID;
-			public string Name;
-			public uint[] EffectSpellID = new uint[3];
-			public float[] EffectScalingPoints = new float[3];
-			public uint TransmogCost;
-			public uint TextureFileDataID;
-			public ushort[] EffectPointsMin = new ushort[3];
-			public ushort ItemVisual;
-			public ushort Flags;
-			public ushort RequiredSkillID;
-			public ushort RequiredSkillRank;
-			public ushort ItemLevel;
-			public byte Charges;
-			public byte[] Effect = new byte[3];
-			public byte ConditionID;
-			public byte MinLevel;
-			public byte MaxLevel;
-			public byte ScalingClass;
-			public byte ScalingClassRestricted;
-			public uint PlayerConditionID;
+			int ID;
+			string Name;
+			uint[] EffectSpellID = new uint[3];
+			float[] EffectScalingPoints = new float[3];
+			uint TransmogCost;
+			uint TextureFileDataID;
+			ushort[] EffectPointsMin = new ushort[3];
+			ushort ItemVisual;
+			ushort Flags;
+			ushort RequiredSkillID;
+			ushort RequiredSkillRank;
+			ushort ItemLevel;
+			byte Charges;
+			byte[] Effect = new byte[3];
+			byte ConditionID;
+			byte MinLevel;
+			byte MaxLevel;
+			byte ScalingClass;
+			byte ScalingClassRestricted;
+			uint PlayerConditionID;
 		}
 		public class _SpellItemEnchantmentCondition
 		{
-			public int ID;
-			public uint[] LTOperand = new uint[5];
-			public byte[] LTOperandType = new byte[5];
-			public byte[] Operator = new byte[5];
-			public byte[] RTOperandType = new byte[5];
-			public byte[] RTOperand = new byte[5];
-			public byte[] Logic = new byte[5];
+			int ID;
+			uint[] LTOperand = new uint[5];
+			byte[] LTOperandType = new byte[5];
+			byte[] Operator = new byte[5];
+			byte[] RTOperandType = new byte[5];
+			byte[] RTOperand = new byte[5];
+			byte[] Logic = new byte[5];
 		}
 		public class _Spellkeyboundoverride
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			int Field2;
+			byte Field3;
 		}
 		public class _Spelllabel
 		{
-			public int ID;
-			public int Field1;
+			int ID;
+			int Field1;
 		}
 		public class _SpellLearnSpell
 		{
-			public int ID;
-			public uint LearnSpellID;
-			public uint SpellID;
-			public uint OverridesSpellID;
+			int ID;
+			uint LearnSpellID;
+			uint SpellID;
+			uint OverridesSpellID;
 		}
 		public class _SpellLevels
 		{
-			public int ID;
-			public ushort BaseLevel;
-			public ushort MaxLevel;
-			public ushort SpellLevel;
-			public byte DifficultyID;
-			public byte MaxUsableLevel;
+			int ID;
+			ushort BaseLevel;
+			ushort MaxLevel;
+			ushort SpellLevel;
+			byte DifficultyID;
+			byte MaxUsableLevel;
 		}
 		public class _Spellmechanic
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _SpellMisc
 		{
-			public int ID;
-			public ushort CastingTimeIndex;
-			public ushort DurationIndex;
-			public ushort RangeIndex;
-			public byte SchoolMask;
-			public uint IconFileDataID;
-			public float Speed;
-			public uint ActiveIconFileDataID;
-			public float MultistrikeSpeedMod;
-			public byte DifficultyID;
-			public uint Attributes;
-			public uint AttributesEx;
-			public uint AttributesExB;
-			public uint AttributesExC;
-			public uint AttributesExD;
-			public uint AttributesExE;
-			public uint AttributesExF;
-			public uint AttributesExG;
-			public uint AttributesExH;
-			public uint AttributesExI;
-			public uint AttributesExJ;
-			public uint AttributesExK;
-			public uint AttributesExL;
-			public uint AttributesExM;
+			int ID;
+			ushort CastingTimeIndex;
+			ushort DurationIndex;
+			ushort RangeIndex;
+			byte SchoolMask;
+			uint IconFileDataID;
+			float Speed;
+			uint ActiveIconFileDataID;
+			float MultistrikeSpeedMod;
+			byte DifficultyID;
+			uint Attributes;
+			uint AttributesEx;
+			uint AttributesExB;
+			uint AttributesExC;
+			uint AttributesExD;
+			uint AttributesExE;
+			uint AttributesExF;
+			uint AttributesExG;
+			uint AttributesExH;
+			uint AttributesExI;
+			uint AttributesExJ;
+			uint AttributesExK;
+			uint AttributesExL;
+			uint AttributesExM;
 		}
 		public class _Spellmissile
 		{
-			public int ID;
-			public int Field01;
-			public float Field02;
-			public float Field03;
-			public float Field04;
-			public float Field05;
-			public float Field06;
-			public float Field07;
-			public int Field08;
-			public float Field09;
-			public int Field0A;
-			public float Field0B;
-			public float Field0C;
-			public float Field0D;
-			public float Field0E;
-			public byte Field0F;
+			int ID;
+			int Field01;
+			float Field02;
+			float Field03;
+			float Field04;
+			float Field05;
+			float Field06;
+			float Field07;
+			int Field08;
+			float Field09;
+			int Field0A;
+			float Field0B;
+			float Field0C;
+			float Field0D;
+			float Field0E;
+			byte Field0F;
 		}
 		public class _Spellmissilemotion
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			string Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _SpellPower
 		{
-			public int ManaCost;
-			public float ManaCostPercentage;
-			public float ManaCostPercentagePerSecond;
-			public uint RequiredAura;
-			public float HealthCostPercentage;
-			public byte PowerIndex;
-			public byte PowerType;
-			public int ID;
-			public int ManaCostPerLevel;
-			public int ManaCostPerSecond;
-			public int ManaCostAdditional;
-			public uint PowerDisplayID;
-			public uint UnitPowerBarID;
+			int ManaCost;
+			float ManaCostPercentage;
+			float ManaCostPercentagePerSecond;
+			uint RequiredAura;
+			float HealthCostPercentage;
+			byte PowerIndex;
+			byte PowerType;
+			int ID;
+			int ManaCostPerLevel;
+			int ManaCostPerSecond;
+			int ManaCostAdditional;
+			uint PowerDisplayID;
+			uint UnitPowerBarID;
 		}
 		public class _SpellPowerDifficulty
 		{
-			public byte DifficultyID;
-			public byte PowerIndex;
-			public int ID;
+			byte DifficultyID;
+			byte PowerIndex;
+			int ID;
 		}
 		public class _Spellproceduraleffect
 		{
-			public int[] Field0 = new int[4];
-			public byte Field1;
-			public int ID;
+			int[] Field0 = new int[4];
+			byte Field1;
+			int ID;
 		}
 		public class _SpellProcsPerMinute
 		{
-			public int ID;
-			public float BaseProcRate;
-			public byte Flags;
+			int ID;
+			float BaseProcRate;
+			byte Flags;
 		}
 		public class _SpellProcsPerMinuteMod
 		{
-			public int ID;
-			public float Coeff;
-			public ushort Param;
-			public byte Type;
+			int ID;
+			float Coeff;
+			ushort Param;
+			byte Type;
 		}
 		public class _SpellRadius
 		{
-			public int ID;
-			public float Radius;
-			public float RadiusPerLevel;
-			public float RadiusMin;
-			public float RadiusMax;
+			int ID;
+			float Radius;
+			float RadiusPerLevel;
+			float RadiusMin;
+			float RadiusMax;
 		}
 		public class _SpellRange
 		{
-			public int ID;
-			public string DisplayName;
-			public string DisplayNameShort;
-			public float MinRangeHostile;
-			public float MinRangeFriend;
-			public float MaxRangeHostile;
-			public float MaxRangeFriend;
-			public byte Flags;
+			int ID;
+			string DisplayName;
+			string DisplayNameShort;
+			float MinRangeHostile;
+			float MinRangeFriend;
+			float MaxRangeHostile;
+			float MaxRangeFriend;
+			byte Flags;
 		}
 		public class _SpellReagents
 		{
-			public int ID;
-			public uint SpellID;
-			public int[] Reagent = new int[8];
-			public ushort[] ReagentCount = new ushort[8];
+			int ID;
+			uint SpellID;
+			int[] Reagent = new int[8];
+			ushort[] ReagentCount = new ushort[8];
 		}
 		public class _Spellreagentscurrency
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _SpellScaling
 		{
-			public int ID;
-			public uint SpellID;
-			public ushort ScalesFromItemLevel;
-			public int ScalingClass;
-			public uint MinScalingLevel;
-			public uint MaxScalingLevel;
+			int ID;
+			uint SpellID;
+			ushort ScalesFromItemLevel;
+			int ScalingClass;
+			uint MinScalingLevel;
+			uint MaxScalingLevel;
 		}
 		public class _SpellShapeshift
 		{
-			public int ID;
-			public uint SpellID;
-			public uint[] ShapeshiftExclude = new uint[2];
-			public uint[] ShapeshiftMask = new uint[2];
-			public byte StanceBarOrder;
+			int ID;
+			uint SpellID;
+			uint[] ShapeshiftExclude = new uint[2];
+			uint[] ShapeshiftMask = new uint[2];
+			byte StanceBarOrder;
 		}
 		public class _SpellShapeshiftForm
 		{
-			public int ID;
-			public string Name;
-			public float WeaponDamageVariance;
-			public uint Flags;
-			public ushort CombatRoundTime;
-			public ushort MountTypeID;
-			public byte CreatureType;
-			public byte BonusActionBar;
-			public uint AttackIconFileDataID;
-			public uint[] CreatureDisplayID = new uint[4];
-			public uint[] PresetSpellID = new uint[8];
+			int ID;
+			string Name;
+			float WeaponDamageVariance;
+			uint Flags;
+			ushort CombatRoundTime;
+			ushort MountTypeID;
+			byte CreatureType;
+			byte BonusActionBar;
+			uint AttackIconFileDataID;
+			uint[] CreatureDisplayID = new uint[4];
+			uint[] PresetSpellID = new uint[8];
 		}
 		public class _Spellspecialuniteffect
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _SpellTargetRestrictions
 		{
-			public int ID;
-			public float ConeAngle;
-			public float Width;
-			public uint Targets;
-			public ushort TargetCreatureType;
-			public byte DifficultyID;
-			public byte MaxAffectedTargets;
-			public uint MaxTargetLevel;
+			int ID;
+			float ConeAngle;
+			float Width;
+			uint Targets;
+			ushort TargetCreatureType;
+			byte DifficultyID;
+			byte MaxAffectedTargets;
+			uint MaxTargetLevel;
 		}
 		public class _SpellTotems
 		{
-			public int ID;
-			public uint SpellID;
-			public uint[] Totem = new uint[2];
-			public ushort[] RequiredTotemCategoryID = new ushort[2];
+			int ID;
+			uint SpellID;
+			uint[] Totem = new uint[2];
+			ushort[] RequiredTotemCategoryID = new ushort[2];
 		}
 		public class _Spellvisual
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public float[] Field2 = new float[3];
-			public int Field3;
-			public ushort Field4;
-			public byte Field5;
-			public byte Field6;
-			public int Field7;
-			public int Field8;
-			public int Field9;
-			public int FieldA;
-			public int FieldB;
-			public int FieldC;
-			public int FieldD;
-			public int FieldE;
+			int ID;
+			float[] Field1 = new float[3];
+			float[] Field2 = new float[3];
+			int Field3;
+			ushort Field4;
+			byte Field5;
+			byte Field6;
+			int Field7;
+			int Field8;
+			int Field9;
+			int FieldA;
+			int FieldB;
+			int FieldC;
+			int FieldD;
+			int FieldE;
 		}
 		public class _Spellvisualanim
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Spellvisualcoloreffect
 		{
-			public int ID;
-			public float Field1;
-			public int Field2;
-			public float Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public ushort Field8;
-			public byte Field9;
-			public byte FieldA;
-			public ushort FieldB;
+			int ID;
+			float Field1;
+			int Field2;
+			float Field3;
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			ushort Field8;
+			byte Field9;
+			byte FieldA;
+			ushort FieldB;
 		}
 		public class _Spellvisualeffectname
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public int Field7;
-			public int Field8;
-			public int Field9;
-			public byte FieldA;
-			public int FieldB;
-			public int FieldC;
-			public ushort FieldD;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			int Field7;
+			int Field8;
+			int Field9;
+			byte FieldA;
+			int FieldB;
+			int FieldC;
+			ushort FieldD;
 		}
 		public class _Spellvisualevent
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public int Field3;
-			public byte Field4;
-			public int Field5;
-			public int Field6;
-			public byte Field7;
-			public int Field8;
+			int ID;
+			int Field1;
+			ushort Field2;
+			int Field3;
+			byte Field4;
+			int Field5;
+			int Field6;
+			byte Field7;
+			int Field8;
 		}
 		public class _Spellvisualkit
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public byte Field3;
-			public ushort Field4;
-			public int Field5;
+			int ID;
+			int Field1;
+			float Field2;
+			byte Field3;
+			ushort Field4;
+			int Field5;
 		}
 		public class _Spellvisualkitareamodel
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public ushort Field5;
-			public byte Field6;
+			int ID;
+			int Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			ushort Field5;
+			byte Field6;
 		}
 		public class _Spellvisualkiteffect
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
+			int ID;
+			int Field1;
+			int Field2;
 		}
 		public class _Spellvisualkitmodelattach
 		{
-			public float[] Field00 = new float[3];
-			public float[] Field01 = new float[3];
-			public int ID;
-			public ushort Field03;
-			public byte Field04;
-			public byte Field05;
-			public ushort Field06;
-			public float Field07;
-			public float Field08;
-			public float Field09;
-			public float Field0A;
-			public float Field0B;
-			public float Field0C;
-			public float Field0D;
-			public float Field0E;
-			public int Field0F;
-			public int Field10;
-			public int Field11;
-			public float Field12;
-			public int Field13;
-			public float Field14;
+			float[] Field00 = new float[3];
+			float[] Field01 = new float[3];
+			int ID;
+			ushort Field03;
+			byte Field04;
+			byte Field05;
+			ushort Field06;
+			float Field07;
+			float Field08;
+			float Field09;
+			float Field0A;
+			float Field0B;
+			float Field0C;
+			float Field0D;
+			float Field0E;
+			int Field0F;
+			int Field10;
+			int Field11;
+			float Field12;
+			int Field13;
+			float Field14;
 		}
 		public class _Spellvisualmissile
 		{
-			public int Field0;
-			public int Field1;
-			public int Field2;
-			public float[] Field3 = new float[3];
-			public float[] Field4 = new float[3];
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public ushort Field8;
-			public ushort Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public int ID;
-			public int FieldD;
-			public int FieldE;
+			int Field0;
+			int Field1;
+			int Field2;
+			float[] Field3 = new float[3];
+			float[] Field4 = new float[3];
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			ushort Field8;
+			ushort Field9;
+			byte FieldA;
+			byte FieldB;
+			int ID;
+			int FieldD;
+			int FieldE;
 		}
 		public class _Spellxdescriptionvariables
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _SpellXSpellVisual
 		{
-			public uint SpellVisualID;
-			public int ID;
-			public float Chance;
-			public ushort CasterPlayerConditionID;
-			public ushort CasterUnitConditionID;
-			public ushort PlayerConditionID;
-			public ushort UnitConditionID;
-			public uint IconFileDataID;
-			public uint ActiveIconFileDataID;
-			public byte Flags;
-			public byte DifficultyID;
-			public byte Priority;
+			uint SpellVisualID;
+			int ID;
+			float Chance;
+			ushort CasterPlayerConditionID;
+			ushort CasterUnitConditionID;
+			ushort PlayerConditionID;
+			ushort UnitConditionID;
+			uint IconFileDataID;
+			uint ActiveIconFileDataID;
+			byte Flags;
+			byte DifficultyID;
+			byte Priority;
 		}
 		public class _Startup_strings
 		{
-			public int ID;
-			public string Field1;
-			public string Field2;
+			int ID;
+			string Field1;
+			string Field2;
 		}
 		public class _Startupfiles
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Stationery
 		{
-			public int ID;
-			public byte Field1;
-			public ushort Field2;
-			public int[] Field3 = new int[2];
+			int ID;
+			byte Field1;
+			ushort Field2;
+			int[] Field3 = new int[2];
 		}
 		public class _SummonProperties
 		{
-			public int ID;
-			public uint Flags;
-			public uint Category;
-			public uint Faction;
-			public int Type;
-			public int Slot;
+			int ID;
+			uint Flags;
+			uint Category;
+			uint Faction;
+			int Type;
+			int Slot;
 		}
 		public class _TactKey
 		{
-			public int ID;
-			public byte[] Key = new byte[16];
+			int ID;
+			byte[] Key = new byte[16];
 		}
 		public class _Tactkeylookup
 		{
-			public int ID;
-			public byte[] Field1 = new byte[8];
+			int ID;
+			byte[] Field1 = new byte[8];
 		}
 		public class _Talent
 		{
-			public int ID;
-			public string Description;
-			public uint SpellID;
-			public uint OverridesSpellID;
-			public ushort SpecID;
-			public byte TierID;
-			public byte ColumnIndex;
-			public byte Flags;
-			public byte[] CategoryMask = new byte[2];
-			public byte ClassID;
+			int ID;
+			string Description;
+			uint SpellID;
+			uint OverridesSpellID;
+			ushort SpecID;
+			byte TierID;
+			byte ColumnIndex;
+			byte Flags;
+			byte[] CategoryMask = new byte[2];
+			byte ClassID;
 		}
 		public class _TaxiNodes
 		{
-			public int ID;
-			public string Name;
-			public float[] Pos = new float[3];
-			public uint[] MountCreatureID = new uint[2];
-			public float[] MapOffset = new float[2];
-			public float Unk730;
-			public float[] FlightMapOffset = new float[2];
-			public ushort MapID;
-			public ushort ConditionID;
-			public ushort LearnableIndex;
-			public byte Flags;
-			public int UiTextureKitPrefixID;
-			public uint SpecialAtlasIconPlayerConditionID;
+			int ID;
+			string Name;
+			float[] Pos = new float[3];
+			uint[] MountCreatureID = new uint[2];
+			float[] MapOffset = new float[2];
+			float Unk730;
+			float[] FlightMapOffset = new float[2];
+			ushort MapID;
+			ushort ConditionID;
+			ushort LearnableIndex;
+			byte Flags;
+			int UiTextureKitPrefixID;
+			uint SpecialAtlasIconPlayerConditionID;
 		}
 		public class _TaxiPath
 		{
-			public ushort From;
-			public ushort To;
-			public int ID;
-			public uint Cost;
+			ushort From;
+			ushort To;
+			int ID;
+			uint Cost;
 		}
 		public class _TaxiPathNode
 		{
-			public float[] Loc = new float[3];
-			public ushort PathID;
-			public ushort MapID;
-			public byte NodeIndex;
-			public int ID;
-			public byte Flags;
-			public uint Delay;
-			public ushort ArrivalEventID;
-			public ushort DepartureEventID;
+			float[] Loc = new float[3];
+			ushort PathID;
+			ushort MapID;
+			byte NodeIndex;
+			int ID;
+			byte Flags;
+			uint Delay;
+			ushort ArrivalEventID;
+			ushort DepartureEventID;
 		}
 		public class _Terrainmaterial
 		{
-			public int ID;
-			public byte Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			byte Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Terraintype
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Terraintypesounds
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Textureblendset
 		{
-			public int ID;
-			public int[] Field1 = new int[3];
-			public float[] Field2 = new float[3];
-			public float[] Field3 = new float[3];
-			public float[] Field4 = new float[3];
-			public float[] Field5 = new float[3];
-			public float[] Field6 = new float[4];
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
+			int ID;
+			int[] Field1 = new int[3];
+			float[] Field2 = new float[3];
+			float[] Field3 = new float[3];
+			float[] Field4 = new float[3];
+			float[] Field5 = new float[3];
+			float[] Field6 = new float[4];
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
 		}
 		public class _Texturefiledata
 		{
-			public int ID;
-			public int Field1;
-			public byte Field2;
+			int ID;
+			int Field1;
+			byte Field2;
 		}
 		public class _TotemCategory
 		{
-			public int ID;
-			public string Name;
-			public uint CategoryMask;
-			public byte CategoryType;
+			int ID;
+			string Name;
+			uint CategoryMask;
+			byte CategoryType;
 		}
 		public class _Toy
 		{
-			public string Description;
-			public uint ItemID;
-			public byte Flags;
-			public byte CategoryFilter;
-			public int ID;
+			string Description;
+			uint ItemID;
+			byte Flags;
+			byte CategoryFilter;
+			int ID;
 		}
 		public class _Tradeskillcategory
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			byte Field5;
 		}
 		public class _Tradeskillitem
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
+			int ID;
+			ushort Field1;
+			byte Field2;
 		}
 		public class _Transformmatrix
 		{
-			public int ID;
-			public float[] Field1 = new float[3];
-			public int Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
+			int ID;
+			float[] Field1 = new float[3];
+			int Field2;
+			float Field3;
+			float Field4;
+			float Field5;
 		}
 		public class _TransmogHoliday
 		{
-			public int ID;
-			public int HolidayID;
+			int ID;
+			int HolidayID;
 		}
 		public class _TransmogSet
 		{
-			public string Name;
-			public ushort BaseSetID;
-			public ushort UIOrder;
-			public byte ExpansionID;
-			public int ID;
-			public int Flags;
-			public int QuestID;
-			public int ClassMask;
-			public int ItemNameDescriptionID;
-			public uint TransmogSetGroupID;
+			string Name;
+			ushort BaseSetID;
+			ushort UIOrder;
+			byte ExpansionID;
+			int ID;
+			int Flags;
+			int QuestID;
+			int ClassMask;
+			int ItemNameDescriptionID;
+			uint TransmogSetGroupID;
 		}
 		public class _TransmogSetGroup
 		{
-			public string Label;
-			public int ID;
+			string Label;
+			int ID;
 		}
 		public class _TransmogSetItem
 		{
-			public int ID;
-			public uint TransmogSetID;
-			public uint ItemModifiedAppearanceID;
-			public int Flags;
+			int ID;
+			uint TransmogSetID;
+			uint ItemModifiedAppearanceID;
+			int Flags;
 		}
 		public class _TransportAnimation
 		{
-			public int ID;
-			public uint TimeIndex;
-			public float[] Pos = new float[3];
-			public byte SequenceID;
+			int ID;
+			uint TimeIndex;
+			float[] Pos = new float[3];
+			byte SequenceID;
 		}
 		public class _Transportphysics
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public float Field9;
-			public float FieldA;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			float Field9;
+			float FieldA;
 		}
 		public class _TransportRotation
 		{
-			public int ID;
-			public uint TimeIndex;
-			public float X;
-			public float Y;
-			public float Z;
-			public float W;
+			int ID;
+			uint TimeIndex;
+			float X;
+			float Y;
+			float Z;
+			float W;
 		}
 		public class _Trophy
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public int Field4;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			int Field4;
 		}
 		public class _Uicamera
 		{
-			public int ID;
-			public string Field1;
-			public float[] Field2 = new float[3];
-			public float[] Field3 = new float[3];
-			public float[] Field4 = new float[3];
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
+			int ID;
+			string Field1;
+			float[] Field2 = new float[3];
+			float[] Field3 = new float[3];
+			float[] Field4 = new float[3];
+			ushort Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
 		}
 		public class _Uicameratype
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Uicamfbacktransmogchrrace
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Uicamfbacktransmogweapon
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Uiexpansiondisplayinfo
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Uiexpansiondisplayinfoicon
 		{
-			public int ID;
-			public string Field1;
-			public int Field2;
-			public int Field3;
+			int ID;
+			string Field1;
+			int Field2;
+			int Field3;
 		}
 		public class _Uimappoi
 		{
-			public int Field0;
-			public float[] Field1 = new float[3];
-			public int Field2;
-			public int Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public int ID;
+			int Field0;
+			float[] Field1 = new float[3];
+			int Field2;
+			int Field3;
+			ushort Field4;
+			ushort Field5;
+			int ID;
 		}
 		public class _Uimodelscene
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
+			int ID;
+			byte Field1;
+			byte Field2;
 		}
 		public class _Uimodelsceneactor
 		{
-			public string Field0;
-			public float[] Field1 = new float[3];
-			public float Field2;
-			public int Field3;
-			public int Field4;
-			public float Field5;
-			public byte Field6;
-			public int ID;
-			public byte Field8;
+			string Field0;
+			float[] Field1 = new float[3];
+			float Field2;
+			int Field3;
+			int Field4;
+			float Field5;
+			byte Field6;
+			int ID;
+			byte Field8;
 		}
 		public class _Uimodelsceneactordisplay
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public int Field4;
-			public byte Field5;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			int Field4;
+			byte Field5;
 		}
 		public class _Uimodelscenecamera
 		{
-			public string Field0;
-			public float[] Field1 = new float[3];
-			public int[] Field2 = new int[3];
-			public float Field3;
-			public float Field4;
-			public int Field5;
-			public float Field6;
-			public int Field7;
-			public int Field8;
-			public float Field9;
-			public float FieldA;
-			public float FieldB;
-			public byte FieldC;
-			public byte FieldD;
-			public int ID;
+			string Field0;
+			float[] Field1 = new float[3];
+			int[] Field2 = new int[3];
+			float Field3;
+			float Field4;
+			int Field5;
+			float Field6;
+			int Field7;
+			int Field8;
+			float Field9;
+			float FieldA;
+			float FieldB;
+			byte FieldC;
+			byte FieldD;
+			int ID;
 		}
 		public class _Uitextureatlas
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Uitextureatlasmember
 		{
-			public string Field0;
-			public int ID;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public byte Field7;
+			string Field0;
+			int ID;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			byte Field7;
 		}
 		public class _Uitexturekit
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Unitblood
 		{
-			public int ID;
-			public ushort Field1;
-			public int Field2;
-			public int Field3;
-			public int Field4;
-			public uint Field5;
-			public int Field6;
+			int ID;
+			ushort Field1;
+			int Field2;
+			int Field3;
+			int Field4;
+			uint Field5;
+			int Field6;
 		}
 		public class _Unitbloodlevels
 		{
-			public int ID;
-			public byte[] Field1 = new byte[3];
+			int ID;
+			byte[] Field1 = new byte[3];
 		}
 		public class _Unitcondition
 		{
-			public int ID;
-			public int[] Field1 = new int[8];
-			public byte Field2;
-			public byte[] Field3 = new byte[8];
-			public byte[] Field4 = new byte[8];
+			int ID;
+			int[] Field1 = new int[8];
+			byte Field2;
+			byte[] Field3 = new byte[8];
+			byte[] Field4 = new byte[8];
 		}
 		public class _UnitPowerBar
 		{
-			public int ID;
-			public string Name;
-			public string Cost;
-			public string OutOfError;
-			public string ToolTip;
-			public float RegenerationPeace;
-			public float RegenerationCombat;
-			public uint[] FileDataID = new uint[6];
-			public uint[] Color = new uint[6];
-			public float StartInset;
-			public float EndInset;
-			public ushort StartPower;
-			public ushort Flags;
-			public byte CenterPower;
-			public byte BarType;
-			public uint MinPower;
-			public uint MaxPower;
+			int ID;
+			string Name;
+			string Cost;
+			string OutOfError;
+			string ToolTip;
+			float RegenerationPeace;
+			float RegenerationCombat;
+			uint[] FileDataID = new uint[6];
+			uint[] Color = new uint[6];
+			float StartInset;
+			float EndInset;
+			ushort StartPower;
+			ushort Flags;
+			byte CenterPower;
+			byte BarType;
+			uint MinPower;
+			uint MaxPower;
 		}
 		public class _Vehicle
 		{
-			public int ID;
-			public uint Flags;
-			public float TurnSpeed;
-			public float PitchSpeed;
-			public float PitchMin;
-			public float PitchMax;
-			public float MouseLookOffsetPitch;
-			public float CameraFadeDistScalarMin;
-			public float CameraFadeDistScalarMax;
-			public float CameraPitchOffset;
-			public float FacingLimitRight;
-			public float FacingLimitLeft;
-			public float CameraYawOffset;
-			public ushort[] SeatID = new ushort[8];
-			public ushort VehicleUIIndicatorID;
-			public ushort[] PowerDisplayID = new ushort[3];
-			public byte FlagsB;
-			public byte UILocomotionType;
-			public int MissileTargetingID;
+			int ID;
+			uint Flags;
+			float TurnSpeed;
+			float PitchSpeed;
+			float PitchMin;
+			float PitchMax;
+			float MouseLookOffsetPitch;
+			float CameraFadeDistScalarMin;
+			float CameraFadeDistScalarMax;
+			float CameraPitchOffset;
+			float FacingLimitRight;
+			float FacingLimitLeft;
+			float CameraYawOffset;
+			ushort[] SeatID = new ushort[8];
+			ushort VehicleUIIndicatorID;
+			ushort[] PowerDisplayID = new ushort[3];
+			byte FlagsB;
+			byte UILocomotionType;
+			int MissileTargetingID;
 		}
 		public class _VehicleSeat
 		{
-			public int ID;
-			public uint[] Flags = new uint[3];
-			public float[] AttachmentOffset = new float[3];
-			public float EnterPreDelay;
-			public float EnterSpeed;
-			public float EnterGravity;
-			public float EnterMinDuration;
-			public float EnterMaxDuration;
-			public float EnterMinArcHeight;
-			public float EnterMaxArcHeight;
-			public float ExitPreDelay;
-			public float ExitSpeed;
-			public float ExitGravity;
-			public float ExitMinDuration;
-			public float ExitMaxDuration;
-			public float ExitMinArcHeight;
-			public float ExitMaxArcHeight;
-			public float PassengerYaw;
-			public float PassengerPitch;
-			public float PassengerRoll;
-			public float VehicleEnterAnimDelay;
-			public float VehicleExitAnimDelay;
-			public float CameraEnteringDelay;
-			public float CameraEnteringDuration;
-			public float CameraExitingDelay;
-			public float CameraExitingDuration;
-			public float[] CameraOffset = new float[3];
-			public float CameraPosChaseRate;
-			public float CameraFacingChaseRate;
-			public float CameraEnteringZoom;
-			public float CameraSeatZoomMin;
-			public float CameraSeatZoomMax;
-			public uint UISkinFileDataID;
-			public short EnterAnimStart;
-			public short EnterAnimLoop;
-			public short RideAnimStart;
-			public short RideAnimLoop;
-			public short RideUpperAnimStart;
-			public short RideUpperAnimLoop;
-			public short ExitAnimStart;
-			public short ExitAnimLoop;
-			public short ExitAnimEnd;
-			public short VehicleEnterAnim;
-			public short VehicleExitAnim;
-			public short VehicleRideAnimLoop;
-			public ushort EnterAnimKitID;
-			public ushort RideAnimKitID;
-			public ushort ExitAnimKitID;
-			public ushort VehicleEnterAnimKitID;
-			public ushort VehicleRideAnimKitID;
-			public ushort VehicleExitAnimKitID;
-			public ushort CameraModeID;
-			public byte AttachmentID;
-			public byte PassengerAttachmentID;
-			public byte VehicleEnterAnimBone;
-			public byte VehicleExitAnimBone;
-			public byte VehicleRideAnimLoopBone;
-			public byte VehicleAbilityDisplay;
-			public uint EnterUISoundID;
-			public uint ExitUISoundID;
+			int ID;
+			uint[] Flags = new uint[3];
+			float[] AttachmentOffset = new float[3];
+			float EnterPreDelay;
+			float EnterSpeed;
+			float EnterGravity;
+			float EnterMinDuration;
+			float EnterMaxDuration;
+			float EnterMinArcHeight;
+			float EnterMaxArcHeight;
+			float ExitPreDelay;
+			float ExitSpeed;
+			float ExitGravity;
+			float ExitMinDuration;
+			float ExitMaxDuration;
+			float ExitMinArcHeight;
+			float ExitMaxArcHeight;
+			float PassengerYaw;
+			float PassengerPitch;
+			float PassengerRoll;
+			float VehicleEnterAnimDelay;
+			float VehicleExitAnimDelay;
+			float CameraEnteringDelay;
+			float CameraEnteringDuration;
+			float CameraExitingDelay;
+			float CameraExitingDuration;
+			float[] CameraOffset = new float[3];
+			float CameraPosChaseRate;
+			float CameraFacingChaseRate;
+			float CameraEnteringZoom;
+			float CameraSeatZoomMin;
+			float CameraSeatZoomMax;
+			uint UISkinFileDataID;
+			short EnterAnimStart;
+			short EnterAnimLoop;
+			short RideAnimStart;
+			short RideAnimLoop;
+			short RideUpperAnimStart;
+			short RideUpperAnimLoop;
+			short ExitAnimStart;
+			short ExitAnimLoop;
+			short ExitAnimEnd;
+			short VehicleEnterAnim;
+			short VehicleExitAnim;
+			short VehicleRideAnimLoop;
+			ushort EnterAnimKitID;
+			ushort RideAnimKitID;
+			ushort ExitAnimKitID;
+			ushort VehicleEnterAnimKitID;
+			ushort VehicleRideAnimKitID;
+			ushort VehicleExitAnimKitID;
+			ushort CameraModeID;
+			byte AttachmentID;
+			byte PassengerAttachmentID;
+			byte VehicleEnterAnimBone;
+			byte VehicleExitAnimBone;
+			byte VehicleRideAnimLoopBone;
+			byte VehicleAbilityDisplay;
+			uint EnterUISoundID;
+			uint ExitUISoundID;
 		}
 		public class _Vehicleuiindicator
 		{
-			public int ID;
-			public int Field1;
+			int ID;
+			int Field1;
 		}
 		public class _Vehicleuiindseat
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public byte Field3;
+			int ID;
+			float Field1;
+			float Field2;
+			byte Field3;
 		}
 		public class _Vignette
 		{
-			public int ID;
-			public string Field1;
-			public float Field2;
-			public float Field3;
-			public int Field4;
-			public byte Field5;
-			public ushort Field6;
-			public ushort Field7;
+			int ID;
+			string Field1;
+			float Field2;
+			float Field3;
+			int Field4;
+			byte Field5;
+			ushort Field6;
+			ushort Field7;
 		}
 		public class _Virtualattachment
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
+			int ID;
+			string Field1;
+			ushort Field2;
 		}
 		public class _Virtualattachmentcustomization
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Vocaluisounds
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public int[] Field4 = new int[2];
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			int[] Field4 = new int[2];
 		}
 		public class _Wbaccesscontrollist
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
 		}
 		public class _Wbcertwhitelist
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _Weaponimpactsounds
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public byte Field3;
-			public int[] Field4 = new int[11];
-			public int[] Field5 = new int[11];
-			public int[] Field6 = new int[11];
-			public int[] Field7 = new int[11];
+			int ID;
+			byte Field1;
+			byte Field2;
+			byte Field3;
+			int[] Field4 = new int[11];
+			int[] Field5 = new int[11];
+			int[] Field6 = new int[11];
+			int[] Field7 = new int[11];
 		}
 		public class _Weaponswingsounds2
 		{
-			public int ID;
-			public byte Field1;
-			public byte Field2;
-			public int Field3;
+			int ID;
+			byte Field1;
+			byte Field2;
+			int Field3;
 		}
 		public class _Weapontrail
 		{
-			public int ID;
-			public int Field1;
-			public float Field2;
-			public int Field3;
-			public int Field4;
-			public int[] Field5 = new int[3];
-			public float[] Field6 = new float[3];
-			public float[] Field7 = new float[3];
-			public float[] Field8 = new float[3];
-			public float[] Field9 = new float[3];
+			int ID;
+			int Field1;
+			float Field2;
+			int Field3;
+			int Field4;
+			int[] Field5 = new int[3];
+			float[] Field6 = new float[3];
+			float[] Field7 = new float[3];
+			float[] Field8 = new float[3];
+			float[] Field9 = new float[3];
 		}
 		public class _Weapontrailmodeldef
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
+			int ID;
+			int Field1;
+			ushort Field2;
 		}
 		public class _Weapontrailparam
 		{
-			public int ID;
-			public float Field1;
-			public float Field2;
-			public float Field3;
-			public float Field4;
-			public float Field5;
-			public byte Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
+			int ID;
+			float Field1;
+			float Field2;
+			float Field3;
+			float Field4;
+			float Field5;
+			byte Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
 		}
 		public class _Weather
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public float Field2;
-			public float[] Field3 = new float[3];
-			public float Field4;
-			public float Field5;
-			public float Field6;
-			public float Field7;
-			public float Field8;
-			public ushort Field9;
-			public byte FieldA;
-			public byte FieldB;
-			public byte FieldC;
-			public ushort FieldD;
-			public int FieldE;
+			int ID;
+			float[] Field1 = new float[2];
+			float Field2;
+			float[] Field3 = new float[3];
+			float Field4;
+			float Field5;
+			float Field6;
+			float Field7;
+			float Field8;
+			ushort Field9;
+			byte FieldA;
+			byte FieldB;
+			byte FieldC;
+			ushort FieldD;
+			int FieldE;
 		}
 		public class _Windsettings
 		{
-			public int ID;
-			public float Field1;
-			public float[] Field2 = new float[3];
-			public float Field3;
-			public float Field4;
-			public float[] Field5 = new float[3];
-			public float Field6;
-			public float[] Field7 = new float[3];
-			public int Field8;
-			public int Field9;
-			public byte FieldA;
+			int ID;
+			float Field1;
+			float[] Field2 = new float[3];
+			float Field3;
+			float Field4;
+			float[] Field5 = new float[3];
+			float Field6;
+			float[] Field7 = new float[3];
+			int Field8;
+			int Field9;
+			byte FieldA;
 		}
 		public class _WMOAreaTable
 		{
-			public string AreaName;
-			public int WMOGroupID;
-			public ushort AmbienceID;
-			public ushort ZoneMusic;
-			public ushort IntroSound;
-			public ushort AreaTableID;
-			public ushort UWIntroSound;
-			public ushort UWAmbience;
-			public byte NameSet;
-			public byte SoundProviderPref;
-			public byte SoundProviderPrefUnderwater;
-			public byte Flags;
-			public int ID;
-			public uint UWZoneMusic;
+			string AreaName;
+			int WMOGroupID;
+			ushort AmbienceID;
+			ushort ZoneMusic;
+			ushort IntroSound;
+			ushort AreaTableID;
+			ushort UWIntroSound;
+			ushort UWAmbience;
+			byte NameSet;
+			byte SoundProviderPref;
+			byte SoundProviderPrefUnderwater;
+			byte Flags;
+			int ID;
+			uint UWZoneMusic;
 		}
 		public class _Wmominimaptexture
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public byte Field3;
-			public byte Field4;
+			int ID;
+			int Field1;
+			ushort Field2;
+			byte Field3;
+			byte Field4;
 		}
 		public class _World_pvp_area
 		{
-			public int ID;
-			public ushort Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public byte Field6;
-			public byte Field7;
+			int ID;
+			ushort Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			byte Field6;
+			byte Field7;
 		}
 		public class _Worldbosslockout
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
+			int ID;
+			string Field1;
+			ushort Field2;
 		}
 		public class _Worldchunksounds
 		{
-			public int ID;
-			public ushort Field1;
-			public byte Field2;
-			public byte Field3;
-			public byte Field4;
-			public byte Field5;
-			public byte Field6;
+			int ID;
+			ushort Field1;
+			byte Field2;
+			byte Field3;
+			byte Field4;
+			byte Field5;
+			byte Field6;
 		}
 		public class _WorldEffect
 		{
-			public int ID;
-			public uint TargetAsset;
-			public ushort CombatConditionID;
-			public byte TargetType;
-			public byte WhenToDisplay;
-			public uint QuestFeedbackEffectID;
-			public uint PlayerConditionID;
+			int ID;
+			uint TargetAsset;
+			ushort CombatConditionID;
+			byte TargetType;
+			byte WhenToDisplay;
+			uint QuestFeedbackEffectID;
+			uint PlayerConditionID;
 		}
 		public class _Worldelapsedtimer
 		{
-			public int ID;
-			public string Field1;
-			public byte Field2;
-			public byte Field3;
+			int ID;
+			string Field1;
+			byte Field2;
+			byte Field3;
 		}
 		public class _WorldMapArea
 		{
-			public string AreaName;
-			public float LocLeft;
-			public float LocRight;
-			public float LocTop;
-			public float LocBottom;
-			public uint Flags;
-			public ushort MapID;
-			public ushort AreaID;
-			public ushort DisplayMapID;
-			public short DefaultDungeonFloor;
-			public ushort ParentWorldMapID;
-			public byte LevelRangeMin;
-			public byte LevelRangeMax;
-			public byte BountySetID;
-			public byte BountyBoardLocation;
-			public int ID;
-			public uint PlayerConditionID;
+			string AreaName;
+			float LocLeft;
+			float LocRight;
+			float LocTop;
+			float LocBottom;
+			uint Flags;
+			ushort MapID;
+			ushort AreaID;
+			ushort DisplayMapID;
+			short DefaultDungeonFloor;
+			ushort ParentWorldMapID;
+			byte LevelRangeMin;
+			byte LevelRangeMax;
+			byte BountySetID;
+			byte BountyBoardLocation;
+			int ID;
+			uint PlayerConditionID;
 		}
 		public class _Worldmapcontinent
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public float Field2;
-			public float[] Field3 = new float[2];
-			public float[] Field4 = new float[2];
-			public ushort Field5;
-			public ushort Field6;
-			public byte Field7;
-			public byte Field8;
-			public byte Field9;
-			public byte FieldA;
-			public byte FieldB;
+			int ID;
+			float[] Field1 = new float[2];
+			float Field2;
+			float[] Field3 = new float[2];
+			float[] Field4 = new float[2];
+			ushort Field5;
+			ushort Field6;
+			byte Field7;
+			byte Field8;
+			byte Field9;
+			byte FieldA;
+			byte FieldB;
 		}
 		public class _WorldMapOverlay
 		{
-			public string TextureName;
-			public int ID;
-			public ushort TextureWidth;
-			public ushort TextureHeight;
-			public uint MapAreaID;
-			public uint[] AreaID = new uint[4];
-			public int OffsetX;
-			public int OffsetY;
-			public int HitRectTop;
-			public int HitRectLeft;
-			public int HitRectBottom;
-			public int HitRectRight;
-			public uint PlayerConditionID;
-			public uint Flags;
+			string TextureName;
+			int ID;
+			ushort TextureWidth;
+			ushort TextureHeight;
+			uint MapAreaID;
+			uint[] AreaID = new uint[4];
+			int OffsetX;
+			int OffsetY;
+			int HitRectTop;
+			int HitRectLeft;
+			int HitRectBottom;
+			int HitRectRight;
+			uint PlayerConditionID;
+			uint Flags;
 		}
 		public class _WorldMapTransforms
 		{
-			public int ID;
-			public float[] RegionMin = new float[3];
-			public float[] RegionMax = new float[3];
-			public float[] RegionOffset = new float[2];
-			public float RegionScale;
-			public ushort MapID;
-			public ushort AreaID;
-			public ushort NewMapID;
-			public ushort NewDungeonMapID;
-			public ushort NewAreaID;
-			public byte Flags;
-			public int Priority;
+			int ID;
+			float[] RegionMin = new float[3];
+			float[] RegionMax = new float[3];
+			float[] RegionOffset = new float[2];
+			float RegionScale;
+			ushort MapID;
+			ushort AreaID;
+			ushort NewMapID;
+			ushort NewDungeonMapID;
+			ushort NewAreaID;
+			byte Flags;
+			int Priority;
 		}
 		public class _WorldSafeLocs
 		{
-			public int ID;
-			public string AreaName;
-			public float[] Loc = new float[3];
-			public float Facing;
-			public ushort MapID;
+			int ID;
+			string AreaName;
+			float[] Loc = new float[3];
+			float Facing;
+			ushort MapID;
 		}
 		public class _Worldstate
 		{
-			public int ID;
+			int ID;
 		}
 		public class _Worldstateexpression
 		{
-			public int ID;
-			public string Field1;
+			int ID;
+			string Field1;
 		}
 		public class _Worldstateui
 		{
-			public string Field00;
-			public string Field01;
-			public string Field02;
-			public string Field03;
-			public string Field04;
-			public ushort Field05;
-			public ushort Field06;
-			public ushort Field07;
-			public ushort Field08;
-			public ushort Field09;
-			public ushort[] Field0A = new ushort[3];
-			public byte Field0B;
-			public byte Field0C;
-			public byte Field0D;
-			public int ID;
-			public int Field0F;
-			public int Field10;
+			string Field00;
+			string Field01;
+			string Field02;
+			string Field03;
+			string Field04;
+			ushort Field05;
+			ushort Field06;
+			ushort Field07;
+			ushort Field08;
+			ushort Field09;
+			ushort[] Field0A = new ushort[3];
+			byte Field0B;
+			byte Field0C;
+			byte Field0D;
+			int ID;
+			int Field0F;
+			int Field10;
 		}
 		public class _Worldstatezonesounds
 		{
-			public int ID;
-			public int Field1;
-			public ushort Field2;
-			public ushort Field3;
-			public ushort Field4;
-			public ushort Field5;
-			public ushort Field6;
-			public ushort Field7;
-			public byte Field8;
+			int ID;
+			int Field1;
+			ushort Field2;
+			ushort Field3;
+			ushort Field4;
+			ushort Field5;
+			ushort Field6;
+			ushort Field7;
+			byte Field8;
 		}
 		public class _Zoneintromusictable
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public byte Field3;
-			public uint Field4;
+			int ID;
+			string Field1;
+			ushort Field2;
+			byte Field3;
+			uint Field4;
 		}
 		public class _Zonelight
 		{
-			public int ID;
-			public string Field1;
-			public ushort Field2;
-			public ushort Field3;
+			int ID;
+			string Field1;
+			ushort Field2;
+			ushort Field3;
 		}
 		public class _Zonelightpoint
 		{
-			public int ID;
-			public float[] Field1 = new float[2];
-			public byte Field2;
+			int ID;
+			float[] Field1 = new float[2];
+			byte Field2;
 		}
 		public class _Zonemusic
 		{
-			public int ID;
-			public string Field1;
-			public int[] Field2 = new int[2];
-			public int[] Field3 = new int[2];
-			public int[] Field4 = new int[2];
+			int ID;
+			string Field1;
+			int[] Field2 = new int[2];
+			int[] Field3 = new int[2];
+			int[] Field4 = new int[2];
 		}
 		public class _Zonestory
 		{
-			public int ID;
-			public int Field1;
-			public int Field2;
-			public byte Field3;
+			int ID;
+			int Field1;
+			int Field2;
+			byte Field3;
 		}
 	}
 }

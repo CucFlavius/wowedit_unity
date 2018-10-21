@@ -9,16 +9,16 @@ using UnityEngine;
 public static partial class WDC1
 {
     private const int headerSize = 84;
-    public static DB2.wdc1_db2_header header;
-    public static DB2.field_structure[] fields;
-    public static int[] m_indexData;
-    public static DB2.ColumnMetaData[] m_columnMeta;
-    public static DB2.Value32[][] m_palletData;
-    public static Dictionary<int, DB2.Value32>[] m_commonData;
+
+    private static DB2.field_structure[] fields;
+    private static int[] m_indexData;
+    private static DB2.ColumnMetaData[] m_columnMeta;
+    private static DB2.Value32[][] m_palletData;
+    private static Dictionary<int, DB2.Value32>[] m_commonData;
 
     // Normal Records Data //
-    public static byte[] recordsData;
-    public static Dictionary<long, string> m_stringsTable;
+    private static byte[] recordsData;
+    private static Dictionary<long, string> m_stringsTable;
 
     // Sparse Records Data //
     public static DB2.offset_map_entry[] sparseEntries;
@@ -29,7 +29,7 @@ public static partial class WDC1
         {
             // Header //
             StreamTools s = new StreamTools();
-            header = ReadHeader(ms);
+            DB2.wdc1_db2_header header = ReadHeader(ms);
 
             // Field Meta Data //
             fields = new DB2.field_structure[header.total_field_count];
@@ -56,6 +56,7 @@ public static partial class WDC1
                 for (int i = 0; i < header.string_table_size;)
                 {
                     long oldPos = ms.Position;
+
                     m_stringsTable[i] = s.ReadCString(ms, Encoding.UTF8);
                     //Debug.Log(m_stringsTable[i]);
 
@@ -108,9 +109,16 @@ public static partial class WDC1
                 copyData[s.ReadLong(ms)] = s.ReadLong(ms);
             }
 
+            for (int t = 0; t < header.record_count; t++)
+            {
+                if (copyData.ContainsKey(t))
+                {
+                    Debug.Log("copy " + t + " to " + copyData[t]);
+                }
+            }
+
             // Column Meta Data //
             m_columnMeta = new DB2.ColumnMetaData[header.total_field_count];
-            //Debug.Log(m_columnMeta.Length);
             //Debug.Log("header.total_field_count " + header.total_field_count);
             for (int cmd = 0; cmd < header.total_field_count; cmd++)
             {
@@ -119,25 +127,24 @@ public static partial class WDC1
                 columnData.Size = s.ReadUint16(ms);
                 columnData.AdditionalDataSize = s.ReadUint32(ms);
                 columnData.CompressionType = (DB2.CompressionType)s.ReadLong(ms);
-                Debug.Log(columnData.CompressionType);
                 switch (columnData.CompressionType)
                 {
                     case DB2.CompressionType.Immediate:
                         {
                             DB2.ColumnCompressionData_Immediate Immediate = new DB2.ColumnCompressionData_Immediate();
-                            Immediate.BitOffset = s.ReadLong(ms);
-                            Immediate.BitWidth = s.ReadLong(ms);
-                            Immediate.Flags = s.ReadLong(ms);
+                            Immediate.BitOffset = s.ReadUint32(ms);
+                            Immediate.BitWidth = s.ReadUint32(ms);
+                            Immediate.Flags = s.ReadUint32(ms);
                             columnData.Immediate = Immediate;
                             break;
                         }
-
+                    
                     case DB2.CompressionType.Pallet:
                         {
                             DB2.ColumnCompressionData_Pallet Pallet = new DB2.ColumnCompressionData_Pallet();
-                            Pallet.BitOffset = s.ReadLong(ms);
-                            Pallet.BitWidth = s.ReadLong(ms);
-                            Pallet.Cardinality = s.ReadLong(ms);
+                            Pallet.BitOffset = s.ReadUint32(ms);
+                            Pallet.BitWidth = s.ReadUint32(ms);
+                            Pallet.Cardinality = s.ReadUint32(ms);
                             columnData.Pallet = Pallet;
                             break;
                         }
@@ -176,6 +183,7 @@ public static partial class WDC1
             m_commonData = new Dictionary<int, DB2.Value32>[m_columnMeta.Length];
             for (int i = 0; i < m_columnMeta.Length; i++)
             {
+                //Debug.Log(m_columnMeta[i].CompressionType);
                 if (m_columnMeta[i].CompressionType == DB2.CompressionType.Common)
                 {
                     Dictionary<int, DB2.Value32> commonValues = new Dictionary<int, DB2.Value32>();
@@ -203,7 +211,60 @@ public static partial class WDC1
 
             //DB2.BitReader bitReader = new DB2.BitReader(recordsData);
 
-            DB2.Data.Sort(fileName);
+            //int position = 0;
+            using (MemoryStream rs = new MemoryStream(recordsData))
+            {
+                for (int i = 0; i < header.record_count; ++i)
+                {
+                    int[] values = new int[m_columnMeta.Length];
+                    values[0] = s.ReadUint32(rs);
+                    values[1] = s.ReadUint16(rs);
+                    values[2] = s.ReadUint16(rs);
+                    values[3] = s.ReadUint32(rs);
+
+                    //Debug.Log(i + " " + values[0] + " " + values[1] + " " + values[2] + " " + values[3]);
+                }
+            }
+
+
+                for (int i = 0; i < header.record_count; ++i)
+                {
+                    int[] values = new int[m_columnMeta.Length];
+                    //values[0] = s.ReadUint32(ms);
+                    //values[1] = s.ReadUint16(ms);
+                    //values[2] = s.ReadUint16(ms);
+                    //values[3] = ms.ReadByte();
+
+                    //values[0] = new recordsData[position]
+    
+                //Debug.Log(recordsData[])
+
+                    //Debug.Log(i + " " + values[0] + " " + values[1] + " " + values[2] + " " + values[3]);
+
+                    for (int j = 0; j < m_columnMeta.Length; j++)
+                    {
+
+                        /*
+                        if (m_columnMeta[j].CompressionType == DB2.CompressionType.Common)
+                            values[j] = m_commonData[j][i].GetValue<int>();
+                        if (m_columnMeta[j].CompressionType == DB2.CompressionType.Pallet)
+                            values[j] = m_palletData[j][i].GetValue<int>();
+                        */
+                    }
+
+                    /*
+                    bitReader.Position = 0;
+                    bitReader.Offset = i * header.record_size;
+
+                    DB2.IDB2Row rec = new WDC1Row(this, bitReader, indexDataSize != 0 ? m_indexData[i] : -1, refData?.Entries[i]);
+                    rec.RecordIndex = i;
+
+                    if (indexDataSize != 0)
+                        _Records.Add(m_indexData[i], rec);
+                    else
+                        _Records.Add(rec.Id, rec);
+                    */
+                }
         }
     }
 

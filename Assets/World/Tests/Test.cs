@@ -11,7 +11,7 @@ public class Test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        //Invoke("Delayed", 0.1f);
+        Invoke("Delayed", 0.1f);
 	}
 	
     void Delayed ()

@@ -85,7 +85,6 @@ public class StreamTools
         return str;
     }
 
-
     // 2 bytes to int //
     public int ReadShort(MemoryStream stream)
     {
