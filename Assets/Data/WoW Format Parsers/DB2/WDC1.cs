@@ -122,7 +122,7 @@ public static partial class DB2
             //Debug.Log("header.total_field_count " + header.total_field_count);
             for (int cmd = 0; cmd < header.total_field_count; cmd++)
             {
-                .ColumnMetaData columnData = new ColumnMetaData();
+                ColumnMetaData columnData = new ColumnMetaData();
                 columnData.RecordOffset = s.ReadUint16(ms);
                 columnData.Size = s.ReadUint16(ms);
                 columnData.AdditionalDataSize = s.ReadUint32(ms);

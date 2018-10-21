@@ -5,6 +5,11 @@ public class DevTools : MonoBehaviour {
 
     public WorldLoader World;
 
+    public void ReadDB2(string filename)
+    {
+        DB2.Read(filename);
+    }
+
     public void Button_LoadTestMap (string id)
     {
         //World.ClearAllTerrain();

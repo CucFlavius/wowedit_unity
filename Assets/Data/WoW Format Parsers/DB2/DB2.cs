@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static partial class DB2
 {
-    public static string[] fileNames = new string[] { "animationdata.db2" };
+    public static string[] fileNames = new string[] { "battlepetabilityeffect.db2" };
     public static Dictionary<string, bool> availableFiles = new Dictionary<string, bool>();
     private static string dbfilesclient = @"dbfilesclient\";
 
@@ -31,31 +31,10 @@ public static partial class DB2
 
     public static void Read(string fileName)
     {
-        string dataPath = dbfilesclient + fileName;
-        string path = Casc.GetFile(dataPath);
-        byte[] fileData = File.ReadAllBytes(path);
+        //string dataPath = dbfilesclient + fileName;
+        //string path = Casc.GetFile(dataPath);
+        //byte[] fileData = File.ReadAllBytes(path);
 
-        // Check DB2 Version //
-
-        //// WDC //
-        //if (fileData[0] == Convert.ToByte('W') && fileData[1] == Convert.ToByte('D') && fileData[2] == Convert.ToByte('C'))
-        //{
-        //    // WDC 1 //
-        //    if (fileData[3] == Convert.ToByte('1'))
-        //    {
-        //        WDC1.Read(fileName, fileData);
-        //    }
-        //    // WDC 2 //
-        //    if (fileData[3] == Convert.ToByte('2'))
-        //    {
-        //        WDC2.Read(fileName, fileData);
-        //    }
-        //    // WDC 3 //
-        //    if (fileData[3] == Convert.ToByte('3'))
-        //    {
-        //        WDC3.Read(fileName, fileData);
-        //    }
-        //}
         var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         using (var bin = new BinaryReader(stream))
         {
@@ -67,7 +46,7 @@ public static partial class DB2
                     WDC2.Read(fileName, stream);
                     break;
                 default:
-                    Debug.Log("DBC Type " + identifier + "is not supported");
+                    Debug.Log("DBC Type " + identifier + " is not supported");
                     break;
             }
         }
