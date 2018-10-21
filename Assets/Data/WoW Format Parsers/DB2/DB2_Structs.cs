@@ -43,59 +43,62 @@ public static partial class DB2
         public int relationship_data_size;
     };
 
-    public class DB2Reader : IEnumerable<KeyValuePair<int, IDB2Row>>
+    public static class DB2Reader
     {
-        public int RecordsCount { get; protected set; }
-        public int FieldsCount { get; protected set; }
-        public int RecordSize { get; protected set; }
-        public int StringTableSize { get; protected set; }
-        public uint TableHash { get; protected set; }
-        public uint LayoutHash { get; protected set; }
-        public int MinIndex { get; protected set; }
-        public int MaxIndex { get; protected set; }
-        public int IdFieldIndex { get; protected set; }
-        public DB2Flags Flags { get; protected set; }
+        public static int RecordsCount { get; set; }
+        public static int FieldsCount { get; set; }
+        public static int RecordSize { get; set; }
+        public static int StringTableSize { get; set; }
+        public static uint TableHash { get; set; }
+        public static uint LayoutHash { get; set; }
+        public static int MinIndex { get; set; }
+        public static int MaxIndex { get; set; }
+        public static int IdFieldIndex { get; set; }
+        public static DB2Flags Flags { get; set; }
 
-        protected FieldMetaData[] m_meta;
-        public FieldMetaData[] Meta => m_meta;
+        public static FieldMetaData[] m_meta;
+        public static FieldMetaData[] Meta => m_meta;
 
-        protected int[] m_indexData;
-        public int[] IndexData => m_indexData;
+        public static int[] m_indexData;
+        public static int[] IndexData => m_indexData;
 
-        protected ColumnMetaData[] m_columnMeta;
-        public ColumnMetaData[] ColumnMeta => m_columnMeta;
+        public static ColumnMetaData[] m_columnMeta;
+        public static ColumnMetaData[] ColumnMeta => m_columnMeta;
 
-        protected Value32[][] m_palletData;
-        public Value32[][] PalletData => m_palletData;
+        public static Value32[][] m_palletData;
+        public static Value32[][] PalletData => m_palletData;
 
-        protected Dictionary<int, Value32>[] m_commonData;
-        public Dictionary<int, Value32>[] CommonData => m_commonData;
+        public static Dictionary<int, Value32>[] m_commonData;
+        public static Dictionary<int, Value32>[] CommonData => m_commonData;
 
-        public Dictionary<long, string> StringTable => m_stringsTable;
+        public static Dictionary<long, string> StringTable => m_stringsTable;
 
-        protected Dictionary<int, IDB2Row> _Records = new Dictionary<int, IDB2Row>();
+        public static Dictionary<int, IDB2Row> _Records = new Dictionary<int, IDB2Row>();
 
         // Normal Records Data
-        protected byte[] recordsData;
-        protected Dictionary<long, string> m_stringsTable;
+        public static byte[] recordsData;
+        public static Dictionary<long, string> m_stringsTable;
 
         // Sparse records data
-        public offset_map_entry[] sparseEntries;
+        public static offset_map_entry[] sparseEntries;
 
-        public bool HasRow(int id)
+        public static bool HasRow(int id)
         {
             return _Records.ContainsKey(id);
         }
+    }
 
-        public IEnumerator<KeyValuePair<int, IDB2Row>> GetEnumerator()
-        {
-            return _Records.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _Records.GetEnumerator();
-        }
+    public struct SectionHeader
+    {
+        public int unk1;
+        public int unk2;
+        public int FileOffset;
+        public int NumRecords;
+        public int StringTableSize;
+        public int CopyTableSize;
+        public int SparseTableOffset; // CatalogDataOffset, absolute value, {uint offset, ushort size}[MaxId - MinId + 1]
+        public int IndexDataSize; // int indexData[IndexDataSize / 4]
+        public int ParentLookupDataSize; // uint NumRecords, uint minId, uint maxId, {uint id, uint index}[NumRecords], questionable usefulness...
     }
 
     public enum DB2Flags : short

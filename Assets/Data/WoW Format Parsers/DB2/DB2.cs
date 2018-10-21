@@ -66,14 +66,11 @@ public static partial class DB2
                 case "WDC2":
                     WDC2.Read(fileName, stream);
                     break;
+                default:
+                    Debug.Log("DBC Type " + identifier + "is not supported");
+                    break;
             }
         }
-
-        //// WDB //
-        //else
-        //{
-        //    Debug.LogWarning("Warning: " + "DB2 Format not supported: " + fileData[0] + fileData[1] + fileData[2] + fileData[3] + fileName);
-        //}
     }
 
     public class BitReader
