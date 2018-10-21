@@ -130,6 +130,11 @@ Using Unity 2018.1.0f2
 |----|----|----|----|
 |  | M2 models | ✓ | % |
 
-      
+| DB2 | Description | Parsed | Implemented
+|----|----|----|----|
+| WDC1 | WDC1 Support | ✓ | % |
+| WDC2 | WDC2 Support | % | X |
+| WDC3 | WDC3 Support | % | X |
+
 The main source of information when i comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
 Big thanks to the guys who made and update the wiki.
