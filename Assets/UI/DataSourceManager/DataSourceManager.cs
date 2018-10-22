@@ -20,6 +20,7 @@ public class DataSourceManager : MonoBehaviour {
 
     public void Initialize ()
     {
+        Debug.Log("Init");
         // Update Game List //
         Settings.DropdownGameList.Clear();
         if (Settings.Data[4] != null)

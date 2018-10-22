@@ -41,3 +41,4 @@ sysinfo.txt
 # Settings.ini
 *.ini
 Settings.ini
+*.db2

@@ -75,10 +75,18 @@ public static class Settings
             var obj = key.GetValue("InstallPath");
             if (obj != null)
             {
-                if (Data[3] == null || Data[3] == "" && File.Exists(obj + "Wow-64.exe"))
+                if (Data[3] == null || Data[3] == "")
                 {
-                    Data[3] = obj.ToString();
-                    availableInstalls.Add(obj.ToString(), GetWoWVersion(obj + "Wow-64.exe"));
+                    if (File.Exists(obj + "Wow-64.exe"))
+                    {
+                        Data[3] = obj.ToString();
+                        availableInstalls.Add(obj.ToString(), GetWoWVersion(obj + "Wow-64.exe"));
+                    }
+                    else if (File.Exists(obj + "Wow.exe"))
+                    {
+                        Data[3] = obj.ToString();
+                        availableInstalls.Add(obj.ToString(), GetWoWVersion(obj + "Wow.exe"));
+                    }
                 }
                 Data[4] = obj.ToString();
             }

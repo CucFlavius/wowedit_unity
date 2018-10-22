@@ -107,6 +107,7 @@ public class RunAtLaunch : MonoBehaviour {
         if (Settings.Data[2] == null || Settings.Data[2] == "")
         {
             // open Data Source Manager //
+            DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             DataSourceManagerPanel.SetActive(true);
         }
 
