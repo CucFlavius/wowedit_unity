@@ -57,26 +57,26 @@ public static partial class DB2
                 DB2Reader.m_meta = reader.ReadArray<FieldMetaData>(DB2Reader.FieldsCount);
 
                 // Column meta data
-                m_columnMeta = reader.ReadArray<ColumnMetaData>(DB2Reader.FieldsCount);
+                DB2Reader.m_columnMeta = reader.ReadArray<ColumnMetaData>(DB2Reader.FieldsCount);
 
                 // Pallet data
-                m_palletData = new Value32[m_columnMeta.Length][];
-                for (int i = 0; i < m_columnMeta.Length; i++)
+                DB2Reader.m_palletData = new Value32[DB2Reader.m_columnMeta.Length][];
+                for (int i = 0; i < DB2Reader.m_columnMeta.Length; i++)
                 {
-                    if (m_columnMeta[i].CompressionType == CompressionType.Pallet || m_columnMeta[i].CompressionType == CompressionType.PalletArray)
-                        m_palletData[i] = reader.ReadArray<Value32>((int)m_columnMeta[i].AdditionalDataSize / 4);
+                    if (DB2Reader.m_columnMeta[i].CompressionType == CompressionType.Pallet || DB2Reader.m_columnMeta[i].CompressionType == CompressionType.PalletArray)
+                        DB2Reader.m_palletData[i] = reader.ReadArray<Value32>((int)DB2Reader.m_columnMeta[i].AdditionalDataSize / 4);
                 }
 
                 // Common Data
-                m_commonData = new Dictionary<int, Value32>[m_columnMeta.Length];
-                for (int i = 0; i < m_columnMeta.Length; i++)
+                DB2Reader.m_commonData = new Dictionary<int, Value32>[DB2Reader.m_columnMeta.Length];
+                for (int i = 0; i < DB2Reader.m_columnMeta.Length; i++)
                 {
-                    if (m_columnMeta[i].CompressionType == CompressionType.Common)
+                    if (DB2Reader.m_columnMeta[i].CompressionType == CompressionType.Common)
                     {
                         Dictionary<int, Value32> commonValues = new Dictionary<int, Value32>();
-                        m_commonData[i] = commonValues;
+                        DB2Reader.m_commonData[i] = commonValues;
 
-                        for (int j = 0; j < m_columnMeta[i].AdditionalDataSize / 8; j++)
+                        for (int j = 0; j < DB2Reader.m_columnMeta[i].AdditionalDataSize / 8; j++)
                             commonValues[reader.ReadInt32()] = reader.Read<Value32>();
                     }
                 }
@@ -88,22 +88,22 @@ public static partial class DB2
                     if (!DB2Reader.Flags.HasFlagExt(DB2Flags.OffsetMap))
                     {
                         // Records Data
-                        recordsData = reader.ReadBytes(sections[sectionIndex].NumRecords * DB2Reader.RecordSize);
-                        Array.Resize(ref recordsData, recordsData.Length + 8);  // Pad with extra zeros so we don't crash when reading
+                        DB2Reader.recordsData = reader.ReadBytes(sections[sectionIndex].NumRecords * DB2Reader.RecordSize);
+                        Array.Resize(ref DB2Reader.recordsData, DB2Reader.recordsData.Length + 8);  // Pad with extra zeros so we don't crash when reading
 
                         // string data
-                        m_stringsTable = new Dictionary<long, string>();
+                        DB2Reader.m_stringsTable = new Dictionary<long, string>();
                         for (int i = 0; i < sections[sectionIndex].StringTableSize;)
                         {
                             long oldPos = reader.BaseStream.Position;
-                            m_stringsTable[oldPos] = reader.ReadCString();
+                            DB2Reader.m_stringsTable[oldPos] = reader.ReadCString();
                             i += (int)(reader.BaseStream.Position - oldPos);
                         }
                     }
                     else
                     {
                         // Sparse data with inlined strings
-                        recordsData = reader.ReadBytes(sections[sectionIndex].SparseTableOffset - sections[sectionIndex].FileOffset);
+                        DB2Reader.recordsData = reader.ReadBytes(sections[sectionIndex].SparseTableOffset - sections[sectionIndex].FileOffset);
 
                         if (reader.BaseStream.Position != sections[sectionIndex].SparseTableOffset)
                             Debug.Log("reader.BaseStream.Position != sections[sectionIndex].SparseTableOffset");
@@ -126,11 +126,11 @@ public static partial class DB2
                             tempSparseEntries.Add(sparse);
                             offSetKeyMap.Add(sparse.offset, 0);
                         }
-                        sparseEntries = tempSparseEntries.ToArray();
+                        DB2Reader.sparseEntries = tempSparseEntries.ToArray();
                     }
 
                     // Index data
-                    m_indexData = reader.ReadArray<int>(sections[sectionIndex].IndexDataSize / 4);
+                    DB2Reader.m_indexData = reader.ReadArray<int>(sections[sectionIndex].IndexDataSize / 4);
 
                     // duplicate rows data
                     Dictionary<int, int> copyData = new Dictionary<int, int>();
@@ -151,16 +151,16 @@ public static partial class DB2
                     }
 
                     int pos = 0;
-                    bool indexDataNotEmpty = sections[sectionIndex].IndexDataSize != 0 && m_indexData.GroupBy(i => i).Where(d => d.Count() > 1).Count() == 0;
+                    bool indexDataNotEmpty = sections[sectionIndex].IndexDataSize != 0 && DB2Reader.m_indexData.GroupBy(i => i).Where(d => d.Count() > 1).Count() == 0;
 
                     for (int i = 0; i < DB2Reader.RecordsCount; i++)
                     {
-                        BitReader bitReader = new BitReader(recordsData) { Position = 0 };
+                        BitReader bitReader = new BitReader(DB2Reader.recordsData) { Position = 0 };
 
                         if (DB2Reader.Flags.HasFlagExt(DB2Flags.OffsetMap))
                         {
                             bitReader.Position = pos;
-                            pos += sparseEntries[i].size * 8;
+                            pos += DB2Reader.sparseEntries[i].size * 8;
                         }
                         else
                             bitReader.Offset = i * DB2Reader.RecordSize;
@@ -177,7 +177,7 @@ public static partial class DB2
                     foreach (var copyRow in copyData)
                     {
                         IDB2Row rec = DB2Reader._Records[copyRow.Value].Clone();
-                        rec.Data = new BitReader(recordsData);
+                        rec.Data = new BitReader(DB2Reader.recordsData);
 
                         rec.Data.Position = DB2Reader.Flags.HasFlagExt(DB2Flags.OffsetMap) ? DB2Reader._Records[copyRow.Value].Data.Position : 0;
                         rec.Data.Offset = DB2Reader.Flags.HasFlagExt(DB2Flags.OffsetMap) ? 0 : DB2Reader._Records[copyRow.Value].Data.Offset;

@@ -31,11 +31,8 @@ public static partial class DB2
 
     public static void Read(string fileName)
     {
-        //string dataPath = dbfilesclient + fileName;
-        //string path = Casc.GetFile(dataPath);
-        //byte[] fileData = File.ReadAllBytes(path);
-
-        var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        //var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        var stream = Casc.GetFileStream(fileName);
         using (var bin = new BinaryReader(stream))
         {
             var identifier = new string(bin.ReadChars(4));
