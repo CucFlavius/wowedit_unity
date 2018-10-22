@@ -89,8 +89,11 @@ public static class Settings
             var objPTR = keyPTR.GetValue("InstallPath");
             if (objPTR != null)
             {
-                Data[5] = objPTR.ToString();
-                availableInstalls.Add(objPTR.ToString(), GetWoWVersion(objPTR + "WowT-64.exe"));
+                if (File.Exists(objPTR + "WowT-64.exe"))
+                {
+                    Data[5] = objPTR.ToString();
+                    availableInstalls.Add(objPTR.ToString(), GetWoWVersion(objPTR + "WowT-64.exe"));
+                }
             }
         }
         RegistryKey keyBeta = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Blizzard Entertainment\\World of Warcraft\\Beta");
@@ -99,10 +102,14 @@ public static class Settings
             var objPTR = keyBeta.GetValue("InstallPath");
             if (objPTR != null)
             {
-                Data[6] = objPTR.ToString();
-                availableInstalls.Add(objPTR.ToString(), GetWoWVersion(objPTR + "WowB.exe"));
+                if (File.Exists(objPTR + "WowB.exe"))
+                {
+                    Data[6] = objPTR.ToString();
+                    availableInstalls.Add(objPTR.ToString(), GetWoWVersion(objPTR + "WowB.exe"));
+                }
             }
         }
+        Debug.Log("Available Installs : " + availableInstalls.Count);
     }
 
     public static string GetWoWVersion (string exePath)

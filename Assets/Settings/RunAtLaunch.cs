@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
-using System.IO;
+
 
 public class RunAtLaunch : MonoBehaviour {
 
@@ -15,6 +14,9 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
+
+        Agent.FindWowInstalls();
+
         Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
@@ -114,5 +116,8 @@ public class RunAtLaunch : MonoBehaviour {
             CascInitialize.Start();
         }
     }
+
+
+
 }
 
