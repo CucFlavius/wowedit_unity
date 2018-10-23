@@ -26,7 +26,8 @@ public static partial class Casc{
     {
 	    if (bigArray != null) {
 		    byte[] smallArray = new byte[9];
-		    for (int i = 0; i < 9; i++) {
+		    for (int i = 0; i < 9; i++)
+            {
 			    smallArray[i] = bigArray[i];
 		    }
 		    return smallArray;
@@ -36,7 +37,8 @@ public static partial class Casc{
 
     public static string ByteString (byte[] bytes) 
     {
-	    if (bytes != null) {
+	    if (bytes != null)
+        {
 		    return Convert.ToBase64String(bytes);
 	    }
 	    else return null;
@@ -44,12 +46,14 @@ public static partial class Casc{
 
     public static FileStream GetDatafileStream(int index)
     {
-	    if (index >= 0){
-	    var fs = new FileStream(WoWDataPath + @"\data\data."+index.ToString("000"), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-	    return fs;
+	    if (index >= 0)
+        {
+	        var fs = new FileStream(WoWDataPath + @"\data\data."+index.ToString("000"), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+	        return fs;
 	    }
 	
-	    else {
+	    else
+        {
 		    Debug.Log ("wrong index : "+index);
 		    return null;
 	    }

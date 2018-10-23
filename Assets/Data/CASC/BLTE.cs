@@ -12,6 +12,7 @@ public static class BLTE {
     public static MemoryStream OpenFile (Stream stream, int size)
     {
         MemoryStream memStream = new MemoryStream();
+        //Debug.Log(stream.Position + " " + stream.Length);
 	    memStream = ExtractData(stream, size);
 	    if (memStream != null) {
 		    memStream.Position = 0;

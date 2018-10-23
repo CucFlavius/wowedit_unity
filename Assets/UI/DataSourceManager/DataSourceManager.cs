@@ -168,7 +168,7 @@ public class DataSourceManager : MonoBehaviour {
 
     public bool CheckValidWoWPath (string path)
     {
-        if (File.Exists(path + "Wow-64.exe") || File.Exists(path + "WowB-64.exe") || File.Exists(path + "WowT-64.exe"))
+        if (File.Exists(path + "Wow-64.exe") || File.Exists(path + "WowB-64.exe") || File.Exists(path + "WowT-64.exe") || File.Exists(path + "Wow.exe"))
             return true;
         else
             return false;

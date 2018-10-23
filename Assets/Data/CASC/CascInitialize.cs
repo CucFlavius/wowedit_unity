@@ -30,8 +30,8 @@ public static class CascInitialize  {
         if (Initialized == false)
         {
             ThreadRunning = true;
-            CASCThread.Start();
-            //CASCInitThread();
+            //CASCThread.Start();
+            CASCInitThread();
         }
         else
         {

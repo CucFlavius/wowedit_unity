@@ -125,6 +125,7 @@ public static partial class Casc
             if (File.Exists(filePathBuffer))
             {
                 buildFilePath = filePathBuffer;
+                Debug.Log("buildFilePath : " + buildFilePath);
                 WoWVersion = wowVersionBuffer;
                 break;
             }
@@ -166,6 +167,7 @@ public static partial class Casc
         if (!File.Exists(encodingFilePath))
         {
             // convert encoding key string to byte array
+            Debug.Log("Encoding key : " + WoWEncodingKey);
             byte[] WoWEncodingKeyBytes = ToByteArray(WoWEncodingKey);
             //// Extract Encoding File from BLTE and Read its Data ////
             var fs = OpenWoWFile(WoWEncodingKeyBytes);
@@ -195,6 +197,7 @@ public static partial class Casc
 		    var FileIndex = IndexBlockParser.LocalIndexData[newString].Index;
 		    var FileOffset = IndexBlockParser.LocalIndexData[newString].Offset;
 		    var FileSize = IndexBlockParser.LocalIndexData[newString].Size;
+            Debug.Log(FileIndex + " " + FileOffset + " " + FileSize);
 		    var stream = GetDatafileStream(FileIndex);
 		    if (stream == null){return null;}
 		    stream.Position = FileOffset;
