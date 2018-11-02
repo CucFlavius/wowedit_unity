@@ -17,32 +17,6 @@ public static partial class DB2
         IDB2Row Clone();
     }
 
-    public struct wdc1_db2_header
-    {
-        public int magic;                  // 'WDC1'
-        public int record_count;
-        public int field_count;
-        public int record_size;
-        public int string_table_size;
-        public int table_hash;             // hash of the table name
-        public int layout_hash;            // this is a hash field that changes only when the structure of the data changes
-        public int min_id;
-        public int max_id;
-        public int locale;                 // as seen in TextWowEnum
-        public int copy_table_size;
-        public DB2Flags flags;             // possible values are listed in Known Flag Meanings
-        public int id_index;               // this is the index of the field containing ID values; this is ignored if flags & 0x04 != 0
-        public int total_field_count;      // from WDC1 onwards, this value seems to always be the same as the 'field_count' value
-        public int bitpacked_data_offset;  // relative position in record where bitpacked data begins; not important for parsing the file
-        public int lookup_column_count;
-        public int offset_map_offset;      // Offset to array of struct {public int offset; uint16_t size;}[max_id - min_id + 1];
-        public int id_list_size;           // List of ids present in the DB file
-        public int field_storage_info_size;
-        public int common_data_size;
-        public int pallet_data_size;
-        public int relationship_data_size;
-    };
-
     public static class DB2Reader
     {
         public static int RecordsCount { get; set; }

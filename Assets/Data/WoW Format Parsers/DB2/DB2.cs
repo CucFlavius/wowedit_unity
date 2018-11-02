@@ -39,6 +39,9 @@ public static partial class DB2
             stream.Position = 0;
             switch (identifier)
             {
+                case "WDC1":
+                    WDC1.Read(fileName, stream);
+                    break;
                 case "WDC2":
                     WDC2.Read(fileName, stream);
                     break;
