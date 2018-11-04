@@ -7754,7 +7754,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43975097, g: 0.5050863, b: 0.58236194, a: 1}
+  m_IndirectSpecularColor: {r: 0.43975148, g: 0.5050869, b: 0.5823624, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!108 &423
 Light:
@@ -18423,7 +18423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MinimapPrefab: {fileID: 1967915011876050, guid: c07927c5938dadb4d97a7dbce61df718,
-    type: 2}
+    type: 3}
   LoadingPanel: {fileID: 370}
   LoadingBar: {fileID: 1758}
   PanelErrorMessage: {fileID: 236}
@@ -22275,7 +22275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57120e0167139214cb11bd42020a5c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FolderItem: {fileID: 1000013507609692, guid: b0cdc1489d5fcec43a2a8db7de686ff1, type: 2}
+  FolderItem: {fileID: 1000013507609692, guid: b0cdc1489d5fcec43a2a8db7de686ff1, type: 3}
   Content: {fileID: 153}
   PanelInfo: {fileID: 1560}
   currentlySelected: {fileID: 0}
@@ -22352,9 +22352,9 @@ MonoBehaviour:
   WMOParent: {fileID: 56}
   M2Parent: {fileID: 1911478138}
   ADTBlockObject: {fileID: 1959010497222844, guid: ac8f8b4121b33964284bf949723efc5c,
-    type: 2}
+    type: 3}
   ADTLowBlockObject: {fileID: 1959010497222844, guid: aff84444b29d9264eb2c5160cf8c83b8,
-    type: 2}
+    type: 3}
   terrainImport: {fileID: 1448}
   terainHandler: {fileID: 1454}
   maxWorldSize: 64
@@ -27512,13 +27512,13 @@ MonoBehaviour:
   TerrainImporterPanel: {fileID: 308}
   MapScrollList: {fileID: 17}
   MapTabPrefab: {fileID: 1409701627777768, guid: 18d4381a70e78234bac8aa7ec421fbf6,
-    type: 2}
+    type: 3}
   PanelErrorMessage: {fileID: 236}
   UIManager: {fileID: 188}
   minimapScrollPanel: {fileID: 59}
   SelectPlayerBlockIcon: {fileID: 0}
   SelectPlayerBlockIcon_prefab: {fileID: 1715772078269680, guid: 47a18fe1ee06f4049ab9497575fc40ee,
-    type: 2}
+    type: 3}
   World: {fileID: 85}
   LoadingText: {fileID: 193}
   minimap: {fileID: 1167}
@@ -27678,9 +27678,9 @@ MonoBehaviour:
   BlockY: 0
   currentBlock: {fileID: 0}
   ChunkPrefab: {fileID: 1959010497222844, guid: 1dce004012cc9e844a4873753f1c29e9,
-    type: 2}
+    type: 3}
   BlockChunksPrefab: {fileID: 1934210482691920, guid: 9f637a4ea0b449947a6c6e34532b0939,
-    type: 2}
+    type: 3}
   WMOParent: {fileID: 56}
   M2Parent: {fileID: 1911478138}
   HChunkMaterial: {fileID: 2100000, guid: bf41c91ee78f0e94c816b43810b9ef6d, type: 2}
@@ -36799,7 +36799,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pools:
   - tag: ADTBlock
-    prefab: {fileID: 1934210482691920, guid: 9f637a4ea0b449947a6c6e34532b0939, type: 2}
+    prefab: {fileID: 1934210482691920, guid: 9f637a4ea0b449947a6c6e34532b0939, type: 3}
     size: 0
 --- !u!114 &1729
 MonoBehaviour:
