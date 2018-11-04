@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static partial class DB2
+public partial class DB2
 {
-    public static class Data
+    public class Data
     {
         //public static Dictionary<int, Definitions.AnimationData> AnimationData;
     }

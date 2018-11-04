@@ -44,7 +44,8 @@ public class RunAtLaunch : MonoBehaviour {
 
         if (Settings.Data[2] == Settings.WoWSource.Extracted.ToString())
         {
-            DB2.Initialize();
+            DB2 db2 = new DB2();
+            db2.Initialize();
         }
 
     }

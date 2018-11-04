@@ -6,57 +6,56 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public static partial class DB2
+public partial class DB2
 {
-
     public interface IDB2Row
     {
         int Id { get; set; }
         BitReader Data { get; set; }
-        void GetField<T>(FieldCache<T>[] fields, T entry);
+        void GetFields<T>(FieldCache<T>[] fields, T entry);
         IDB2Row Clone();
     }
 
-    public static class DB2Reader
+    public class DB2Reader
     {
-        public static int RecordsCount { get; set; }
-        public static int FieldsCount { get; set; }
-        public static int RecordSize { get; set; }
-        public static int StringTableSize { get; set; }
-        public static uint TableHash { get; set; }
-        public static uint LayoutHash { get; set; }
-        public static int MinIndex { get; set; }
-        public static int MaxIndex { get; set; }
-        public static int IdFieldIndex { get; set; }
-        public static DB2Flags Flags { get; set; }
+        public int RecordsCount { get; set; }
+        public int FieldsCount { get; set; }
+        public int RecordSize { get; set; }
+        public int StringTableSize { get; set; }
+        public uint TableHash { get; set; }
+        public uint LayoutHash { get; set; }
+        public int MinIndex { get; set; }
+        public int MaxIndex { get; set; }
+        public int IdFieldIndex { get; set; }
+        public DB2Flags Flags { get; set; }
 
-        public static FieldMetaData[] m_meta;
-        public static FieldMetaData[] Meta => m_meta;
+        public FieldMetaData[] m_meta;
+        public FieldMetaData[] Meta => m_meta;
 
-        public static int[] m_indexData;
-        public static int[] IndexData => m_indexData;
+        public int[] m_indexData;
+        public int[] IndexData => m_indexData;
 
-        public static ColumnMetaData[] m_columnMeta;
-        public static ColumnMetaData[] ColumnMeta => m_columnMeta;
+        public ColumnMetaData[] m_columnMeta;
+        public ColumnMetaData[] ColumnMeta => m_columnMeta;
 
-        public static Value32[][] m_palletData;
-        public static Value32[][] PalletData => m_palletData;
+        public Value32[][] m_palletData;
+        public Value32[][] PalletData => m_palletData;
 
-        public static Dictionary<int, Value32>[] m_commonData;
-        public static Dictionary<int, Value32>[] CommonData => m_commonData;
+        public Dictionary<int, Value32>[] m_commonData;
+        public Dictionary<int, Value32>[] CommonData => m_commonData;
 
-        public static Dictionary<long, string> StringTable => m_stringsTable;
+        public Dictionary<long, string> StringTable => m_stringsTable;
 
-        public static Dictionary<int, IDB2Row> _Records = new Dictionary<int, IDB2Row>();
+        public Dictionary<int, IDB2Row> _Records = new Dictionary<int, IDB2Row>();
 
         // Normal Records Data
-        public static byte[] recordsData;
-        public static Dictionary<long, string> m_stringsTable;
+        public byte[] recordsData;
+        public Dictionary<long, string> m_stringsTable;
 
         // Sparse records data
-        public static offset_map_entry[] sparseEntries;
+        public offset_map_entry[] sparseEntries;
 
-        public static bool HasRow(int id)
+        public bool HasRow(int id)
         {
             return _Records.ContainsKey(id);
         }
@@ -219,14 +218,17 @@ public static partial class DB2
     public class FieldCache<T>
     {
         public FieldInfo Field;
-        public int ArraySize = 0;
+        public bool IsArray = false;
+        public bool IndexMapField = false;
+
         public Action<T, object> Setter;
 
-        public FieldCache(FieldInfo field, int arraySize, Action<T, object> setter)
+        public FieldCache(FieldInfo field, bool isArray, Action<T, object> setter, bool indexMapField)
         {
-            this.Field = field;
-            this.ArraySize = arraySize;
-            this.Setter = setter;
+            Field = field;
+            IsArray = isArray;
+            Setter = setter;
+            IndexMapField = indexMapField;
         }
     }
 

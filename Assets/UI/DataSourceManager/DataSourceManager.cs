@@ -121,7 +121,7 @@ public class DataSourceManager : MonoBehaviour {
             terrainImport.GetComponent<TerrainImport>().Initialize();
         Settings.SelectedDefinitions = DropdownDefinitions.options[DropdownDefinitions.value].text;
         Settings.Data[10] = Settings.SelectedDefinitions;
-        DB2.InitializeDefinitions();
+        // DB2.InitializeDefinitions();
     }
 
     public void AddButon ()

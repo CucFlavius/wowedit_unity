@@ -18393,7 +18393,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 87fafeae06d46314a8a1b5cf2558a093, type: 2}
 --- !u!114 &1166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38872,7 +38871,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: battlepetabilityeffect.db2
+          m_StringArgument: alliedrace.db2
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,

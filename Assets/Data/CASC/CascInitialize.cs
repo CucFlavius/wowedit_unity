@@ -93,7 +93,5 @@ public static class CascInitialize  {
         CASCThread.Abort();
         CASCThread = null;
         ThreadRunning = false;
-
-        DB2.Initialize();
     }
 }

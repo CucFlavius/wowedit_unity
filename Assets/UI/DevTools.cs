@@ -7,7 +7,8 @@ public class DevTools : MonoBehaviour {
 
     public void ReadDB2(string filename)
     {
-        DB2.Read(filename);
+        DB2 db2 = new DB2();
+        db2.Read(filename);
     }
 
     public void Button_LoadTestMap (string id)

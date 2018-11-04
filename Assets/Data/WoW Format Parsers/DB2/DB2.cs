@@ -3,20 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using DBDefsLib;
+using System.Text;
 
-public static partial class DB2
+public partial class DB2
 {
-    public static string[] fileNames = new string[] { "battlepetabilityeffect.db2" };
-    public static Dictionary<string, bool> availableFiles = new Dictionary<string, bool>();
-    private static string dbfilesclient = @"dbfilesclient\";
+    public string[] fileNames = new string[] { "battlepetabilityeffect.db2" };
+    public Dictionary<string, bool> availableFiles = new Dictionary<string, bool>();
+    private string dbfilesclient = @"dbfilesclient\";
 
-    public static void Initialize()
+    public void Initialize()
     {
         // Check existing DB2 files //
-        
+
         foreach (string fileName in fileNames)
         {
-            if (Casc.FileExists (dbfilesclient + fileName))
+            if (Casc.FileExists(dbfilesclient + fileName))
             {
                 availableFiles.Add(fileName, true);
                 Read(fileName);
@@ -29,21 +31,23 @@ public static partial class DB2
         }
     }
 
-    public static void Read(string fileName)
+    public void Read(string fileName)
     {
+        string file = "BattlePetAbilityEffect.dbd";
         var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         //var stream = Casc.GetFileStream(fileName);
         using (var bin = new BinaryReader(stream))
         {
+            DB2Reader reader;
             var identifier = new string(bin.ReadChars(4));
             stream.Position = 0;
             switch (identifier)
             {
                 case "WDC1":
-                    WDC1.Read(fileName, stream);
+                    reader = new WDC1(fileName, stream);
                     break;
                 case "WDC2":
-                    WDC2.Read(fileName, stream);
+                    reader = new WDC2(fileName, stream);
                     break;
                 default:
                     Debug.Log("DBC Type " + identifier + " is not supported");
@@ -59,7 +63,7 @@ public static partial class DB2
         private int m_readOffset;
 
         public int Position { get { return m_readPos; } set { m_readPos = value; } }
-        public int Offset { get { return m_readOffset; }  set { m_readOffset = value; } }
+        public int Offset { get { return m_readOffset; } set { m_readOffset = value; } }
         public byte[] Data { get { return m_array; } set { m_array = value; } }
 
         public BitReader(byte[] data)
@@ -82,6 +86,7 @@ public static partial class DB2
 
         public ulong ReadUInt64(int numBits)
         {
+            Debug.Log(m_array[m_readOffset + (m_readPos >> 3)]);
             ulong result = FastStruct<ulong>.ArrayToStructure(ref m_array[m_readOffset + (m_readPos >> 3)]) << (64 - numBits - (m_readPos & 7)) >> (64 - numBits);
             m_readPos += numBits;
             return result;
@@ -116,6 +121,16 @@ public static partial class DB2
 
             return System.Text.Encoding.UTF8.GetString(bytes.ToArray());
         }
-    }
 
+        public Value64 ReadValue64Signed(int numBits)
+        {
+            unsafe
+            {
+                ulong result = ReadUInt64(numBits);
+                ulong signedShift = (1UL << (numBits - 1));
+                result = (signedShift ^ result) - signedShift;
+                return *(Value64*)&result;
+            }
+        }
+    }
 }
