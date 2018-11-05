@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class SettingsWindow : MonoBehaviour
 {
-    public enum SettingsTab
-    {
-        General,
-        Discord,
-    }
     public GameObject[] TabPanels;
 
 	// Use this for initialization
@@ -39,11 +34,7 @@ public class SettingsWindow : MonoBehaviour
     public void ClickedSettingsTab(int tab)
     {
         CloseAllTabs();
-
-        for (int i = 0; i < TabPanels.Length; i++)
-        {
-            
-        }
+        TabPanels[tab].SetActive(true);
     }
     public void CloseAllTabs()
     {

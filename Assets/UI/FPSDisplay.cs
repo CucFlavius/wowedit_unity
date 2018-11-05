@@ -1,28 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Threading;
+using UnityEngine.UI;
 
 public class FPSDisplay : MonoBehaviour
 {
-    float deltaTime = 0.0f;
+    public float avgFrameRate;
+    public Text display_Text;
+    private float deltaTime = 0.0f;
 
-    void Update()
+    public void Start()
     {
-        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        InvokeRepeating("RecalculateFPS", 2.0f, 1.0f);
     }
 
-    void OnGUI()
+    public void RecalculateFPS()
     {
-        int w = Screen.width, h = Screen.height;
+        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        avgFrameRate = 1.0f / deltaTime;
+    }
 
-        GUIStyle style = new GUIStyle();
-
-        Rect rect = new Rect(w-200, 20, w, h * 2 / 100);
-        style.alignment = TextAnchor.UpperLeft;
-        style.fontSize = h * 2 / 100;
-        style.normal.textColor = new Color(0.0f, 0.0f, 0.5f, 1.0f);
-        float msec = deltaTime * 1000.0f;
-        float fps = 1.0f / deltaTime;
-        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        GUI.Label(rect, text, style);
+    public void OnGUI()
+    {
+        display_Text.text = string.Format("FPS: {0:0.0}", avgFrameRate);
     }
 }
