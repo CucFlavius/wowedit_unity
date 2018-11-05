@@ -180,12 +180,14 @@ public class TerrainImport : MonoBehaviour
     public void Toggle_WMO(bool on)
     {
         SettingsTerrainImport.LoadWMOs = on;
+        UserPreferences.Save();
     }
 
     // Load M2's Toggle Interaction //
     public void Toggle_M2(bool on)
     {
         SettingsTerrainImport.LoadM2s = on;
+        UserPreferences.Save();
     }
 
     #endregion

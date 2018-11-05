@@ -16,7 +16,7 @@ public class RunAtLaunch : MonoBehaviour {
     {
 
         Agent.FindWowInstalls();
-
+        UserPreferences.Load();
         //Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
         if (!File.Exists("Settings.ini"))
