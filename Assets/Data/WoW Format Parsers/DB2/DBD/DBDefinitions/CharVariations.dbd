@@ -1,0 +1,9 @@
+COLUMNS
+int RaceID
+int SexID
+int TextureHoldLayer
+
+BUILD 0.5.3.3368, 1.12.1.5875
+RaceID<32>
+SexID<32>
+TextureHoldLayer<32>[4]
