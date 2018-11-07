@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - MinimapBlock
+  - TabGeneral
+  - TabDiscord
+  - ApplyButton
   layers:
   - Default
   - TransparentFX
@@ -15,7 +18,7 @@ TagManager:
   - 
   - 
   - Skybox
-  - 
+  - Terrain
   - 
   - 
   - 

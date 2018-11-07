@@ -335,6 +335,7 @@ public class TerrainHandler : MonoBehaviour
 
                 GameObject Chunk = Instantiate(ChunkPrefab);
                 Chunk.isStatic = true;
+                Chunk.layer = 9;
                 Chunk.name = "chunk_" + i.ToString();
                 Chunk.transform.position = data.meshChunksData[i].MeshPosition;
                 Chunk.transform.SetParent(Block.transform);
@@ -354,6 +355,7 @@ public class TerrainHandler : MonoBehaviour
                 //Chunk.GetComponent<MeshFilter>().mesh = mesh0;
                 Chunk.GetComponent<ADTChunk>().mesh = mesh0;
                 Chunk.GetComponent<MeshFilter>().sharedMesh = Chunk.GetComponent<ADTChunk>().mesh;
+                Chunk.GetComponent<MeshCollider>().sharedMesh = mesh0;
                 //mesh0.Clear();
                 //mesh0 = null;
                 #endregion

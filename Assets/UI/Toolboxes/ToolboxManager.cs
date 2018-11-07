@@ -18,6 +18,7 @@ public class ToolboxManager : MonoBehaviour
 
     public void CloseTerrainEditor()
     {
+        toolboxes[0].GetComponent<TerrainEditorToolbox>().Disable();
         toolboxes[0].SetActive(false);
         toolboxButtons[0].GetComponent<UnityEngine.UI.Toggle>().isOn = false;
     }
