@@ -5,11 +5,17 @@ using System.Text;
 using System.IO;
 using UnityEngine;
 
+using Assets.Data.WoW_Format_Parsers.M2;
+using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
+using Assets.Data.WoW_Format_Parsers.WMO;
+using Assets.Data.WoW_Format_Parsers;
+
 public static partial class M2
 {
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
     public static List<string> LoadedBLPs = new List<string>();
+    public static bool HasTextures;
 
     public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
@@ -41,25 +47,30 @@ public static partial class M2
 
     private static void ParseM2_Root(string dataPath, M2Data m2Data, M2Texture m2Tex)
     {
-        StreamTools s = new StreamTools();
         string path = Casc.GetFile(dataPath);
         byte[] M2MainData = File.ReadAllBytes(path);
         long streamPosition = 0;
 
         using (MemoryStream ms = new MemoryStream(M2MainData))
+        using (BinaryReader reader = new BinaryReader(ms))
         {
             while (streamPosition < ms.Length)
             {
-                ms.Position = streamPosition;
-                int chunkID = s.ReadLong(ms);
-                int chunkSize = s.ReadLong(ms);
+                ms.Position     = streamPosition;
+                M2ChunkId chunkID = (M2ChunkId)reader.ReadInt32();
+                int chunkSize   = reader.ReadInt32();
 
                 streamPosition = ms.Position + chunkSize;
 
                 switch (chunkID)
                 {
-                    case (int)ChunkID.M2ChunkID.MD21:
-                        ReadMD21(ms, m2Data, m2Tex);
+                    case M2ChunkId.MD21:
+                        ReadMD21(reader, m2Data, m2Tex);
+                        HasTextures = false;
+                        break;
+                    case M2ChunkId.TXID:
+                        ReadTXID(reader);
+                        HasTextures = true;
                         break;
                     default:
                         SkipUnknownChunk(ms, chunkID, chunkSize);
@@ -97,8 +108,9 @@ public static partial class M2
             byte[] M2SkinData = File.ReadAllBytes(skinPath);
 
             using (MemoryStream ms = new MemoryStream(M2SkinData))
+            using (BinaryReader reader = new BinaryReader(ms))
             {
-                ParseSkin(ms, m2Data);
+                ParseSkin(reader, m2Data);
             }
         }
     }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-class ChunkID
+namespace Assets.Data.WoW_Format_Parsers
 {
-    public enum ADT // blame Fabi
+    public enum ADTChunkId // blame Fabi
     {
         MVER = 0x4d564552,
         MHDR = 0x4d484452,
@@ -60,10 +60,10 @@ class ChunkID
         MMDX = 0x4d4d4458
     }
 
-    public enum M2ChunkID
+    public enum M2ChunkId
     {
         PFID = 0x44494650,
-        SFID = 0x44495346,
+        SFID = 0x44494653,
         AFID = 0x44494641,
         BFID = 0x44494642,
         MD21 = 0x3132444D,
@@ -80,7 +80,7 @@ class ChunkID
         MD20 = 0x3032444D
     }
 
-    public enum WMOChunkID
+    public enum WMOChunkId
     {
         MVER = 0x4d564552,
         MOMO = 0x4d4f4d4f,
@@ -135,4 +135,3 @@ class ChunkID
         MPBG = 0x4d504247
     }
 }
-

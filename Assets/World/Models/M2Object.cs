@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class M2Object : MonoBehaviour {
-
-    public void UnloadAsset()
+namespace Assets.World.Models
+{
+    public class M2Object : MonoBehaviour
     {
-        // need to unload meshes, textures etc
-    }
 
+        public void UnloadAsset()
+        {
+            // need to unload meshes, textures etc
+        }
+
+    }
 }

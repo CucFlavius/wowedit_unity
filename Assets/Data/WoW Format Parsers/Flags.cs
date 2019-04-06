@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -61,9 +62,9 @@ public class Flags
     ///////////////////////////////////
     #region Flag Readers
 
-    public Flags.MCNKflags ReadMCNKflags(MemoryStream stream)
+    public MCNKflags ReadMCNKflags(BinaryReader stream)
     {
-        Flags.MCNKflags mcnkFlags = new Flags.MCNKflags();
+        MCNKflags mcnkFlags = new MCNKflags();
         // <Flags> 4 bytes
         byte[] arrayOfBytes = new byte[4];
         stream.Read(arrayOfBytes, 0, 4);
@@ -82,25 +83,24 @@ public class Flags
         return mcnkFlags;
     }
 
-    public TerrainTextureFlag ReadTerrainTextureFlag(Stream stream)
+    public TerrainTextureFlag ReadTerrainTextureFlag(BinaryReader stream)
     {
-        StreamTools s = new StreamTools();
-        byte[] bytes = new byte[4];
-        TerrainTextureFlag value = new TerrainTextureFlag();
+        byte[] bytes                = new byte[4];
+        TerrainTextureFlag value    = new TerrainTextureFlag();
         stream.Read(bytes, 0, 4);
-        BitArray flags = new BitArray(bytes);
+        BitArray flags              = new BitArray(bytes);
         value.do_not_load_specular_or_height_texture_but_use_cubemap = flags[0];
-        bool[] texScaleBools = new bool[4];
-        texScaleBools[3] = flags[4];
-        texScaleBools[2] = flags[5];
-        texScaleBools[1] = flags[6];
-        texScaleBools[0] = flags[7];
-        value.texture_scale = s.getUintFrom4Bits(texScaleBools);
-        value.texture_scale = (int)Mathf.Pow(2, value.texture_scale);
+        bool[] texScaleBools        = new bool[4];
+        texScaleBools[3]            = flags[4];
+        texScaleBools[2]            = flags[5];
+        texScaleBools[1]            = flags[6];
+        texScaleBools[0]            = flags[7];
+        value.texture_scale         = stream.GetUIntFrom4Bits(texScaleBools);
+        value.texture_scale         = (int)Mathf.Pow(2, value.texture_scale);
         return value;
     }
 
-    public MDDFFlags ReadMDDFFlags(Stream stream)
+    public MDDFFlags ReadMDDFFlags(BinaryReader stream)
     {
         byte[] arrayOfBytes = new byte[2];
         stream.Read(arrayOfBytes, 0, 2);
@@ -117,7 +117,7 @@ public class Flags
         return MDDFflags;
     }
 
-    public MODFFlags ReadMODFFlags(Stream stream)
+    public MODFFlags ReadMODFFlags(BinaryReader stream)
     {
         byte[] arrayOfBytes = new byte[2];
         stream.Read(arrayOfBytes, 0, 2);

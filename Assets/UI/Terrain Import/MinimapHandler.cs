@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
+using Assets.World;
 
 public class MinimapHandler : MonoBehaviour {
 

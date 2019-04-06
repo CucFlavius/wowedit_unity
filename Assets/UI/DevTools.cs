@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.World;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DevTools : MonoBehaviour {
@@ -7,8 +8,9 @@ public class DevTools : MonoBehaviour {
 
     public void ReadDB2(string filename)
     {
-        DB2 db2 = new DB2();
-        db2.Read(filename);
+        //DB2 db2 = new DB2();
+        //db2.Read(filename);
+        M2.Load(@filename, -1, new Vector3(.5f, 0, 0), Quaternion.identity, new Vector3(.1f, .1f, .1f));
     }
 
     public void Button_LoadTestMap (string id)

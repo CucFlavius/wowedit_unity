@@ -1,437 +1,442 @@
-﻿using System.Collections;
+﻿using Assets.Data.WoW_Format_Parsers.WMO;
+using Assets.World.Terrain;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class WMOhandler : MonoBehaviour {
-
-    public TerrainHandler terrainHandler;
-    public bool busy;
-    public bool working;
-    public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
-    public GameObject WMObatchprefab;
-    public static Thread WMOThread;
-    public Material missingMaterial;
-    public Material[] WMOmaterials; // 0 - diffuse, 1 - Specular, 2 - Metal, 3 - Environment Mapped, 4 - Opaque
-
-    private string currentWMOdatapath;
-    private int currentWMOuniqueID;
-    private Vector3 currentWMOposition;
-    private Quaternion currentWMOrotation;
-    private Vector3 currentWMOscale;
-    private Dictionary<string, Texture2D> LoadedWMOTextures = new Dictionary<string, Texture2D>();
-    private List<WMOQueueItem> WMOClones = new List<WMOQueueItem>();
-
-    public class WMOQueueItem
+namespace Assets.World.Models
+{
+    public class WMOhandler : MonoBehaviour
     {
-        public string objectDataPath;
-        public int uniqueID;
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector3 Scale;
-    }
+        public TerrainHandler terrainHandler;
+        public bool busy;
+        public bool working;
+        public Queue<WMOQueueItem> WMOThreadQueue = new Queue<WMOQueueItem>();
+        public GameObject WMObatchprefab;
+        public static Thread WMOThread;
+        public Material missingMaterial;
+        public Material[] WMOmaterials; // 0 - diffuse, 1 - Specular, 2 - Metal, 3 - Environment Mapped, 4 - Opaque
 
-    void Start ()
-    {
-        WMO.ThreadWorking = false;
-        WMOThreadQueue = new Queue<WMOQueueItem>();
-    }
+        private string currentWMOdatapath;
+        private int currentWMOuniqueID;
+        private Vector3 currentWMOposition;
+        private Quaternion currentWMOrotation;
+        private Vector3 currentWMOscale;
+        private Dictionary<string, Texture2D> LoadedWMOTextures = new Dictionary<string, Texture2D>();
+        private List<WMOQueueItem> WMOClones = new List<WMOQueueItem>();
 
-    public void AddToQueue(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-    {
-        WMOQueueItem item = new WMOQueueItem();
-        item.objectDataPath = objectDataPath;
-        item.uniqueID = uniqueID;
-        item.Position = position;
-        item.Rotation = rotation;
-        item.Scale = scale;
-        WMOThreadQueue.Enqueue(item);
-    }
-
-    // Parsing thread - Unless it's a copy //
-    public void WMOThreadRun(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-    {
-        currentWMOdatapath = objectDataPath;
-        currentWMOuniqueID = uniqueID;
-        currentWMOposition = position;
-        currentWMOrotation = rotation;
-        currentWMOscale = scale;
-
-        if (!terrainHandler.LoadedWMOs.ContainsKey(objectDataPath))
+        public class WMOQueueItem
         {
-            //ParseWMOBlock(); // nonthreaded - for testing purposes
-            terrainHandler.LoadedWMOs.Add(objectDataPath, null);
-            WMOThread = new Thread(ParseWMOBlock);
-            WMOThread.IsBackground = true;
-            WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
-            WMOThread.Start();
+            public string objectDataPath;
+            public int uniqueID;
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public Vector3 Scale;
         }
-        else
+
+        void Start()
         {
-            CloneWMO(objectDataPath, uniqueID, position, rotation, scale);
+            WMO.ThreadWorking = false;
+            WMOThreadQueue = new Queue<WMOQueueItem>();
         }
-    }
 
-    // Add WMO copies to a list so they will be copied after loading is done //
-    public void CloneWMO(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-    {
-        WMOQueueItem item = new WMOQueueItem();
-        item.objectDataPath = objectDataPath;
-        item.uniqueID = uniqueID;
-        item.Position = position;
-        item.Rotation = rotation;
-        item.Scale = scale;
-        WMOClones.Add(item);
-    }
-
-    void Update()
-    {
-        if (WMOThreadQueue.Count > 0)
+        public void AddToQueue(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            if (!WMO.ThreadWorking)
+            WMOQueueItem item = new WMOQueueItem();
+            item.objectDataPath = objectDataPath;
+            item.uniqueID = uniqueID;
+            item.Position = position;
+            item.Rotation = rotation;
+            item.Scale = scale;
+            WMOThreadQueue.Enqueue(item);
+        }
+
+        // Parsing thread - Unless it's a copy //
+        public void WMOThreadRun(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            currentWMOdatapath = objectDataPath;
+            currentWMOuniqueID = uniqueID;
+            currentWMOposition = position;
+            currentWMOrotation = rotation;
+            currentWMOscale = scale;
+
+            if (!terrainHandler.LoadedWMOs.ContainsKey(objectDataPath))
             {
-                WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
-                WMOThreadRun(queueItem.objectDataPath, queueItem.uniqueID , queueItem.Position, queueItem.Rotation, queueItem.Scale);
+                //ParseWMOBlock(); // nonthreaded - for testing purposes
+                terrainHandler.LoadedWMOs.Add(objectDataPath, null);
+                WMOThread = new Thread(ParseWMOBlock);
+                WMOThread.IsBackground = true;
+                WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
+                WMOThread.Start();
+            }
+            else
+            {
+                CloneWMO(objectDataPath, uniqueID, position, rotation, scale);
             }
         }
-        else if (WMOThreadQueue.Count == 0)
+
+        // Add WMO copies to a list so they will be copied after loading is done //
+        public void CloneWMO(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            busy = false;
+            WMOQueueItem item = new WMOQueueItem();
+            item.objectDataPath = objectDataPath;
+            item.uniqueID = uniqueID;
+            item.Position = position;
+            item.Rotation = rotation;
+            item.Scale = scale;
+            WMOClones.Add(item);
         }
 
-        if (WMO.AllWMOData.Count > 0)
+        void Update()
         {
-            if (!WMOThread.IsAlive)
+            if (WMOThreadQueue.Count > 0)
             {
-                if (!terrainHandler.frameBusy)
+                if (!WMO.ThreadWorking)
                 {
-                    terrainHandler.frameBusy = true;
-                    CreateWMOObject();
+                    WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
+                    WMOThreadRun(queueItem.objectDataPath, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
                 }
             }
-        }
-
-        if (WMOClones.Count > 0)
-        {
-            List<WMOQueueItem> RemoveElements = new List<WMOQueueItem>();
-            // Check if Copies are Required //
-            foreach (WMOQueueItem item in WMOClones)
+            else if (WMOThreadQueue.Count == 0)
             {
-                if (terrainHandler.LoadedWMOs.ContainsKey(item.objectDataPath))
+                busy = false;
+            }
+
+            if (WMO.AllWMOData.Count > 0)
+            {
+                if (!WMOThread.IsAlive)
                 {
-                    if (terrainHandler.LoadedWMOs[item.objectDataPath] != null)
+                    if (!terrainHandler.frameBusy)
                     {
-                        WMOQueueItem clone = item;
-                        RemoveElements.Add(item);
-                        GameObject instance = Instantiate(terrainHandler.LoadedWMOs[item.objectDataPath]);
-                        instance.transform.position = clone.Position;
-                        instance.transform.rotation = clone.Rotation;
-                        instance.transform.localScale = Vector3.one;
-                        instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
+                        terrainHandler.frameBusy = true;
+                        CreateWMOObject();
                     }
                 }
             }
-            // Remove 
-            foreach(WMOQueueItem removeItem in RemoveElements)
+
+            if (WMOClones.Count > 0)
             {
-                WMOClones.Remove(removeItem);
-            }
-            RemoveElements.Clear();
-        }
-    }
-
-    public void ParseWMOBlock()
-    {
-        WMO.Load(currentWMOdatapath, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
-    }
-
-    public void CreateWMOObject()
-    {
-        if (terrainHandler.working)
-        {
-            WMO.WMOData data = WMO.AllWMOData.Dequeue();
-            GameObject WMOinstance = new GameObject();
-            terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
-
-            int nGroups = data.Info.nGroups;
-            for (int g = 0; g < nGroups; g++)
-            {
-                // group object //
-                GameObject GroupInstance = new GameObject();
-                GroupInstance.isStatic = true;
-                GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
-                GroupInstance.name = data.groupsData[g].groupName;
-
-                LODGroup Lodgroup = GroupInstance.AddComponent<LODGroup>();
-                LOD[] lods = new LOD[1];
-                Renderer[] renderers = new Renderer[data.groupsData[g].nBatches];
-
-                // Batches //
-                for (int bn = 0; bn < data.groupsData[g].nBatches; bn++)
+                List<WMOQueueItem> RemoveElements = new List<WMOQueueItem>();
+                // Check if Copies are Required //
+                foreach (WMOQueueItem item in WMOClones)
                 {
-                    ////////////////////////////////
-                    #region object
-
-                    GameObject BatchInstance = new GameObject();
-                    BatchInstance.isStatic = true;
-                    BatchInstance.transform.SetParent(GroupInstance.transform);
-                    BatchInstance.name = bn.ToString();
-                    BatchInstance.transform.transform.eulerAngles = new Vector3(BatchInstance.transform.transform.eulerAngles.x, BatchInstance.transform.transform.eulerAngles.y - 180, GroupInstance.transform.transform.eulerAngles.z);
-
-                    #endregion
-                    ////////////////////////////////
-
-                    ////////////////////////////////
-                    #region mesh
-
-                    BatchInstance.AddComponent<MeshRenderer>();
-                    BatchInstance.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
-                    renderers[bn] = BatchInstance.GetComponent<MeshRenderer>();
-                    BatchInstance.AddComponent<MeshFilter>();
-                    Mesh bmesh = new Mesh();
-
-                    int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
-
-                    Vector3[] batchVertices = new Vector3[batchVertSize];
-                    Vector2[] batchUVs = new Vector2[batchVertSize];
-                    Vector3[] batchNormals = new Vector3[batchVertSize];
-                    Color32[] batchVertexColors = new Color32[batchVertSize];
-                    List<int> batchTrianglesList = new List<int>();
-                    int[] batchTriangles;
-
-                    int arrayPosition = 0;
-                    uint batch_startVertex = data.groupsData[g].batch_StartVertex[bn];
-                    uint batch_endVertex = data.groupsData[g].batch_EndVertex[bn];
-                    for (uint v = batch_startVertex; v <= batch_endVertex; v++)
+                    if (terrainHandler.LoadedWMOs.ContainsKey(item.objectDataPath))
                     {
-                        batchVertices[arrayPosition] = data.groupsData[g].vertices[v];
-                        batchUVs[arrayPosition] = data.groupsData[g].UVs[v];
-                        batchNormals[arrayPosition] = data.groupsData[g].normals[v];
-                        if (!data.groupsData[g].flags.Hasvertexolors)
-                            batchVertexColors[arrayPosition] = new Color32(127, 127, 127, 127);
+                        if (terrainHandler.LoadedWMOs[item.objectDataPath] != null)
+                        {
+                            WMOQueueItem clone = item;
+                            RemoveElements.Add(item);
+                            GameObject instance = Instantiate(terrainHandler.LoadedWMOs[item.objectDataPath]);
+                            instance.transform.position = clone.Position;
+                            instance.transform.rotation = clone.Rotation;
+                            instance.transform.localScale = Vector3.one;
+                            instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
+                        }
+                    }
+                }
+                // Remove 
+                foreach (WMOQueueItem removeItem in RemoveElements)
+                {
+                    WMOClones.Remove(removeItem);
+                }
+                RemoveElements.Clear();
+            }
+        }
+
+        public void ParseWMOBlock()
+        {
+            WMO.Load(currentWMOdatapath, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
+        }
+
+        public void CreateWMOObject()
+        {
+            if (terrainHandler.working)
+            {
+                WMO.WMOStruct data = WMO.AllWMOData.Dequeue();
+                GameObject WMOinstance = new GameObject();
+                terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
+
+                int nGroups = data.Info.nGroups;
+                for (int g = 0; g < nGroups; g++)
+                {
+                    // group object //
+                    GameObject GroupInstance = new GameObject();
+                    GroupInstance.isStatic = true;
+                    GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
+                    GroupInstance.name = data.groupsData[g].groupName;
+
+                    LODGroup Lodgroup = GroupInstance.AddComponent<LODGroup>();
+                    LOD[] lods = new LOD[1];
+                    Renderer[] renderers = new Renderer[data.groupsData[g].nBatches];
+
+                    // Batches //
+                    for (int bn = 0; bn < data.groupsData[g].nBatches; bn++)
+                    {
+                        ////////////////////////////////
+                        #region object
+
+                        GameObject BatchInstance = new GameObject();
+                        BatchInstance.isStatic = true;
+                        BatchInstance.transform.SetParent(GroupInstance.transform);
+                        BatchInstance.name = bn.ToString();
+                        BatchInstance.transform.transform.eulerAngles = new Vector3(BatchInstance.transform.transform.eulerAngles.x, BatchInstance.transform.transform.eulerAngles.y - 180, GroupInstance.transform.transform.eulerAngles.z);
+
+                        #endregion
+                        ////////////////////////////////
+
+                        ////////////////////////////////
+                        #region mesh
+
+                        BatchInstance.AddComponent<MeshRenderer>();
+                        BatchInstance.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
+                        renderers[bn] = BatchInstance.GetComponent<MeshRenderer>();
+                        BatchInstance.AddComponent<MeshFilter>();
+                        Mesh bmesh = new Mesh();
+
+                        int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
+
+                        Vector3[] batchVertices = new Vector3[batchVertSize];
+                        Vector2[] batchUVs = new Vector2[batchVertSize];
+                        Vector3[] batchNormals = new Vector3[batchVertSize];
+                        Color32[] batchVertexColors = new Color32[batchVertSize];
+                        List<int> batchTrianglesList = new List<int>();
+                        int[] batchTriangles;
+
+                        int arrayPosition = 0;
+                        uint batch_startVertex = data.groupsData[g].batch_StartVertex[bn];
+                        uint batch_endVertex = data.groupsData[g].batch_EndVertex[bn];
+                        for (uint v = batch_startVertex; v <= batch_endVertex; v++)
+                        {
+                            batchVertices[arrayPosition] = data.groupsData[g].vertices[v];
+                            batchUVs[arrayPosition] = data.groupsData[g].UVs[v];
+                            batchNormals[arrayPosition] = data.groupsData[g].normals[v];
+                            if (!data.groupsData[g].flags.Hasvertexolors)
+                                batchVertexColors[arrayPosition] = new Color32(127, 127, 127, 127);
+                            else
+                                batchVertexColors[arrayPosition] = data.groupsData[g].vertexColors[(int)v];
+                            arrayPosition++;
+                        }
+
+                        uint batch_startIndex = data.groupsData[g].batch_StartIndex[bn];
+                        uint batch_nIndices = data.groupsData[g].batch_nIndices[bn];
+                        for (uint idx = batch_startIndex; idx <= batch_startIndex + batch_nIndices - 2; idx = idx + 3)
+                        {
+                            uint in1 = data.groupsData[g].triangles[idx + 0];
+                            uint in2 = data.groupsData[g].triangles[idx + 1];
+                            uint in3 = data.groupsData[g].triangles[idx + 2];
+                            int a = (int)(in1 - batch_startVertex);
+                            int b = (int)(in2 - batch_startVertex);
+                            int c = (int)(in3 - batch_startVertex);
+
+                            batchTrianglesList.Add(a);
+                            batchTrianglesList.Add(b);
+                            batchTrianglesList.Add(c);
+                        }
+                        batchTrianglesList.Reverse();
+                        batchTriangles = batchTrianglesList.ToArray();
+
+                        bmesh.vertices = batchVertices;
+                        bmesh.uv = batchUVs;
+                        bmesh.normals = batchNormals;
+                        bmesh.triangles = batchTriangles;
+                        bmesh.colors32 = batchVertexColors;
+                        BatchInstance.GetComponent<MeshFilter>().mesh = bmesh;
+                        BatchInstance.GetComponent<MeshRenderer>().sharedMaterial = missingMaterial;
+
+                        #endregion
+                        ////////////////////////////////
+
+                        ////////////////////////////////
+                        #region material
+
+                        string textureName = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].DiffuseNameIndex];
+                        BatchInstance.GetComponent<Renderer>().material = WMOmaterials[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType];
+
+                        ////////////////////////////////
+                        #region Set Fragment Shader
+
+                        WMOFragmentShader shader = data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType;
+                        switch (shader)
+                        {
+                            case WMOFragmentShader.Diffuse:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
+                                    break;
+                                }
+                            case WMOFragmentShader.Specular:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderSpecular", 1.0f);
+                                    break;
+                                }
+                            case WMOFragmentShader.Metal:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderMetal", 1.0f);
+                                    break;
+                                }
+                            case WMOFragmentShader.Env:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderEnv", 1.0f);
+                                    break;
+                                }
+                            case WMOFragmentShader.Opaque:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderOpaque", 1.0f);
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_AlphaToMask", 1.0f);
+                                    break;
+                                }
+                            default:
+                                {
+                                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
+                                    break;
+                                }
+                        }
+
+
+                        #endregion
+                        ////////////////////////////////
+
+                        ////////////////////////////////
+                        #region Set Material Flags
+
+                        // F_UNCULLED //
+                        int Culling = 2; // on (only front)
+                        if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNCULLED)
+                            Culling = 0; // off (both sides_
+                        BatchInstance.GetComponent<Renderer>().material.SetFloat("F_UNCULLED", Culling);
+                        // F_UNLIT //
+                        if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT)
+                            BatchInstance.GetComponent<Renderer>().material.EnableKeyword("F_UNLIT");
+                        //BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNLIT", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT ? 1 : 0);
+                        // F_UNFOGGED //
+                        BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNFOGGED", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNFOGGED ? 1 : 0);
+
+                        #endregion
+                        ////////////////////////////////
+
+                        ////////////////////////////////
+                        #region Set Blending Mode
+
+                        // set default blend: One Zero, basicly off
+                        UnityEngine.Rendering.BlendMode source = UnityEngine.Rendering.BlendMode.One;
+                        UnityEngine.Rendering.BlendMode destination = UnityEngine.Rendering.BlendMode.Zero;
+
+                        BlendingMode blending = data.materials[data.groupsData[g].batchMaterialIDs[bn]].BlendMode;
+
+                        switch (blending)
+                        {
+                            case BlendingMode.Opaque:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.One;
+                                    destination = UnityEngine.Rendering.BlendMode.Zero;
+                                    break;
+                                }
+                            case BlendingMode.AlphaKey:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.One;
+                                    destination = UnityEngine.Rendering.BlendMode.Zero;
+                                    break;
+                                }
+                            case BlendingMode.Alpha:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.SrcAlpha;
+                                    destination = UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha;
+                                    break;
+                                }
+                            case BlendingMode.Additive:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.One;
+                                    destination = UnityEngine.Rendering.BlendMode.One;
+                                    break;
+                                }
+                            case BlendingMode.Modulate:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.DstColor;
+                                    destination = UnityEngine.Rendering.BlendMode.Zero;
+                                    break;
+                                }
+                            case BlendingMode.Modulate2x:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.DstColor;
+                                    destination = UnityEngine.Rendering.BlendMode.SrcColor;
+                                    break;
+                                }
+                            case BlendingMode.ModulateAdditive:
+                                {
+                                    source = UnityEngine.Rendering.BlendMode.DstColor;
+                                    destination = UnityEngine.Rendering.BlendMode.One;
+                                    break;
+                                }
+                            default:
+                                {
+                                    Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + textureName);
+                                    source = UnityEngine.Rendering.BlendMode.One;
+                                    destination = UnityEngine.Rendering.BlendMode.Zero;
+                                    break;
+                                }
+                        }
+                        BatchInstance.GetComponent<Renderer>().material.SetInt("MySrcMode", (int)source);
+                        BatchInstance.GetComponent<Renderer>().material.SetInt("MyDstMode", (int)destination);
+
+                        #endregion
+                        ////////////////////////////////
+
+                        ////////////////////////////////
+                        #region Assign Textures
+
+                        if (LoadedWMOTextures.ContainsKey(textureName))
+                        {
+                            BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[textureName]);
+                        }
                         else
-                            batchVertexColors[arrayPosition] = data.groupsData[g].vertexColors[(int)v];
-                        arrayPosition++;
-                    }
-
-                    uint batch_startIndex = data.groupsData[g].batch_StartIndex[bn];
-                    uint batch_nIndices = data.groupsData[g].batch_nIndices[bn];
-                    for (uint idx = batch_startIndex; idx <= batch_startIndex + batch_nIndices - 2; idx = idx + 3)
-                    {
-                        uint in1 = data.groupsData[g].triangles[idx + 0];
-                        uint in2 = data.groupsData[g].triangles[idx + 1];
-                        uint in3 = data.groupsData[g].triangles[idx + 2];
-                        int a = (int)(in1 - batch_startVertex);
-                        int b = (int)(in2 - batch_startVertex);
-                        int c = (int)(in3 - batch_startVertex);
-
-                        batchTrianglesList.Add(a);
-                        batchTrianglesList.Add(b);
-                        batchTrianglesList.Add(c);
-                    }
-                    batchTrianglesList.Reverse();
-                    batchTriangles = batchTrianglesList.ToArray();
-
-                    bmesh.vertices = batchVertices;
-                    bmesh.uv = batchUVs;
-                    bmesh.normals = batchNormals;
-                    bmesh.triangles = batchTriangles;
-                    bmesh.colors32 = batchVertexColors;
-                    BatchInstance.GetComponent<MeshFilter>().mesh = bmesh;
-                    BatchInstance.GetComponent<MeshRenderer>().sharedMaterial = missingMaterial;
-
-                    #endregion
-                    ////////////////////////////////
-
-                    ////////////////////////////////
-                    #region material
-
-                    string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].texture1_offset];
-                    BatchInstance.GetComponent<Renderer>().material = WMOmaterials[data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader];
-
-                    ////////////////////////////////
-                    #region Set Fragment Shader
-
-                    int shader = data.materials[data.groupsData[g].batchMaterialIDs[bn]].shader;
-                    switch (shader)
-                    {
-                        case (int)WMOFragmentShader.Diffuse:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
-                                break;
-                            }
-                        case (int)WMOFragmentShader.Specular:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderSpecular", 1.0f);
-                                break;
-                            }
-                        case (int)WMOFragmentShader.Metal:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderMetal", 1.0f);
-                                break;
-                            }
-                        case (int)WMOFragmentShader.Env:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderEnv", 1.0f);
-                                break;
-                            }
-                        case (int)WMOFragmentShader.Opaque:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderOpaque", 1.0f);
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_AlphaToMask", 1.0f);
-                                break;
-                            }
-                        default:
-                            {
-                                BatchInstance.GetComponent<Renderer>().material.SetFloat("_ShaderDiffuse", 1.0f);
-                                break;
-                            }
-                    }
-
-
-                    #endregion
-                    ////////////////////////////////
-
-                    ////////////////////////////////
-                    #region Set Material Flags
-
-                    // F_UNCULLED //
-                    int Culling = 2; // on (only front)
-                    if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNCULLED)
-                        Culling = 0; // off (both sides_
-                    BatchInstance.GetComponent<Renderer>().material.SetFloat("F_UNCULLED", Culling);
-                    // F_UNLIT //
-                    if (data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT)
-                        BatchInstance.GetComponent<Renderer>().material.EnableKeyword("F_UNLIT");
-                    //BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNLIT", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNLIT ? 1 : 0);
-                    // F_UNFOGGED //
-                    BatchInstance.GetComponent<Renderer>().material.SetFloat("_F_UNFOGGED", data.materials[data.groupsData[g].batchMaterialIDs[bn]].flags.F_UNFOGGED ? 1 : 0);
-
-                    #endregion
-                    ////////////////////////////////
-
-                    ////////////////////////////////
-                    #region Set Blending Mode
-
-                    // set default blend: One Zero, basicly off
-                    UnityEngine.Rendering.BlendMode source = UnityEngine.Rendering.BlendMode.One;
-                    UnityEngine.Rendering.BlendMode destination = UnityEngine.Rendering.BlendMode.Zero;
-
-                    BlendingMode blending = data.materials[data.groupsData[g].batchMaterialIDs[bn]].blendMode;
-
-                    switch (blending)
-                    {
-                        case BlendingMode.Opaque:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.One;
-                                destination = UnityEngine.Rendering.BlendMode.Zero;
-                                break;
-                            }
-                        case BlendingMode.AlphaKey:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.One;
-                                destination = UnityEngine.Rendering.BlendMode.Zero;
-                                break;
-                            }
-                        case BlendingMode.Alpha:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.SrcAlpha;
-                                destination = UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha;
-                                break;
-                            }
-                        case BlendingMode.Additive:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.One;
-                                destination = UnityEngine.Rendering.BlendMode.One;
-                                break;
-                            }
-                        case BlendingMode.Modulate:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.DstColor;
-                                destination = UnityEngine.Rendering.BlendMode.Zero;
-                                break;
-                            }
-                        case BlendingMode.Modulate2x:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.DstColor;
-                                destination = UnityEngine.Rendering.BlendMode.SrcColor;
-                                break;
-                            }
-                        case BlendingMode.ModulateAdditive:
-                            {
-                                source = UnityEngine.Rendering.BlendMode.DstColor;
-                                destination = UnityEngine.Rendering.BlendMode.One;
-                                break;
-                            }
-                        default:
-                            {
-                                Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + textureName);
-                                source = UnityEngine.Rendering.BlendMode.One;
-                                destination = UnityEngine.Rendering.BlendMode.Zero;
-                                break;
-                            }
-                    }
-                    BatchInstance.GetComponent<Renderer>().material.SetInt("MySrcMode", (int)source);
-                    BatchInstance.GetComponent<Renderer>().material.SetInt("MyDstMode", (int)destination);
-
-                    #endregion
-                    ////////////////////////////////
-
-                    ////////////////////////////////
-                    #region Assign Textures
-
-                    if (LoadedWMOTextures.ContainsKey(textureName))
-                    {
-                        BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[textureName]);
-                    }
-                    else
-                    {
-                        try
                         {
-                            Texture2Ddata tdata = data.textureData[textureName];
-                            Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                            tex.LoadRawTextureData(tdata.TextureData);
-                            tex.Apply();
-                            LoadedWMOTextures[textureName] = tex;
-                            BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+                            try
+                            {
+                                Texture2Ddata tdata = data.textureData[textureName];
+                                Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                                tex.LoadRawTextureData(tdata.TextureData);
+                                tex.Apply();
+                                LoadedWMOTextures[textureName] = tex;
+                                BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+                            }
+                            catch
+                            {
+                                Debug.Log("Error: Loading RawTextureData @ WMOhandler");
+                            }
                         }
-                        catch
-                        {
-                            Debug.Log("Error: Loading RawTextureData @ WMOhandler");
-                        }
-                    }
-                    #endregion
-                    ////////////////////////////////
+                        #endregion
+                        ////////////////////////////////
 
-                    #endregion
-                    ////////////////////////////////
+                        #endregion
+                        ////////////////////////////////
+                    }
+
+                    lods[0] = new LOD(.1f, renderers);
+                    Lodgroup.SetLODs(lods);
+                    Lodgroup.animateCrossFading = true;
+                    Lodgroup.fadeMode = LODFadeMode.SpeedTree;
+                    Lodgroup.RecalculateBounds();
                 }
+                terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
+                terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
+                terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
+                if (data.uniqueID != -1)
+                {
+                    if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
+                        terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
+                    else
+                        Destroy(terrainHandler.LoadedWMOs[data.dataPath]);
+                }
+                terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
 
-                lods[0] = new LOD(.1f, renderers);
-                Lodgroup.SetLODs(lods);
-                Lodgroup.animateCrossFading = true;
-                Lodgroup.fadeMode = LODFadeMode.SpeedTree;
-                Lodgroup.RecalculateBounds();
+                terrainHandler.frameBusy = false;
             }
-            terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
-            terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
-            terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
-            if (data.uniqueID != -1)
-            {
-                if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
-                    terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
-                else
-                    Destroy(terrainHandler.LoadedWMOs[data.dataPath]);
-            }
-            terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
-
-            terrainHandler.frameBusy = false;
         }
-    }
 
-    public void StopLoading()
-    {
-        WMO.AllWMOData.Clear();
-        WMOThreadQueue.Clear();
+        public void StopLoading()
+        {
+            WMO.AllWMOData.Clear();
+            WMOThreadQueue.Clear();
+        }
     }
 }

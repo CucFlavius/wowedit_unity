@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using Assets.Data.WoW_Format_Parsers.ADT;
+using Assets.World.Models;
+using Assets.World.Terrain;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -51,10 +54,10 @@ public class Statistics : MonoBehaviour
 
     private void UpdateTerrainMeshStats()
     {
-        float ParseADTRootSpeed = ADT.finishedTimeTerrainMesh;
-        float ParseADTTexSpeed = ADT.finishedTimeTerrainTextures;
-        float AssembleHTMeshSpeed = Truncate(terrainHandler.finishedTimeAssembleHT, 2);
-        float AssembleHTexSpeed = Truncate(terrainHandler.finishedTimeAssembleHTextures, 2);
+        float ParseADTRootSpeed     = ADT.finishedTimeTerrainMesh;
+        float ParseADTTexSpeed      = ADT.finishedTimeTerrainTextures;
+        float AssembleHTMeshSpeed   = Truncate(terrainHandler.finishedTimeAssembleHT, 2);
+        float AssembleHTexSpeed     = Truncate(terrainHandler.finishedTimeAssembleHTextures, 2);
 
         // root parse //
         PreviousParseADTRootSpeed = ParseADTRootSpeed;
@@ -64,7 +67,7 @@ public class Statistics : MonoBehaviour
         }
         AverageADTRootParseSpeed = Truncate(CalculateAverage(ADTRootParseTimes), 2);
 
-        int numberInParseQueue = ADTRootData.MeshBlockDataQueue.Count;
+        int numberInParseQueue  = ADTRootData.MeshBlockDataQueue.Count;
         RemainingHTerrainBlocks = Tabs(numberInParseQueue, "□");
 
         // tex parse //

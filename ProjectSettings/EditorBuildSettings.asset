@@ -8,3 +8,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/World/MainScene.unity
     guid: 34accecb1c2a3c148b176cd5e90c8bf7
+  m_configObjects: {}

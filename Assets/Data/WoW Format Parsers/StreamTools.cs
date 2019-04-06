@@ -106,7 +106,7 @@ public class StreamTools
     }
 
     // 4 bytes to int //
-    public int ReadLong(MemoryStream stream)
+    public int ReadInt32(MemoryStream stream)
     {
         byte[] bytes = new byte[4];
         int value;
@@ -233,91 +233,6 @@ public class StreamTools
         }
         return result;
     }
-
-    // read string that ends in byte 0 //
-    public string ReadNullTerminatedString(MemoryStream stream)
-    {
-        StringBuilder sb = new StringBuilder();
-        char c;
-        while ((c = Convert.ToChar(stream.ReadByte())) != 0)
-        {
-            sb.Append(c);
-        }
-        return sb.ToString();
-    }
-
-    // read bounding box //
-    public BoundingBox ReadBoundingBox(MemoryStream stream)
-    {
-        Vector3 rawMin = new Vector3(ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale);
-        Vector3 rawMax = new Vector3(ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale, ReadFloat(stream) / Settings.worldScale);
-        BoundingBox box = new BoundingBox
-        {
-            min = new Vector3(-rawMin.x, rawMin.z, -rawMin.y),
-            max = new Vector3(-rawMax.x, rawMax.z, -rawMax.y)
-        };
-        return box;
-    }
-
-    public M2Array ReadM2Array(MemoryStream stream)
-    {
-        M2Array m2array = new M2Array
-        {
-            size = ReadLong(stream),
-            offset = ReadLong(stream)
-        };
-
-        return m2array;
-    }
-
-    public M2TrackBase ReadM2Track(MemoryStream stream)
-    {
-        M2TrackBase m2TrackBase = new M2TrackBase
-        {
-            interpolationtype = (InterpolationType)ReadUint16(stream),
-            GlobalSequenceID = ReadShort(stream),
-            Timestamps = ReadM2Array(stream),
-            Values = ReadM2Array(stream)
-        };
-        //Debug.Log(m2TrackBase.Timestamps.size);
-        return m2TrackBase;
-    }
-
-    public Quaternion ReadQuaternion16(MemoryStream stream)
-    {
-        short x = (short)ReadShort(stream);
-        short y = (short)ReadShort(stream);
-        short z = (short)ReadShort(stream);
-        short w = (short)ReadShort(stream);
-
-        return new Quaternion
-        (
-            ShortQuatValueToFloat(x),
-            ShortQuatValueToFloat(y),
-            ShortQuatValueToFloat(z),
-            ShortQuatValueToFloat(w)
-        );
-    }
-
-    public float ShortQuatValueToFloat(short inShort)
-    {
-        return inShort / (float)short.MaxValue;
-    }
-
-    public string ReadCString(MemoryStream ms)
-    {
-        return ReadCString(ms, Encoding.UTF8);
-    }
-
-    public string ReadCString(MemoryStream ms, Encoding encoding)
-    {
-        var bytes = new System.Collections.Generic.List<byte>();
-        byte b;
-        while ((b = (byte)ms.ReadByte()) != 0)
-            bytes.Add(b);
-        return encoding.GetString(bytes.ToArray());
-    }
-
 
     public T[] ReadArray<T>(MemoryStream ms) where T : struct
     {

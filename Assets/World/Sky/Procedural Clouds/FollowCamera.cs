@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowCamera : MonoBehaviour
+namespace Assets.World.Sky.Procedural_Clouds
 {
-    public GameObject cam;
-
-	void LateUpdate ()
+    public class FollowCamera : MonoBehaviour
     {
-        transform.position = cam.transform.position;
-	}
+        public GameObject cam;
+
+        void LateUpdate()
+        {
+            transform.position = cam.transform.position;
+        }
+    }
 }
