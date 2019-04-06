@@ -10,7 +10,7 @@ public class DevTools : MonoBehaviour {
     {
         //DB2 db2 = new DB2();
         //db2.Read(filename);
-        M2.Load(@filename, -1, new Vector3(.5f, 0, 0), Quaternion.identity, new Vector3(.1f, .1f, .1f));
+        M2.Load(@filename, -1, new Vector3(.5f, 0, 0), Quaternion.identity, new Vector3(1f, 1f, 1f));
     }
 
     public void Button_LoadTestMap (string id)

@@ -24,6 +24,7 @@ namespace Assets.Data.WoW_Format_Parsers.M2
             public Quaternion rotation;
             public Vector3 scale;
             public string name;
+            public string TextureFilename;
 
             // Mesh //
             public MeshData meshData = new MeshData();

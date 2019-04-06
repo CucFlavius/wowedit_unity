@@ -291,33 +291,30 @@ namespace Assets.World.Models
             for (int matD = 0; matD < materials.Length; matD++) { materials[matD] = new Material(Shader.Find("WoWEdit/WMO/S_Diffuse")); ; }  // fill with default material
             rend.materials = materials;
 
-            if (M2.HasTextures)
+            // Textures //
+            for (int tex = 0; tex < data.submeshData.Count; tex++)
             {
-                // Textures //
-                for (int tex = 0; tex < data.submeshData.Count; tex++)
+                string textureName  = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].filename;
+                Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
+                if (textureName != null && textureName != "" && tdata.TextureData != null)
                 {
-                    string textureName = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].filename;
-                    Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
-                    if (textureName != null && textureName != "" && tdata.TextureData != null)
+                    if (LoadedM2Textures.ContainsKey(textureName))
                     {
-                        if (LoadedM2Textures.ContainsKey(textureName))
+                        materials[tex].SetTexture("_MainTex", LoadedM2Textures[textureName]);
+                    }
+                    else
+                    {
+                        try
                         {
-                            materials[tex].SetTexture("_MainTex", LoadedM2Textures[textureName]);
+                            Texture2D texture = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
+                            texture.LoadRawTextureData(tdata.TextureData);
+                            texture.Apply();
+                            LoadedM2Textures[textureName] = texture;
+                            materials[tex].SetTexture("_MainTex", texture);
                         }
-                        else
+                        catch
                         {
-                            try
-                            {
-                                Texture2D texture = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
-                                texture.LoadRawTextureData(tdata.TextureData);
-                                texture.Apply();
-                                LoadedM2Textures[textureName] = texture;
-                                materials[tex].SetTexture("_MainTex", texture);
-                            }
-                            catch
-                            {
-                                Debug.Log("Error: Loading RawTextureData @ M2handler");
-                            }
+                            Debug.Log("Error: Loading RawTextureData @ M2handler");
                         }
                     }
                 }

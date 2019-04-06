@@ -279,5 +279,28 @@ namespace Assets.Data
                 v = 15;
             return v;
         }
+
+        public static float NormalizeValue(this BinaryReader reader, float value)
+        {
+            return (2 * (value / 254)) - 1;
+        }
+
+        public static int NormalizeHalfResAlphaPixel(this BinaryReader reader, int value)
+        {
+            return value * 255 / 15;
+        }
+
+        public static int BoolArrayToInt(this BinaryReader reader, bool[] bits)
+        {
+            uint r = 0;
+            for (int i = 0; i < bits.Length; i++)
+            {
+                if (bits[i])
+                {
+                    r |= (uint)(1 << (bits.Length - i));
+                }
+            }
+            return (int)(r / 2);
+        }
     }
 }

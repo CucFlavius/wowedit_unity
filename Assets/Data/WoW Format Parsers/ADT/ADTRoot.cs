@@ -250,22 +250,21 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             }
         } // fill vertex shading with 127
 
-        public void ReadMCNR(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData)
+        public void ReadMCNR(BinaryReader reader, ADTRootData.MeshChunkData chunkData)
         {
-            StreamTools s = new StreamTools();
             chunkData.VertexNormals = new Vector3[145];
             for (int n = 0; n < 145; n++)
             {
-                Vector3 normsRaw = new Vector3(ADTstream.ReadByte(), ADTstream.ReadByte(), ADTstream.ReadByte());
+                Vector3 normsRaw = new Vector3(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
 
-                var calcX = s.NormalizeValue(normsRaw.x); if (calcX <= 0) { calcX = 1 + calcX; } else if (calcX > 0) { calcX = (1 - calcX) * (-1); }
-                var calcY = s.NormalizeValue(normsRaw.y); if (calcY <= 0) { calcY = 1 + calcY; } else if (calcY > 0) { calcY = (1 - calcY) * (-1); }
-                var calcZ = s.NormalizeValue(normsRaw.z); if (calcZ <= 0) { calcZ = 1 + calcZ; } else if (calcZ > 0) { calcZ = (1 - calcZ) * (-1); }
+                var calcX = reader.NormalizeValue(normsRaw.x); if (calcX <= 0) { calcX = 1 + calcX; } else if (calcX > 0) { calcX = (1 - calcX) * (-1); }
+                var calcY = reader.NormalizeValue(normsRaw.y); if (calcY <= 0) { calcY = 1 + calcY; } else if (calcY > 0) { calcY = (1 - calcY) * (-1); }
+                var calcZ = reader.NormalizeValue(normsRaw.z); if (calcZ <= 0) { calcZ = 1 + calcZ; } else if (calcZ > 0) { calcZ = (1 - calcZ) * (-1); }
 
                 chunkData.VertexNormals[n] = new Vector3(calcX, calcZ, calcY);
             }
             // skip unused 13 byte padding //
-            ADTstream.BaseStream.Seek(13, SeekOrigin.Current);
+            reader.BaseStream.Seek(13, SeekOrigin.Current);
         }   // normals
 
         public void ReadMCSE(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, int MCSEsize)

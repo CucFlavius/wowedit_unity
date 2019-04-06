@@ -188,7 +188,6 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
         public void ReadMCAL(BinaryReader ADTtexstream, string mapname, ADTTexData.TextureChunkData chunkData)
         {
-            StreamTools s = new StreamTools();
             long McalStartPosition = ADTtexstream.BaseStream.Position;
             int numberofLayers = chunkData.NumberOfTextureLayers;
             if (numberofLayers > 1)
@@ -243,15 +242,14 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             return textureArray;
         }
 
-        public byte[] AlphaMap_Compressed(BinaryReader ADTtexstream) // compressed
+        public byte[] AlphaMap_Compressed(BinaryReader reader) // compressed
         {
-            StreamTools s = new StreamTools();
             byte[] textureArray = new byte[4096];
             int alphaOffset = 0;
             while (alphaOffset < 4096)
             {
                 //read a byte//
-                byte onebyte = (byte)ADTtexstream.ReadByte();
+                byte onebyte = (byte)reader.ReadByte();
                 //translate byte to 8 bits//
                 byte[] bytearr = new byte[1];
                 bytearr[0] = onebyte;
@@ -265,7 +263,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 {
                     bitArray[i] = bitarr.Get(6 - i);
                 }
-                int times = s.BoolArrayToInt(bitArray);
+                int times = reader.BoolArrayToInt(bitArray);
                 if (times == 0)
                 {
                     alphaOffset = 4096;
@@ -276,7 +274,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     //fill mode// 
                     if (fc == true) // repeat the byte following the one we just read *count* number of times into the alpha map
                     {
-                        byte secondbytefill = ADTtexstream.ReadByte();
+                        byte secondbytefill = reader.ReadByte();
                         for (int j = 0; j < times; j++)
                         {
                             textureArray[alphaOffset] = secondbytefill;
@@ -288,7 +286,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     {
                         for (int jc = 0; jc < times; jc++)
                         {
-                            byte secondbytecopy = ADTtexstream.ReadByte();
+                            byte secondbytecopy = reader.ReadByte();
                             textureArray[alphaOffset] = secondbytecopy;
                             alphaOffset++;
                         }
@@ -299,18 +297,17 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             return textureArray;
         }
 
-        public byte[] AlphaMap_UncompressedHalfRes(BinaryReader ADTtexstream)
+        public byte[] AlphaMap_UncompressedHalfRes(BinaryReader reader)
         {
-            StreamTools s = new StreamTools();
             int currentArrayPos = 0;
             byte[] textureArray = new byte[4096];
             for (int ux = 0; ux < 2048; ux++)
             {
-                byte onebyte = ADTtexstream.ReadByte();
+                byte onebyte = reader.ReadByte();
                 byte nibble1 = (byte)(onebyte & 0x0F);
                 byte nibble2 = (byte)((onebyte & 0xF0) >> 4);
-                int first = s.NormalizeHalfResAlphaPixel(nibble2);
-                int second = s.NormalizeHalfResAlphaPixel(nibble1);
+                int first = reader.NormalizeHalfResAlphaPixel(nibble2);
+                int second = reader.NormalizeHalfResAlphaPixel(nibble1);
                 textureArray[ux + currentArrayPos + 0] = (byte)first;
                 textureArray[ux + currentArrayPos + 1] = (byte)second;
                 currentArrayPos = currentArrayPos + 1;

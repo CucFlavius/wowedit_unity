@@ -94,10 +94,10 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 material.ShaderType = (WMOFragmentShader)reader.ReadUInt32();           // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
                 material.BlendMode  = (BlendingMode)reader.ReadUInt32();                // Blending: see https://wowdev.wiki/Rendering#EGxBlend
 
-                material.DiffuseNameIndex   = reader.ReadUInt32();                      // offset into MOTX; ≥ Battle (8.1.0.27826) No longer references MOTX but is a filedata id directly.
+                material.TextureId1   = reader.ReadUInt32();                      // offset into MOTX; ≥ Battle (8.1.0.27826) No longer references MOTX but is a filedata id directly.
                 material.SidnColor          = reader.ReadBGRA();                        // emissive color; see below (emissive color)
                 material.FrameSidnColor     = reader.ReadBGRA();                        // sidn emissive color; set at runtime; gets sidn-manipulated emissive color; see below (emissive color)
-                material.EnvNameIndex       = reader.ReadUInt32();                      // Environment Texture; envNameIndex; offset into MOTX
+                material.TextureId2       = reader.ReadUInt32();                      // Environment Texture; envNameIndex; offset into MOTX
                 material.DiffColor          = reader.ReadBGRA();                        // diffuse color; CWorldView::GatherMapObjDefGroupLiquids(): geomFactory->SetDiffuseColor((CImVectorⁱ*)(smo+7));
                                                                                         // environment textures don't need flags
 

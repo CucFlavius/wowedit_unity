@@ -9,13 +9,13 @@ using Assets.Data.WoW_Format_Parsers.M2;
 using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
 using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.Data.WoW_Format_Parsers;
+using Assets.Tools.CSV;
 
 public static partial class M2
 {
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
     public static List<string> LoadedBLPs = new List<string>();
-    public static bool HasTextures;
 
     public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
@@ -66,11 +66,9 @@ public static partial class M2
                 {
                     case M2ChunkId.MD21:
                         ReadMD21(reader, m2Data, m2Tex);
-                        HasTextures = false;
                         break;
                     case M2ChunkId.TXID:
-                        ReadTXID(reader);
-                        HasTextures = true;
+                        ReadTXID(reader, m2Data);
                         break;
                     default:
                         SkipUnknownChunk(ms, chunkID, chunkSize);
@@ -91,13 +89,9 @@ public static partial class M2
         {
             string fileNumber = i.ToString("00");
             if (Casc.FileExists(directoryPath + @"\" + noExtension + fileNumber + ".skin"))
-            {
                 skinCount++;
-            }
             else
-            {
                 break;
-            }
         }
 
         if (skinCount > 0)

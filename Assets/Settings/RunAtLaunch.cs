@@ -1,5 +1,6 @@
 ﻿using Assets.Data.Agent;
 using Assets.Data.WoW_Format_Parsers.ADT;
+using Assets.Tools.CSV;
 using System.IO;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-
+        CSVReader.LoadCSV();
         Agent.FindWowInstalls();
         UserPreferences.Load();
         //Network.Disconnect();
@@ -120,8 +121,5 @@ public class RunAtLaunch : MonoBehaviour {
             CascInitialize.Start();
         }
     }
-
-
-
 }
 

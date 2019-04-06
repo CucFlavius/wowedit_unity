@@ -37,10 +37,10 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public MaterialFlags flags;
         public WMOFragmentShader ShaderType;
         public BlendingMode BlendMode;
-        public uint DiffuseNameIndex;
+        public uint TextureId1;
         public BGRA SidnColor;
         public BGRA FrameSidnColor;
-        public uint EnvNameIndex;
+        public uint TextureId2;
         public BGRA DiffColor;
         public uint GroundType;
         public uint Texture2;

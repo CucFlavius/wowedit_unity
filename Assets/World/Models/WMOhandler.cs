@@ -250,7 +250,7 @@ namespace Assets.World.Models
                         ////////////////////////////////
                         #region material
 
-                        string textureName = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].DiffuseNameIndex];
+                        string textureName = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
                         BatchInstance.GetComponent<Renderer>().material = WMOmaterials[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType];
 
                         ////////////////////////////////

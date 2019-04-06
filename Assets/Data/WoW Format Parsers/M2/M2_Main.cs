@@ -2,6 +2,7 @@
 using Assets.Data.WoW_Format_Parsers;
 using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
+using Assets.Tools.CSV;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
 
 public static partial class M2
 {
-    static DataSourceManager manager;
     public static void ReadMD21(BinaryReader br, M2Data m2Data, M2Texture m2Tex)
     {
         long md20position = br.BaseStream.Position;
@@ -230,59 +230,6 @@ public static partial class M2
             m2Data.meshData.tex_coords2.Add(new Vector2(br.ReadSingle(), br.ReadSingle()));
         }
 
-        if (HasTextures)
-        {
-            // Textures //
-            br.BaseStream.Position = textures.Offset + md20position;
-            for (int t = 0; t < textures.Size; t++)
-            {
-                M2Texture m2Texture = new M2Texture();
-
-                m2Texture.type = br.ReadInt32();
-                m2Texture.flags = br.ReadInt32();
-
-                M2Array filename = br.ReadM2Array();
-
-                // seek to filename and read //
-                long savePosition = br.BaseStream.Position;
-                br.BaseStream.Position = filename.Offset + md20position;
-                string fileNameString = "";
-                for (int n = 0; n < filename.Size; n++)
-                {
-                    fileNameString += Convert.ToChar(br.ReadByte());
-                }
-                br.BaseStream.Position = savePosition;
-
-                string fileNameStringFix = fileNameString.TrimEnd(fileNameString[fileNameString.Length - 1]);
-                m2Texture.filename = fileNameStringFix;
-
-                Texture2Ddata texture2Ddata = new Texture2Ddata();
-
-                if (fileNameStringFix.Length > 1)
-                {
-                    if (!LoadedBLPs.Contains(fileNameStringFix))
-                    {
-                        string extractedPath = Casc.GetFile(fileNameStringFix);
-                        Stream stream = File.Open(extractedPath, FileMode.Open);
-                        BLP blp = new BLP();
-                        byte[] data = blp.GetUncompressed(stream, true);
-                        BLPinfo info = blp.Info();
-                        texture2Ddata.hasMipmaps = info.hasMipmaps;
-                        texture2Ddata.width = info.width;
-                        texture2Ddata.height = info.height;
-                        texture2Ddata.textureFormat = info.textureFormat;
-                        texture2Ddata.TextureData = data;
-                        m2Texture.texture2Ddata = texture2Ddata;
-                        stream.Close();
-                        stream.Dispose();
-                        stream = null;
-                        LoadedBLPs.Add(fileNameString);
-                    }
-                }
-                m2Data.m2Tex.Add(m2Texture);
-            }
-        }
-
         // texture_lookup_table //
         br.BaseStream.Position = texture_lookup_table.Offset + md20position;
         for (int tl = 0; tl < texture_lookup_table.Size; tl++)
@@ -292,7 +239,7 @@ public static partial class M2
 
     }
 
-    public static void ReadTXID(BinaryReader br)
+    public static void ReadTXID(BinaryReader br, M2Data m2Data)
     {
         br.BaseStream.Position -= 4;
         var size = br.ReadUInt32();
@@ -300,11 +247,30 @@ public static partial class M2
 
         for (int i = 0; i < numTextures; i++)
         {
-            uint textures = br.ReadUInt32();
-            if (manager.ToggleExtracted.isOn)
-            {
+            uint texture = br.ReadUInt32();
+            string Filename = CSVReader.LookupId(texture);
 
+            M2Texture m2Texture = new M2Texture();
+            m2Texture.filename = Filename;
+            Texture2Ddata texture2Ddata = new Texture2Ddata();
+            if (!LoadedBLPs.Contains(Filename))
+            {
+                string extractedPath = Casc.GetFile(Filename);
+                Stream stream = File.Open(extractedPath, FileMode.Open);
+                BLP blp = new BLP();
+                byte[] data = blp.GetUncompressed(stream, true);
+                BLPinfo info = blp.Info();
+                texture2Ddata.hasMipmaps    = info.hasMipmaps;
+                texture2Ddata.width         = info.width;
+                texture2Ddata.height        = info.height;
+                texture2Ddata.textureFormat = info.textureFormat;
+                texture2Ddata.TextureData   = data;
+                m2Texture.texture2Ddata     = texture2Ddata;
+                stream.Close();
+                stream.Dispose();
+                LoadedBLPs.Add(Filename);
             }
+            m2Data.m2Tex.Add(m2Texture);
         }
     }
 

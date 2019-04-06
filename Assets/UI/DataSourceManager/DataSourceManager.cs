@@ -10,6 +10,8 @@ public class DataSourceManager : MonoBehaviour {
     public Toggle ToggleOnline;
     public Toggle ToggleExtracted;
 
+    public bool IsExtracted;
+
     public Dropdown DropdownGame;
     public Dropdown DropdownOnline;
     public Dropdown DropdownDefinitions;
@@ -116,6 +118,7 @@ public class DataSourceManager : MonoBehaviour {
                 Settings.Save();
                 gameObject.SetActive(false);
             }
+            IsExtracted = true;
         }
         if (Settings.Data[2] == "2")
             terrainImport.GetComponent<TerrainImport>().Initialize();

@@ -375,7 +375,6 @@ namespace Assets.World.Terrain
             {
                 if (Block != null)
                 {
-                    StreamTools s = new StreamTools();
                     for (int i = (256 / fS) * (Q - 1); i < (256 / fS) * Q; i++)
                     {
                         //////////////////////////////

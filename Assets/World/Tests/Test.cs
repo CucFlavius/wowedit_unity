@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using Assets.World.Models;
+using UnityEditor;
 
 namespace Assets.World.Tests
 {
