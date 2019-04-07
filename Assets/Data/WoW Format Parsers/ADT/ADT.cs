@@ -1,4 +1,4 @@
-﻿using Assets.World.Discord;
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -216,8 +216,6 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ThreadWorkingMesh = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            DiscordController.mapName = MapName;
 
             ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
             ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();

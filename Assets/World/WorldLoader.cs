@@ -1,7 +1,6 @@
 ﻿using Assets.Data.WoW_Format_Parsers.ADT;
 using Assets.World.Models;
 using Assets.World.Terrain;
-using Assets.World.Discord;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -511,7 +510,6 @@ namespace Assets.World
                 foreach (Transform child in TerrainParent.transform)
                 {
                     child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
-                    DiscordController.mapName = null;
                 }
                 foreach (Transform child in M2Parent.transform)
                 {
