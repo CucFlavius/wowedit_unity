@@ -3,6 +3,7 @@ using Assets.Data.WoW_Format_Parsers.ADT;
 using Assets.World.Models;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.IO;
 using UnityEngine;
 
@@ -14,11 +15,11 @@ namespace Assets.World.Terrain
         public int BlockX;
         public int BlockY;
         public GameObject currentBlock;
-        public static System.Threading.Thread ADTThread;
-        public static System.Threading.Thread ADTRThread;
-        public static System.Threading.Thread ADTTThread;
-        public static System.Threading.Thread ADTOThread;
-        public static System.Threading.Thread ADTMThread;
+        public static Thread ADTThread;
+        public static Thread ADTRThread;
+        public static Thread ADTTThread;
+        public static Thread ADTOThread;
+        public static Thread ADTMThread;
         public GameObject ChunkPrefab;
         public GameObject BlockChunksPrefab;
         public GameObject WMOParent;
@@ -187,7 +188,7 @@ namespace Assets.World.Terrain
         {
             currentHTerrain = queueItem;
             //ParseHTerrainMesh(); // nonthreaded - for testing purposes
-            ADTRThread = new System.Threading.Thread(ADTRootThread);
+            ADTRThread = new Thread(ADTRootThread);
             ADTRThread.IsBackground = true;
             ADTRThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             ADTRThread.Start();
@@ -197,7 +198,7 @@ namespace Assets.World.Terrain
         {
             currentHTexture = queueItem;
             //ADTTexThread(); // nonthreaded
-            ADTTThread = new System.Threading.Thread(ADTTexThread);
+            ADTTThread = new Thread(ADTTexThread);
             ADTTThread.IsBackground = true;
             ADTTThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             ADTTThread.Start();
@@ -207,7 +208,7 @@ namespace Assets.World.Terrain
         {
             currentObj = queueItem;
             //ADTObjThread();
-            ADTOThread = new System.Threading.Thread(ADTObjThread);
+            ADTOThread = new Thread(ADTObjThread);
             ADTOThread.IsBackground = true;
             ADTOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             ADTOThread.Start();
@@ -217,7 +218,7 @@ namespace Assets.World.Terrain
         {
             currentMapTexture = queueItem;
             //MapTextureThread(); // nonthreaded
-            ADTMThread = new System.Threading.Thread(MapTextureThread);
+            ADTMThread = new Thread(MapTextureThread);
             ADTMThread.IsBackground = true;
             ADTMThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             ADTMThread.Start();
@@ -349,13 +350,13 @@ namespace Assets.World.Terrain
                     //////////////////////////////
                     #region Create Mesh
 
-                    Mesh mesh0 = new Mesh();
-                    mesh0.vertices = data.meshChunksData[i].VertexArray;
+                    Mesh mesh0      = new Mesh();
+                    mesh0.vertices  = data.meshChunksData[i].VertexArray;
                     mesh0.triangles = data.meshChunksData[i].TriangleArray;
-                    mesh0.uv    = ADT.Chunk_UVs;
-                    mesh0.uv2   = ADT.Chunk_UVs2[i];
-                    mesh0.normals = data.meshChunksData[i].VertexNormals;
-                    mesh0.colors32 = data.meshChunksData[i].VertexColors;
+                    mesh0.uv        = ADT.Chunk_UVs;
+                    mesh0.uv2       = ADT.Chunk_UVs2[i];
+                    mesh0.normals   = data.meshChunksData[i].VertexNormals;
+                    mesh0.colors32  = data.meshChunksData[i].VertexColors;
                     //Chunk.GetComponent<MeshFilter>().mesh = mesh0;
                     Chunk.GetComponent<ADTChunk>().mesh = mesh0;
                     Chunk.GetComponent<MeshFilter>().sharedMesh = Chunk.GetComponent<ADTChunk>().mesh;
@@ -558,7 +559,7 @@ namespace Assets.World.Terrain
                             {
                                 LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
                                 ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
-                                string wmoPath = data.WMOPaths[data.WMOOffsets[wmoInfo.nameID]];
+                                string wmoPath      = data.WMOPaths[wmoInfo.nameId];
                                 Vector3 addPosition = new Vector3(wmoInfo.position.x,
                                                                   wmoInfo.position.y,
                                                                   wmoInfo.position.z);
@@ -568,11 +569,11 @@ namespace Assets.World.Terrain
                     }
                     if (SettingsTerrainImport.LoadM2s)
                     {
-                        GameObject M20 = new GameObject();
-                        Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
-                        M20.name = "M2_" + terrainPos.x + "_" + terrainPos.y;
-                        M20.transform.position = new Vector3(((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
-                        M20.transform.parent = M2Parent.transform;
+                        GameObject M20          = new GameObject();
+                        Vector2 terrainPos      = new Vector2(data.terrainPos.x, data.terrainPos.y);
+                        M20.name                = "M2_" + terrainPos.x + "_" + terrainPos.y;
+                        M20.transform.position  = new Vector3(((32 - terrainPos.y) * blockSize), 0, ((32 - terrainPos.x) * blockSize));
+                        M20.transform.parent    = M2Parent.transform;
 
                         // Create m2 objects - send work to the m2 thread //
                         foreach (ADTObjData.M2PlacementInfo m2Info in data.M2Info)
@@ -581,7 +582,7 @@ namespace Assets.World.Terrain
                             {
                                 LoadedUniqueM2s.Add(m2Info.uniqueID);
                                 ADTBlockM2Parents.Add(m2Info.uniqueID, M20);
-                                string m2Path = data.M2Paths[data.M2Offsets[m2Info.nameID]];
+                                string m2Path       = data.M2Paths[m2Info.nameId];
                                 Vector3 addPosition = new Vector3(m2Info.position.x,
                                                                   m2Info.position.y,
                                                                   m2Info.position.z);

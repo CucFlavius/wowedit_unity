@@ -7,12 +7,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 {
     public class ADTRoot
     {
-
         // global flags //
-        public int MH2Ooffset;
-        public int MFBOoffset;
+        public uint MH2Ooffset;
+        public uint MFBOoffset;
         public List<bool> has_mcsh;
-
 
         public void ReadMVER(BinaryReader ADTstream)
         {
@@ -21,149 +19,150 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
         public void ReadMHDR(BinaryReader ADTstream)
         {
-            int flags = ADTstream.ReadInt32();
-            int mcin = ADTstream.ReadInt32();  // Cata+: obviously gone. probably all offsets gone, except mh2o(which remains in root file).
-            int mtex = ADTstream.ReadInt32();
-            int mmdx = ADTstream.ReadInt32();
-            int mmid = ADTstream.ReadInt32();
-            int mwmo = ADTstream.ReadInt32();
-            int mwid = ADTstream.ReadInt32();
-            int mddf = ADTstream.ReadInt32();
-            int modf = ADTstream.ReadInt32();
-            MFBOoffset = ADTstream.ReadInt32(); // this is only set if flags & mhdr_MFBO.
-            MH2Ooffset = ADTstream.ReadInt32();
-            int mtxf = ADTstream.ReadInt32();
-            int mamp_value = ADTstream.ReadByte(); // Cata+, explicit MAMP chunk overrides data
-            int[] padding = new int[3];
-            padding[0] = ADTstream.ReadByte();
-            padding[1] = ADTstream.ReadByte();
-            padding[2] = ADTstream.ReadByte();
-            int[] unused = new int[3];
-            unused[0] = ADTstream.ReadInt32();
-            unused[1] = ADTstream.ReadInt32();
-            unused[2] = ADTstream.ReadInt32();
+            uint flags      = ADTstream.ReadUInt32();
+            uint mcin       = ADTstream.ReadUInt32();  // Cata+: obviously gone. probably all offsets gone, except mh2o(which remains in root file).
+            uint mtex       = ADTstream.ReadUInt32();
+            uint mmdx       = ADTstream.ReadUInt32();
+            uint mmid       = ADTstream.ReadUInt32();
+            uint mwmo       = ADTstream.ReadUInt32();
+            uint mwid       = ADTstream.ReadUInt32();
+            uint mddf       = ADTstream.ReadUInt32();
+            uint modf       = ADTstream.ReadUInt32();
+            MFBOoffset      = ADTstream.ReadUInt32(); // this is only set if flags & mhdr_MFBO.
+            MH2Ooffset      = ADTstream.ReadUInt32();
+            uint mtxf       = ADTstream.ReadUInt32();
+            uint mamp_value = ADTstream.ReadByte(); // Cata+, explicit MAMP chunk overrides data
+            byte[] padding  = new byte[3];
+            padding[0]      = ADTstream.ReadByte();
+            padding[1]      = ADTstream.ReadByte();
+            padding[2]      = ADTstream.ReadByte();
+            uint[] unused   = new uint[3];
+            unused[0]       = ADTstream.ReadUInt32();
+            unused[1]       = ADTstream.ReadUInt32();
+            unused[2]       = ADTstream.ReadUInt32();
         }
 
-        public void ReadMH2O(BinaryReader ADTstream, int MH2Osize)
+        public void ReadMH2O(BinaryReader reader, int MH2Osize)
         {
-            long chunkStartPosition = ADTstream.BaseStream.Position;
+            long chunkStartPosition = reader.BaseStream.Position;
 
             // header - SMLiquidChunk
             for (int a = 0; a < 256; a++)
             {
-                int offset_instances = ADTstream.ReadInt32();                        // points to SMLiquidInstance[layer_count]
-                int layer_count = ADTstream.ReadInt32();                        // 0 if the chunk has no liquids. If > 1, the offsets will point to arrays.
-                int offset_attributes = ADTstream.ReadInt32();                        // points to mh2o_chunk_attributes, can be ommitted for all-0
+                uint offset_instances    = reader.ReadUInt32();                         // points to SMLiquidInstance[layer_count]
+                uint layer_count         = reader.ReadUInt32();                         // 0 if the chunk has no liquids. If > 1, the offsets will point to arrays.
+                uint offset_attributes   = reader.ReadUInt32();                         // points to mh2o_chunk_attributes, can be ommitted for all-0
+
                 if (offset_instances >= 0)
                 {
                     // instances @24bytes
-                    ADTstream.BaseStream.Seek(chunkStartPosition + offset_instances, SeekOrigin.Begin);
-                    int liquid_type = ADTstream.ReadUInt16();               //DBC - foreign_keyⁱ<uint16_t, &LiquidTypeRec::m_ID> liquid_type;
-                    int liquid_object_or_lvf = ADTstream.ReadUInt16();               //DBC -  foreign_keyⁱ<uint16_t, &LiquidObjectRec::m_ID> liquid_object_or_lvf;        
-                                                                                     // if > 41, an id into DB/LiquidObject. If below, LiquidVertexFormat, used in ADT/v18#instance_vertex_data Note hardcoded LO ids below.
-                                                                                     // if >= 42, look up via DB/LiquidType and DB/LiquidMaterial, otherwise use liquid_object_or_lvf as LVF
-                                                                                     // also see below for offset_vertex_data: if that's 0 and lt ≠ 2 → lvf = 2
-                    float min_height_level = ADTstream.ReadSingle();               // used as height if no heightmap given and culling ᵘ
-                    float max_height_level = ADTstream.ReadSingle();               // ≥ WoD ignores value and assumes to both be 0.0 for LVF = 2! ᵘ
-                    int x_offset = ADTstream.ReadByte();                 // The X offset of the liquid square (0-7)
-                    int y_offset = ADTstream.ReadByte();                 // The Y offset of the liquid square (0-7)
-                    int width = ADTstream.ReadByte();                 // The width of the liquid square (1-8)
-                    int height = ADTstream.ReadByte();                 // The height of the liquid square (1-8)
-                                                                       // The above four members are only used if liquid_object_or_lvf <= 41. Otherwise they are assumed 0, 0, 8, 8. (18179) 
-                    int offset_exists_bitmap = ADTstream.ReadInt32();                // not all tiles in the instances need to be filled. always 8*8 bits.
-                                                                                     // offset can be 0 for all-exist. also see (and extend) Talk:ADT/v18#SMLiquidInstance
-                    int offset_vertex_data = ADTstream.ReadInt32();                // actual data format defined by LiquidMaterialRec::m_LVF via LiquidTypeRec::m_materialID
-                                                                                   // if offset = 0 and liquidType ≠ 2, then let LVF = 2, i.e. some ocean shit
+                    reader.BaseStream.Seek(chunkStartPosition + offset_instances, SeekOrigin.Begin);
+                    ushort liquid_type          = reader.ReadUInt16();                  //DBC - foreign_keyⁱ<uint16_t, &LiquidTypeRec::m_ID> liquid_type;
+                    ushort liquid_object_or_lvf = reader.ReadUInt16();                  //DBC -  foreign_keyⁱ<uint16_t, &LiquidObjectRec::m_ID> liquid_object_or_lvf;        
+                                                                                        // if > 41, an id into DB/LiquidObject. If below, LiquidVertexFormat, used in ADT/v18#instance_vertex_data Note hardcoded LO ids below.
+                                                                                        // if >= 42, look up via DB/LiquidType and DB/LiquidMaterial, otherwise use liquid_object_or_lvf as LVF
+                                                                                        // also see below for offset_vertex_data: if that's 0 and lt ≠ 2 → lvf = 2
+                    float min_height_level      = reader.ReadSingle();                  // used as height if no heightmap given and culling ᵘ
+                    float max_height_level      = reader.ReadSingle();                  // ≥ WoD ignores value and assumes to both be 0.0 for LVF = 2! ᵘ
+                    byte x_offset               = reader.ReadByte();                    // The X offset of the liquid square (0-7)
+                    byte y_offset               = reader.ReadByte();                    // The Y offset of the liquid square (0-7)
+                    byte width                  = reader.ReadByte();                    // The width of the liquid square (1-8)
+                    byte height                 = reader.ReadByte();                    // The height of the liquid square (1-8)
+                                                                                        // The above four members are only used if liquid_object_or_lvf <= 41. Otherwise they are assumed 0, 0, 8, 8. (18179) 
+                    uint offset_exists_bitmap   = reader.ReadUInt32();                  // not all tiles in the instances need to be filled. always 8*8 bits.
+                                                                                        // offset can be 0 for all-exist. also see (and extend) Talk:ADT/v18#SMLiquidInstance
+                    uint offset_vertex_data     = reader.ReadUInt32();                  // actual data format defined by LiquidMaterialRec::m_LVF via LiquidTypeRec::m_materialID
+                                                                                        // if offset = 0 and liquidType ≠ 2, then let LVF = 2, i.e. some ocean shit
 
                 }
                 //attributes
                 if (offset_attributes >= 0)
                 {
-                    ADTstream.BaseStream.Seek(chunkStartPosition + offset_attributes, SeekOrigin.Begin);
-                    ulong fishable = ADTstream.ReadUInt64();                           // seems to be usable as visibility information.
-                    ulong deep = ADTstream.ReadUInt64();
+                    reader.BaseStream.Seek(chunkStartPosition + offset_attributes, SeekOrigin.Begin);
+                    ulong fishable  = reader.ReadUInt64();                               // seems to be usable as visibility information.
+                    ulong deep      = reader.ReadUInt64();
                 }
             }
-            ADTstream.BaseStream.Seek(chunkStartPosition + MH2Osize, SeekOrigin.Begin); // set stream location to right after MH2O
+            reader.BaseStream.Seek(chunkStartPosition + MH2Osize, SeekOrigin.Begin); // set stream location to right after MH2O
         }
 
 
-        public void ReadMCNK(BinaryReader ADTstream, int MCNKchunkNumber, int MCNKsize)
+        public void ReadMCNK(BinaryReader reader, int MCNKchunkNumber, int MCNKsize)
         {
-            Flags f = new Flags();
+            Flags f                     = new Flags();
             ADTRootData.MeshChunkData chunkData = new ADTRootData.MeshChunkData();
-            long MCNKchnkPos = ADTstream.BaseStream.Position;
+            long MCNKchnkPos            = reader.BaseStream.Position;
             // <Header> - 128 bytes
-            chunkData.flags = f.ReadMCNKflags(ADTstream);
+            chunkData.flags             = f.ReadMCNKflags(reader);
 
-            chunkData.IndexX = ADTstream.ReadInt32();
-            chunkData.IndexY = ADTstream.ReadInt32();
-            chunkData.nLayers = ADTstream.ReadInt32();                        // maximum 4
-            int nDoodadRefs = ADTstream.ReadInt32();
-            chunkData.holes_high_res = ADTstream.ReadUInt64();                       // only used with flags.high_res_holes
-            int ofsLayer = ADTstream.ReadInt32();
-            int ofsRefs = ADTstream.ReadInt32();
-            int ofsAlpha = ADTstream.ReadInt32();
-            int sizeAlpha = ADTstream.ReadInt32();
-            int ofsShadow = ADTstream.ReadInt32();                        // only with flags.has_mcsh
-            int sizeShadow = ADTstream.ReadInt32();
-            int areaid = ADTstream.ReadInt32();                        // in alpha: both zone id and sub zone id, as uint16s.
-            int nMapObjRefs = ADTstream.ReadInt32();
-            chunkData.holes_low_res = ADTstream.ReadUInt16();
-            int unknown_but_used = ADTstream.ReadUInt16();                       // in alpha: padding
+            chunkData.IndexX            = reader.ReadUInt32();
+            chunkData.IndexY            = reader.ReadUInt32();
+            chunkData.nLayers           = reader.ReadUInt32();                          // maximum 4
+            uint nDoodadRefs            = reader.ReadUInt32();
+            chunkData.holes_high_res    = reader.ReadUInt64();                          // only used with flags.high_res_holes
+            uint ofsLayer               = reader.ReadUInt32();
+            uint ofsRefs                = reader.ReadUInt32();
+            uint ofsAlpha               = reader.ReadUInt32();
+            uint sizeAlpha              = reader.ReadUInt32();
+            uint ofsShadow              = reader.ReadUInt32();                          // only with flags.has_mcsh
+            uint sizeShadow             = reader.ReadUInt32();
+            uint areaid                 = reader.ReadUInt32();                          // in alpha: both zone id and sub zone id, as uint16s.
+            uint nMapObjRefs            = reader.ReadUInt32();
+            chunkData.holes_low_res     = reader.ReadUInt16();
+            ushort unknown_but_used     = reader.ReadUInt16();                          // in alpha: padding
             byte[] ReallyLowQualityTextureingMap = new byte[16];                        // uint2_t[8][8] "predTex", It is used to determine which detail doodads to show. Values are an array of two bit 
             for (int b = 0; b < 16; b++)
             {
-                ReallyLowQualityTextureingMap[b] = ADTstream.ReadByte();
+                ReallyLowQualityTextureingMap[b] = reader.ReadByte();
             }
             // unsigned integers, naming the layer.
-            ulong noEffectDoodad = ADTstream.ReadUInt64();                           // WoD: may be an explicit MCDD chunk
-            int ofsSndEmitters = ADTstream.ReadInt32();
-            int nSndEmitters = ADTstream.ReadInt32();                            // will be set to 0 in the client if ofsSndEmitters doesn't point to MCSE!
-            int ofsLiquid = ADTstream.ReadInt32();
-            int sizeLiquid = ADTstream.ReadInt32();                            // 8 when not used; only read if >8.
-                                                                               // in alpha, remainder is padding but unused.
-            chunkData.MeshPosition = new Vector3(ADTstream.ReadSingle(), ADTstream.ReadSingle(), ADTstream.ReadSingle());
-            int ofsMCCV = ADTstream.ReadInt32();                            // only with flags.has_mccv, had uint32_t textureId; in ObscuR's structure.
-            int ofsMCLV = ADTstream.ReadInt32();                            // introduced in Cataclysm
-            int unused = ADTstream.ReadInt32();                            // currently unused
-                                                                           // </header>
+            ulong noEffectDoodad        = reader.ReadUInt64();                          // WoD: may be an explicit MCDD chunk
+            int ofsSndEmitters          = reader.ReadInt32();
+            int nSndEmitters            = reader.ReadInt32();                           // will be set to 0 in the client if ofsSndEmitters doesn't point to MCSE!
+            int ofsLiquid               = reader.ReadInt32();
+            int sizeLiquid              = reader.ReadInt32();                           // 8 when not used; only read if >8.
+                                                                                        // in alpha, remainder is padding but unused.
+            chunkData.MeshPosition      = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+            int ofsMCCV                 = reader.ReadInt32();                           // only with flags.has_mccv, had uint32_t textureId; in ObscuR's structure.
+            int ofsMCLV                 = reader.ReadInt32();                           // introduced in Cataclysm
+            int unused                  = reader.ReadInt32();                           // currently unused
+                                                                                        // </header>
 
             if (!chunkData.flags.has_mccv)
                 FillMCCV(chunkData);                                                    // fill vertex shading with 127...
 
-            long streamPosition = ADTstream.BaseStream.Position;
+            long streamPosition = reader.BaseStream.Position;
             while (streamPosition < MCNKchnkPos + MCNKsize)
             {
-                ADTstream.BaseStream.Position = streamPosition;
-                ADTChunkId chunkId = (ADTChunkId)ADTstream.ReadInt32();
-                int chunkSize = ADTstream.ReadInt32();
-                streamPosition = ADTstream.BaseStream.Position + chunkSize;
+                reader.BaseStream.Position = streamPosition;
+                ADTChunkId chunkId = (ADTChunkId)reader.ReadInt32();
+                int chunkSize = reader.ReadInt32();
+                streamPosition = reader.BaseStream.Position + chunkSize;
                 switch (chunkId)
                 {
                     case ADTChunkId.MCVT:
-                        ReadMCVT(ADTstream, chunkData); // vertex heights
+                        ReadMCVT(reader, chunkData); // vertex heights
                         break;
                     case ADTChunkId.MCLV:
-                        ReadMCLV(ADTstream, chunkData); // chunk lighting
+                        ReadMCLV(reader, chunkData); // chunk lighting
                         break;
                     case ADTChunkId.MCCV:
-                        ReadMCCV(ADTstream, chunkData); // vertex shading
+                        ReadMCCV(reader, chunkData); // vertex shading
                         break;
                     case ADTChunkId.MCNR:
-                        ReadMCNR(ADTstream, chunkData); // normals
+                        ReadMCNR(reader, chunkData); // normals
                         break;
                     case ADTChunkId.MCSE:
-                        ReadMCSE(ADTstream, chunkData, chunkSize); // sound emitters
+                        ReadMCSE(reader, chunkData, chunkSize); // sound emitters
                         break;
                     case ADTChunkId.MCBB:
-                        ReadMCBB(ADTstream, chunkData, chunkSize);
+                        ReadMCBB(reader, chunkData, chunkSize);
                         break;
                     case ADTChunkId.MCDD:
-                        ReadMCDD(ADTstream, chunkData, chunkSize);
+                        ReadMCDD(reader, chunkData, chunkSize);
                         break;
                     default:
-                        SkipUnknownChunk(ADTstream, chunkId, chunkSize);
+                        SkipUnknownChunk(reader, chunkId, chunkSize);
                         break;
                 }
             }
@@ -194,22 +193,22 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         ////// MCNK Subchunks //////
         ////////////////////////////
 
-        public void ReadMCVT(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData)
+        public void ReadMCVT(BinaryReader reader, ADTRootData.MeshChunkData chunkData)
         {
             for (int v = 1; v <= 145; v++)
             {
-                chunkData.VertexHeights.Add(ADTstream.ReadSingle());
+                chunkData.VertexHeights.Add(reader.ReadSingle());
             }
         }
 
-        public void ReadMCLV(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData)
+        public void ReadMCLV(BinaryReader reader, ADTRootData.MeshChunkData chunkData)
         {
             for (int v = 1; v <= 145; v++)
             {
                 byte[] ARGB = new byte[4];
                 for (int b = 0; b < 4; b++)
                 {
-                    ARGB[b] = ADTstream.ReadByte();
+                    ARGB[b] = reader.ReadByte();
                 }
                 chunkData.VertexLighting.Add(ARGB);
             }
@@ -218,20 +217,20 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             // Result of baking level-designer placed omni lights. With WoD, they added the actual lights to do live lighting.
         }   // chunk lighting
 
-        public void ReadMCCV(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData)
+        public void ReadMCCV(BinaryReader reader, ADTRootData.MeshChunkData chunkData)
         {
             chunkData.VertexColors = new Color32[145];
 
             List<int> vertcolors = new List<int>();
             for (int col = 0; col < 145; col++)
             {
-                int channelR = ADTstream.ReadByte();
+                int channelR = reader.ReadByte();
                 vertcolors.Add(channelR);
-                int channelG = ADTstream.ReadByte();
+                int channelG = reader.ReadByte();
                 vertcolors.Add(channelG);
-                int channelB = ADTstream.ReadByte();
+                int channelB = reader.ReadByte();
                 vertcolors.Add(channelB);
-                int channelA = ADTstream.ReadByte();
+                int channelA = reader.ReadByte();
                 vertcolors.Add(channelA);
 
                 Color32 colorsRGBA = new Color32((byte)channelR, (byte)channelG, (byte)channelB, (byte)channelA);

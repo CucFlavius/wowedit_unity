@@ -26,22 +26,22 @@ namespace Assets.Data.WoW_Format_Parsers
         {
             string dataPath = @"world\maptextures\" + mapName + @"\" + mapName + "_" + coords.x + "_" + coords.y + ".blp";
             MapTextureBlock mapTextureBlock = new MapTextureBlock();
-            Texture2Ddata texture2Ddata = new Texture2Ddata();
-            string extractedTexturePath = Casc.GetFile(dataPath);
+            Texture2Ddata texture2Ddata     = new Texture2Ddata();
+            string extractedTexturePath     = Casc.GetFile(dataPath);
             using (Stream stream = File.Open(extractedTexturePath, FileMode.Open))
             {
-                BLP blp = new BLP();
-                byte[] data = blp.GetUncompressed(stream, true);
-                BLPinfo info = blp.Info();
-                texture2Ddata.hasMipmaps = info.hasMipmaps;
-                texture2Ddata.height = info.height;
-                texture2Ddata.width = info.width;
+                BLP blp                     = new BLP();
+                byte[] data                 = blp.GetUncompressed(stream, true);
+                BLPinfo info                = blp.Info();
+                texture2Ddata.hasMipmaps    = info.hasMipmaps;
+                texture2Ddata.height        = info.height;
+                texture2Ddata.width         = info.width;
                 texture2Ddata.textureFormat = info.textureFormat;
-                texture2Ddata.TextureData = data;
-                mapTextureBlock.dataPath = dataPath;
-                mapTextureBlock.mapName = mapName;
-                mapTextureBlock.coords = coords;
-                mapTextureBlock.data = texture2Ddata;
+                texture2Ddata.TextureData   = data;
+                mapTextureBlock.dataPath    = dataPath;
+                mapTextureBlock.mapName     = mapName;
+                mapTextureBlock.coords      = coords;
+                mapTextureBlock.data        = texture2Ddata;
                 if (ADT.ADT.working)
                     MapTextureDataQueue.Enqueue(mapTextureBlock);
                 MapTextureThreadRunning = false;

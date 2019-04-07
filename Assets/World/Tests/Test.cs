@@ -5,24 +5,23 @@ using System.IO;
 using System;
 using Assets.World.Models;
 using UnityEditor;
+using Assets.Data.WoW_Format_Parsers.WMO;
 
 namespace Assets.World.Tests
 {
     public class Test : MonoBehaviour
     {
-
         public WMOhandler wmoHandler;
         public M2handler m2Handler;
 
         // Use this for initialization
         void Start()
         {
-            Invoke("Delayed", 0.1f);
+            Invoke("Delayed", 1.0f);
         }
 
         void Delayed()
         {
-            //wmoHandler.AddToQueue(@"world\wmo\zuldazar\troll\8tr_zandalari_pyramid.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
             //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\duskwood_barn\duskwood_barn.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
             //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\stormwind\stormwind2_016.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
             try

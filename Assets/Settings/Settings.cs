@@ -61,7 +61,7 @@ public static class Settings
 
     public static void Save ()
     {
-        File.WriteAllLines("Settings.ini", Settings.Data);
+        File.WriteAllLines("Settings.ini", Data);
     }
 
     public static void GetInstalledGames()

@@ -63,7 +63,7 @@ namespace Assets.Tools.CSV
         {
             if (listFile.TexturePath.TryGetValue(id, out string Filename))
             {
-                Debug.Log($"Id: {id} Filename: {Filename}");
+                // Debug.Log($"Id: {id} Filename: {Filename}");
                 return Filename;
             }
             else

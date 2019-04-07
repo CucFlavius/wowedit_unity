@@ -2766,8 +2766,8 @@ GameObject:
   - component: {fileID: 421}
   - component: {fileID: 424}
   - component: {fileID: 420}
-  - component: {fileID: 1166}
   - component: {fileID: 1206}
+  - component: {fileID: 176}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3070,6 +3070,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970870517314bfe44b41d999495dabd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &177
 GameObject:
   m_ObjectHideFlags: 0
@@ -11023,8 +11035,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 276, y: 125}
-  m_SizeDelta: {x: 468, y: 123}
+  m_AnchoredPosition: {x: 392, y: 207}
+  m_SizeDelta: {x: 700, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &812
 RectTransform:
@@ -17175,7 +17187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -123.00001}
+  m_AnchoredPosition: {x: 0, y: -299.99942}
   m_SizeDelta: {x: 438.39996, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!224 &1130
@@ -17845,18 +17857,6 @@ MonoBehaviour:
   zoomSpeed: 0.2
   maxZoom: 5
   minZoom: 0.2
---- !u!114 &1166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbc89bb1ebe0974d868701ca683ab26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29044,7 +29044,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!114 &1518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38513,72 +38513,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -6, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &309041760
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 309041762}
-  - component: {fileID: 309041761}
-  m_Layer: 0
-  m_Name: Discord
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &309041761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309041760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7cd1749906d7d74f85422436090680c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  applicationId: 448412183664001034
-  optionalSteamId: 
-  callbackCalls: 0
-  joinRequest:
-    userId: 
-    username: 
-    discriminator: 
-    avatar: 
-  onConnect:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  onDisconnect:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  hasResponded:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
---- !u!4 &309041762
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309041760}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &313940177
 GameObject:
   m_ObjectHideFlags: 0
@@ -39409,7 +39343,7 @@ GameObject:
   - component: {fileID: 519598539}
   - component: {fileID: 519598538}
   m_Layer: 5
-  m_Name: Button Test M2
+  m_Name: Button Test WMO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39487,7 +39421,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: world\expansion07\doodads\human\8hu_pvp_arathibg_crane01.m2
+          m_StringArgument: world\wmo\KulTiras\Human\8hu_warfronts_altarofkings01.wmo
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -45331,9 +45265,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Test BfA M2
-
-'
+  m_Text: Test BfA WMO
 --- !u!222 &1848004208
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -46351,7 +46283,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 145.12, z: 0}
 --- !u!1 &2071530062
 GameObject:

@@ -17,19 +17,19 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public Vector2 terrainPos = new Vector2();
 
             // WMO data //
-            public Dictionary<int, string> WMOPaths = new Dictionary<int, string>();
-            public List<int> WMOOffsets = new List<int>();
-            public List<WMOPlacementInfo> WMOInfo = new List<WMOPlacementInfo>();
+            public Dictionary<uint, string> WMOPaths    = new Dictionary<uint, string>();
+            public List<uint> WMOOffsets                = new List<uint>();
+            public List<WMOPlacementInfo> WMOInfo       = new List<WMOPlacementInfo>();
 
             // M2 data //
-            public Dictionary<int, string> M2Paths = new Dictionary<int, string>();
-            public List<int> M2Offsets = new List<int>();
-            public List<M2PlacementInfo> M2Info = new List<M2PlacementInfo>();
+            public Dictionary<uint, string> M2Paths     = new Dictionary<uint, string>();
+            public List<uint> M2Offsets                 = new List<uint>();
+            public List<M2PlacementInfo> M2Info         = new List<M2PlacementInfo>();
         }
 
         public class M2PlacementInfo
         {
-            public int nameID;
+            public uint nameId;
             public int uniqueID;
             public Vector3 position;
             public Quaternion rotation;
@@ -39,7 +39,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
         public class WMOPlacementInfo
         {
-            public int nameID;
+            public uint nameId;
             public int uniqueID;
             public Vector3 position;
             public Quaternion rotation;
@@ -47,6 +47,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public Flags.MODFFlags flags;
             public int doodadSet;
             public int nameSet;
+            public float Scale;
         }
     }
 }

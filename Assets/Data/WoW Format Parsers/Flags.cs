@@ -106,14 +106,14 @@ public class Flags
         stream.Read(arrayOfBytes, 0, 2);
         BitArray flags = new BitArray(arrayOfBytes);
         MDDFFlags MDDFflags = new MDDFFlags();
-        MDDFflags.mddf_biodome = flags[0];              // this sets internal flags to | 0x800 (WDOODADDEF.var0xC).
-        MDDFflags.mddf_shrubbery = flags[1];            // the actual meaning of these is unknown to me. maybe biodome is for really big M2s.
-                                                        // 6.0.1.18179 seems not to check for this flag
-        MDDFflags.mddf_unk_4 = flags[2];                // Legion+ᵘ
-        MDDFflags.mddf_unk_8 = flags[3];                // Legion+ᵘ
-        MDDFflags.Flag_liquidKnown = flags[5];          // Legion+ᵘ // SMDoodadDef::Flag_liquidKnown
-        MDDFflags.mddf_entry_is_filedata_id = flags[6]; // Legion+ᵘ nameId is a file data id to directly load
-        MDDFflags.mddf_unk_100 = flags[8];              // Legion+ᵘ
+        MDDFflags.mddf_biodome              = flags[0];         // this sets internal flags to | 0x800 (WDOODADDEF.var0xC).
+        MDDFflags.mddf_shrubbery            = flags[1];         // the actual meaning of these is unknown to me. maybe biodome is for really big M2s.
+                                                                // 6.0.1.18179 seems not to check for this flag
+        MDDFflags.mddf_unk_4                = flags[2];         // Legion+ᵘ
+        MDDFflags.mddf_unk_8                = flags[3];         // Legion+ᵘ
+        MDDFflags.Flag_liquidKnown          = flags[5];         // Legion+ᵘ // SMDoodadDef::Flag_liquidKnown
+        MDDFflags.mddf_entry_is_filedata_id = flags[6];         // Legion+ᵘ nameId is a file data id to directly load
+        MDDFflags.mddf_unk_100              = flags[8];         // Legion+ᵘ
         return MDDFflags;
     }
 

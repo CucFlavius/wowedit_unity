@@ -8,7 +8,7 @@ public static partial class Casc {
     public static string GetFile (string fileNameRaw)
     {
         string fileLocation = null;
-        string fileName = "";
+        string fileName;
         if (fileNameRaw[0] == (@"/"[0]) || fileNameRaw[0] == (@"\"[0]))
         {
             fileName = fileNameRaw.Remove(0, 1);
@@ -17,6 +17,7 @@ public static partial class Casc {
         {
             fileName = fileNameRaw;
         }
+
         if (Settings.Data[2] == "0") // game
         {
             if (File.Exists(Settings.Data[0] + @"\WoWData\" + fileName))

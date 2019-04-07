@@ -187,7 +187,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     for (int u = 0; u < 145; u++)
                     {
                         UVs[u] = new Vector2(1 - ((Chunk_Vertices[u].z / (33.3333f / Settings.worldScale) * 0.0625f) + (r * 0.0625f)),
-                                                   1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.worldScale) * 0.0625f) + (c * 0.0625f)));
+                                             1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.worldScale) * 0.0625f) + (c * 0.0625f)));
                     }
                     Chunk_UVs2.Add(UVs);
                 }
@@ -235,11 +235,11 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         // Run Terrain Texture Parser //
         public static void LoadTerrainTextures(string Path, string MapName, Vector2 Coords)
         {
-            ThreadWorkingTextures = true;
-            long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            ThreadWorkingTextures   = true;
+            long millisecondsStart  = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            ADTTexData.textureBlockData = new ADTTexData.TextureBlockData();
-            ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
+            ADTTexData.textureBlockData                     = new ADTTexData.TextureBlockData();
+            ADTTexData.textureBlockData.textureChunksData   = new List<ADTTexData.TextureChunkData>();
 
             ParseADT_Tex(Path, MapName, Coords);
             if (SettingsTerrainImport.LoadShadowMaps)
@@ -249,10 +249,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             if (working)
                 ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
 
-            long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long millisecondsStop       = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             finishedTimeTerrainTextures = (millisecondsStop - millisecondsStart) / 1000f;
 
-            ThreadWorkingTextures = false;
+            ThreadWorkingTextures       = false;
         }
 
         // Run Terrain Models Parser //
@@ -284,17 +284,17 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             byte[] ADTmainData = File.ReadAllBytes(path);
 
             int MCNKchunkNumber = 0;
-            long streamPosition = 0;
+            // long streamPosition = 0;
 
             using (MemoryStream ms = new MemoryStream(ADTmainData))
             using (BinaryReader s = new BinaryReader(ms))
             {
-                while (streamPosition < ms.Length)
+                while (ms.Position < ms.Length)
                 {
-                    ms.Position = streamPosition;
+                    //ms.Position = streamPosition;
                     ADTChunkId chunkID = (ADTChunkId)s.ReadInt32();
                     int chunkSize = s.ReadInt32();
-                    streamPosition = ms.Position + chunkSize;
+                    //streamPosition = ms.Position + chunkSize;
 
                     switch (chunkID)
                     {
@@ -364,12 +364,18 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                 MCNKchunkNumber++;
                             }
                             break;
-                        case ADTChunkId.MTXF:
-                            t.ReadMTXF(reader, chunkSize); // Texture Paths
-                            break;
+                        // case ADTChunkId.MTXF:
+                        //     t.ReadMTXF(reader, chunkSize); // Texture Paths
+                        //     break;
                         case ADTChunkId.MTXP:
                             t.ReadMTXP(reader, chunkSize); // Texture Paths
                             break;
+                        case ADTChunkId.MHID:
+                            t.ReadMHID(reader, chunkSize);
+                            break;
+                        // case ADTChunkId.MDID:
+                        //     t.ReadMDID(reader, chunkSize);
+                        //     break;
                         default:
                             ADTTex.SkipUnknownChunk(reader, chunkID, chunkSize);
                             break;
@@ -405,18 +411,6 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                         case ADTChunkId.MVER:
                             o.ReadMVER(reader); // ADT file version
                             break;
-                        case ADTChunkId.MMDX:
-                            o.ReadMMDX(reader, chunkSize); // List of filenames for M2 models
-                            break;
-                        case ADTChunkId.MMID:
-                            o.ReadMMID(reader, chunkSize); // List of offsets of model filenames in the MMDX chunk.
-                            break;
-                        case ADTChunkId.MWMO:
-                            o.ReadMWMO(reader, chunkSize); // List of filenames for WMOs (world map objects) that appear in this map tile.
-                            break;
-                        case ADTChunkId.MWID:
-                            o.ReadMWID(reader, chunkSize); // List of offsets of WMO filenames in the MWMO chunk.
-                            break;
                         case ADTChunkId.MDDF:
                             o.ReadMDDF(reader, chunkSize); // Placement information for doodads (M2 models).
                             break;
@@ -435,7 +429,6 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     }
                 }
             }
-            ADTobjData = null;
         }
 
         // Move the stream forward upon finding unknown chunks //

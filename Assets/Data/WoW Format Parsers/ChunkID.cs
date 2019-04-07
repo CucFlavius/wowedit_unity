@@ -57,7 +57,9 @@ namespace Assets.Data.WoW_Format_Parsers
         MLDL = 0x4d4c444c,
         MLFD = 0x4d4c4644,
         MBMB = 0x4d424d42,
-        MMDX = 0x4d4d4458
+        MMDX = 0x4d4d4458,
+        MHID = 0x4D484944,
+        MDID = 0x4d444944,
     }
 
     public enum M2ChunkId

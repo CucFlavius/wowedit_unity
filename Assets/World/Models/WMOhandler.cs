@@ -196,11 +196,11 @@ namespace Assets.World.Models
 
                         int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
 
-                        Vector3[] batchVertices = new Vector3[batchVertSize];
-                        Vector2[] batchUVs = new Vector2[batchVertSize];
-                        Vector3[] batchNormals = new Vector3[batchVertSize];
-                        Color32[] batchVertexColors = new Color32[batchVertSize];
-                        List<int> batchTrianglesList = new List<int>();
+                        Vector3[] batchVertices         = new Vector3[batchVertSize];
+                        Vector2[] batchUVs              = new Vector2[batchVertSize];
+                        Vector3[] batchNormals          = new Vector3[batchVertSize];
+                        Color32[] batchVertexColors     = new Color32[batchVertSize];
+                        List<int> batchTrianglesList    = new List<int>();
                         int[] batchTriangles;
 
                         int arrayPosition = 0;
@@ -250,7 +250,7 @@ namespace Assets.World.Models
                         ////////////////////////////////
                         #region material
 
-                        string textureName = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
+                        string textureName                              = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
                         BatchInstance.GetComponent<Renderer>().material = WMOmaterials[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType];
 
                         ////////////////////////////////

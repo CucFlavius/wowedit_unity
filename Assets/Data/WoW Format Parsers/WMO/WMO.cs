@@ -42,9 +42,10 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
 
                 ThreadWorking = false;
             }
-            catch
+            catch (Exception ex)
             {
-               Debug.Log("Error : Trying to parse WMO - " + dataPath);
+                Debug.Log("Error : Trying to parse WMO - " + dataPath);
+                Debug.LogException(ex);
             }
         }
 
@@ -58,7 +59,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 while (streamPosition < WMOrootstream.Length)
                 {
                     WMOrootstream.Position = streamPosition;
-                    WMOChunkId chunkID  = (WMOChunkId)reader.ReadUInt32();
+                    WMOChunkId chunkID  = (WMOChunkId)reader.ReadInt32();
                     int chunkSize       = reader.ReadInt32();
                     streamPosition      = WMOrootstream.Position + chunkSize;
 
@@ -151,11 +152,11 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 using (Stream WMOgroupstream = Casc.GetFileStream(fullPath))
                 using (BinaryReader reader = new BinaryReader(WMOgroupstream))
                 {
-                    int MVER = reader.ReadInt32();
-                    int MVERsize = reader.ReadInt32();
+                    int MVER        = reader.ReadInt32();
+                    int MVERsize    = reader.ReadInt32();
                     ReadMVER(reader); // root file version
-                    int MOGP = reader.ReadInt32();
-                    int MOGPsize = reader.ReadInt32();
+                    int MOGP        = reader.ReadInt32();
+                    int MOGPsize    = reader.ReadInt32();
                     ReadMOGP(reader); // group header (contains the rest of the chunks)
 
                     int MOTVcount = 0;
@@ -217,7 +218,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
 
         public static void SkipUnknownChunk(BinaryReader reader, WMOChunkId chunkID, int chunkSize)
         {
-            Debug.Log("Missing chunk ID : " + chunkID);
+            // Debug.Log("Missing chunk ID : " + chunkID);
             reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
         }
     }

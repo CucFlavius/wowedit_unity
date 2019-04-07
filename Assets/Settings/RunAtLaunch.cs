@@ -18,7 +18,7 @@ public class RunAtLaunch : MonoBehaviour {
     void Start()
     {
         CSVReader.LoadCSV();
-        Agent.FindWowInstalls();
+        //Agent.FindWowInstalls();
         UserPreferences.Load();
         //Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
@@ -28,7 +28,7 @@ public class RunAtLaunch : MonoBehaviour {
         }
         else
         {
-            long length = new System.IO.FileInfo("Settings.ini").Length;
+            long length = new FileInfo("Settings.ini").Length;
             if (length > 0)
             {
                 string[] DataBuffer = File.ReadAllLines("Settings.ini");

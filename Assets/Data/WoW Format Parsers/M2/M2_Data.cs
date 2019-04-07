@@ -137,7 +137,9 @@ namespace Assets.Data.WoW_Format_Parsers.M2
     {
         public int type;
         public int flags;
-        public string filename;
+        public M2Array FilenameArray;
+        public char[] Filename;
+        public string TXIDFileName;
         public Texture2Ddata texture2Ddata;
     }
 

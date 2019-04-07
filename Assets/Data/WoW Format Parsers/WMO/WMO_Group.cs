@@ -11,27 +11,27 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         // group file header //
         public static void ReadMOGP(BinaryReader reader)
         {
-            int groupName = reader.ReadInt32();                   // offset into MOGN
+            int groupName                       = reader.ReadInt32();       // offset into MOGN
             if (wmoData.MOGNgroupnames.ContainsKey(groupName))
                 groupDataBuffer.groupName = wmoData.MOGNgroupnames[groupName];
             else
                 groupDataBuffer.groupName = "-noname-";
 
-            int descriptiveGroupName = reader.ReadInt32();       // offset into MOGN
+            int descriptiveGroupName            = reader.ReadInt32();       // offset into MOGN
             if (wmoData.MOGNgroupnames.ContainsKey(descriptiveGroupName))
                 groupDataBuffer.descriptiveGroupName = wmoData.MOGNgroupnames[descriptiveGroupName];
             else
                 groupDataBuffer.descriptiveGroupName = "-nodescriptivename-";
 
-            groupDataBuffer.flags = reader.ReadGroupFlags();
+            groupDataBuffer.flags           = reader.ReadGroupFlags();
             //Debug.Log(groupDataBuffer.flags.SMOGroupTVERTS2);
             groupDataBuffer.boundingBox     = reader.ReadBoundingBoxes();   // as with flags, same as in corresponding MOGI entry
-            groupDataBuffer.portalStart     = reader.ReadInt32();           // index into MOPR
-            groupDataBuffer.portalCount     = reader.ReadInt32();           // number of MOPR items used after portalStart
-            groupDataBuffer.transBatchCount = reader.ReadInt32();           // RenderBatchCountA
-            groupDataBuffer.intBatchCount   = reader.ReadInt32();           // RenderBatchCountInterior
-            groupDataBuffer.extBatchCount   = reader.ReadInt32();           // RenderBatchCountExterior
-            int padding_or_batch_type_d         = reader.ReadInt32();           // probably padding, but might be data?
+            groupDataBuffer.portalStart     = reader.ReadInt16();           // index into MOPR
+            groupDataBuffer.portalCount     = reader.ReadInt16();           // number of MOPR items used after portalStart
+            groupDataBuffer.transBatchCount = reader.ReadInt16();           // RenderBatchCountA
+            groupDataBuffer.intBatchCount   = reader.ReadInt16();           // RenderBatchCountInterior
+            groupDataBuffer.extBatchCount   = reader.ReadInt16();           // RenderBatchCountExterior
+            int padding_or_batch_type_d     = reader.ReadInt16();           // probably padding, but might be data?
             groupDataBuffer.fogIds = new List<int>();                       // ids in MFOG
             for (int i = 0; i < 4; i++)
             {
@@ -39,8 +39,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             }
             groupDataBuffer.groupLiquid     = reader.ReadInt32();           // see below in the MLIQ chunk // LiquidType
             groupDataBuffer.uniqueID        = reader.ReadInt32();           // foreign_keyⁱ<uint32_t, &WMOAreaTableRec::m_WMOGroupID>
-            int flags2 = reader.ReadInt32();
-            int unused = reader.ReadInt32();
+            int flags2                      = reader.ReadInt32();
+            int unused                      = reader.ReadInt32();
         }   // loaded
 
         // Material info for triangles, two bytes per triangle. //

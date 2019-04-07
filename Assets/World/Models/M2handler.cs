@@ -228,14 +228,14 @@ namespace Assets.World.Models
             BoneWeight[] weights = new BoneWeight[m.vertices.Length];
             for (int bw = 0; bw < m.vertices.Length; bw++)
             {
-                weights[bw].boneIndex0 = data.meshData.bone_indices[bw][0];
-                weights[bw].weight0 = data.meshData.bone_weights[bw][0];
-                weights[bw].boneIndex1 = data.meshData.bone_indices[bw][1];
-                weights[bw].weight1 = data.meshData.bone_weights[bw][1];
-                weights[bw].boneIndex2 = data.meshData.bone_indices[bw][2];
-                weights[bw].weight2 = data.meshData.bone_weights[bw][2];
-                weights[bw].boneIndex3 = data.meshData.bone_indices[bw][3];
-                weights[bw].weight3 = data.meshData.bone_weights[bw][3];
+                weights[bw].boneIndex0  = data.meshData.bone_indices[bw][0];
+                weights[bw].weight0     = data.meshData.bone_weights[bw][0];
+                weights[bw].boneIndex1  = data.meshData.bone_indices[bw][1];
+                weights[bw].weight1     = data.meshData.bone_weights[bw][1];
+                weights[bw].boneIndex2  = data.meshData.bone_indices[bw][2];
+                weights[bw].weight2     = data.meshData.bone_weights[bw][2];
+                weights[bw].boneIndex3  = data.meshData.bone_indices[bw][3];
+                weights[bw].weight3     = data.meshData.bone_weights[bw][3];
             }
             m.boneWeights = weights;
 
@@ -294,7 +294,7 @@ namespace Assets.World.Models
             // Textures //
             for (int tex = 0; tex < data.submeshData.Count; tex++)
             {
-                string textureName  = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].filename;
+                string textureName  = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].TXIDFileName;
                 Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
                 if (textureName != null && textureName != "" && tdata.TextureData != null)
                 {

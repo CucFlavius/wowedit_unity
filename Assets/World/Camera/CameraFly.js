@@ -11,8 +11,8 @@
     var shiftAdd : float = 250.0; //multiplied by how long shift is held.  Basically running
     var maxShift : float = 1000.0; //Maximum speed when holdin gshift
     var camSens : float = 0.25; //How sensitive it with mouse
-    private var lastMouse = Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
-    private var totalRun : float  = 1.0;
+    var lastMouse = Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
+    var totalRun : float  = 1.0;
      
     function Update () {
 		if( Input.GetMouseButton(1)){

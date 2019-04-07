@@ -19,9 +19,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             // object properties //
             public Flags.MCNKflags flags;
-            public int IndexX;
-            public int IndexY;
-            public int nLayers; // number of alpha layers
+            public uint IndexX;
+            public uint IndexY;
+            public uint nLayers; // number of alpha layers
             public Vector3 MeshPosition;
 
             // mesh data //
@@ -34,7 +34,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public Vector2[] UVArray;
 
             // mesh holes //
-            public int holes_low_res;
+            public ushort holes_low_res;
             public ulong holes_high_res;
         }
         public struct MCNKflags

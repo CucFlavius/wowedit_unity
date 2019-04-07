@@ -1,4 +1,6 @@
-﻿using Assets.World;
+﻿using Assets.Data.WoW_Format_Parsers.WMO;
+using Assets.World;
+using Assets.World.Models;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ public class DevTools : MonoBehaviour {
     {
         //DB2 db2 = new DB2();
         //db2.Read(filename);
-        M2.Load(@filename, -1, new Vector3(.5f, 0, 0), Quaternion.identity, new Vector3(1f, 1f, 1f));
+        WMO.Load(@"world\wmo\KulTiras\Human\8ara_warfronts_mine01.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
     }
 
     public void Button_LoadTestMap (string id)
