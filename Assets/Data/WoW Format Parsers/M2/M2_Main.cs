@@ -1,4 +1,5 @@
 ﻿using Assets.Data;
+using Assets.Data.CASC;
 using Assets.Data.WoW_Format_Parsers;
 using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
@@ -238,9 +239,9 @@ public static partial class M2
         }
 
         // Textures //
-        if (textures.Offset != 0)
+        if (version <= 274 && textures.Offset != 0)
         {
-            br.BaseStream.Position = textures.Offset;
+            br.BaseStream.Position = textures.Offset + 8;
             for (int tex = 0; tex < textures.Size; tex++)
             {
                 M2Texture _Texture      = new M2Texture();
@@ -249,22 +250,21 @@ public static partial class M2
                 _Texture.FilenameArray  = br.ReadM2Array();
 
                 long Pos                = br.BaseStream.Position;
-                br.BaseStream.Position  = _Texture.FilenameArray.Offset;
+                br.BaseStream.Position  = _Texture.FilenameArray.Offset + 8;
 
-                _Texture.Filename       = br.ReadChars(_Texture.FilenameArray.Size);
+                _Texture.Filename       = br.ReadChars(_Texture.FilenameArray.Size - 1);
 
                 br.BaseStream.Position  = Pos;
 
                 string FileName         = new string(_Texture.Filename);
-                string FileNameFixed    = FileName.TrimEnd(FileName[FileName.Length - 1]);
-                _Texture.TXIDFileName   = FileNameFixed;
+                _Texture.TXIDFileName   = FileName;
 
                 Texture2Ddata texture2Ddata = new Texture2Ddata();
-                if (FileNameFixed.Length > 1)
+                if (FileName.Length > 1)
                 {
                     if (!LoadedBLPs.Contains(FileName))
                     {
-                        string extractedPath        = Casc.GetFile(FileNameFixed);
+                        string extractedPath        = Casc.GetFile(FileName);
                         Stream stream               = File.Open(extractedPath, FileMode.Open);
                         BLP blp                     = new BLP();
                         byte[] data                 = blp.GetUncompressed(stream, true);
@@ -277,7 +277,7 @@ public static partial class M2
                         _Texture.texture2Ddata      = texture2Ddata;
                         stream.Close();
                         stream.Dispose();
-                        LoadedBLPs.Add(FileNameFixed);
+                        LoadedBLPs.Add(FileName);
                     }
                 }
                 m2Data.m2Tex.Add(_Texture);

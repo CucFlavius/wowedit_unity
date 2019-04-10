@@ -1,5 +1,6 @@
 ﻿using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
+using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static Assets.Data.CASC.Casc;
 
 namespace Assets.Data
 {
@@ -301,6 +303,11 @@ namespace Assets.Data
                 }
             }
             return (int)(r / 2);
+        }
+
+        public static string ToHexString(this MD5Hash data)
+        {
+            return BitConverter.ToString(data.Hash.Value).Replace("-", string.Empty);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
 
             // root //
             public HeaderData Info;
-            public Dictionary<int, string> texturePaths; // offset -> dataPath
+            public Dictionary<uint, string> texturePaths; // offset -> dataPath
             public Dictionary<string, Texture2Ddata> textureData; // dataPath -> Texture2Ddata
             public Dictionary<int, string> MOGNgroupnames; // offset -> name
             public List<WMOMaterial> materials;
@@ -43,9 +43,12 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public uint TextureId2;
         public BGRA DiffColor;
         public uint GroundType;
-        public uint Texture2;
+        public uint TextureId3;
         public BGRA Color;
         public MaterialFlags texture3_flags;
+
+        public string Texture1;
+        public string Texture2;
     }
 
     public struct GroupData
@@ -76,9 +79,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public Vector2[] UVs;
         public int nBatches;
         public List<uint> batch_StartIndex;
-        public List<uint> batch_nIndices;
-        public List<uint> batch_StartVertex;
-        public List<uint> batch_EndVertex;
+        public List<uint> batch_Count;
+        public List<uint> batch_MinIndex;
+        public List<uint> batch_MaxIndex;
         public List<Color32> vertexColors;
     }
 

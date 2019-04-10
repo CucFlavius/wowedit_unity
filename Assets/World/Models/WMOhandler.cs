@@ -1,5 +1,6 @@
 ﻿using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.World.Terrain;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -194,7 +195,7 @@ namespace Assets.World.Models
                         BatchInstance.AddComponent<MeshFilter>();
                         Mesh bmesh = new Mesh();
 
-                        int batchVertSize = (int)((data.groupsData[g].batch_EndVertex[bn] - data.groupsData[g].batch_StartVertex[bn]) + 1);
+                        uint batchVertSize = data.groupsData[g].batch_MaxIndex[bn] - data.groupsData[g].batch_MinIndex[bn] + 1;
 
                         Vector3[] batchVertices         = new Vector3[batchVertSize];
                         Vector2[] batchUVs              = new Vector2[batchVertSize];
@@ -204,13 +205,13 @@ namespace Assets.World.Models
                         int[] batchTriangles;
 
                         int arrayPosition = 0;
-                        uint batch_startVertex = data.groupsData[g].batch_StartVertex[bn];
-                        uint batch_endVertex = data.groupsData[g].batch_EndVertex[bn];
+                        uint batch_startVertex = data.groupsData[g].batch_MinIndex[bn];
+                        uint batch_endVertex = data.groupsData[g].batch_MaxIndex[bn];
                         for (uint v = batch_startVertex; v <= batch_endVertex; v++)
                         {
-                            batchVertices[arrayPosition] = data.groupsData[g].vertices[v];
-                            batchUVs[arrayPosition] = data.groupsData[g].UVs[v];
-                            batchNormals[arrayPosition] = data.groupsData[g].normals[v];
+                            batchVertices[arrayPosition]    = data.groupsData[g].vertices[v];
+                            batchUVs[arrayPosition]         = data.groupsData[g].UVs[v];
+                            batchNormals[arrayPosition]     = data.groupsData[g].normals[v];
                             if (!data.groupsData[g].flags.Hasvertexolors)
                                 batchVertexColors[arrayPosition] = new Color32(127, 127, 127, 127);
                             else
@@ -218,8 +219,8 @@ namespace Assets.World.Models
                             arrayPosition++;
                         }
 
-                        uint batch_startIndex = data.groupsData[g].batch_StartIndex[bn];
-                        uint batch_nIndices = data.groupsData[g].batch_nIndices[bn];
+                        uint batch_startIndex   = data.groupsData[g].batch_StartIndex[bn];
+                        uint batch_nIndices     = data.groupsData[g].batch_Count[bn];
                         for (uint idx = batch_startIndex; idx <= batch_startIndex + batch_nIndices - 2; idx = idx + 3)
                         {
                             uint in1 = data.groupsData[g].triangles[idx + 0];
@@ -250,7 +251,7 @@ namespace Assets.World.Models
                         ////////////////////////////////
                         #region material
 
-                        string textureName                              = data.texturePaths[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
+                        string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
                         BatchInstance.GetComponent<Renderer>().material = WMOmaterials[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType];
 
                         ////////////////////////////////
@@ -399,9 +400,10 @@ namespace Assets.World.Models
                                 LoadedWMOTextures[textureName] = tex;
                                 BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
                             }
-                            catch
+                            catch (Exception ex)
                             {
                                 Debug.Log("Error: Loading RawTextureData @ WMOhandler");
+                                Debug.LogException(ex);
                             }
                         }
                         #endregion

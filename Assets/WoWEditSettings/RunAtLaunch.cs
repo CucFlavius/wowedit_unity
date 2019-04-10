@@ -1,9 +1,10 @@
 ﻿using Assets.Data.Agent;
+using Assets.Data.CASC;
 using Assets.Data.WoW_Format_Parsers.ADT;
 using Assets.Tools.CSV;
 using System.IO;
 using UnityEngine;
-
+using Assets.WoWEditSettings;
 
 public class RunAtLaunch : MonoBehaviour {
 
@@ -17,46 +18,21 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
+        Settings.LoadConfig();
         CSVReader.LoadCSV();
         //Agent.FindWowInstalls();
         UserPreferences.Load();
         //Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
-        if (!File.Exists("Settings.ini"))
-        {
-            File.WriteAllLines("Settings.ini", Settings.Data);
-        }
-        else
-        {
-            long length = new FileInfo("Settings.ini").Length;
-            if (length > 0)
-            {
-                string[] DataBuffer = File.ReadAllLines("Settings.ini");
-                for(int i = 0; i < DataBuffer.Length; i++)
-                {
-                    Settings.Data[i] = DataBuffer[i];
-                }
-            }
-            else
-            {
-                File.WriteAllLines("Settings.ini", Settings.Data);  // defaults
-            }
-        }
         SettingsInit();
         ADT.Initialize();
-
-        if (Settings.Data[2] == Settings.WoWSource.Extracted.ToString())
-        {
-            DB2 db2 = new DB2();
-            db2.Initialize();
-        }
-
     }
 
     private void SettingsInit()
     {
         // Check if cache dir exists
-        if (Settings.Data[0] == null || Settings.Data[0] == "")
+        if (SettingsManager<Configuration>.Config.CachePath == string.Empty || 
+            SettingsManager<Configuration>.Config.CachePath == "")
         {
             // open dialog to pick cache dir
             //Debug.Log("pick cache dir");
@@ -69,53 +45,48 @@ public class RunAtLaunch : MonoBehaviour {
             FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().Link("DialogBoxCache_Ok", "DialogBoxCache_Cancel", this);
         }
         else
-        {
             CheckWoWInstalls();
-        }
     }
 
     private void CreateCacheDir()
     {
-        if (!Directory.Exists(Settings.Data[0]))
-        {
-            Directory.CreateDirectory(Settings.Data[0]);
-        }
+        if (!Directory.Exists(SettingsManager<Configuration>.Config.CachePath))
+            Directory.CreateDirectory(SettingsManager<Configuration>.Config.CachePath);
     }
 
     void DialogBoxCache_Ok()
     {
-        Settings.Data[0] = FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().ChosenPath + @"\Cache";
+        Settings.CachePath = FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().ChosenPath + @"\Cache";
         CreateCacheDir();
-        Settings.Save();
+        Settings.SaveFile();
         CheckWoWInstalls();
     }
 
     void DialogBoxCache_Cancel()
     {
-        Settings.Data[0] = "Cache";
+        Settings.CachePath = "Cache";
         CreateCacheDir();
-        Settings.Save();
+        Settings.SaveFile();
         CheckWoWInstalls();
     }
 
     public void CheckWoWInstalls()
     {
-        Settings.GetInstalledGames();
         CreateCacheDir();
-        Settings.Save();
+        Settings.SaveFile();
         CheckDataSource();
     }
         
     public void CheckDataSource()
     {
-        if (Settings.Data[2] == null || Settings.Data[2] == "")
+        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game)
         {
             // open Data Source Manager //
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             DataSourceManagerPanel.SetActive(true);
         }
 
-        if (Settings.Data[2] == "0") // game mode //
+        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game mode //
         {
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             CascInitialize.Start();

@@ -1,4 +1,5 @@
-﻿using Assets.World;
+﻿using Assets.Data.CASC;
+using Assets.World;
 using System;
 using System.Collections;
 using System.Collections.Generic;

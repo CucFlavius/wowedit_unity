@@ -1,4 +1,6 @@
 ﻿
+using Assets.Data.CASC;
+using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,9 +44,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        Chunk_Vertices[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.worldScale,
+                        Chunk_Vertices[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
                                                                             0,
-                                                                            (float)(-j * 0.208333125 * 20) / Settings.worldScale);
+                                                                            (float)(-j * 0.208333125 * 20) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                         currentVertex++;
                     }
                 }
@@ -52,9 +54,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 {
                     for (int j1 = 0; j1 < 8; j1++)
                     {
-                        Chunk_Vertices[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.worldScale,
+                        Chunk_Vertices[currentVertex] = new Vector3((float)(-i * 0.5 * 0.208333125 * 20) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
                                                                             0,
-                                                                            (float)((-j1 - 0.5) * 0.208333125 * 20) / Settings.worldScale);
+                                                                            (float)((-j1 - 0.5) * 0.208333125 * 20) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                         currentVertex++;
                     }
                 }
@@ -168,8 +170,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             Chunk_UVs = new Vector2[145];
             for (int u = 144; u >= 0; u--)
             {
-                Chunk_UVs[u] = new Vector2(-(Chunk_Vertices[u].z / (33.3333f / Settings.worldScale)),
-                                           -(Chunk_Vertices[u].x / (33.3333f / Settings.worldScale)));
+                Chunk_UVs[u] = new Vector2(-(Chunk_Vertices[u].z / (33.3333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale)),
+                                           -(Chunk_Vertices[u].x / (33.3333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale)));
             }
 
             #endregion
@@ -186,8 +188,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     Vector2[] UVs = new Vector2[145];
                     for (int u = 0; u < 145; u++)
                     {
-                        UVs[u] = new Vector2(1 - ((Chunk_Vertices[u].z / (33.3333f / Settings.worldScale) * 0.0625f) + (r * 0.0625f)),
-                                             1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.worldScale) * 0.0625f) + (c * 0.0625f)));
+                        UVs[u] = new Vector2(1 - ((Chunk_Vertices[u].z / (33.3333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale) * 0.0625f) + (r * 0.0625f)),
+                                             1 - ((Chunk_Vertices[u].x / (33.3333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale) * 0.0625f) + (c * 0.0625f)));
                     }
                     Chunk_UVs2.Add(UVs);
                 }
@@ -242,7 +244,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTTexData.textureBlockData.textureChunksData   = new List<ADTTexData.TextureChunkData>();
 
             ParseADT_Tex(Path, MapName, Coords);
-            if (SettingsTerrainImport.LoadShadowMaps)
+            if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
                 ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
             ADT_ProcessData.Load_hTextures();
 
@@ -263,7 +265,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
             ADTObjData.modelBlockData = new ADTObjData.ModelBlockData();
             ADTObjData.modelBlockData.terrainPos = Coords;
-            if (SettingsTerrainImport.LoadWMOs || SettingsTerrainImport.LoadM2s)
+            if (SettingsManager<Configuration>.Config.TerrainImport.LoadWMOs || 
+                SettingsManager<Configuration>.Config.TerrainImport.LoadM2s)
                 ParseADT_Obj(Path, MapName, Coords);
 
             if (working)
@@ -364,18 +367,15 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                 MCNKchunkNumber++;
                             }
                             break;
-                        // case ADTChunkId.MTXF:
-                        //     t.ReadMTXF(reader, chunkSize); // Texture Paths
-                        //     break;
                         case ADTChunkId.MTXP:
-                            t.ReadMTXP(reader, chunkSize); // Texture Paths
+                            t.ReadMTXP(reader, chunkSize);
                             break;
                         case ADTChunkId.MHID:
                             t.ReadMHID(reader, chunkSize);
                             break;
-                        // case ADTChunkId.MDID:
-                        //     t.ReadMDID(reader, chunkSize);
-                        //     break;
+                        case ADTChunkId.MDID:
+                            t.ReadMDID(reader, chunkSize);
+                            break;
                         default:
                             ADTTex.SkipUnknownChunk(reader, chunkID, chunkSize);
                             break;

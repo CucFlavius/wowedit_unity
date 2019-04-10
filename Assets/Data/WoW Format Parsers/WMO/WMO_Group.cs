@@ -108,35 +108,35 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         // Render batches. Records of 24 bytes. //
         public static void ReadMOBA(BinaryReader reader, int MOBAsize)
         {
-            groupDataBuffer.batch_StartIndex = new List<uint>();
-            groupDataBuffer.batch_nIndices = new List<uint>();
-            groupDataBuffer.batch_StartVertex = new List<uint>();
-            groupDataBuffer.batch_EndVertex = new List<uint>();
-            groupDataBuffer.batchMaterialIDs = new List<int>();
+            groupDataBuffer.batch_StartIndex    = new List<uint>();
+            groupDataBuffer.batch_Count         = new List<uint>();
+            groupDataBuffer.batch_MinIndex      = new List<uint>();
+            groupDataBuffer.batch_MaxIndex      = new List<uint>();
+            groupDataBuffer.batchMaterialIDs    = new List<int>();
 
-            var nBatches = MOBAsize / 24;
-            groupDataBuffer.nBatches = nBatches;
+            var nBatches                = MOBAsize / 24;
+            groupDataBuffer.nBatches    = nBatches;
             for (int i = 0; i < nBatches; i++)
             {
-                // 10x uint8_t unknown
-                reader.ReadInt32();
-                reader.ReadInt32();
-                reader.ReadInt16();
-                int material_id_large = reader.ReadInt16();                         // used if flag_use_uint16_t_material is set
+                sbyte[] box = new sbyte[10];
+                for (int j = 0; j < box.Length; j++)
+                    box[j] = reader.ReadSByte();
 
-                groupDataBuffer.batch_StartIndex.Add(reader.ReadUInt32());      // index of the first face index used in MOVI
-                groupDataBuffer.batch_nIndices.Add(reader.ReadUInt32());        // number of MOVI indices used
-                groupDataBuffer.batch_StartVertex.Add(reader.ReadUInt32());     // index of the first vertex used in MOVT
-                groupDataBuffer.batch_EndVertex.Add(reader.ReadUInt32());       // index of the last vertex used (batch includes this one)
+                int material_id_large               = reader.ReadInt16();           // used if flag_use_uint16_t_material is set
 
-                int flag_use_material_id_large = reader.ReadByte();                 // ≥Legion // instead of material_id use material_id_large // if byte==0 flag false I think
-                int material_id = reader.ReadByte();
-                if (flag_use_material_id_large == 0)
+                groupDataBuffer.batch_StartIndex.Add(reader.ReadUInt32());          // index of the first face index used in MOVI
+                groupDataBuffer.batch_Count.Add(reader.ReadUInt16());               // number of MOVI indices used
+                groupDataBuffer.batch_MinIndex.Add(reader.ReadUInt16());            // index of the first vertex used in MOVT
+                groupDataBuffer.batch_MaxIndex.Add(reader.ReadUInt16());            // index of the last vertex used (batch includes this one)
+                bool flag_use_material_id_large     = reader.ReadBoolean();         // ≥Legion // instead of material_id use material_id_large // if byte==0 flag false I think
+                int material_id                     = reader.ReadByte();
+
+                if (flag_use_material_id_large == false)
                     groupDataBuffer.batchMaterialIDs.Add(material_id);
                 else
                     groupDataBuffer.batchMaterialIDs.Add(material_id_large);
             }
-        } // loaded
+        }   // loaded
 
         public static void ReadMOCV(BinaryReader reader, int MOCVsize)
         {

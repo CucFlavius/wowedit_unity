@@ -1,5 +1,6 @@
 ﻿using Assets.Data.WoW_Format_Parsers;
 using Assets.Tools.CSV;
+using Assets.WoWEditSettings;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -8,61 +9,12 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 {
     public class ADTObj
     {
+        public uint Version;
         public void ReadMVER(BinaryReader reader)
         {
-            reader.BaseStream.Position += 4;
+            Version = reader.ReadUInt32();
         }
-
-        // // List of filenames for M2 models that appear in this map tile. //
-        // public void ReadMMDX(BinaryReader reader, int MMDXsize)
-        // {
-        //     long currentPos = reader.BaseStream.Position;
-        //     while (reader.BaseStream.Position < currentPos + MMDXsize)
-        //     {
-        //         int position    = (int)(reader.BaseStream.Position - currentPos);
-        //         string path     = reader.ReadNullTerminatedString();
-        //         if (path != "")
-        //         {
-        //             ADTObjData.modelBlockData.M2Paths.Add(position, path);
-        //         }
-        //     }
-        // }
-        // 
-        // // List of offsets of model filenames in the MMDX chunk. //
-        // public void ReadMMID(BinaryReader reader, int MMIDsize)
-        // {
-        //     long currentPos = reader.BaseStream.Position;
-        //     while (reader.BaseStream.Position < currentPos + MMIDsize)
-        //     {
-        //         ADTObjData.modelBlockData.M2Offsets.Add(reader.ReadInt32());
-        //     }
-        // }
-        // 
-        // // List of filenames for WMOs (world map objects) that appear in this map tile. //
-        // public void ReadMWMO(BinaryReader reader, int MWMOsize)
-        // {
-        //     long currentPos = reader.BaseStream.Position;
-        //     while (reader.BaseStream.Position < currentPos + MWMOsize)
-        //     {
-        //         int position    = (int)(reader.BaseStream.Position - currentPos);
-        //         string path     = reader.ReadNullTerminatedString();
-        //         if (path != "")
-        //         {
-        //             ADTObjData.modelBlockData.WMOPaths.Add(position, path);
-        //         }
-        //     }
-        // }
-        // 
-        // // List of offsets of WMO filenames in the MWMO chunk. //
-        // public void ReadMWID(BinaryReader reader, int MWIDsize)
-        // {
-        //     long currentPos = reader.BaseStream.Position;
-        //     while (reader.BaseStream.Position < currentPos + MWIDsize)
-        //     {
-        //         ADTObjData.modelBlockData.WMOOffsets.Add(reader.ReadInt32());
-        //     }
-        // }
-
+        
         // Placement information for doodads (M2 models). //
         // Additional to this, the models to render are referenced in each MCRF chunk. //
         public void ReadMDDF(BinaryReader reader, int MDDFsize)
@@ -78,9 +30,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.worldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / Settings.worldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.worldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos X
+                float Z         = reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);                                         // This is relative to a corner of the map. Subtract 17066 from the non vertical values and you should start to see 
                                                                                                 // something that makes sense. You'll then likely have to negate one of the non vertical values in whatever coordinate 
                                                                                                 // system you're using to finally move it into place.
@@ -95,8 +47,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
                 if (!ADTObjData.modelBlockData.M2Paths.ContainsKey(data.nameId))
                     ADTObjData.modelBlockData.M2Paths.Add(data.nameId, filename);
-                if (!ADTObjData.modelBlockData.M2Info.Contains(data))
-                    ADTObjData.modelBlockData.M2Info.Add(data);
+
+                ADTObjData.modelBlockData.M2Info.Add(data);
             }
         }
 
@@ -115,9 +67,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.worldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / Settings.worldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.worldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos X
+                float Z         = reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);
 
                 // same as in MDDF.
@@ -132,6 +84,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 data.Scale      = reader.ReadUInt16() / 1024.0f;                                // Legion+: scale, 1024 means 1 (same as MDDF). Padding in 0.5.3 alpha.
 
                 string filename = CSVReader.LookupId(data.nameId);
+
+                if (!ADTObjData.modelBlockData.WMOPaths.ContainsKey(data.nameId))
+                    ADTObjData.modelBlockData.WMOPaths.Add(data.nameId, filename);
+
                 ADTObjData.modelBlockData.WMOInfo.Add(data);
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using static Assets.Data.WoW_Format_Parsers.ADT.ADTTexData;
+using Assets.Data.CASC;
 
 namespace Assets.Data.WoW_Format_Parsers
 {

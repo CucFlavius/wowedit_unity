@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assets.Data.CASC;
+using Assets.Tools.CSV;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -19,18 +21,18 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         // root file header // 64 bytes
         public static void ReadMOHD(BinaryReader reader)
         {
-            wmoData.Info.nTextures  = reader.ReadInt32();                   // number of textures used
-            wmoData.Info.nGroups    = reader.ReadInt32();                   // number of groups
-            wmoData.Info.nPortals   = reader.ReadInt32();                   // number of portals
-            wmoData.Info.nLights    = reader.ReadInt32();                   // number of lights 
-                                                                            //Blizzard seems to add one to the MOLT entry count when there are MOLP chunks in the groups (and maybe for MOLS too?)
-            int nDoodadNames    = reader.ReadInt32();                       // number of doodad names
-            int nDoodadDefs     = reader.ReadInt32();                       // number of doodad definitions
-            int nDoodadSets     = reader.ReadInt32();                       // number of doodad sets
-            ARGB ambColor       = reader.ReadARGB();                        // Color settings for base (ambient) color. See the flag at /*03Ch*/.   // ARGB
-            wmoData.Info.wmoID  = reader.ReadInt64();                       // < uint32_t, &WMOAreaTableRec::m_WMOID> ID located in DBC
-            BoundingBox bounding_box = reader.ReadBoundingBoxes();          // in the alpha, this bounding box was computed upon loading
-                                                                            // <Flags> 2 bytes                                                            
+            wmoData.Info.nTextures      = reader.ReadInt32();                   // number of textures used
+            wmoData.Info.nGroups        = reader.ReadInt32();                   // number of groups
+            wmoData.Info.nPortals       = reader.ReadInt32();                   // number of portals
+            wmoData.Info.nLights        = reader.ReadInt32();                   // number of lights 
+                                                                                //Blizzard seems to add one to the MOLT entry count when there are MOLP chunks in the groups (and maybe for MOLS too?)
+            int nDoodadNames            = reader.ReadInt32();                   // number of doodad names
+            int nDoodadDefs             = reader.ReadInt32();                   // number of doodad definitions
+            int nDoodadSets             = reader.ReadInt32();                   // number of doodad sets
+            ARGB ambColor               = reader.ReadARGB();                    // Color settings for base (ambient) color. See the flag at /*03Ch*/.   // ARGB
+            wmoData.Info.wmoID          = reader.ReadInt64();                   // < uint32_t, &WMOAreaTableRec::m_WMOID> ID located in DBC
+            BoundingBox bounding_box    = reader.ReadBoundingBoxes();           // in the alpha, this bounding box was computed upon loading
+                                                                                // <Flags> 2 bytes                                                            
             byte[] arrayOfBytes = new byte[2];
             reader.Read(arrayOfBytes, 0, 2);
             BitArray flags = new BitArray(arrayOfBytes);
@@ -44,44 +46,6 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             short numLod = reader.ReadInt16();                              // ≥ Legion (21108) includes base lod (→ numLod = 3 means '.wmo', 'lod0.wmo' and 'lod1.wmo')
         }
 
-        // texture paths //
-        public static void ReadMOTX(BinaryReader reader, int MOTXsize)
-        {
-            long currentPos = reader.BaseStream.Position;
-
-            while (reader.BaseStream.Position < currentPos + MOTXsize)
-            {
-                int position = (int)(reader.BaseStream.Position - currentPos);
-                string path = reader.ReadNullTerminatedString();
-                if (path != "")//&& !wmoData.textureData.ContainsKey(path))
-                {
-                    wmoData.texturePaths.Add(position, path);
-                    if (!LoadedBLPs.Contains(path))
-                    {
-                        string extractedPath = Casc.GetFile(path);
-                        if (File.Exists(extractedPath))
-                        {
-                            Stream stream = File.Open(extractedPath, FileMode.Open);
-                            BLP blp = new BLP();
-                            byte[] data = blp.GetUncompressed(stream, true);
-                            BLPinfo info = blp.Info();
-                            Texture2Ddata texture2Ddata = new Texture2Ddata();
-                            texture2Ddata.hasMipmaps = info.hasMipmaps;
-                            texture2Ddata.width = info.width;
-                            texture2Ddata.height = info.height;
-                            texture2Ddata.textureFormat = info.textureFormat;
-                            texture2Ddata.TextureData = data;
-                            wmoData.textureData[path] = texture2Ddata;
-                            stream.Close();
-                            stream.Dispose();
-                            stream = null;
-                        }
-                        LoadedBLPs.Add(path);
-                    }
-                }
-            }
-        }   // loaded
-
         // materials //
         public static void ReadMOMT(BinaryReader reader, int MOMTsize)
         {
@@ -90,9 +54,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             {
                 WMOMaterial material = new WMOMaterial();
 
-                material.flags      = reader.ReadMaterialFlags();
-                material.ShaderType = (WMOFragmentShader)reader.ReadUInt32();           // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
-                material.BlendMode  = (BlendingMode)reader.ReadUInt32();                // Blending: see https://wowdev.wiki/Rendering#EGxBlend
+                material.flags              = reader.ReadMaterialFlags();
+                material.ShaderType         = (WMOFragmentShader)reader.ReadUInt32();   // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
+                material.BlendMode          = (BlendingMode)reader.ReadUInt32();        // Blending: see https://wowdev.wiki/Rendering#EGxBlend
 
                 material.TextureId1         = reader.ReadUInt32();                      // offset into MOTX; ≥ Battle (8.1.0.27826) No longer references MOTX but is a filedata id directly.
                 material.SidnColor          = reader.ReadBGRA();                        // emissive color; see below (emissive color)
@@ -102,14 +66,43 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                                                                                         // environment textures don't need flags
 
                 material.GroundType         = reader.ReadUInt32();                      // foreign_keyⁱ< uint32_t, &TerrainTypeRec::m_ID > ground_type; // according to CMapObjDef::GetGroundType 
-                material.Texture2           = reader.ReadUInt32();                      // offset into MOTX
+                material.TextureId3         = reader.ReadUInt32();                      // offset into MOTX
                 material.Color              = reader.ReadBGRA();
                 material.texture3_flags     = reader.ReadMaterialFlags();
+
+                material.Texture1           = CSVReader.LookupId(material.TextureId1);
+                material.Texture2           = CSVReader.LookupId(material.TextureId2);
 
                 // skip runtime data //
                 reader.BaseStream.Seek(16, SeekOrigin.Current);
 
                 wmoData.materials.Add(material);
+                if (!wmoData.texturePaths.ContainsKey(material.TextureId1))
+                    wmoData.texturePaths.Add(material.TextureId1, material.Texture1);
+
+                if (material.Texture1.Length > 1 && !LoadedBLPs.Contains(material.Texture1))
+                {
+                    Texture2Ddata textureData = new Texture2Ddata();
+                    string path = Casc.GetFile(material.Texture1);
+                    if (File.Exists(path))
+                    {
+                        Stream stream               = File.Open(path, FileMode.Open);
+                        BLP blp                     = new BLP();
+                        byte[] data                 = blp.GetUncompressed(stream, true);
+                        BLPinfo info                = blp.Info();
+                        textureData.hasMipmaps      = info.hasMipmaps;
+                        textureData.width           = info.width;
+                        textureData.height          = info.height;
+                        textureData.textureFormat   = info.textureFormat;
+                        textureData.TextureData     = data;
+                        stream.Close();
+                        stream.Dispose();
+                        LoadedBLPs.Add(material.Texture1);
+
+                        if (!wmoData.textureData.ContainsKey(material.Texture1))
+                            wmoData.textureData.Add(material.Texture1, textureData);
+                    }
+                }
             }
         }   // loaded
 

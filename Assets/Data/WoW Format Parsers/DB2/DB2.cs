@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using DBDefsLib;
 using System.Text;
+using Assets.Data.CASC;
 
 public partial class DB2
 {

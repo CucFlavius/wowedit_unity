@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Data.CASC;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;

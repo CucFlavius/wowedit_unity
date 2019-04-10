@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using UnityEngine;
 using Assets.Data.WoW_Format_Parsers;
+using Assets.Data.CASC;
 
 namespace Assets.Data.WoW_Format_Parsers.WMO
 {
@@ -25,7 +26,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             wmoData.scale = scale;
 
             wmoData.Info = new HeaderData();
-            wmoData.texturePaths = new Dictionary<int, string>();
+            wmoData.texturePaths = new Dictionary<uint, string>();
             wmoData.textureData = new Dictionary<string, Texture2Ddata>();
             wmoData.MOGNgroupnames = new Dictionary<int, string>();
             wmoData.materials = new List<WMOMaterial>();
@@ -70,9 +71,6 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                             break;
                         case WMOChunkId.MOHD:
                             ReadMOHD(reader); // root file header
-                            break;
-                        case WMOChunkId.MOTX:
-                            ReadMOTX(reader, chunkSize); // texture paths
                             break;
                         case WMOChunkId.MOMT:
                             ReadMOMT(reader, chunkSize); // materials

@@ -10,6 +10,7 @@ using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
 using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.Data.WoW_Format_Parsers;
 using Assets.Tools.CSV;
+using Assets.Data.CASC;
 
 public static partial class M2
 {

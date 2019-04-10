@@ -26,6 +26,7 @@ namespace Assets.World.Tests
             //wmoHandler.AddToQueue(@"world\wmo\azeroth\buildings\stormwind\stormwind2_016.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
             try
             {
+                //wmoHandler.AddToQueue(@"world\wmo\KulTiras\Human\8ara_warfronts_mine01.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
                 //M2.Load(@"character\draenei\female\draeneifemale.m2", -1, Vector3.zero, Quaternion.identity, Vector3.one);
                 //M2.Load(@"world\expansion07\doodads\riverzone\8riv_ivy_b01.m2", -1, new Vector3 (.5f,0,0), Quaternion.identity, new Vector3(.1f,.1f,.1f));
                 //M2.Load(@"creature\anduin\anduin.m2", -1, Vector3.zero, Quaternion.identity, Vector3.one);

@@ -1,149 +1,174 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
+using Assets.Data;
+using Assets.WoWEditSettings;
 
-public static partial class Casc {
-
-    public static string GetFile (string fileNameRaw)
+namespace Assets.Data.CASC
+{
+    public static partial class Casc
     {
-        string fileLocation = null;
-        string fileName;
-        if (fileNameRaw[0] == (@"/"[0]) || fileNameRaw[0] == (@"\"[0]))
+        public static string GetFile(uint filedataId)
         {
-            fileName = fileNameRaw.Remove(0, 1);
-        }
-        else
-        {
-            fileName = fileNameRaw;
-        }
+            string fileLocation = null;
+            string fileName     = string.Empty;
+        
+            if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game)
+            {
+                var target = "";
+                foreach (var entry in rootFile.Entries)
+                {
+                    if (entry.Value[0].fileDataId == filedataId)
+                    {
+                        RootEntry? prioritizedEntry = entry.Value.First(subentry =>
+                            subentry.contentFlags.HasFlag(ContentFlags.LowViolence) == false && (subentry.localeFlags.HasFlag(LocaleFlags.All_WoW) || subentry.localeFlags.HasFlag(LocaleFlags.enUS))
+                        );
 
-        if (Settings.Data[2] == "0") // game
-        {
-            if (File.Exists(Settings.Data[0] + @"\WoWData\" + fileName))
-            {
-                fileLocation = Settings.Data[0] + @"\WoWData\" + fileName;
-            }
-            else
-            {
-                fileLocation = ExtractFileToCache(FileListDictionary[fileName.Replace(@"\"[0], @"/"[0]).ToLower()], fileName);
-            }
-        }
-        else if (Settings.Data[2] == "1") // online
-        {
-            /* ??? */
-        }
-        else if (Settings.Data[2] == "2") // extracted
-        {
-            if (File.Exists(Settings.Data[8] + @"\" + fileName))
-            {
-                fileLocation = Settings.Data[8] + @"\" + fileName;
-            }
-            else
-            {
-                Debug.Log("Missing Extracted File : " + (Settings.Data[8] + @"\" + fileName));
-            }
-        }
-        return fileLocation;
-    }
+                        var selectedEntry = (prioritizedEntry != null) ? prioritizedEntry.Value : entry.Value.First();
+                        target = selectedEntry.md5.ToHexString();
+                    }
+                }
 
-    public static Stream GetFileStream (string filename)
-    {
-        Stream fileStream = File.OpenRead(GetFile(filename));
-        return fileStream;
-    }
-
-    public static List<string> GetFileListFromFolder (string path)
-    {
-        if (Settings.Data[2] == "0") // game
-        {
-            string[] list = FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
-            return new List<string>(list);
-        }
-        else if (Settings.Data[2] == "1") // online
-        {
-            /* ??? */
-        }
-        else if (Settings.Data[2] == "2") // extracted
-        {
-            string[] list = Directory.GetFiles(Settings.Data[8] + @"\" + path);
-            List<string> listl = new List<string>();
-            for (int i = 0; i < list.Length; i++)
-            {
-                listl.Add(Path.GetFileName(list[i]));
+                if (string.IsNullOrEmpty(target))
+                    Debug.Log($"No file found in root for FileDataId: {filedataId}");
             }
-            return listl;
-        }
-        return null;
-    }
-
-    public static string[] GetFolderListFromFolder(string path)
-    {
-        if (Settings.Data[2] == "0") // game
-        {
-            return FolderTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
-        }
-        else if (Settings.Data[2] == "1") // online
-        {
-            /* ??? */
-        }
-        else if (Settings.Data[2] == "2") // extracted
-        {
-            string[] list = Directory.GetDirectories(Settings.Data[8] + @"\" + path);
-            return list;
-        }
-        return null;
-    }
-
-    public static bool FolderExists (string path)
-    {
-        try
-        {
-            if (Settings.Data[2] == "0") // game
-            {
-                return FileTree.ContainsKey(path.Replace(@"\"[0], @"/"[0]));
-            }
-            else if (Settings.Data[2] == "1") // online
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online)
             {
                 /* ??? */
             }
-            else if (Settings.Data[2] == "2") // extracted
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted)
             {
-                bool exists = Directory.Exists(Settings.Data[8] + @"\" + path);
-                return exists;
+                if (File.Exists($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}"))
+                    fileLocation = $@"{SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}";
+                else
+                    Debug.Log($@"Missing Extracted File : {SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}");
             }
-            return false;
+        
+            return fileLocation;
         }
-        catch
-        {
-            Debug.Log("CASC Error: Can't check if the folder exists.");
-            return false;
-        }
-    }
 
-    public static bool FileExists (string path)
-    {
-        try
+        public static uint GetFileDataIdByFilename(string filename)
         {
-            if (Settings.Data[2] == "0") // game
+            var lookup = Hasher.ComputeHash(filename, true);
+
+            if (rootFile.Entries.TryGetValue(lookup, out var entry))
+                return entry[0].fileDataId;
+
+            return 0;
+        }
+
+        public static bool FileExists(uint fileDataId)
+        {
+            foreach (var entry in rootFile.Entries)
             {
-                return FileList.Contains(path.Replace(@"\"[0], @"/"[0]));
+                if (entry.Value[0].fileDataId == fileDataId)
+                    return true;
             }
-            else if (Settings.Data[2] == "1") // online
+
+            return false;
+        }
+
+        public static Stream GetFileStream(string filename)
+        {
+            uint DataId         = GetFileDataIdByFilename(filename);
+            Stream fileStream   = File.OpenRead(GetFile(DataId));
+            return fileStream;
+        }
+
+        public static List<string> GetFileListFromFolder(string path)
+        {
+            if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game
+            {
+                string[] list = FileTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
+                return new List<string>(list);
+            }
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online) // online
             {
                 /* ??? */
             }
-            else if (Settings.Data[2] == "2") // extracted
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted
             {
-                bool exists = File.Exists(Settings.Data[8] + @"\" + path);
-                return exists;
+                string[] list = Directory.GetFiles($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{path}");
+                List<string> listl = new List<string>();
+                for (int i = 0; i < list.Length; i++)
+                {
+                    listl.Add(Path.GetFileName(list[i]));
+                }
+                return listl;
             }
-            return false;
+            return null;
         }
-        catch
+
+        public static string[] GetFolderListFromFolder(string path)
         {
-            Debug.Log("CASC Error: Can't check if the file exists.");
-            return false;
+            if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game
+            {
+                return FolderTree[path.Replace(@"\"[0], @"/"[0]).TrimEnd(@"/"[0])];
+            }
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online) // online
+            {
+                /* ??? */
+            }
+            else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted
+            {
+                string[] list = Directory.GetDirectories($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{path}");
+                return list;
+            }
+            return null;
+        }
+
+        public static bool FolderExists(string path)
+        {
+            try
+            {
+                if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game
+                {
+                    return FileTree.ContainsKey(path.Replace(@"\"[0], @"/"[0]));
+                }
+                else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online) // online
+                {
+                    /* ??? */
+                }
+                else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted
+                {
+                    bool exists = Directory.Exists($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{path}");
+                    return exists;
+                }
+                return false;
+            }
+            catch
+            {
+                Debug.Log("CASC Error: Can't check if the folder exists.");
+                return false;
+            }
+        }
+
+        public static bool FileExists(string path)
+        {
+            try
+            {
+                if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game
+                {
+                    return FileList.Contains(path.Replace(@"\"[0], @"/"[0]));
+                }
+                else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online) // online
+                {
+                    /* ??? */
+                }
+                else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted
+                {
+                    bool exists = File.Exists($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{path}");
+                    return exists;
+                }
+                return false;
+            }
+            catch
+            {
+                Debug.Log("CASC Error: Can't check if the file exists.");
+                return false;
+            }
         }
     }
 }
