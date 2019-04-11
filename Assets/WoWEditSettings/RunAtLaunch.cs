@@ -18,8 +18,8 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-        Settings.LoadConfig();
         CSVReader.LoadCSV();
+        Settings.LoadConfig();
         //Agent.FindWowInstalls();
         UserPreferences.Load();
         //Network.Disconnect();

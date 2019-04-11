@@ -161,7 +161,8 @@ public static class MinimapThread
         string mapName = minimapRequest.mapName;
         string fileName = "map" + minimapRequest.coords.x + "_" + minimapRequest.coords.y + ".blp";
         string path = @"world\minimaps\" + mapName + @"\" + fileName;
-        string extractedPath = Casc.GetFile(path);
+        int fdid = Casc.GetFileDataIdByName(path);
+        string extractedPath = Casc.GetFile(fdid);
         using (Stream stream = File.Open(extractedPath, FileMode.Open))
         {
             BLP blp = new BLP();

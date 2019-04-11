@@ -8,6 +8,7 @@ using UnityEngine;
 using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
 using Assets.Data;
 using Assets.Data.WoW_Format_Parsers.M2;
+using Assets.WoWEditSettings;
 
 public static partial class M2
 {
@@ -97,9 +98,13 @@ public static partial class M2
             submesh_boneComboIndex[sub]     = reader.ReadUInt16();
             submesh_boneInfluences[sub]     = reader.ReadUInt16();
             submesh_centerBoneIndex[sub]    = reader.ReadUInt16();
-            Vector3 raw_centerPosition      = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale);
+            Vector3 raw_centerPosition      = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             submesh_centerPosition[sub]     = new Vector3(-raw_centerPosition.x, raw_centerPosition.z, -raw_centerPosition.y);
-            Vector3 raw_sortCenterPosition  = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale);
+            Vector3 raw_sortCenterPosition  = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             submesh_sortCenterPosition[sub] = new Vector3(-raw_sortCenterPosition.x, raw_sortCenterPosition.z, -raw_sortCenterPosition.y);
             submesh_sortRadius[sub]         = reader.ReadSingle();
         }

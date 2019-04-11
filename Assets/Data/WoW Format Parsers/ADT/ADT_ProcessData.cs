@@ -24,9 +24,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     {
                         for (int j = 0; j < 9; j++)
                         {
-                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.worldScale,
-                                                                                chunkData.VertexHeights[currentVertex] / Settings.worldScale,
-                                                                                (float)(-j * 4.1666625) / Settings.worldScale);
+                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
+                                                                                chunkData.VertexHeights[currentVertex] / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
+                                                                                (float)(-j * 4.1666625) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                             currentVertex++;
                         }
                     }
@@ -34,9 +34,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     {
                         for (int j1 = 0; j1 < 8; j1++)
                         {
-                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.worldScale,
-                                                                                chunkData.VertexHeights[currentVertex] / Settings.worldScale,
-                                                                                (float)((-j1 - 0.5) * 4.1666625) / Settings.worldScale);
+                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
+                                                                                chunkData.VertexHeights[currentVertex] / SettingsManager<Configuration>.Config.WorldSettings.WorldScale,
+                                                                                (float)((-j1 - 0.5) * 4.1666625) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                             currentVertex++;
                         }
                     }
@@ -223,22 +223,22 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     string hTexturePath     = directoryPath + @"\" + noExtension + "_h" + ".blp";
                     if (Casc.FileExists(hTexturePath))
                     {
-                        string extractedPath        = Casc.GetFile(hTexturePath);
-                        Stream stream               = File.Open(extractedPath, FileMode.Open);
-                        BLP blp                     = new BLP();
-                        byte[] data                 = blp.GetUncompressed(stream, true);
-                        BLPinfo info                = blp.Info();
-                        ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                        texture2Ddata.hasMipmaps    = info.hasMipmaps;
-                        texture2Ddata.width         = info.width;
-                        texture2Ddata.height        = info.height;
-                        if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                            texture2Ddata.hasMipmaps = false;
-                        texture2Ddata.textureFormat = info.textureFormat;
-                        texture2Ddata.TextureData   = data;
-                        ADTTexData.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
-                        stream.Close();
-                        stream = null;
+                        // string extractedPath        = Casc.GetFile(hTexturePath);
+                        // Stream stream               = File.Open(extractedPath, FileMode.Open);
+                        // BLP blp                     = new BLP();
+                        // byte[] data                 = blp.GetUncompressed(stream, true);
+                        // BLPinfo info                = blp.Info();
+                        // ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
+                        // texture2Ddata.hasMipmaps    = info.hasMipmaps;
+                        // texture2Ddata.width         = info.width;
+                        // texture2Ddata.height        = info.height;
+                        // if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
+                        //     texture2Ddata.hasMipmaps = false;
+                        // texture2Ddata.textureFormat = info.textureFormat;
+                        // texture2Ddata.TextureData   = data;
+                        // ADTTexData.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
+                        // stream.Close();
+                        // stream = null;
                     }
                     else
                     {

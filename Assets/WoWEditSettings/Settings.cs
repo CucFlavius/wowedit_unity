@@ -35,6 +35,9 @@ namespace Assets.WoWEditSettings
          */
         public static TerrainImport terrainImport;
         public static WorldSettings WorldSettings;
+        public static List<string> DropdownGameList;
+        public static WoWSource WoWSource;
+        public static bool LoadWMOs, LoadM2s;
 
         public static void LoadConfig()
         {
@@ -52,7 +55,7 @@ namespace Assets.WoWEditSettings
                 WoWPath         = WoWPath,
                 ApplicationPath = ApplicationPath,
                 ExtractedPath   = ExtractedPath,
-                WoWSource       = WoWSource.Null,
+                WoWSource       = WoWSource,
                 TerrainImport   = terrainImport,
                 WorldSettings   = WorldSettings,
             };
@@ -62,24 +65,6 @@ namespace Assets.WoWEditSettings
 
         private static void DefaultSettings()
         {
-            WorldSettings worldSettings = new WorldSettings()
-            {
-                WorldScale              = 10.0f,
-                terrainMaterialDistance = 300.0f,
-                highMipMapBias          = 0.5f,
-                lowMipMapBias           = 0f
-            };
-
-            TerrainImport import = new TerrainImport()
-            {
-                LoadWMOs            = true,
-                LoadM2s             = true,
-                LoadLights          = false,
-                LoadSoundEmitters   = false,
-                LoadShadowMaps      = false,
-                ShowVertexColors    = true,
-            };
-
             Configuration config = new Configuration()
             {
                 CachePath       = string.Empty,
@@ -87,8 +72,22 @@ namespace Assets.WoWEditSettings
                 ApplicationPath = string.Empty,
                 ExtractedPath   = string.Empty,
                 WoWSource       = WoWSource.Null,
-                TerrainImport   = import,
-                WorldSettings   = worldSettings,
+                TerrainImport   = new TerrainImport()
+                {
+                    LoadWMOs    = true,
+                    LoadM2s     = true,
+                    LoadLights  = false,
+                    LoadSoundEmitters   = false,
+                    LoadShadowMaps      = false,
+                    ShowVertexColors    = true,
+                },
+                WorldSettings   = new WorldSettings()
+                {
+                    WorldScale      = 10.0f,
+                    terrainMaterialDistance = 300.0f,
+                    highMipMapBias  = 0.5f,
+                    lowMipMapBias   = 0f
+                },
             };
 
             File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));

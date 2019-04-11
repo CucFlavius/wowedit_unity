@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using Assets.WoWEditSettings;
 
 namespace Assets.Data.WoW_Format_Parsers.WMO
 {
@@ -74,7 +75,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             groupDataBuffer.vertices = new Vector3[nVertices];
             for (int i = 0; i < nVertices; i++)
             {
-                Vector3 positions = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale);
+                Vector3 positions = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                 groupDataBuffer.vertices[i] = new Vector3(-positions.x, positions.z, -positions.y);
             }
         } // loaded

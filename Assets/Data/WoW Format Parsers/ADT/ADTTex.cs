@@ -40,8 +40,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 else if (b == 0)
                 {
                     ADTTexData.textureBlockData.terrainTexturePaths.Add(texturePath);
-                    string extractedPath = Casc.GetFile(texturePath);
-                    using (Stream stream = File.Open(extractedPath, FileMode.Open))
+                    int filedata            = Casc.GetFileDataIdByName(texturePath);
+                    string extractedPath    = Casc.GetFile(filedata);
+                    using (Stream stream    = File.Open(extractedPath, FileMode.Open))
                     {
                         BLP blp                         = new BLP();
                         byte[] data                     = blp.GetUncompressed(stream, true);
@@ -188,17 +189,15 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
             for (int tex = 0; tex < numTextures; tex++)
             {
-                uint DataId     = br.ReadUInt32();
-                string fileName = CSVReader.LookupId(DataId);
-
+                int DataId     = br.ReadInt32();
+                string fileName = Casc.GetFile(DataId);
                 if (fileName.Length != 0 && DataId != 0)
                 {
                     // Checking if the filename exists in the TexturePaths.
                     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
                     {
                         // Opening the BLP.
-                        string extractedPath                    = Casc.GetFile(fileName);
-                        Stream stream                           = File.Open(extractedPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        Stream stream                           = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
                         BLP blp                                 = new BLP();
                         byte[] data                             = blp.GetUncompressed(stream, true);
                         BLPinfo info                            = blp.Info();
@@ -227,17 +226,15 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
             for (int tex = 0; tex < numTextures; tex++)
             {
-                uint DataId     = br.ReadUInt32();
-                string fileName = CSVReader.LookupId(DataId);
+                int DataId     = br.ReadInt32();
+                string fileName = Casc.GetFile(DataId);
 
                 if (fileName.Length != 0 && DataId != 0)
                 {
                     // Checking if the filename exists in the TexturePaths.
                     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
                     {
-                        // Opening the BLP.
-                        string extractedPath = Casc.GetFile(fileName);
-                        Stream stream = File.Open(extractedPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
                         BLP blp = new BLP();
                         byte[] data = blp.GetUncompressed(stream, true);
                         BLPinfo info = blp.Info();

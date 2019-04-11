@@ -150,7 +150,8 @@ public class MinimapHandler : MonoBehaviour {
     private void AssignMinimapTexture(GameObject MinimapObject, string minimapName)
     {
         string path = @"world\minimaps\" + minimapName + @"\" + MinimapObject.name + ".blp";
-        string extractedPath = Casc.GetFile(path);
+        int fdid = Casc.GetFileDataIdByName(path);
+        string extractedPath = Casc.GetFile(fdid);
         Stream stream = File.Open(extractedPath, FileMode.Open);
         BLP blp = new BLP();
         byte[] data = blp.GetUncompressed(stream, false);

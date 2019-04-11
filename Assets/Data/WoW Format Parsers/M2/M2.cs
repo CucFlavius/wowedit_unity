@@ -48,7 +48,8 @@ public static partial class M2
 
     private static void ParseM2_Root(string dataPath, M2Data m2Data, M2Texture m2Tex)
     {
-        string path = Casc.GetFile(dataPath);
+        int fdid = Casc.GetFileDataIdByName(dataPath);
+        string path = Casc.GetFile(fdid);
         byte[] M2MainData = File.ReadAllBytes(path);
         long streamPosition = 0;
 
@@ -99,7 +100,8 @@ public static partial class M2
         {
             // Load only skin00 for now //
             string skinDataPath = directoryPath + @"\" + noExtension + "00" + ".skin";
-            string skinPath = Casc.GetFile(skinDataPath);
+            int fdid        = Casc.GetFileDataIdByName(dataPath);
+            string skinPath = Casc.GetFile(fdid);
             byte[] M2SkinData = File.ReadAllBytes(skinPath);
 
             using (MemoryStream ms = new MemoryStream(M2SkinData))

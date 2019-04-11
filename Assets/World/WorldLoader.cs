@@ -1,6 +1,7 @@
 ﻿using Assets.Data.WoW_Format_Parsers.ADT;
 using Assets.World.Models;
 using Assets.World.Terrain;
+using Assets.WoWEditSettings;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +42,7 @@ namespace Assets.World
 
             //InvokeRepeating("FreeMemory", 2.0f, 10f);
 
-            blockSize = 533.33333f / Settings.worldScale;
+            blockSize = 533.33333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;
 
             // create matrices //
             ADTMatrix = new int[maxWorldSize, maxWorldSize];

@@ -98,28 +98,25 @@ namespace Assets.Data.CASC
         public static void StreamToFile(Stream InputStream, string path)
         {
             InputStream.Seek(0, SeekOrigin.Begin);
-            var br = new BinaryReader(InputStream);
+            var br  = new BinaryReader(InputStream);
             byte[] data;
-            data = br.ReadBytes((int)InputStream.Length);
-            System.IO.File.WriteAllBytes(path, data);
+            data    = br.ReadBytes((int)InputStream.Length);
+            File.WriteAllBytes(path, data);
             InputStream.Seek(0, SeekOrigin.Begin);
         }
 
         public static Stream GetEncodingData(string WoWEncodingKey)
         {
-            if (WoWEncodingKey == null)
-            {
-                return null;
-            }
-            if (EncodingData.ContainsKey(WoWEncodingKey))
-            {
-                return OpenWoWFile(EncodingData[WoWEncodingKey].Keys[0]);
-            }
-            else
-            {
-                Debug.Log("Error - Encoding Data Not Found.");
-                return null;
-            }
+            // if (EncodingData.ContainsKey(WoWEncodingKey))
+            // {
+            //     return OpenWoWFile(EncodingData[WoWEncodingKey].Key.Hash.Value);
+            // }
+            // else
+            // {
+            //     Debug.Log("Error - Encoding Data Not Found.");
+            //     return null;
+            // }
+            return null;
         }
 
         private static Dictionary<string, string[]> DeserializeTree(Stream stream)

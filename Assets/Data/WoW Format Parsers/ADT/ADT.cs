@@ -283,7 +283,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTRoot r = new ADTRoot();
             string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
-            string path = Casc.GetFile(ADTmainPath);
+            int filedata    = Casc.GetFileDataIdByName(ADTmainPath);
+            string path     = Casc.GetFile(filedata);
             byte[] ADTmainData = File.ReadAllBytes(path);
 
             int MCNKchunkNumber = 0;
@@ -333,7 +334,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTTex t = new ADTTex();
             string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
-            string path = Casc.GetFile(ADTtexPath);
+            int filedata = Casc.GetFileDataIdByName(ADTtexPath);
+            string path = Casc.GetFile(filedata);
 
             byte[] ADTtexData = File.ReadAllBytes(path);
 
@@ -390,7 +392,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTObj o = new ADTObj();
             string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
-            string path = Casc.GetFile(ADTobjPath);
+            int filedata = Casc.GetFileDataIdByName(ADTobjPath);
+            string path = Casc.GetFile(filedata);
 
             byte[] ADTobjData = File.ReadAllBytes(path);
 

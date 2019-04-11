@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using UnityEngine;
+using Assets.WoWEditSettings;
 
 namespace Assets.World.Terrain
 {
@@ -399,7 +400,7 @@ namespace Assets.World.Terrain
                                 ADTTexData.Texture2Ddata tdata = data.terrainTextures[textureName];
                                 Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                                 tex.LoadRawTextureData(tdata.TextureData);
-                                tex.mipMapBias = Settings.highMipMapBias;
+                                tex.mipMapBias = SettingsManager<Configuration>.Config.WorldSettings.highMipMapBias;
                                 tex.Apply();
                                 LoadedTerrainTextures[textureName] = tex;
                             }
@@ -441,7 +442,7 @@ namespace Assets.World.Terrain
                         #region Shadow Maps
                         //////////////////////////////
 
-                        if (SettingsTerrainImport.LoadShadowMaps)
+                        if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
                         {
                             if (data.textureChunksData[i].shadowMapTexture.Length > 0)
                             {
@@ -481,7 +482,7 @@ namespace Assets.World.Terrain
                             mat.SetVector("heightScale", new Vector4(HeightScales[0], HeightScales[1], HeightScales[2], HeightScales[3]));
                             mat.SetVector("heightOffset", new Vector4(heightOffsets[0], heightOffsets[1], heightOffsets[2], heightOffsets[3]));
                         }
-                        if (SettingsTerrainImport.LoadShadowMaps)
+                        if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
                         {
                             mat.SetTexture("_shadowMap", ShadowMap);
                         }
@@ -505,7 +506,7 @@ namespace Assets.World.Terrain
                 try
                 {
                     Ltexture.LoadRawTextureData(mapTextureBlock.data.TextureData);
-                    Ltexture.mipMapBias = Settings.lowMipMapBias;
+                    Ltexture.mipMapBias = SettingsManager<Configuration>.Config.WorldSettings.lowMipMapBias;
                     Ltexture.Apply();
                 }
                 catch
@@ -542,9 +543,9 @@ namespace Assets.World.Terrain
                 if (Gobject.Block != null)
                 {
 
-                    float blockSize = 533.33333f / Settings.worldScale;
+                    float blockSize = 533.33333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;
 
-                    if (SettingsTerrainImport.LoadWMOs)
+                    if (SettingsManager<Configuration>.Config.TerrainImport.LoadWMOs)
                     {
                         GameObject WMO0 = new GameObject();
                         Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
@@ -567,7 +568,7 @@ namespace Assets.World.Terrain
                             }
                         }
                     }
-                    if (SettingsTerrainImport.LoadM2s)
+                    if (SettingsManager<Configuration>.Config.TerrainImport.LoadM2s)
                     {
                         GameObject M20          = new GameObject();
                         Vector2 terrainPos      = new Vector2(data.terrainPos.x, data.terrainPos.y);

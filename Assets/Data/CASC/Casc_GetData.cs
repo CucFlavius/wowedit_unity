@@ -10,7 +10,7 @@ namespace Assets.Data.CASC
 {
     public static partial class Casc
     {
-        public static string GetFile(uint filedataId)
+        public static string GetFile(int filedataId)
         {
             string fileLocation = null;
             string fileName     = string.Empty;
@@ -40,7 +40,7 @@ namespace Assets.Data.CASC
             }
             else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted)
             {
-                if (File.Exists($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}"))
+                if (File.Exists($@"{SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}") && FileListDictionary.ContainsKey(fileName))
                     fileLocation = $@"{SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}";
                 else
                     Debug.Log($@"Missing Extracted File : {SettingsManager<Configuration>.Config.ExtractedPath}\{fileName}");
@@ -49,30 +49,9 @@ namespace Assets.Data.CASC
             return fileLocation;
         }
 
-        public static uint GetFileDataIdByFilename(string filename)
-        {
-            var lookup = Hasher.ComputeHash(filename, true);
-
-            if (rootFile.RootData.TryGetValue(lookup, out var entry))
-                return entry[0].fileDataId;
-
-            return 0;
-        }
-
-        public static bool FileExists(uint fileDataId)
-        {
-            foreach (var entry in rootFile.RootData)
-            {
-                if (entry.Value[0].fileDataId == fileDataId)
-                    return true;
-            }
-
-            return false;
-        }
-
         public static Stream GetFileStream(string filename)
         {
-            uint DataId         = GetFileDataIdByFilename(filename);
+            int DataId          = GetFileDataIdByName(filename);
             Stream fileStream   = File.OpenRead(GetFile(DataId));
             return fileStream;
         }

@@ -53,7 +53,7 @@ namespace Assets.Data.CASC
 
         private static void CASCInitThread()
         {
-            CurrentDataVersion = Settings.Data[3];
+            CurrentDataVersion = SettingsManager<Configuration>.Config.WoWPath;
             Working = true;
 
             EncryptionKeys.ParseKeyFile(Settings.ApplicationPath + @"\ListFiles\keys1.txt"); /// will need more keys maybe ///

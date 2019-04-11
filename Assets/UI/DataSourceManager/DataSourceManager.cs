@@ -1,4 +1,5 @@
 ﻿using Assets.Data.CASC;
+using Assets.WoWEditSettings;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -26,23 +27,16 @@ public class DataSourceManager : MonoBehaviour {
         Debug.Log("Init");
         // Update Game List //
         Settings.DropdownGameList.Clear();
-        if (Settings.Data[4] != null)
-            Settings.DropdownGameList.Add(Settings.Data[4]);
-        if (Settings.Data[5] != null )
-            Settings.DropdownGameList.Add(Settings.Data[5]);
-        if (Settings.Data[6] != null )
-            Settings.DropdownGameList.Add(Settings.Data[6]);
+        if (SettingsManager<Configuration>.Config.WoWPath != null)
+            Settings.DropdownGameList.Add(SettingsManager<Configuration>.Config.WoWPath);
 
-        // Add custom game path to the list //
-        if (Settings.Data[9] != null && Settings.Data[9].Length > 1)
-            Settings.DropdownGameList.Add(Settings.Data[9]);
         DropdownGame.ClearOptions();
         DropdownGame.AddOptions(Settings.DropdownGameList);
 
         // select previously used //
         for (int v = 0; v < Settings.DropdownGameList.Count; v++)
         {
-            if (DropdownGame.options[v].text == Settings.Data[3])
+            if (DropdownGame.options[v].text == SettingsManager<Configuration>.Config.WoWPath)
             {
                 DropdownGame.value = v;
             }
@@ -52,79 +46,79 @@ public class DataSourceManager : MonoBehaviour {
         DropdownOnline.ClearOptions();
 
         // Update Toggles //
-        if (Settings.Data[2] == "0")
+        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game)
             ToggleGame.isOn = true;
-        else if (Settings.Data[2] == "1")
+        else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Online)
             ToggleOnline.isOn = true;
-        else if (Settings.Data[2] == "2")
+        else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted)
             ToggleExtracted.isOn = true;
 
         // Update Extracted Path //
-        if (Settings.Data[8] != null)
+        if (SettingsManager<Configuration>.Config.ExtractedPath != null)
         {
-            Extracted.text = Settings.Data[8];
+            Extracted.text = SettingsManager<Configuration>.Config.ExtractedPath;
         }
 
-        // Update Definitions List //
-        Settings.DropdownDefinitionsList.Clear();
-        List<string> elements = new List<string>(Settings.DB2XMLDefinitions.Keys);
-        foreach (string element in elements)
-        {
-            string[] splits1 = element.Replace(" ", ".").Split(new char[] { '.' });
-            string version = splits1[0] + "_" + splits1[1] + splits1[2] + splits1[3] + "_" + splits1[4].Trim('(').Trim(')');
-            Settings.DropdownDefinitionsList.Add(version);
-        }
-        DropdownDefinitions.ClearOptions();
-        DropdownDefinitions.AddOptions(Settings.DropdownDefinitionsList);
-
-        // select stored definition //
-        for (int v = 0; v < Settings.DB2XMLDefinitions.Count; v++)
-        {
-            if (DropdownDefinitions.options[v].text == Settings.Data[10])
-            {
-                DropdownDefinitions.value = v;
-            }
-        }
-
-        //Settings.SetDefaultDefinitions(Settings.Data[4]);
+        // // Update Definitions List //
+        // Settings.DropdownDefinitionsList.Clear();
+        // List<string> elements = new List<string>(Settings.DB2XMLDefinitions.Keys);
+        // foreach (string element in elements)
+        // {
+        //     string[] splits1 = element.Replace(" ", ".").Split(new char[] { '.' });
+        //     string version = splits1[0] + "_" + splits1[1] + splits1[2] + splits1[3] + "_" + splits1[4].Trim('(').Trim(')');
+        //     Settings.DropdownDefinitionsList.Add(version);
+        // }
+        // DropdownDefinitions.ClearOptions();
+        // DropdownDefinitions.AddOptions(Settings.DropdownDefinitionsList);
+        // 
+        // // select stored definition //
+        // for (int v = 0; v < Settings.DB2XMLDefinitions.Count; v++)
+        // {
+        //     if (DropdownDefinitions.options[v].text == Settings.Data[10])
+        //     {
+        //         DropdownDefinitions.value = v;
+        //     }
+        // }
+        // 
+        // //Settings.SetDefaultDefinitions(Settings.Data[4]);
     }
 
     public void Ok ()
     {
         if (ToggleGame.isOn)
         {
-            Settings.Data[2] = "0";
-            Settings.Data[3] = DropdownGame.options[DropdownGame.value].text;
-            if (Settings.Data[3] != CascInitialize.CurrentDataVersion)
+            Settings.WoWSource  = WoWSource.Game;
+            Settings.WoWPath    = DropdownGame.options[DropdownGame.value].text;
+            if (Settings.WoWPath != CascInitialize.CurrentDataVersion)
             {
                 CascInitialize.Initialized = false; // changed data source so reinitialize
             }
             // start Initialize casc thread //
-            Settings.Save();
+            Settings.SaveFile();
             CascInitialize.Start();
             gameObject.SetActive(false);
         }
         if (ToggleOnline.isOn)
         {
-            Settings.Data[2] = "1";
-            Settings.Save();
+            Settings.WoWSource = WoWSource.Online;
+            Settings.SaveFile();
             gameObject.SetActive(false);
         }
         if (ToggleExtracted.isOn)
         {
             if (Extracted.text != "" && Extracted.text != null)
             {
-                Settings.Data[2] = "2";
-                Settings.Data[8] = Extracted.text;
-                Settings.Save();
+                Settings.WoWSource = WoWSource.Extracted;
+                Settings.ExtractedPath = Extracted.text;
+                Settings.SaveFile();
                 gameObject.SetActive(false);
             }
             IsExtracted = true;
         }
-        if (Settings.Data[2] == "2")
+        if (Settings.WoWSource == WoWSource.Extracted)
             terrainImport.GetComponent<TerrainImport>().Initialize();
-        Settings.SelectedDefinitions = DropdownDefinitions.options[DropdownDefinitions.value].text;
-        Settings.Data[10] = Settings.SelectedDefinitions;
+        // Settings.SelectedDefinitions = DropdownDefinitions.options[DropdownDefinitions.value].text;
+        // Settings.Data[10] = Settings.SelectedDefinitions;
         // DB2.InitializeDefinitions();
     }
 
@@ -142,7 +136,7 @@ public class DataSourceManager : MonoBehaviour {
             if (CheckValidWoWPath(tempPath))
             {
                 // correct path //
-                Settings.Data[9] = tempPath;
+                // Settings.Data[9] = tempPath;
                 Settings.DropdownGameList.Add(tempPath);
                 DropdownGame.ClearOptions();
                 DropdownGame.AddOptions(Settings.DropdownGameList);

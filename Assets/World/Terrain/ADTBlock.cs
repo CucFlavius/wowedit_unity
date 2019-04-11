@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.WoWEditSettings;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,7 +101,7 @@ namespace Assets.World.Terrain
                     distance = currentDistance;
                 }
             }
-            if (distance < Settings.terrainMaterialDistance / Settings.worldScale)
+            if (distance < SettingsManager<Configuration>.Config.WorldSettings.terrainMaterialDistance / SettingsManager<Configuration>.Config.WorldSettings.WorldScale)
             {
                 if (materialLoDState == 1 || reCheck)
                 {

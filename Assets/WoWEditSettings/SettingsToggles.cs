@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.WoWEditSettings;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ public class SettingsToggles : MonoBehaviour {
 
     public void Toggle_showVertexColor(bool Toggle)
     {
-        Settings.showVertexColor = Toggle;
+        SettingsManager<Configuration>.Config.TerrainImport.ShowVertexColors = Toggle;
         Shader.SetGlobalFloat("_terrainVertexColorOn", (Toggle == true) ? 1 : 0);
         UserPreferences.Save();
     }

@@ -28,7 +28,8 @@ namespace Assets.Data.WoW_Format_Parsers
             string dataPath = @"world\maptextures\" + mapName + @"\" + mapName + "_" + coords.x + "_" + coords.y + ".blp";
             MapTextureBlock mapTextureBlock = new MapTextureBlock();
             Texture2Ddata texture2Ddata     = new Texture2Ddata();
-            string extractedTexturePath     = Casc.GetFile(dataPath);
+            int fdid = Casc.GetFileDataIdByName(dataPath);
+            string extractedTexturePath = Casc.GetFile(fdid);
             using (Stream stream = File.Open(extractedTexturePath, FileMode.Open))
             {
                 BLP blp                     = new BLP();

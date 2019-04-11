@@ -1,5 +1,6 @@
 ﻿using Assets.Data.CASC;
 using Assets.Tools.CSV;
+using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -83,7 +84,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 if (material.Texture1.Length > 1 && !LoadedBLPs.Contains(material.Texture1))
                 {
                     Texture2Ddata textureData = new Texture2Ddata();
-                    string path = Casc.GetFile(material.Texture1);
+                    int fdid    = Casc.GetFileDataIdByName(material.Texture1);
+                    string path = Casc.GetFile(fdid);
                     if (File.Exists(path))
                     {
                         Stream stream               = File.Open(path, FileMode.Open);
@@ -322,7 +324,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 doodadInstanceFlags.Unknown3                = flags[3];
                 doodadInstance.flags                        = doodadInstanceFlags;
 
-                doodadInstance.position             = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale); // (X,Z,-Y)
+                doodadInstance.position             = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale); // (X,Z,-Y)
                 doodadInstance.orientation          = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()); // (X, Y, Z, W)
                 doodadInstance.scale                = reader.ReadSingle();      // scale factor
                 doodadInstance.staticLightingColor  = reader.ReadBGRA();        // (B,G,R,A) overrides pc_sunColor

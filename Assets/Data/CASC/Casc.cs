@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using Assets.WoWEditSettings;
 using static Assets.Data.CASC.Casc;
+using System.Text;
 
 namespace Assets.Data.CASC
 {
@@ -163,13 +164,9 @@ namespace Assets.Data.CASC
                 IndexBlockParser.ParseIndex(idxfile);
             }
         }
-
+        
         public static Stream OpenWoWFile(byte[] key)
         {
-            if (key == null)
-            {
-                return null;
-            }
             // trim the byte array encoding key to 9 bytes //
             var ninebyte = Strip9Bytes(key);
             var newString = ByteString(ninebyte);
@@ -197,27 +194,70 @@ namespace Assets.Data.CASC
         {
             if (!Directory.Exists(SettingsManager<Configuration>.Config.ApplicationPath + @"\ListFiles\"))
                 Directory.CreateDirectory(SettingsManager<Configuration>.Config.ApplicationPath + @"\ListFiles\");
+
             if (File.Exists(SettingsManager<Configuration>.Config.ApplicationPath + @"\ListFiles\Listfile.txt"))
+                CacheListfile($@"{SettingsManager<Configuration>.Config.CachePath}\Listfile_{WoWVersion}.bin", 
+                    $@"{SettingsManager<Configuration>.Config.ApplicationPath}\ListFiles\Listfile.txt");
+            else
+                Debug.Log("Missing Listfile");
+        }
+
+        public static void CacheListfile(string ListFileBin, string ListFilePath)
+        {
+            Dictionary<string, Dictionary<ulong, string>> dirData = new Dictionary<string, Dictionary<ulong, string>>(StringComparer.OrdinalIgnoreCase)
             {
-                StreamReader sr = File.OpenText(SettingsManager<Configuration>.Config.ApplicationPath + @"\ListFiles\Listfile.txt");
-                string[] ListFile = sr.ReadToEnd().Split("\n"[0]);
-                Debug.Log("FileList Lines : " + ListFile.Length);
-                foreach (string item in ListFile)
+                [""] = new Dictionary<ulong, string>()
+            };
+
+            if (!File.Exists(ListFileBin))
+            {
+                using (var fs = new FileStream(ListFileBin, FileMode.Create))
+                using (var bw = new BinaryWriter(fs))
+                using (var fs2 = File.Open(ListFilePath, FileMode.Open))
+                using (var sr = new StreamReader(fs2))
                 {
-                    if (item != null && item != "")
+                    bw.Write(Encoding.ASCII.GetBytes("LIST"));
+                    bw.Write(fs2.Length);
+                    while (!sr.EndOfStream)
                     {
-                        ulong hashUlong = Hasher.ComputeHash(item);
-                        if (rootFile.RootData.ContainsKey(hashUlong))
-                        {
-                            FileList.Add(item);
-                            FileListDictionary.Add(item, hashUlong);
-                        }
+                        string line     = sr.ReadLine();
+                        byte[] arr      = Encoding.ASCII.GetBytes(line);
+                        ulong hashed    = Hasher.ComputeHash(line);
+                        string HexHash  = hashed.ToString("x");
+                        byte[] arr2     = Encoding.ASCII.GetBytes(HexHash);
+
+                        bw.Write(arr.Length);
+                        bw.Write(arr);
+                        bw.Write(arr2);
                     }
+                    bw.Close();
                 }
             }
             else
             {
-                Debug.Log("Missing Listfile");
+                using (var fs = File.Open(ListFileBin, FileMode.Open))
+                using (var br = new BinaryReader(fs))
+                {
+                    char[] HeaderChars = br.ReadChars(4);
+                    string Header = new string(HeaderChars);
+                    uint FileSize = br.ReadUInt32();
+                    br.BaseStream.Position += 4;
+
+                    Console.WriteLine($"Header: {Header} FileSize: {FileSize}");
+
+                    for (uint i = 0; i < FileSize / 38; i++)
+                    {
+                        FileNameEntry Entry     = new FileNameEntry();
+                        Entry.FileNameLength    = br.ReadUInt32();
+                        Entry.FileNameArray     = br.ReadChars((int)Entry.FileNameLength);
+                        Entry.HashArray         = br.ReadChars(16);
+                        string Filename         = new string(Entry.FileNameArray);
+                        string HashName         = new string(Entry.HashArray);
+                        FileList.Add(Filename);
+                        FileListDictionary.Add(Filename, ulong.Parse(HashName));
+                    }
+                }
+                Debug.Log($"CascRootHandler: Loaded {FileListDictionary.Keys.Count} valid file names.");
             }
         }
 
@@ -362,7 +402,6 @@ namespace Assets.Data.CASC
                 Directory.CreateDirectory(Path.GetDirectoryName($@"{SettingsManager<Configuration>.Config.CachePath}\WoWData\{path}"));
                 StreamToFile(fs, $@"{SettingsManager<Configuration>.Config.CachePath}\WoWData\{path}");
                 fs.Close();
-                fs = null;
                 return $@"{SettingsManager<Configuration>.Config.CachePath}\WoWData\{path}";
             }
             else

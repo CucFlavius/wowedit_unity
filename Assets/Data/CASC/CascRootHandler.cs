@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Data.CASC
 {
     public static partial class Casc
     {
+        public static LocaleFlags Locale { get; set; }
+        public static ContentFlags Content { get; set; }
         public static void LoadWoWRootFile()
         {
             var rootFilePath = $@"{SettingsManager<Configuration>.Config.CachePath}\Root_{WoWVersion}.bin";
@@ -82,5 +85,58 @@ namespace Assets.Data.CASC
             }
             fs.Close();
         }
+
+        public static IEnumerable<KeyValuePair<ulong, RootEntry>> GetAllEntries()
+        {
+            foreach (var set in rootFile.RootData)
+                foreach (var entry in set.Value)
+                    yield return new KeyValuePair<ulong, RootEntry>(set.Key, entry);
+        }
+
+        public static IEnumerable<RootEntry> GetAllEntries(ulong hash)
+        {
+            rootFile.RootData.TryGetValue(hash, out List<RootEntry> result);
+
+            if (result == null)
+                yield break;
+
+            foreach (var entry in result)
+                yield return entry;
+        }
+
+        public static IEnumerable<RootEntry> GetEntries(ulong hash)
+        {
+            var rootInfos = GetAllEntries(hash);
+
+            if (!rootInfos.Any())
+                yield break;
+
+            var rootInfosLocale = rootInfos.Where(re => (re.LocaleFlags & Locale) != 0);
+
+            if (rootInfosLocale.Count() > 1)
+            {
+                var rootInfosLocaleAndContent = rootInfosLocale.Where(re => (re.ContentFlags == Content));
+
+                if (rootInfosLocaleAndContent.Any())
+                    rootInfosLocale = rootInfosLocaleAndContent;
+            }
+
+            foreach (var entry in rootInfosLocale)
+                yield return entry;
+        }
+
+        public static ulong GetHashByFileDataId(int FDID)
+        {
+            FileDataStore.TryGetValue(FDID, out ulong hash);
+            return hash;
+        }
+
+        public static int GetFileDataIdByHash(ulong hash)
+        {
+            FileDataStoreReverse.TryGetValue(hash, out int FDID);
+            return FDID;
+        }
+
+        public static int GetFileDataIdByName(string name) => GetFileDataIdByHash(Hasher.ComputeHash(name));
     }
 }

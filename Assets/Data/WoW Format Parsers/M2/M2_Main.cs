@@ -4,6 +4,7 @@ using Assets.Data.WoW_Format_Parsers;
 using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.Tools.CSV;
+using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -82,7 +83,9 @@ public static partial class M2
             rotationM22track[cb]            = br.ReadM2Track();
             scaleM22track[cb]               = br.ReadM2Track();
 
-            Vector3 pivotRaw = new Vector3(br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale);
+            Vector3 pivotRaw = new Vector3(br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             m2CompBone.pivot = new Vector3(-pivotRaw.x, pivotRaw.z, -pivotRaw.y);
 
             m2Data.m2CompBone.Add(m2CompBone);
@@ -123,7 +126,9 @@ public static partial class M2
                 br.BaseStream.Position  = m2AnimationValues.Offset;
                 for (int t = 0; t < m2AnimationValues.Size; t++)
                 {
-                    Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale);
+                    Vector3 rawPosition = new Vector3(br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                        br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                        br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                     values.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
                 }
                 positions.values = values;
@@ -188,7 +193,9 @@ public static partial class M2
                 br.BaseStream.Position  = m2AnimationValues.Offset;
                 for (int t = 0; t < m2AnimationValues.Size; t++)
                 {
-                    Vector3 rawScale = new Vector3(br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale);
+                    Vector3 rawScale = new Vector3(br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                        br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                        br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
                     values.Add(new Vector3(-rawScale.x, rawScale.z, -rawScale.y));
                 }
                 scales.values = values;
@@ -220,12 +227,14 @@ public static partial class M2
         m2Data.meshData = new MeshData();
         for (int v = 0; v < vertices.Size; v++)
         {
-            Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale, br.ReadSingle() / Settings.worldScale);
+            Vector3 rawPosition = new Vector3(br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, br.ReadSingle() /
+                SettingsManager<Configuration>.Config.WorldSettings.WorldScale, br.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             m2Data.meshData.pos.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
             m2Data.meshData.bone_weights.Add(new float[] { br.ReadByte() / 255.0f, br.ReadByte() / 255.0f, br.ReadByte() / 255.0f, br.ReadByte() / 255.0f });
             m2Data.meshData.bone_indices.Add(new int[] { br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte() });
             //Debug.Log(m2Data.meshData.bone_indices[v][0] + " " + m2Data.meshData.bone_indices[v][1] + " " + m2Data.meshData.bone_indices[v][2] + " " + m2Data.meshData.bone_indices[v][3]);
-            Vector3 rawnormal = new Vector3(br.ReadSingle() * Settings.worldScale, br.ReadSingle() * Settings.worldScale, br.ReadSingle() * Settings.worldScale);
+            Vector3 rawnormal = new Vector3(br.ReadSingle() * SettingsManager<Configuration>.Config.WorldSettings.WorldScale, br.ReadSingle() * SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
+                br.ReadSingle() * SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             m2Data.meshData.normal.Add(new Vector3(-rawnormal.x, rawnormal.z, -rawnormal.y));
             m2Data.meshData.tex_coords.Add(new Vector2(br.ReadSingle(), br.ReadSingle()));
             m2Data.meshData.tex_coords2.Add(new Vector2(br.ReadSingle(), br.ReadSingle()));
@@ -237,53 +246,6 @@ public static partial class M2
         {
             m2Data.textureLookupTable.Add(br.ReadUInt16());
         }
-
-        // Textures //
-        if (version <= 274 && textures.Offset != 0)
-        {
-            br.BaseStream.Position = textures.Offset + 8;
-            for (int tex = 0; tex < textures.Size; tex++)
-            {
-                M2Texture _Texture      = new M2Texture();
-                _Texture.type           = br.ReadInt32();
-                _Texture.flags          = br.ReadInt32();
-                _Texture.FilenameArray  = br.ReadM2Array();
-
-                long Pos                = br.BaseStream.Position;
-                br.BaseStream.Position  = _Texture.FilenameArray.Offset + 8;
-
-                _Texture.Filename       = br.ReadChars(_Texture.FilenameArray.Size - 1);
-
-                br.BaseStream.Position  = Pos;
-
-                string FileName         = new string(_Texture.Filename);
-                _Texture.TXIDFileName   = FileName;
-
-                Texture2Ddata texture2Ddata = new Texture2Ddata();
-                if (FileName.Length > 1)
-                {
-                    if (!LoadedBLPs.Contains(FileName))
-                    {
-                        string extractedPath        = Casc.GetFile(FileName);
-                        Stream stream               = File.Open(extractedPath, FileMode.Open);
-                        BLP blp                     = new BLP();
-                        byte[] data                 = blp.GetUncompressed(stream, true);
-                        BLPinfo info                = blp.Info();
-                        texture2Ddata.hasMipmaps    = info.hasMipmaps;
-                        texture2Ddata.width         = info.width;
-                        texture2Ddata.height        = info.height;
-                        texture2Ddata.textureFormat = info.textureFormat;
-                        texture2Ddata.TextureData   = data;
-                        _Texture.texture2Ddata      = texture2Ddata;
-                        stream.Close();
-                        stream.Dispose();
-                        LoadedBLPs.Add(FileName);
-                    }
-                }
-                m2Data.m2Tex.Add(_Texture);
-                br.BaseStream.Position = Pos + 16;
-            }
-        }
     }
 
     public static void ReadTXID(BinaryReader br, M2Data m2Data)
@@ -294,15 +256,14 @@ public static partial class M2
 
         for (int i = 0; i < numTextures; i++)
         {
-            uint texture    = br.ReadUInt32();
-            string Filename = CSVReader.LookupId(texture);
-
+            int texture    = br.ReadInt32();
+            string Filename = Casc.GetFile(texture);
             M2Texture m2Texture         = new M2Texture();
             m2Texture.TXIDFileName      = Filename;
             Texture2Ddata texture2Ddata = new Texture2Ddata();
             if (!LoadedBLPs.Contains(Filename))
             {
-                string extractedPath        = Casc.GetFile(Filename);
+                string extractedPath        = Casc.GetFile(texture);
                 Stream stream               = File.Open(extractedPath, FileMode.Open);
                 BLP blp                     = new BLP();
                 byte[] data                 = blp.GetUncompressed(stream, true);
@@ -315,7 +276,7 @@ public static partial class M2
                 m2Texture.texture2Ddata     = texture2Ddata;
                 stream.Close();
                 stream.Dispose();
-                LoadedBLPs.Add(Filename);
+                LoadedBLPs.Add(extractedPath);
             }
             m2Data.m2Tex.Add(m2Texture);
         }

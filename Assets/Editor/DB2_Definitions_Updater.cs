@@ -13,19 +13,19 @@ public class DB2_Definitions_Updater : MonoBehaviour
     private static List<string> xmlData = new List<string>();
     private static List<string> cSharpFileBuffer = new List<string>();
 
-    [MenuItem("WoWEdit/DB2/Get Latest Definitions")]
-    private static void GetLatestDefinitions()
-    {
-        keyList = new List<string>(Settings.DB2XMLDefinitions.Keys);
-        xmlData = new List<string>();
-
-        for (int xS = 0; xS < Settings.DB2XMLDefinitions.Count; xS++)
-        {
-            WebClient client = new WebClient();
-            xmlData.Add(client.DownloadString(Settings.DB2XMLDefinitions[keyList[xS]]));
-            ParseXML(xS);
-        }
-    }
+    // [MenuItem("WoWEdit/DB2/Get Latest Definitions")]
+    // private static void GetLatestDefinitions()
+    // {
+    //     keyList = new List<string>(Settings.DB2XMLDefinitions.Keys);
+    //     xmlData = new List<string>();
+    // 
+    //     for (int xS = 0; xS < Settings.DB2XMLDefinitions.Count; xS++)
+    //     {
+    //         WebClient client = new WebClient();
+    //         xmlData.Add(client.DownloadString(Settings.DB2XMLDefinitions[keyList[xS]]));
+    //         ParseXML(xS);
+    //     }
+    // }
 
     private static void ParseXML(int number)
     {

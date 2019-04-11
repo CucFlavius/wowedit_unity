@@ -22,6 +22,13 @@ namespace Assets.Data.CASC
             public MultiDictionary<ulong, RootEntry> RootData;
         }
 
+        public struct FileNameEntry
+        {
+            public uint FileNameLength;
+            public char[] FileNameArray;
+            public char[] HashArray;
+        }
+
         public struct RootEntry
         {
             public ContentFlags ContentFlags;

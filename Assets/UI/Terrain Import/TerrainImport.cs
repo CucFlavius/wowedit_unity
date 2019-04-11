@@ -1,5 +1,6 @@
 ﻿using Assets.Data.CASC;
 using Assets.World;
+using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,9 +50,9 @@ public class TerrainImport : MonoBehaviour
     public void Initialize()
     {
         string mapPath = @"world\maps\";
-        if (Settings.Data[2] == "2") // extracted //
+        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted //
             DataText.text = "Data: Extracted";
-        else if (Settings.Data[2] == "0") // game //
+        else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game //
             DataText.text = "Data: " + Casc.WoWVersion;
         GetMapList(mapPath);
         ClearMapList();
@@ -73,8 +74,8 @@ public class TerrainImport : MonoBehaviour
         currentSelectedPlayerSpawn = new Vector2(0, 0); // default
 
         // reset toggles //
-        wmoToggle.isOn = SettingsTerrainImport.LoadWMOs;
-        m2Toggle.isOn = SettingsTerrainImport.LoadM2s;
+        wmoToggle.isOn  = SettingsManager<Configuration>.Config.TerrainImport.LoadWMOs;
+        m2Toggle.isOn   = SettingsManager<Configuration>.Config.TerrainImport.LoadM2s;
     }
 
     ////////////////////
@@ -181,15 +182,15 @@ public class TerrainImport : MonoBehaviour
     // Load WMO's Toggle Interaction //
     public void Toggle_WMO(bool on)
     {
-        SettingsTerrainImport.LoadWMOs = on;
-        UserPreferences.Save();
+        Settings.LoadWMOs = on;
+        Settings.SaveFile();
     }
 
     // Load M2's Toggle Interaction //
     public void Toggle_M2(bool on)
     {
-        SettingsTerrainImport.LoadM2s = on;
-        UserPreferences.Save();
+        Settings.LoadM2s = on;
+        Settings.SaveFile();
     }
 
     #endregion

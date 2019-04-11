@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.WoWEditSettings;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class Help : MonoBehaviour {
 
     public void LaunchHelpFile()
     {
-        string path = Settings.ApplicationPath + @"\Help\WoWEditHelp.chm";
+        string path = SettingsManager<Configuration>.Config.ApplicationPath + @"\Help\WoWEditHelp.chm";
         Application.OpenURL(path);
     }
 }
