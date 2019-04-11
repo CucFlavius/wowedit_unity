@@ -80,7 +80,7 @@ namespace Assets.Data.CASC
 
             CurrentWorkerText = "Loading Root File";
             Casc.LoadWoWRootFile();
-            Debug.Log("Root Data Size : " + Casc.rootFile.Entries.Count);
+            Debug.Log("Root Data Size : " + Casc.rootFile.RootData.Count);
             CurrentWorkerPercent = .55f;
 
             CurrentWorkerText = "Loading the Filelist";

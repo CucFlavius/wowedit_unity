@@ -18,16 +18,16 @@ namespace Assets.Data.CASC
             if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game)
             {
                 var target = "";
-                foreach (var entry in rootFile.Entries)
+                foreach (var entry in rootFile.RootData)
                 {
                     if (entry.Value[0].fileDataId == filedataId)
                     {
                         RootEntry? prioritizedEntry = entry.Value.First(subentry =>
-                            subentry.contentFlags.HasFlag(ContentFlags.LowViolence) == false && (subentry.localeFlags.HasFlag(LocaleFlags.All_WoW) || subentry.localeFlags.HasFlag(LocaleFlags.enUS))
+                            subentry.ContentFlags.HasFlag(ContentFlags.LowViolence) == false && (subentry.LocaleFlags.HasFlag(LocaleFlags.All_WoW) || subentry.LocaleFlags.HasFlag(LocaleFlags.enUS))
                         );
 
                         var selectedEntry = (prioritizedEntry != null) ? prioritizedEntry.Value : entry.Value.First();
-                        target = selectedEntry.md5.ToHexString();
+                        target = selectedEntry.MD5.ToHexString();
                     }
                 }
 
@@ -53,7 +53,7 @@ namespace Assets.Data.CASC
         {
             var lookup = Hasher.ComputeHash(filename, true);
 
-            if (rootFile.Entries.TryGetValue(lookup, out var entry))
+            if (rootFile.RootData.TryGetValue(lookup, out var entry))
                 return entry[0].fileDataId;
 
             return 0;
@@ -61,7 +61,7 @@ namespace Assets.Data.CASC
 
         public static bool FileExists(uint fileDataId)
         {
-            foreach (var entry in rootFile.Entries)
+            foreach (var entry in rootFile.RootData)
             {
                 if (entry.Value[0].fileDataId == fileDataId)
                     return true;

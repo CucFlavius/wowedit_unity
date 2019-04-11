@@ -19,16 +19,16 @@ namespace Assets.Data.CASC
 
         public struct RootFile
         {
-            public MultiDictionary<ulong, RootEntry> Entries;
+            public MultiDictionary<ulong, RootEntry> RootData;
         }
 
         public struct RootEntry
         {
-            public ContentFlags contentFlags;
-            public LocaleFlags localeFlags;
-            public ulong lookup;
+            public ContentFlags ContentFlags;
+            public LocaleFlags LocaleFlags;
+            public ulong Lookup;
             public uint fileDataId;
-            public MD5Hash md5;
+            public MD5Hash MD5;
         }
 
         [Flags]

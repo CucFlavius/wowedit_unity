@@ -5,35 +5,31 @@ using System.IO;
 using System.Linq;
 using System;
 using Assets.WoWEditSettings;
-
-public class BuildInfoDataEntry
-{
-    public string Index;
-    public string Type;
-    public string Data;
-}
-
-public class BLTEChunk
-{
-    public int CompSize;
-    public int DecompSize;
-    public byte[] Hash;
-    public byte[] Data;
-}
-
-public class EncodingEntry
-{
-    public int Size;
-    public List<byte[]> Keys;
-
-	public void EncodingEntryInit()
-    {
-        Keys = new List<byte[]>();
-    }
-}
+using static Assets.Data.CASC.Casc;
 
 namespace Assets.Data.CASC
 {
+    public class BuildInfoDataEntry
+    {
+        public string Index;
+        public string Type;
+        public string Data;
+    }
+
+    public class BLTEChunk
+    {
+        public int CompSize;
+        public int DecompSize;
+        public byte[] Hash;
+        public byte[] Data;
+    }
+
+    public struct EncodingEntry
+    {
+        public MD5Hash Key;
+        public long Size;
+    }
+
     public static partial class Casc
     {
         public static string WoWDataPath;
@@ -45,16 +41,19 @@ namespace Assets.Data.CASC
 
         //data
         public static Dictionary<String, IndexEntry> LocalIndexData = new Dictionary<string, IndexEntry>();
-        public static Dictionary<String, EncodingEntry> EncodingData = new Dictionary<string, EncodingEntry>();
         public static Dictionary<ulong, String> MyRootData = new Dictionary<ulong, string>();
         public static List<string> FileList = new List<string>();
         public static Dictionary<String, ulong> FileListDictionary = new Dictionary<string, ulong>();
         public static Dictionary<string, string[]> FileTree = new Dictionary<string, string[]>();
         public static Dictionary<string, string[]> FolderTree = new Dictionary<string, string[]>();
+
+        public static Dictionary<MD5Hash, EncodingEntry> EncodingData = new Dictionary<MD5Hash, EncodingEntry>();
         public static RootFile rootFile = new RootFile();
+        public static Dictionary<int, ulong> FileDataStore = new Dictionary<int, ulong>();
+        public static Dictionary<ulong, int> FileDataStoreReverse = new Dictionary<ulong, int>();
 
         static readonly Jenkins96 Hasher = new Jenkins96();
-
+        private const int CHUNK_SIZE = 4096;
         public static void ReadWoWFolder()
         {
             // Check if we're in Data folder //
@@ -165,31 +164,6 @@ namespace Assets.Data.CASC
             }
         }
 
-        public static void LoadEncodingFile()
-        {
-            string encodingFilePath = $@"{SettingsManager<Configuration>.Config.CachePath}\Encoding_{WoWVersion}.bin";
-            // if not cached //
-            if (!File.Exists(encodingFilePath))
-            {
-                // convert encoding key string to byte array
-                Debug.Log("Encoding key : " + WoWEncodingKey);
-                byte[] WoWEncodingKeyBytes = ToByteArray(WoWEncodingKey);
-                //// Extract Encoding File from BLTE and Read its Data ////
-                var fs = OpenWoWFile(WoWEncodingKeyBytes);
-                // cache //
-                StreamToFile(fs, encodingFilePath);
-                // read //
-                ReadEncodingFile(fs);
-            }
-            // if cached //
-            else if (File.Exists(encodingFilePath))
-            {
-                FileStream fs1 = File.OpenRead(encodingFilePath);
-                // read //
-                ReadEncodingFile(fs1);
-            }
-        }
-
         public static Stream OpenWoWFile(byte[] key)
         {
             if (key == null)
@@ -219,136 +193,6 @@ namespace Assets.Data.CASC
             }
         }
 
-        public static void ReadEncodingFile(Stream fs)
-        {
-            if (fs != null)
-            {
-                using (BinaryReader br = new BinaryReader(fs))
-                {
-                    br.ReadBytes(2);
-                    //byte b1 = br.ReadByte();
-                    //byte b2 = br.ReadByte();
-                    //byte b3 = br.ReadByte();
-                    //ushort s1 = br.ReadUInt16();
-                    //ushort s2 = br.ReadUInt16();
-                    br.ReadBytes(7);
-                    int numEntries = ReadInt32BE(br);
-                    //int i1 = ReadInt32BE(br);
-                    //byte b4 = br.ReadByte();
-                    br.ReadBytes(5);
-                    int entriesOfs = ReadInt32BE(br);
-                    fs.Position += entriesOfs; // skip strings
-                    fs.Position += numEntries * 32;
-                    for (int i = 0; i < numEntries; ++i)
-                    {
-                        ushort keysCount;
-                        while (true)
-                        {
-                            keysCount = br.ReadUInt16();
-                            if (keysCount == 0)
-                            {
-                                break;
-                            }
-                            int fileSize = ReadInt32BE(br);
-                            byte[] md5 = br.ReadBytes(16);
-                            EncodingEntry entry = new EncodingEntry();
-                            entry.EncodingEntryInit();
-                            entry.Size = fileSize;
-                            List<byte[]> entryKeysList = new List<byte[]>();
-                            for (int ki = 0; ki < keysCount; ++ki)
-                            {
-                                byte[] key = br.ReadBytes(16);
-                                entryKeysList.Add(key);
-                            }
-                            entry.Keys = entryKeysList;
-                            EncodingData.Add(ByteString(md5), entry);
-                        }
-                        while (br.PeekChar() == 0)
-                        {
-                            fs.Position++;
-                        }
-                    }
-                    fs.Close();
-                    fs = null;
-                }
-            }
-            else
-            {
-                Debug.Log("ReadEncodingFile null");
-            }
-        }
-
-        public static void LoadWoWRootFile()
-        {
-            var rootFilePath = $@"{SettingsManager<Configuration>.Config.CachePath}\Root_{WoWVersion}.bin";
-            // not cached //
-            if (!File.Exists(rootFilePath))
-            {
-                if (WoWRootKey == null)
-                {
-                    Debug.Log("Error - WoWRootKey null");
-                    return;
-                }
-                // convert root key string to byte array
-                byte[] WoWRootKeyByte = ToByteArray(WoWRootKey);
-                if (WoWRootKeyByte == null)
-                {
-                    Debug.Log("Error - WoWRootKey null");
-                    return;
-                }
-                //// Extract Root File from BLTE and Read its Data ////
-                var fs = GetEncodingData(ByteString(WoWRootKeyByte));
-                StreamToFile(fs, rootFilePath);
-                ReadRootFile(fs);
-            }
-            // cached //
-            else if (File.Exists(rootFilePath))
-            {
-                FileStream fs1 = File.OpenRead(rootFilePath);
-                ReadRootFile(fs1);
-            }
-        }
-
-        public static void ReadRootFile(Stream fs)
-        {
-            if (fs != null)
-            {
-                rootFile.Entries = new MultiDictionary<ulong, RootEntry>();
-                using (BinaryReader br = new BinaryReader(fs))
-                {
-                    while (fs.Position < fs.Length)
-                    {
-                        var count = br.ReadUInt32();
-                        var contentFlags = (ContentFlags)br.ReadUInt32();
-                        var localeFlags = (LocaleFlags)br.ReadUInt32();
-
-                        var entries = new RootEntry[count];
-                        var fileDataIds = new int[count];
-
-                        var fileDataIndex = 0;
-                        for (var i = 0; i < count; ++i)
-                        {
-                            entries[i].localeFlags = localeFlags;
-                            entries[i].contentFlags = contentFlags;
-
-                            fileDataIds[i] = fileDataIndex + br.ReadInt32();
-                            entries[i].fileDataId = (uint)fileDataIds[i];
-
-                            fileDataIndex = fileDataIds[i] + 1;
-                        }
-
-                        for (var i = 0; i < count; ++i)
-                        {
-                            entries[i].md5      = br.Read<MD5Hash>();
-                            entries[i].lookup   = br.ReadUInt64();
-                            rootFile.Entries.Add(entries[i].lookup, entries[i]);
-                        }
-                    }
-                }
-            }
-            fs.Close();
-        }
-
         public static void LoadFilelist()
         {
             if (!Directory.Exists(SettingsManager<Configuration>.Config.ApplicationPath + @"\ListFiles\"))
@@ -363,7 +207,7 @@ namespace Assets.Data.CASC
                     if (item != null && item != "")
                     {
                         ulong hashUlong = Hasher.ComputeHash(item);
-                        if (rootFile.Entries.ContainsKey(hashUlong))
+                        if (rootFile.RootData.ContainsKey(hashUlong))
                         {
                             FileList.Add(item);
                             FileListDictionary.Add(item, hashUlong);
@@ -558,8 +402,8 @@ namespace Assets.Data.CASC
 
             //data
             LocalIndexData      = new Dictionary<string, IndexEntry>();
-            EncodingData        = new Dictionary<string, EncodingEntry>();
-            rootFile.Entries    = new MultiDictionary<ulong, RootEntry>();
+            EncodingData        = new Dictionary<MD5Hash, EncodingEntry>();
+            rootFile.RootData    = new MultiDictionary<ulong, RootEntry>();
             FileList            = new List<string>();
             FileListDictionary  = new Dictionary<string, ulong>();
             FileTree            = new Dictionary<string, string[]>();

@@ -17,14 +17,39 @@ namespace Assets.Data
     {
         public static BoundingBox ReadBoundingBoxes(this BinaryReader reader)
         {
-            Vector3 rawMin = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale);
-            Vector3 rawMax = new Vector3(reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale, reader.ReadSingle() / Settings.worldScale);
+            Vector3 rawMin = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() /
+                SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
+            Vector3 rawMax = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() /
+                SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
             BoundingBox box = new BoundingBox
             {
                 min = new Vector3(-rawMin.x, rawMin.z, -rawMin.y),
                 max = new Vector3(-rawMax.x, rawMax.z, -rawMax.y)
             };
             return box;
+        }
+
+        public static short ReadInt16BE(this BinaryReader reader)
+        {
+            byte[] val = reader.ReadBytes(2);
+            return (short)(val[1] | val[0] << 8);
+        }
+
+        public static int ReadInt32BE(this BinaryReader reader)
+        {
+            byte[] val = reader.ReadBytes(4);
+            return val[3] | val[2] << 8 | val[1] << 16 | val[0] << 24;
+        }
+
+        public static long ReadInt40BE(this BinaryReader reader)
+        {
+            byte[] val = reader.ReadBytes(5);
+            return val[4] | val[3] << 8 | val[2] << 16 | val[1] << 24 | val[0] << 32;
+        }
+
+        public static void Skip(this BinaryReader reader, int bytes)
+        {
+            reader.BaseStream.Position += bytes;
         }
 
         public static string ReadNullTerminatedString(this BinaryReader reader)
