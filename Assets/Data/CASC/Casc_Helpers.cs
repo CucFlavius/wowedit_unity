@@ -98,9 +98,9 @@ namespace Assets.Data.CASC
         public static void StreamToFile(Stream InputStream, string path)
         {
             InputStream.Seek(0, SeekOrigin.Begin);
-            var br  = new BinaryReader(InputStream);
+            var br = new BinaryReader(InputStream);
             byte[] data;
-            data    = br.ReadBytes((int)InputStream.Length);
+            data = br.ReadBytes((int)InputStream.Length);
             File.WriteAllBytes(path, data);
             InputStream.Seek(0, SeekOrigin.Begin);
         }

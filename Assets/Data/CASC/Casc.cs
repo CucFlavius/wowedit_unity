@@ -48,7 +48,7 @@ namespace Assets.Data.CASC
         public static Dictionary<string, string[]> FileTree = new Dictionary<string, string[]>();
         public static Dictionary<string, string[]> FolderTree = new Dictionary<string, string[]>();
 
-        public static Dictionary<MD5Hash, EncodingEntry> EncodingData = new Dictionary<MD5Hash, EncodingEntry>();
+        public static Dictionary<MD5Hash, EncodingEntry> EncodingData;
         public static RootFile rootFile = new RootFile();
         public static Dictionary<int, ulong> FileDataStore = new Dictionary<int, ulong>();
         public static Dictionary<ulong, int> FileDataStoreReverse = new Dictionary<ulong, int>();
@@ -158,7 +158,7 @@ namespace Assets.Data.CASC
 
         public static void ReadWoWIDXfiles()
         {
-            string[] idxFiles = Directory.GetFiles($@"{WoWDataPath}\data\", "*.idx");
+            string[] idxFiles = Directory.GetFiles($@"{WoWDataPath}\", "*.idx");
             foreach (string idxfile in idxFiles)
             {
                 IndexBlockParser.ParseIndex(idxfile);
@@ -172,12 +172,12 @@ namespace Assets.Data.CASC
             var newString = ByteString(ninebyte);
             if (IndexBlockParser.LocalIndexData.ContainsKey(newString))
             {
-                var FileIndex = IndexBlockParser.LocalIndexData[newString].Index;
-                var FileOffset = IndexBlockParser.LocalIndexData[newString].Offset;
-                var FileSize = IndexBlockParser.LocalIndexData[newString].Size;
+                var FileIndex   = IndexBlockParser.LocalIndexData[newString].Index;
+                var FileOffset  = IndexBlockParser.LocalIndexData[newString].Offset;
+                var FileSize    = IndexBlockParser.LocalIndexData[newString].Size;
                 Debug.Log(FileIndex + " " + FileOffset + " " + FileSize);
                 var stream = GetDatafileStream(FileIndex);
-                if (stream == null) { return null; }
+                if (stream == null) return null;
                 stream.Position = FileOffset;
                 stream.Position += 30;
                 var blte = BLTE.OpenFile(stream, FileSize - 30);

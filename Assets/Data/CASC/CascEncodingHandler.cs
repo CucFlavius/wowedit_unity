@@ -38,20 +38,22 @@ namespace Assets.Data.CASC
 
         public static void ReadEncodingFile(Stream fs)
         {
+            EncodingData = new Dictionary<MD5Hash, EncodingEntry>();
+
             if (fs != null)
             {
                 using (BinaryReader br = new BinaryReader(fs))
                 {
-                    br.Skip(2);
-                    byte Version = br.ReadByte();
-                    byte CKeyLength = br.ReadByte();
-                    byte EKeyLength = br.ReadByte();
-                    int CKeyPageSize = br.ReadInt16BE() * 1024; // KB to bytes
-                    int EKeyPageSize = br.ReadInt16BE() * 1024; // KB to bytes
-                    int CKeyPageCount = br.ReadInt32BE();
-                    int EKeyPageCount = br.ReadInt32BE();
-                    byte unk1 = br.ReadByte(); // must be 0
-                    int ESpecBlockSize = br.ReadInt32BE();
+                    char[] Signature    = br.ReadChars(2);
+                    byte Version        = br.ReadByte();
+                    byte CKeyLength     = br.ReadByte();
+                    byte EKeyLength     = br.ReadByte();
+                    int CKeyPageSize    = br.ReadInt16BE() * 1024;  // KB to bytes
+                    int EKeyPageSize    = br.ReadInt16BE() * 1024;  // KB to bytes
+                    int CKeyPageCount   = br.ReadInt32BE();
+                    int EKeyPageCount   = br.ReadInt32BE();
+                    byte unk1           = br.ReadByte();            // 0 -- sometimes assumed to be part of ESpec_block_size, but actually asserted to be zero by agent
+                    int ESpecBlockSize  = br.ReadInt32BE();
 
                     br.Skip(ESpecBlockSize);
                     br.Skip(CKeyPageCount * 32);
