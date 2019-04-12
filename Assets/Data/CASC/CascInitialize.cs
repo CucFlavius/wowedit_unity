@@ -1,6 +1,7 @@
 ﻿using Assets.WoWEditSettings;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Assets.Data.CASC
@@ -28,7 +29,7 @@ namespace Assets.Data.CASC
 
         public static void Start()
         {
-            CASCThread = new System.Threading.Thread(CASCInitThread);
+            CASCThread = new Thread(CASCInitThread);
             CASCThread.IsBackground = true;
             CASCThread.Priority = System.Threading.ThreadPriority.AboveNormal;
             if (Initialized == false)
@@ -53,7 +54,7 @@ namespace Assets.Data.CASC
 
         private static void CASCInitThread()
         {
-            CurrentDataVersion = SettingsManager<Configuration>.Config.WoWPath;
+            CurrentDataVersion = SettingsManager<Configuration>.Config.SelectedPath;
             Working = true;
 
             EncryptionKeys.ParseKeyFile(Settings.ApplicationPath + @"\ListFiles\keys1.txt"); /// will need more keys maybe ///

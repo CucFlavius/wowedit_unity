@@ -18,10 +18,10 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-        CSVReader.LoadCSV();
         Settings.LoadConfig();
-        //Agent.FindWowInstalls();
         UserPreferences.Load();
+        //CSVReader.LoadCSV();
+        //Agent.FindWowInstalls();
         //Network.Disconnect();
         Settings.ApplicationPath = Application.streamingAssetsPath;
         SettingsInit();
@@ -50,8 +50,8 @@ public class RunAtLaunch : MonoBehaviour {
 
     private void CreateCacheDir()
     {
-        if (!Directory.Exists(SettingsManager<Configuration>.Config.CachePath))
-            Directory.CreateDirectory(SettingsManager<Configuration>.Config.CachePath);
+        if (!Directory.Exists(Settings.CachePath))
+            Directory.CreateDirectory(Settings.CachePath + @"\Cache");
     }
 
     void DialogBoxCache_Ok()
@@ -79,7 +79,7 @@ public class RunAtLaunch : MonoBehaviour {
         
     public void CheckDataSource()
     {
-        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game)
+        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Null)
         {
             // open Data Source Manager //
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
@@ -88,7 +88,7 @@ public class RunAtLaunch : MonoBehaviour {
 
         if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game mode //
         {
-            DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
+            // DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             CascInitialize.Start();
         }
     }

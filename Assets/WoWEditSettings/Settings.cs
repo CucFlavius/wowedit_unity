@@ -1,11 +1,6 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 using Newtonsoft.Json;
-using Assets.WoWEditSettings;
 
 /// General Settings
 /// Static Variables
@@ -17,22 +12,10 @@ namespace Assets.WoWEditSettings
     {
         // Path //
         public const string SettingsPath = "Settings.json";
-        // Data Settings //
-        public static string ApplicationPath, CachePath, WoWPath, ExtractedPath;
-        /*
-         * [0] = Cache Folder Location
-         * [1] = First Run? 0/1
-         * [2] = WoWSource: 0-game/1-online/2-extracted
-         * [3] = WoWGameSelected
-         * [4] = WoWLivePath
-         * [5] = WoWPTRPath
-         * [6] = WoWAlphaPath
-         * [7] = WoWOnlineSelected
-         * [8] = WoWExtractedPath
-         * [9] = WoWCustomGameSource
-         * [10]= SelectedDB2Definitions
-         * 
-         */
+
+        // Settings Variables //
+        public static string ApplicationPath, CachePath, ExtractedPath, SelectedPath;
+        public static List<string> WoWPath;
         public static TerrainImport terrainImport;
         public static WorldSettings WorldSettings;
         public static List<string> DropdownGameList;
@@ -41,10 +24,20 @@ namespace Assets.WoWEditSettings
 
         public static void LoadConfig()
         {
+            terrainImport = new TerrainImport();
+            WorldSettings = new WorldSettings();
+            DropdownGameList = new List<string>();
+            WoWPath = new List<string>();
+
             if (!File.Exists(SettingsPath))
                 DefaultSettings();
 
             SettingsManager<Configuration>.Initialise(SettingsPath);
+            terrainImport = SettingsManager<Configuration>.Config.TerrainImport;
+            WorldSettings = SettingsManager<Configuration>.Config.WorldSettings;
+            CachePath = SettingsManager<Configuration>.Config.CachePath;
+            WoWPath = SettingsManager<Configuration>.Config.WoWPath;
+            SelectedPath = SettingsManager<Configuration>.Config.SelectedPath;
         }
 
         public static void SaveFile()
@@ -53,11 +46,12 @@ namespace Assets.WoWEditSettings
             {
                 CachePath       = CachePath,
                 WoWPath         = WoWPath,
+                SelectedPath    = SelectedPath,
                 ApplicationPath = ApplicationPath,
                 ExtractedPath   = ExtractedPath,
                 WoWSource       = WoWSource,
                 TerrainImport   = terrainImport,
-                WorldSettings   = WorldSettings,
+                WorldSettings   = WorldSettings
             };
 
             File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));
@@ -68,7 +62,7 @@ namespace Assets.WoWEditSettings
             Configuration config = new Configuration()
             {
                 CachePath       = string.Empty,
-                WoWPath         = string.Empty,
+                WoWPath         = new List<string>(),
                 ApplicationPath = string.Empty,
                 ExtractedPath   = string.Empty,
                 WoWSource       = WoWSource.Null,
@@ -91,6 +85,13 @@ namespace Assets.WoWEditSettings
             };
 
             File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));
+        }
+
+        public static string GetWoWPath(List<string> WoWPaths)
+        {
+            foreach (string path in WoWPaths)
+                return path;
+            return string.Empty;
         }
     }
 }

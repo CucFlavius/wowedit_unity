@@ -25,7 +25,8 @@ namespace Assets.WoWEditSettings
     public class Configuration
     {
         public string CachePath { get; set; }
-        public string WoWPath { get; set; }
+        public List<string> WoWPath { get; set; }
+        public string SelectedPath { get; set; }
         public string ApplicationPath { get; set; }
         public string ExtractedPath { get; set; }
         public WoWSource WoWSource { get; set; }

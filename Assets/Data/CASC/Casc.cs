@@ -58,11 +58,11 @@ namespace Assets.Data.CASC
         public static void ReadWoWFolder()
         {
             // Check if we're in Data folder //
-            WoWDataPath = SettingsManager<Configuration>.Config.WoWPath;
+            WoWDataPath = Settings.SelectedPath + @"\Data";
             string[] fileInfo = Directory.GetFiles(WoWDataPath);
             foreach (string file in fileInfo)
             {
-                if (WoWExeVariants.Contains(System.IO.Path.GetFileName(file)))
+                if (WoWExeVariants.Contains(Path.GetFileName(file)))
                 {
                     if (WoWDataPath[WoWDataPath.Length - 1] == @"/"[0] || WoWDataPath[WoWDataPath.Length - 1] == @"\"[0])
                         WoWDataPath = WoWDataPath + @"Data";
@@ -76,7 +76,7 @@ namespace Assets.Data.CASC
 
         public static void FindWoWBuildConfig()
         {
-            string buildInfoFilePath = SettingsManager<Configuration>.Config.WoWPath + @"\.build.info";
+            string buildInfoFilePath = Settings.GetWoWPath(Settings.WoWPath) + @"\.build.info";
             string filePathBuffer = "";
             string wowVersionBuffer = "";
             StreamReader buildInfoFileReader = new StreamReader(buildInfoFilePath);

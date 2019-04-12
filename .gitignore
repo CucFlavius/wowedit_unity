@@ -40,5 +40,5 @@ sysinfo.txt
 
 # Settings.ini
 *.ini
-Settings.ini
+*.json
 *.db2

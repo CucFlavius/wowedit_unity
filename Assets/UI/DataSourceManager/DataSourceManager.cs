@@ -27,8 +27,8 @@ public class DataSourceManager : MonoBehaviour {
         Debug.Log("Init");
         // Update Game List //
         Settings.DropdownGameList.Clear();
-        if (SettingsManager<Configuration>.Config.WoWPath != null)
-            Settings.DropdownGameList.Add(SettingsManager<Configuration>.Config.WoWPath);
+        if (Settings.GetWoWPath(SettingsManager<Configuration>.Config.WoWPath) != null)
+            Settings.DropdownGameList.Add(Settings.GetWoWPath(SettingsManager<Configuration>.Config.WoWPath));
 
         DropdownGame.ClearOptions();
         DropdownGame.AddOptions(Settings.DropdownGameList);
@@ -36,7 +36,7 @@ public class DataSourceManager : MonoBehaviour {
         // select previously used //
         for (int v = 0; v < Settings.DropdownGameList.Count; v++)
         {
-            if (DropdownGame.options[v].text == SettingsManager<Configuration>.Config.WoWPath)
+            if (DropdownGame.options[v].text == Settings.GetWoWPath(SettingsManager<Configuration>.Config.WoWPath))
             {
                 DropdownGame.value = v;
             }
@@ -88,11 +88,15 @@ public class DataSourceManager : MonoBehaviour {
         if (ToggleGame.isOn)
         {
             Settings.WoWSource  = WoWSource.Game;
-            Settings.WoWPath    = DropdownGame.options[DropdownGame.value].text;
-            if (Settings.WoWPath != CascInitialize.CurrentDataVersion)
-            {
+            Settings.SelectedPath = DropdownGame.options[DropdownGame.value].text;
+
+            // Checks if the path is in the WoWPath list.
+            if (!Settings.WoWPath.Contains(DropdownGame.options[DropdownGame.value].text))
+                Settings.WoWPath.Add(DropdownGame.options[DropdownGame.value].text);
+
+            if (Settings.SelectedPath != CascInitialize.CurrentDataVersion)
                 CascInitialize.Initialized = false; // changed data source so reinitialize
-            }
+
             // start Initialize casc thread //
             Settings.SaveFile();
             CascInitialize.Start();
@@ -117,6 +121,7 @@ public class DataSourceManager : MonoBehaviour {
         }
         if (Settings.WoWSource == WoWSource.Extracted)
             terrainImport.GetComponent<TerrainImport>().Initialize();
+
         // Settings.SelectedDefinitions = DropdownDefinitions.options[DropdownDefinitions.value].text;
         // Settings.Data[10] = Settings.SelectedDefinitions;
         // DB2.InitializeDefinitions();
@@ -135,8 +140,6 @@ public class DataSourceManager : MonoBehaviour {
         {
             if (CheckValidWoWPath(tempPath))
             {
-                // correct path //
-                // Settings.Data[9] = tempPath;
                 Settings.DropdownGameList.Add(tempPath);
                 DropdownGame.ClearOptions();
                 DropdownGame.AddOptions(Settings.DropdownGameList);
@@ -166,7 +169,7 @@ public class DataSourceManager : MonoBehaviour {
 
     public bool CheckValidWoWPath (string path)
     {
-        if (File.Exists(path + "Wow-64.exe") || File.Exists(path + "WowB-64.exe") || File.Exists(path + "WowT-64.exe") || File.Exists(path + "Wow.exe"))
+        if (File.Exists($@"{path}\\_retail_\\Wow.exe") || File.Exists($@"{path}\\_beta_\\WowB.exe") || File.Exists($@"{path}\\_ptr_\\WowT.exe") || File.Exists($@"{path}\\_retail_\\Wow.exe"))
             return true;
         else
             return false;

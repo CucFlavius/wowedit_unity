@@ -42,7 +42,7 @@ namespace Assets.World
 
             //InvokeRepeating("FreeMemory", 2.0f, 10f);
 
-            blockSize = 533.33333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;
+            blockSize = 533.33333f / Settings.WorldSettings.WorldScale;
 
             // create matrices //
             ADTMatrix = new int[maxWorldSize, maxWorldSize];
