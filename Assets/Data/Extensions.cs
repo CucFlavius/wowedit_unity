@@ -1,6 +1,7 @@
 ﻿using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.WoWEditSettings;
+using CASCLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static Assets.Data.CASC.Casc;
 
 namespace Assets.Data
 {
