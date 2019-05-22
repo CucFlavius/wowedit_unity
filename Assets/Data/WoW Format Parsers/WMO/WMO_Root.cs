@@ -1,5 +1,4 @@
-﻿using Assets.Data.CASC;
-using Assets.Tools.CSV;
+﻿using CASCLib;
 using Assets.WoWEditSettings;
 using System;
 using System.Collections;
@@ -71,8 +70,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 material.Color              = reader.ReadBGRA();
                 material.texture3_flags     = reader.ReadMaterialFlags();
 
-                material.Texture1           = CSVReader.LookupId(material.TextureId1);
-                material.Texture2           = CSVReader.LookupId(material.TextureId2);
+                // material.Texture1           = ListfileLoader.LookupId(material.TextureId1);
+                // material.Texture2           = ListfileLoader.LookupId(material.TextureId2);
 
                 // skip runtime data //
                 reader.BaseStream.Seek(16, SeekOrigin.Current);
@@ -83,27 +82,27 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
 
                 if (material.Texture1.Length > 1 && !LoadedBLPs.Contains(material.Texture1))
                 {
-                    Texture2Ddata textureData = new Texture2Ddata();
-                    int fdid    = Casc.GetFileDataIdByName(material.Texture1);
-                    string path = Casc.GetFile(fdid);
-                    if (File.Exists(path))
-                    {
-                        Stream stream               = File.Open(path, FileMode.Open);
-                        BLP blp                     = new BLP();
-                        byte[] data                 = blp.GetUncompressed(stream, true);
-                        BLPinfo info                = blp.Info();
-                        textureData.hasMipmaps      = info.hasMipmaps;
-                        textureData.width           = info.width;
-                        textureData.height          = info.height;
-                        textureData.textureFormat   = info.textureFormat;
-                        textureData.TextureData     = data;
-                        stream.Close();
-                        stream.Dispose();
-                        LoadedBLPs.Add(material.Texture1);
+                    // Texture2Ddata textureData = new Texture2Ddata();
+                    // int fdid    = Casc.GetFileDataIdByName(material.Texture1);
+                    // string path = Casc.GetFile(fdid);
+                    // if (File.Exists(path))
+                    // {
+                    //     Stream stream               = File.Open(path, FileMode.Open);
+                    //     BLP blp                     = new BLP();
+                    //     byte[] data                 = blp.GetUncompressed(stream, true);
+                    //     BLPinfo info                = blp.Info();
+                    //     textureData.hasMipmaps      = info.hasMipmaps;
+                    //     textureData.width           = info.width;
+                    //     textureData.height          = info.height;
+                    //     textureData.textureFormat   = info.textureFormat;
+                    //     textureData.TextureData     = data;
+                    //     stream.Close();
+                    //     stream.Dispose();
+                    //     LoadedBLPs.Add(material.Texture1);
 
-                        if (!wmoData.textureData.ContainsKey(material.Texture1))
-                            wmoData.textureData.Add(material.Texture1, textureData);
-                    }
+                    //     if (!wmoData.textureData.ContainsKey(material.Texture1))
+                    //         wmoData.textureData.Add(material.Texture1, textureData);
+                    // }
                 }
             }
         }   // loaded
@@ -324,9 +323,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 doodadInstanceFlags.Unknown3                = flags[3];
                 doodadInstance.flags                        = doodadInstanceFlags;
 
-                doodadInstance.position             = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                    reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale); // (X,Z,-Y)
+                doodadInstance.position             = new Vector3(reader.ReadSingle() / Settings.WorldScale,  // X
+                                                                  reader.ReadSingle() / Settings.WorldScale,  // Z
+                                                                  reader.ReadSingle() / Settings.WorldScale); // Y
                 doodadInstance.orientation          = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()); // (X, Y, Z, W)
                 doodadInstance.scale                = reader.ReadSingle();      // scale factor
                 doodadInstance.staticLightingColor  = reader.ReadBGRA();        // (B,G,R,A) overrides pc_sunColor

@@ -50,14 +50,16 @@ namespace Assets.World.Terrain
         public Dictionary<string, Texture2D> LoadedHTerrainTextures = new Dictionary<string, Texture2D>();
 
         public WMOhandler WMOHandler;
-        public Dictionary<string, GameObject> LoadedWMOs = new Dictionary<string, GameObject>();
-        public Dictionary<int, GameObject> ADTBlockWMOParents = new Dictionary<int, GameObject>();
-        public List<int> LoadedUniqueWMOs = new List<int>();
+        public Dictionary<string, GameObject> LoadedWMOs        = new Dictionary<string, GameObject>();
+        public Dictionary<ulong, GameObject> LoadedWMOHashes    = new Dictionary<ulong, GameObject>();
+        public Dictionary<int, GameObject> ADTBlockWMOParents   = new Dictionary<int, GameObject>();
+        public List<int> LoadedUniqueWMOs                       = new List<int>();
 
         public M2handler M2Handler;
-        public Dictionary<string, GameObject> LoadedM2s = new Dictionary<string, GameObject>();
-        public Dictionary<int, GameObject> ADTBlockM2Parents = new Dictionary<int, GameObject>();
-        public List<int> LoadedUniqueM2s = new List<int>();
+        public Dictionary<string, GameObject> LoadedM2s         = new Dictionary<string, GameObject>();
+        public Dictionary<ulong, GameObject> LoadedM2Hashes     = new Dictionary<ulong, GameObject>();
+        public Dictionary<int, GameObject> ADTBlockM2Parents    = new Dictionary<int, GameObject>();
+        public List<int> LoadedUniqueM2s                        = new List<int>();
 
         private QueueItem currentMapTexture;
         private QueueItem currentHTexture;
@@ -400,7 +402,7 @@ namespace Assets.World.Terrain
                                 ADTTexData.Texture2Ddata tdata = data.terrainTextures[textureName];
                                 Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                                 tex.LoadRawTextureData(tdata.TextureData);
-                                tex.mipMapBias = SettingsManager<Configuration>.Config.WorldSettings.highMipMapBias;
+                                tex.mipMapBias = Settings.highMipMapBias;
                                 tex.Apply();
                                 LoadedTerrainTextures[textureName] = tex;
                             }
@@ -442,7 +444,7 @@ namespace Assets.World.Terrain
                         #region Shadow Maps
                         //////////////////////////////
 
-                        if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
+                        if (SettingsTerrainImport.LoadShadowMaps)
                         {
                             if (data.textureChunksData[i].shadowMapTexture.Length > 0)
                             {
@@ -482,7 +484,7 @@ namespace Assets.World.Terrain
                             mat.SetVector("heightScale", new Vector4(HeightScales[0], HeightScales[1], HeightScales[2], HeightScales[3]));
                             mat.SetVector("heightOffset", new Vector4(heightOffsets[0], heightOffsets[1], heightOffsets[2], heightOffsets[3]));
                         }
-                        if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
+                        if (SettingsTerrainImport.LoadShadowMaps)
                         {
                             mat.SetTexture("_shadowMap", ShadowMap);
                         }
@@ -506,7 +508,7 @@ namespace Assets.World.Terrain
                 try
                 {
                     Ltexture.LoadRawTextureData(mapTextureBlock.data.TextureData);
-                    Ltexture.mipMapBias = SettingsManager<Configuration>.Config.WorldSettings.lowMipMapBias;
+                    Ltexture.mipMapBias = Settings.lowMipMapBias;
                     Ltexture.Apply();
                 }
                 catch
@@ -543,9 +545,9 @@ namespace Assets.World.Terrain
                 if (Gobject.Block != null)
                 {
 
-                    float blockSize = 533.33333f / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;
+                    float blockSize = 533.33333f / Settings.WorldScale;
 
-                    if (SettingsManager<Configuration>.Config.TerrainImport.LoadWMOs)
+                    if (SettingsTerrainImport.LoadWMOs)
                     {
                         GameObject WMO0 = new GameObject();
                         Vector2 terrainPos = new Vector2(data.terrainPos.x, data.terrainPos.y);
@@ -560,15 +562,25 @@ namespace Assets.World.Terrain
                             {
                                 LoadedUniqueWMOs.Add(wmoInfo.uniqueID);
                                 ADTBlockWMOParents.Add(wmoInfo.uniqueID, WMO0);
-                                string wmoPath      = data.WMOPaths[wmoInfo.nameId];
+
                                 Vector3 addPosition = new Vector3(wmoInfo.position.x,
                                                                   wmoInfo.position.y,
                                                                   wmoInfo.position.z);
-                                WMOHandler.AddToQueue(wmoPath, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+
+                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                {
+                                    ulong WMOHash = data.WMOPathHash[wmoInfo.nameId];
+                                    WMOHandler.AddToQueue(WMOHash, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+                                }
+                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                {
+                                    string WMOName = data.WMOPaths[wmoInfo.nameId];
+                                    WMOHandler.AddToQueue(WMOName, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+                                }
                             }
                         }
                     }
-                    if (SettingsManager<Configuration>.Config.TerrainImport.LoadM2s)
+                    if (SettingsTerrainImport.LoadM2s)
                     {
                         GameObject M20          = new GameObject();
                         Vector2 terrainPos      = new Vector2(data.terrainPos.x, data.terrainPos.y);
@@ -583,11 +595,21 @@ namespace Assets.World.Terrain
                             {
                                 LoadedUniqueM2s.Add(m2Info.uniqueID);
                                 ADTBlockM2Parents.Add(m2Info.uniqueID, M20);
-                                string m2Path       = data.M2Paths[m2Info.nameId];
+
                                 Vector3 addPosition = new Vector3(m2Info.position.x,
                                                                   m2Info.position.y,
                                                                   m2Info.position.z);
-                                M2Handler.AddToQueue(m2Path, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+
+                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                {
+                                    ulong m2Hash = data.M2PathHash[m2Info.nameId];
+                                    M2Handler.AddToQueue(m2Hash, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+                                }
+                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                {
+                                    string m2Name = data.M2Paths[m2Info.nameId];
+                                    M2Handler.AddToQueue(m2Name, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+                                }
                             }
                         }
                     }

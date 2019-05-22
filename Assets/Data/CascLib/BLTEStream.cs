@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -296,7 +297,7 @@ namespace CASCLib
                 byte[] blockHash = _md5.ComputeHash(block.Data);
 
                 if (!block.Hash.EqualsTo(blockHash))
-                    throw new BLTEDecoderException(0, "MD5 mismatch");
+                    Debug.Log($"MD5 mismatch ({block.Hash})");
             }
 
             HandleDataBlock(block.Data, _blocksIndex);

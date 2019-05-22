@@ -1,8 +1,8 @@
 ﻿using Assets.Data.WoW_Format_Parsers;
-using Assets.Tools.CSV;
 using Assets.WoWEditSettings;
 using System.Collections.Generic;
 using System.IO;
+using CASCLib;
 using UnityEngine;
 
 namespace Assets.Data.WoW_Format_Parsers.ADT
@@ -30,9 +30,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos X
+                float Z         = reader.ReadSingle() / Settings.WorldScale;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);                                         // This is relative to a corner of the map. Subtract 17066 from the non vertical values and you should start to see 
                                                                                                 // something that makes sense. You'll then likely have to negate one of the non vertical values in whatever coordinate 
                                                                                                 // system you're using to finally move it into place.
@@ -43,10 +43,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 data.scale      = reader.ReadUInt16() / 1024.0f;                                // 1024 is the default size equaling 1.0f.
                 data.flags      = f.ReadMDDFFlags(reader);                                      // values from struct MDDFFlags.
 
-                string filename = CSVReader.LookupId(data.nameId);
+                // string filename = ListfileLoader.LookupId(data.nameId);
 
-                if (!ADTObjData.modelBlockData.M2Paths.ContainsKey(data.nameId))
-                    ADTObjData.modelBlockData.M2Paths.Add(data.nameId, filename);
+                // if (!ADTObjData.modelBlockData.M2Paths.ContainsKey(data.nameId))
+                //     ADTObjData.modelBlockData.M2Paths.Add(data.nameId, filename);
 
                 ADTObjData.modelBlockData.M2Info.Add(data);
             }
@@ -67,9 +67,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / SettingsManager<Configuration>.Config.WorldSettings.WorldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos X
+                float Z         = reader.ReadSingle() / Settings.WorldScale;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);
 
                 // same as in MDDF.
@@ -83,10 +83,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 data.nameSet    = reader.ReadUInt16();                                          // which WMO name set is used. Used for renaming goldshire inn to northshire inn while using the same model.
                 data.Scale      = reader.ReadUInt16() / 1024.0f;                                // Legion+: scale, 1024 means 1 (same as MDDF). Padding in 0.5.3 alpha.
 
-                string filename = CSVReader.LookupId(data.nameId);
+                // string filename = ListfileLoader.LookupId(data.nameId);
 
-                if (!ADTObjData.modelBlockData.WMOPaths.ContainsKey(data.nameId))
-                    ADTObjData.modelBlockData.WMOPaths.Add(data.nameId, filename);
+                // if (!ADTObjData.modelBlockData.WMOPaths.ContainsKey(data.nameId))
+                //     ADTObjData.modelBlockData.WMOPaths.Add(data.nameId, filename);
 
                 ADTObjData.modelBlockData.WMOInfo.Add(data);
             }

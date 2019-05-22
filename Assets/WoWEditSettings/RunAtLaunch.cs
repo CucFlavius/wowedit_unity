@@ -1,16 +1,18 @@
 ﻿using Assets.Data.Agent;
-using Assets.Data.CASC;
 using Assets.Data.WoW_Format_Parsers.ADT;
 using Assets.Tools.CSV;
 using System.IO;
 using UnityEngine;
 using Assets.WoWEditSettings;
+using CASCLib;
+using Assets.UI.CASC;
 
 public class RunAtLaunch : MonoBehaviour {
 
     // Object References
     public GameObject FolderBrowserDialog;
     public GameObject DataSourceManagerPanel;
+    public GameObject CASC;
 
     /// <summary>
     ///  Run this code at launch
@@ -18,12 +20,11 @@ public class RunAtLaunch : MonoBehaviour {
 
     void Start()
     {
-        Settings.LoadConfig();
         UserPreferences.Load();
-        //CSVReader.LoadCSV();
-        //Agent.FindWowInstalls();
-        //Network.Disconnect();
+
         Settings.ApplicationPath = Application.streamingAssetsPath;
+        Settings.Load();
+
         SettingsInit();
         ADT.Initialize();
     }
@@ -31,8 +32,7 @@ public class RunAtLaunch : MonoBehaviour {
     private void SettingsInit()
     {
         // Check if cache dir exists
-        if (SettingsManager<Configuration>.Config.CachePath == string.Empty || 
-            SettingsManager<Configuration>.Config.CachePath == "")
+        if (Settings.GetSection("path").GetString("cachepath") == null || Settings.GetSection("path").GetString("cachepath") == "")
         {
             // open dialog to pick cache dir
             //Debug.Log("pick cache dir");
@@ -50,46 +50,49 @@ public class RunAtLaunch : MonoBehaviour {
 
     private void CreateCacheDir()
     {
-        if (!Directory.Exists(Settings.CachePath))
-            Directory.CreateDirectory(Settings.CachePath + @"\Cache");
+        if (!Directory.Exists(Settings.GetSection("path").GetString("cachepath")))
+            Directory.CreateDirectory(Settings.GetSection("path").GetString("cachepath") + @"\Cache");
     }
 
     void DialogBoxCache_Ok()
     {
-        Settings.CachePath = FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().ChosenPath + @"\Cache";
+        Settings.GetSection("path").SetValueOfKey("cachepath", FolderBrowserDialog.GetComponent<DialogBox_BrowseFolder>().ChosenPath + @"\Cache");
         CreateCacheDir();
-        Settings.SaveFile();
+        Settings.Save();
         CheckWoWInstalls();
     }
 
     void DialogBoxCache_Cancel()
     {
-        Settings.CachePath = "Cache";
+        Settings.GetSection("path").SetValueOfKey("cachepath", "Cache");
         CreateCacheDir();
-        Settings.SaveFile();
+        Settings.Save();
         CheckWoWInstalls();
     }
 
     public void CheckWoWInstalls()
     {
         CreateCacheDir();
-        Settings.SaveFile();
+        Settings.Save();
         CheckDataSource();
     }
         
     public void CheckDataSource()
     {
-        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Null)
+        if (Settings.GetSection("misc").GetString("wowsource") == null || 
+            Settings.GetSection("misc").GetString("wowsource") == "")
         {
             // open Data Source Manager //
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             DataSourceManagerPanel.SetActive(true);
         }
 
-        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game mode //
+        if (Settings.GetSection("misc").GetString("wowsource") == "game") // game mode //
         {
-            // DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
-            CascInitialize.Start();
+            CASCConfig config   = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), 
+                                                                    "wowt");
+            CASC.GetComponent<CascHandler>().cascHandler = CASCHandler.OpenStorage(config);
+            CASC.GetComponent<CascHandler>().cascHandler.Root.SetFlags(LocaleFlags.None, false, false);
         }
     }
 }

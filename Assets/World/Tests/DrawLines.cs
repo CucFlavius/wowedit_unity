@@ -30,7 +30,7 @@ namespace Assets.World.Tests
                     Vector3 mainPointPos = mainPoint.transform.position - new Vector3(0, 2, 0);
                     Vector3 pointPos = point.transform.position;
                     float dist = Vector3.Distance(mainPoint.transform.position, pointPos);
-                    if (dist < (SettingsManager<Configuration>.Config.WorldSettings.terrainMaterialDistance) / SettingsManager<Configuration>.Config.WorldSettings.WorldScale)
+                    if (dist < (Settings.terrainMaterialDistance) / Settings.WorldScale)
                         col = Color.red;
                     else
                         col = Color.yellow;

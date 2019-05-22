@@ -98,13 +98,9 @@ public static partial class M2
             submesh_boneComboIndex[sub]     = reader.ReadUInt16();
             submesh_boneInfluences[sub]     = reader.ReadUInt16();
             submesh_centerBoneIndex[sub]    = reader.ReadUInt16();
-            Vector3 raw_centerPosition      = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
+            Vector3 raw_centerPosition      = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
             submesh_centerPosition[sub]     = new Vector3(-raw_centerPosition.x, raw_centerPosition.z, -raw_centerPosition.y);
-            Vector3 raw_sortCenterPosition  = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, 
-                reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
+            Vector3 raw_sortCenterPosition  = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
             submesh_sortCenterPosition[sub] = new Vector3(-raw_sortCenterPosition.x, raw_sortCenterPosition.z, -raw_sortCenterPosition.y);
             submesh_sortRadius[sub]         = reader.ReadSingle();
         }

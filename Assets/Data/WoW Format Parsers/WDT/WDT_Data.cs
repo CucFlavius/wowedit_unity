@@ -15,5 +15,16 @@ public static partial class WDT  {
     }
 
     public static Dictionary<string, WDTflagsdata> Flags = new Dictionary<string, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
-
+    public static List<WDTEntry> WDTEntries = new List<WDTEntry>();
+    public class WDTEntry
+    {
+        public uint RootADT;
+        public uint OBJ0ADT;
+        public uint OBJ1ADT;
+        public uint TEX0ADT;
+        public uint LODADT;
+        public uint MapTexture;
+        public uint MapTextureN;
+        public uint MiniMapTexture;
+    }
 }

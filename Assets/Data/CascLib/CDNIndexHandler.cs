@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using UnityEngine;
 //using System.Net.Http;
 //using System.Net.Http.Headers;
 
@@ -20,21 +21,17 @@ namespace CASCLib
         private Dictionary<MD5Hash, IndexEntry> CDNIndexData = new Dictionary<MD5Hash, IndexEntry>(comparer);
 
         private CASCConfig config;
-        private BackgroundWorkerEx worker;
 
         public int Count => CDNIndexData.Count;
 
-        private CDNIndexHandler(CASCConfig cascConfig, BackgroundWorkerEx worker)
+        private CDNIndexHandler(CASCConfig cascConfig)
         {
             config = cascConfig;
-            this.worker = worker;
         }
 
-        public static CDNIndexHandler Initialize(CASCConfig config, BackgroundWorkerEx worker)
+        public static CDNIndexHandler Initialize(CASCConfig config)
         {
-            var handler = new CDNIndexHandler(config, worker);
-
-            worker?.ReportProgress(0, "Loading \"CDN indexes\"...");
+            var handler = new CDNIndexHandler(config);
 
             for (int i = 0; i < config.Archives.Count; i++)
             {
@@ -44,8 +41,6 @@ namespace CASCLib
                     handler.DownloadIndexFile(archive, i);
                 else
                     handler.OpenIndexFile(archive, i);
-
-                worker?.ReportProgress((int)((i + 1) / (float)config.Archives.Count * 100));
             }
 
             return handler;
@@ -181,8 +176,6 @@ namespace CASCLib
         {
             var keyStr = key.ToHexString().ToLower();
 
-            worker?.ReportProgress(0, string.Format("Downloading \"{0}\" file...", keyStr));
-
             string file = config.CDNPath + "/data/" + keyStr.Substring(0, 2) + "/" + keyStr.Substring(2, 2) + "/" + keyStr;
 
             Stream stream = CDNCache.Instance.OpenFile(file, false);
@@ -249,7 +242,7 @@ namespace CASCLib
             using (Stream stream = resp.GetResponseStream())
             {
                 MemoryStream ms = new MemoryStream();
-                stream.CopyToStream(ms, resp.ContentLength, worker);
+                stream.CopyToStream(ms, resp.ContentLength);
                 ms.Position = 0;
                 return ms;
             }
@@ -269,7 +262,7 @@ namespace CASCLib
         public IndexEntry GetIndexInfo(MD5Hash key)
         {
             if (!CDNIndexData.TryGetValue(key, out IndexEntry result))
-                Logger.WriteLine("CDNIndexHandler: missing index: {0}", key.ToHexString());
+                Debug.Log($"CDNIndexHandler: missing index: {key.ToHexString()}");
 
             return result;
         }
@@ -280,7 +273,6 @@ namespace CASCLib
             CDNIndexData = null;
 
             config = null;
-            worker = null;
         }
     }
 }

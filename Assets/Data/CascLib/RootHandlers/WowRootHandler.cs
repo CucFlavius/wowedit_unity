@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -84,14 +86,16 @@ namespace CASCLib
         private Dictionary<int, ulong> FileDataStore = new Dictionary<int, ulong>();
         private Dictionary<ulong, int> FileDataStoreReverse = new Dictionary<ulong, int>();
         private HashSet<ulong> UnknownFiles = new HashSet<ulong>();
+        private string ListFile = "listfile.csv";
+        private string listUrl = "https://wow.tools/casc/listfile/download/csv/build?buildConfig=54b3dc4ced90d45071f72a05fecfd063";
+        private WebClient client = new WebClient();
 
         public override int Count => RootData.Count;
         public override int CountTotal => RootData.Sum(re => re.Value.Count);
         public override int CountUnknown => UnknownFiles.Count;
 
-        public WowRootHandler(BinaryReader stream, BackgroundWorkerEx worker)
+        public WowRootHandler(BinaryReader stream)
         {
-            worker?.ReportProgress(0, "Loading \"root\"...");
 
             int magic = stream.ReadInt32();
 
@@ -189,14 +193,9 @@ namespace CASCLib
 
                     if (FileDataStore.TryGetValue(fileDataId, out ulong hash2))
                     {
-                        if (hash2 == hash)
-                        {
-                            // duplicate, skipping
-                        }
-                        else
-                        {
-                            Logger.WriteLine("ERROR: got miltiple hashes for filedataid {0}", fileDataId);
-                        }
+                        if (hash2 != hash)
+                            Debug.Log($"ERROR: got multiple hashes for filedataid {fileDataId}");
+
                         continue;
                     }
 
@@ -210,8 +209,6 @@ namespace CASCLib
                         FileDataStoreReverse.Add(fileDataHash, fileDataId);
                     }
                 }
-
-                worker?.ReportProgress((int)(stream.BaseStream.Position / (float)stream.BaseStream.Length * 100));
             }
         }
 
@@ -267,7 +264,7 @@ namespace CASCLib
 
         public bool FileExist(int fileDataId) => RootData.ContainsKey(fileDataId);
 
-        public ulong GetHashByFileDataId(int fileDataId)
+        public override ulong GetHashByFileDataId(int fileDataId)
         {
             FileDataStore.TryGetValue(fileDataId, out ulong hash);
             return hash;
@@ -281,69 +278,58 @@ namespace CASCLib
 
         public int GetFileDataIdByName(string name) => GetFileDataIdByHash(Hasher.ComputeHash(name));
 
-        public override void LoadListFile(string path, BackgroundWorkerEx worker = null)
+        public override void LoadListFile()
         {
-            //CASCFile.Files.Clear();
+            if (!File.Exists(ListFile))
+                client.DownloadFile(listUrl, ListFile);
 
-            using (var _ = new PerfCounter("WowRootHandler::LoadListFile()"))
+            bool isCsv = Path.GetExtension(ListFile) == ".csv";
+
+            Debug.Log($"WowRootHandler: loading listfile {ListFile}...");
+
+            using (var fs2 = File.Open(ListFile, FileMode.Open))
+            using (var sr = new StreamReader(fs2))
             {
-                worker?.ReportProgress(0, "Loading \"listfile\"...");
+                string line;
 
-                if (!File.Exists(path))
+                char[] splitChar = isCsv ? new char[] { ';' } : new char[] { ' ' };
+
+                while ((line = sr.ReadLine()) != null)
                 {
-                    Logger.WriteLine("WowRootHandler: list file missing!");
-                    return;
-                }
+                    string[] tokens = line.Split(splitChar, 2);
 
-                bool isCsv = Path.GetExtension(path) == ".csv";
-
-                Logger.WriteLine($"WowRootHandler: loading listfile {path}...");
-
-                using (var fs2 = File.Open(path, FileMode.Open))
-                using (var sr = new StreamReader(fs2))
-                {
-                    string line;
-
-                    char[] splitChar = isCsv ? new char[] { ';' } : new char[] { ' ' };
-
-                    while ((line = sr.ReadLine()) != null)
+                    if (tokens.Length != 2)
                     {
-                        string[] tokens = line.Split(splitChar, 2);
-
-                        if (tokens.Length != 2)
-                        {
-                            Logger.WriteLine($"Invalid line in listfile: {line}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(tokens[0], out int fileDataId))
-                        {
-                            Logger.WriteLine($"Invalid line in listfile: {line}");
-                            continue;
-                        }
-
-                        // skip invalid names
-                        if (!RootData.ContainsKey(fileDataId))
-                        {
-                            Logger.WriteLine($"Invalid fileDataId in listfile: {line}");
-                            continue;
-                        }
-
-                        string file = tokens[1];
-
-                        ulong fileHash = FileDataStore[fileDataId];
-
-                        if (!CASCFile.Files.ContainsKey(fileHash))
-                            CASCFile.Files.Add(fileHash, new CASCFile(fileHash, file));
-                        else
-                            Logger.WriteLine($"Duplicate fileDataId {fileDataId} detected: {line}");
-
-                        worker?.ReportProgress((int)(sr.BaseStream.Position / (float)sr.BaseStream.Length * 100));
+                        Debug.Log($"Invalid line in listfile: {line}");
+                        continue;
                     }
-                }
 
-                Logger.WriteLine($"WowRootHandler: loaded {CASCFile.Files.Count} valid file names");
+                    if (!int.TryParse(tokens[0], out int fileDataId))
+                    {
+                        Debug.Log($"Invalid line in listfile: {line}");
+                        continue;
+                    }
+
+                    // skip invalid names
+                    if (!RootData.ContainsKey(fileDataId))
+                    {
+                        Debug.Log($"Invalid fileDataId in listfile: {line}");
+                        continue;
+                    }
+
+                    string file = tokens[1];
+
+                    ulong fileHash = FileDataStore[fileDataId];
+
+                    if (!CASCFile.Files.ContainsKey(fileHash))
+                        CASCFile.Files.Add(fileHash, new CASCFile(fileHash, file));
+                    else
+                        Debug.Log($"Duplicate fileDataId {fileDataId} detected: {line}");
+
+                }
             }
+
+            Debug.Log($"WowRootHandler: loaded {CASCFile.Files.Count} valid file names");
         }
 
         protected override CASCFolder CreateStorageTree()
@@ -394,7 +380,7 @@ namespace CASCLib
                 CountSelect++;
             }
 
-            Logger.WriteLine("WowRootHandler: {0} file names missing for locale {1}", CountUnknown, Locale);
+            Debug.Log($"WowRootHandler: {CountUnknown} file names missing for locale {Locale}");
 
             return root;
         }
@@ -414,28 +400,6 @@ namespace CASCLib
             Root?.Entries.Clear();
             Root = null;
             CASCFile.Files.Clear();
-        }
-
-        public override void Dump()
-        {
-            Logger.WriteLine("WowRootHandler Dump:");
-
-            foreach (var fd in RootData.OrderBy(r => r.Key))
-            {
-                string name;
-
-                if (FileDataStore.TryGetValue(fd.Key, out ulong hash) && CASCFile.Files.TryGetValue(hash, out CASCFile file))
-                    name = file.FullName;
-                else
-                    name = $"FILEDATA_{fd.Key}";
-
-                Logger.WriteLine("{0:D7} {1:X16} {2} {3}", fd.Key, fd.Key, fd.Value.Aggregate(LocaleFlags.None, (a, b) => a | b.LocaleFlags), name);
-
-                foreach (var entry in fd.Value)
-                {
-                    Logger.WriteLine("\t{0} - {1} - {2}", entry.MD5.ToHexString(), entry.LocaleFlags, entry.ContentFlags);
-                }
-            }
         }
     }
 }

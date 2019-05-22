@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -20,7 +21,7 @@ namespace CASCLib
 
         }
 
-        public static LocalIndexHandler Initialize(CASCConfig config, BackgroundWorkerEx worker)
+        public static LocalIndexHandler Initialize(CASCConfig config)
         {
             var handler = new LocalIndexHandler();
 
@@ -29,18 +30,13 @@ namespace CASCLib
             if (idxFiles.Count == 0)
                 throw new FileNotFoundException("idx files missing!");
 
-            worker?.ReportProgress(0, "Loading \"local indexes\"...");
 
             int idxIndex = 0;
 
             foreach (var idx in idxFiles)
-            {
                 handler.ParseIndex(idx);
 
-                worker?.ReportProgress((int)(++idxIndex / (float)idxFiles.Count * 100));
-            }
-
-            Logger.WriteLine("LocalIndexHandler: loaded {0} indexes", handler.Count);
+            Debug.Log($"LocalIndexHandler: loaded {handler.Count} indexes");
 
             return handler;
         }
@@ -134,7 +130,7 @@ namespace CASCLib
             ptr[1] &= 0xFF;
 
             if (!LocalIndexData.TryGetValue(key, out IndexEntry result))
-                Logger.WriteLine("LocalIndexHandler: missing index: {0}", key.ToHexString());
+                Debug.Log($"LocalIndexHandler: missing index: {key.ToHexString()}");
 
             return result;
         }

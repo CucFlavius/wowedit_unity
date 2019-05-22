@@ -21,11 +21,11 @@ namespace CASCLib
 
         public abstract IEnumerable<RootEntry> GetEntries(ulong hash);
 
-        public abstract void LoadListFile(string path, BackgroundWorkerEx worker = null);
+        public abstract ulong GetHashByFileDataId(int FileDataId);
+
+        public abstract void LoadListFile();
 
         public abstract void Clear();
-
-        public abstract void Dump();
 
         protected abstract CASCFolder CreateStorageTree();
 
@@ -95,16 +95,13 @@ namespace CASCLib
 
         public CASCFolder SetFlags(LocaleFlags locale, bool overrideArchive = false, bool createTree = true)
         {
-            using (var _ = new PerfCounter(GetType().Name + "::SetFlags()"))
-            {
-                Locale = locale;
-                OverrideArchive = overrideArchive;
+            Locale = locale;
+            OverrideArchive = overrideArchive;
 
-                if (createTree)
-                    Root = CreateStorageTree();
+            if (createTree)
+                Root = CreateStorageTree();
 
-                return Root;
-            }
+            return Root;
         }
     }
 }

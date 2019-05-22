@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -27,9 +28,8 @@ namespace CASCLib
 
         public int Count => DownloadData.Count;
 
-        public DownloadHandler(BinaryReader stream, BackgroundWorkerEx worker)
+        public DownloadHandler(BinaryReader stream)
         {
-            worker?.ReportProgress(0, "Loading \"download\"...");
 
             stream.Skip(2); // DL
 
@@ -54,8 +54,6 @@ namespace CASCLib
                 var entry = new DownloadEntry() { Index = i };
 
                 DownloadData.Add(key, entry);
-
-                worker?.ReportProgress((int)((i + 1) / (float)numFiles * 100));
             }
 
             for (int i = 0; i < numTags; i++)
@@ -82,7 +80,7 @@ namespace CASCLib
                 if (entry.Value.Tags == null)
                     entry.Value.Tags = Tags.Where(kv => kv.Value.Bits[entry.Value.Index]);
 
-                Logger.WriteLine("{0} {1}", entry.Key.ToHexString(), string.Join(",", entry.Value.Tags.Select(tag => tag.Key)));
+                Debug.Log($"{entry.Key.ToHexString()} {string.Join(", ", entry.Value.Tags.Select(tag => tag.Key))}");
             }
         }
 

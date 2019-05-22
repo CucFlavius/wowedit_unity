@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 using DBDefsLib;
 using System.Text;
-using Assets.Data.CASC;
+using CASCLib;
 
 public partial class DB2
 {
@@ -19,22 +19,21 @@ public partial class DB2
 
         foreach (string fileName in fileNames)
         {
-            if (Casc.FileExists(dbfilesclient + fileName))
-            {
-                availableFiles.Add(fileName, true);
-                Read(fileName);
-            }
-            else
-            {
-                availableFiles.Add(fileName, false);
-                Debug.LogWarning("Warning: " + "Missing " + fileName);
-            }
+            // if (Casc.FileExists(dbfilesclient + fileName))
+            // {
+            //     availableFiles.Add(fileName, true);
+            //     Read(fileName);
+            // }
+            // else
+            // {
+            //     availableFiles.Add(fileName, false);
+            //     Debug.LogWarning("Warning: " + "Missing " + fileName);
+            // }
         }
     }
 
     public void Read(string fileName)
     {
-        string file = "BattlePetAbilityEffect.dbd";
         var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         //var stream = Casc.GetFileStream(fileName);
         using (var bin = new BinaryReader(stream))

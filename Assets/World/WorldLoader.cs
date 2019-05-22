@@ -9,14 +9,13 @@ namespace Assets.World
 {
     public class WorldLoader : MonoBehaviour
     {
-
-
         public GameObject Camera; // get vector3 location
         public GameObject TerrainParent; // with terrain handler script
         public GameObject WMOParent;
         public GameObject M2Parent;
         public GameObject ADTBlockObject;
         public GameObject ADTLowBlockObject;
+        public GameObject World;
         public TerrainImport terrainImport;
         public TerrainHandler terainHandler;
         public int maxWorldSize = 64;
@@ -39,19 +38,15 @@ namespace Assets.World
         // Use this for initialization
         void Start()
         {
-
-            //InvokeRepeating("FreeMemory", 2.0f, 10f);
-
-            blockSize = 533.33333f / Settings.WorldSettings.WorldScale;
-
             // create matrices //
-            ADTMatrix = new int[maxWorldSize, maxWorldSize];
-            //LoadedADTBlocks = new Queue<GameObject>();
-            LoadedADTBlocks = new List<GameObject>();
-            ADTLowMatrix = new GameObject[maxWorldSize, maxWorldSize];
-            existingADTs = new bool[maxWorldSize, maxWorldSize];
-            previousTerrainLod = new int[maxWorldSize, maxWorldSize];
-            currentTerrainLod = new int[maxWorldSize, maxWorldSize];
+            ADTMatrix           = new int[maxWorldSize, maxWorldSize];
+            //LoadedADTBlocks   = new Queue<GameObject>();
+            LoadedADTBlocks     = new List<GameObject>();
+            ADTLowMatrix        = new GameObject[maxWorldSize, maxWorldSize];
+            existingADTs        = new bool[maxWorldSize, maxWorldSize];
+            previousTerrainLod  = new int[maxWorldSize, maxWorldSize];
+            currentTerrainLod   = new int[maxWorldSize, maxWorldSize];
+            blockSize           = 533.33333f / Settings.WorldScale;
             // clear Matrix //
             ClearMatrix();
         }
@@ -59,7 +54,6 @@ namespace Assets.World
         // Update is called once per frame
         void Update()
         {
-
             // check spatial position //
             int CurrentCamX = (int)Mathf.Floor(32 + (-Camera.transform.position.z / blockSize));
             int CurrentCamY = (int)Mathf.Floor(32 + (-Camera.transform.position.x / blockSize));

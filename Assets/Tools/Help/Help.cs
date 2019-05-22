@@ -17,7 +17,7 @@ public class Help : MonoBehaviour {
 
     public void LaunchHelpFile()
     {
-        string path = SettingsManager<Configuration>.Config.ApplicationPath + @"\Help\WoWEditHelp.chm";
+        string path = Settings.ApplicationPath + @"\Help\WoWEditHelp.chm";
         Application.OpenURL(path);
     }
 }

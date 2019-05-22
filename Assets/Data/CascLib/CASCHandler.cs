@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -16,88 +17,71 @@ namespace CASCLib
         public RootHandlerBase Root => RootHandler;
         public InstallHandler Install => InstallHandler;
 
-        private CASCHandler(CASCConfig config, BackgroundWorkerEx worker) : base(config, worker)
+        private CASCHandler(CASCConfig config) : base(config)
         {
-            Logger.WriteLine("CASCHandler: loading encoding data...");
+            Debug.Log("CASCHandler: loading encoding data...");
 
-            using (var _ = new PerfCounter("new EncodingHandler()"))
-            {
-                using (var fs = OpenEncodingFile(this))
-                    EncodingHandler = new EncodingHandler(fs, worker);
-            }
+            using (var fs = OpenEncodingFile(this))
+                EncodingHandler = new EncodingHandler(fs);
 
-            Logger.WriteLine("CASCHandler: loaded {0} encoding data", EncodingHandler.Count);
+            Debug.Log($"CASCHandler: loaded {EncodingHandler.Count} encoding data");
 
             if ((CASCConfig.LoadFlags & LoadFlags.Download) != 0)
             {
-                Logger.WriteLine("CASCHandler: loading download data...");
+                Debug.Log("CASCHandler: loading download data...");
 
-                using (var _ = new PerfCounter("new DownloadHandler()"))
-                {
-                    using (var fs = OpenDownloadFile(EncodingHandler, this))
-                        DownloadHandler = new DownloadHandler(fs, worker);
-                }
+                using (var fs = OpenDownloadFile(EncodingHandler, this))
+                    DownloadHandler = new DownloadHandler(fs);
 
-                Logger.WriteLine("CASCHandler: loaded {0} download data", EncodingHandler.Count);
+                Debug.Log($"CASCHandler: loaded {EncodingHandler.Count} download data");
             }
 
-            Logger.WriteLine("CASCHandler: loading root data...");
+            Debug.Log("CASCHandler: loading root data...");
 
-            using (var _ = new PerfCounter("new RootHandler()"))
+            using (var fs = OpenRootFile(EncodingHandler, this))
             {
-                using (var fs = OpenRootFile(EncodingHandler, this))
+                if (config.GameType == CASCGameType.WoW)
+                    RootHandler = new WowRootHandler(fs);
+                else
                 {
-                    if (config.GameType == CASCGameType.WoW)
-                        RootHandler = new WowRootHandler(fs, worker);
-                    else
-                    {
-                        using (var ufs = new FileStream("unk_root", FileMode.Create))
-                            fs.BaseStream.CopyTo(ufs);
-                        throw new Exception("Unsupported game " + config.BuildUID);
-                    }
+                    using (var ufs = new FileStream("unk_root", FileMode.Create))
+                        fs.BaseStream.CopyTo(ufs);
+                    throw new Exception("Unsupported game " + config.BuildUID);
                 }
             }
 
-            Logger.WriteLine("CASCHandler: loaded {0} root data", RootHandler.Count);
+            Debug.Log($"CASCHandler: loaded {RootHandler.Count} root data");
 
             if ((CASCConfig.LoadFlags & LoadFlags.Install) != 0)
             {
-                Logger.WriteLine("CASCHandler: loading install data...");
+                Debug.Log("CASCHandler: loading install data...");
 
-                using (var _ = new PerfCounter("new InstallHandler()"))
-                {
-                    using (var fs = OpenInstallFile(EncodingHandler, this))
-                        InstallHandler = new InstallHandler(fs, worker);
+                using (var fs = OpenInstallFile(EncodingHandler, this))
+                    InstallHandler = new InstallHandler(fs);
 
-                    //InstallHandler.Print();
-                }
-
-                Logger.WriteLine("CASCHandler: loaded {0} install data", InstallHandler.Count);
+                Debug.Log($"CASCHandler: loaded {InstallHandler.Count} install data");
             }
         }
 
-        public static CASCHandler OpenStorage(CASCConfig config, BackgroundWorkerEx worker = null) => Open(worker, config);
+        public static CASCHandler OpenStorage(CASCConfig config, BackgroundWorkerEx worker = null) => Open(config);
 
-        public static CASCHandler OpenLocalStorage(string basePath, string product = null, BackgroundWorkerEx worker = null)
+        public static CASCHandler OpenLocalStorage(string basePath, string product = null)
         {
             CASCConfig config = CASCConfig.LoadLocalStorageConfig(basePath, product);
 
-            return Open(worker, config);
+            return Open(config);
         }
 
-        public static CASCHandler OpenOnlineStorage(string product, string region = "us", BackgroundWorkerEx worker = null)
+        public static CASCHandler OpenOnlineStorage(string product, string region = "us")
         {
             CASCConfig config = CASCConfig.LoadOnlineStorageConfig(product, region);
 
-            return Open(worker, config);
+            return Open(config);
         }
 
-        private static CASCHandler Open(BackgroundWorkerEx worker, CASCConfig config)
+        private static CASCHandler Open(CASCConfig config)
         {
-            using (var _ = new PerfCounter("new CASCHandler()"))
-            {
-                return new CASCHandler(config, worker);
-            }
+            return new CASCHandler(config);
         }
 
         public override bool FileExists(int fileDataId)
@@ -149,28 +133,6 @@ namespace CASCLib
             if (GetEncodingEntry(hash, out EncodingEntry encInfo))
                 return OpenFile(encInfo.Key);
 
-            if (RootHandler is OwRootHandler owRoot)
-            {
-                if (owRoot.GetEntry(hash, out OWRootEntry entry))
-                {
-                    if ((entry.baseEntry.ContentFlags & ContentFlags.Bundle) != ContentFlags.None)
-                    {
-                        if (Encoding.GetEntry(entry.pkgIndex.bundleContentKey, out encInfo))
-                        {
-                            using (Stream bundle = OpenFile(encInfo.Key))
-                            {
-                                MemoryStream ms = new MemoryStream();
-
-                                bundle.Position = entry.pkgIndexRec.Offset;
-                                bundle.CopyBytes(ms, entry.pkgIndexRec.Size);
-
-                                return ms;
-                            }
-                        }
-                    }
-                }
-            }
-
             if (CASCConfig.ThrowOnFileNotFound)
                 throw new FileNotFoundException(string.Format("{0:X16}", hash));
             return null;
@@ -182,35 +144,6 @@ namespace CASCLib
             {
                 SaveFileTo(encInfo.Key, extractPath, fullName);
                 return;
-            }
-
-            if (RootHandler is OwRootHandler owRoot)
-            {
-                if (owRoot.GetEntry(hash, out OWRootEntry entry))
-                {
-                    if ((entry.baseEntry.ContentFlags & ContentFlags.Bundle) != ContentFlags.None)
-                    {
-                        if (Encoding.GetEntry(entry.pkgIndex.bundleContentKey, out encInfo))
-                        {
-                            using (Stream bundle = OpenFile(encInfo.Key))
-                            {
-                                string fullPath = Path.Combine(extractPath, fullName);
-                                string dir = Path.GetDirectoryName(fullPath);
-
-                                if (!Directory.Exists(dir))
-                                    Directory.CreateDirectory(dir);
-
-                                using (var fileStream = File.Open(fullPath, FileMode.Create))
-                                {
-                                    bundle.Position = entry.pkgIndexRec.Offset;
-                                    bundle.CopyBytes(fileStream, entry.pkgIndexRec.Size);
-                                }
-                            }
-
-                            return;
-                        }
-                    }
-                }
             }
 
             if (CASCConfig.ThrowOnFileNotFound)
@@ -227,9 +160,8 @@ namespace CASCLib
         {
             IndexEntry idxInfo = LocalIndex.GetIndexInfo(key);
             if (idxInfo == null)
-            {
-                Logger.WriteLine("Local index missing: {0}", key.ToHexString());
-            }
+                Debug.Log($"Local index missing: {key.ToHexString()}");
+
             return GetLocalDataStreamInternal(idxInfo, key);
         }
 

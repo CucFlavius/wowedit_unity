@@ -19,7 +19,7 @@ public class SettingsToggles : MonoBehaviour {
 
     public void Toggle_showVertexColor(bool Toggle)
     {
-        SettingsManager<Configuration>.Config.TerrainImport.ShowVertexColors = Toggle;
+        Settings.ShowVertexColors = Toggle;
         Shader.SetGlobalFloat("_terrainVertexColorOn", (Toggle == true) ? 1 : 0);
         UserPreferences.Save();
     }

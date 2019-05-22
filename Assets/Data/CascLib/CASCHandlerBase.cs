@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -16,31 +17,25 @@ namespace CASCLib
 
         public CASCConfig Config { get; protected set; }
 
-        public CASCHandlerBase(CASCConfig config, BackgroundWorkerEx worker)
+        public CASCHandlerBase(CASCConfig config)
         {
             Config = config;
 
-            Logger.WriteLine("CASCHandlerBase: loading CDN indices...");
+            Debug.Log("CASCHandlerBase: loading CDN indices...");
 
-            using (var _ = new PerfCounter("CDNIndexHandler.Initialize()"))
-            {
-                CDNIndex = CDNIndexHandler.Initialize(config, worker);
-            }
+            CDNIndex = CDNIndexHandler.Initialize(config);
 
-            Logger.WriteLine("CASCHandlerBase: loaded {0} CDN indexes", CDNIndex.Count);
+            Debug.Log($"CASCHandlerBase: loaded {CDNIndex.Count} CDN indexes");
 
             if (!config.OnlineMode)
             {
                 CDNCache.Enabled = false;
 
-                Logger.WriteLine("CASCHandlerBase: loading local indices...");
+                Debug.Log("CASCHandlerBase: loading local indices...");
 
-                using (var _ = new PerfCounter("LocalIndexHandler.Initialize()"))
-                {
-                    LocalIndex = LocalIndexHandler.Initialize(config, worker);
-                }
+                LocalIndex = LocalIndexHandler.Initialize(config);
 
-                Logger.WriteLine("CASCHandlerBase: loaded {0} local indexes", LocalIndex.Count);
+                Debug.Log($"CASCHandlerBase: loaded {LocalIndex.Count} local indexes");
             }
         }
 

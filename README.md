@@ -1,14 +1,17 @@
-# wowedit_unity
+# WoWEdit Unity
 An attempt at recreating the World of Warcraft Editor used by Blizzard Entertainment to create the environments for the game.
 My version's purpose is for the aiding of creating machinima / Creating custom environments using WoW's assets / exporting models etc.
-Using Unity 2018.1.0f2
+Using Unity 2019.2.0a9
+
+**Currently supported** : 8.2
 
 ### Current Progress on importing WoW Data:
 
 | WDT | Description | Parsed | Implemented |
 |----|----|----|----|
 | MPHD | ADT flags | ✓ | % |
-| MAIN | ADT existance | ✓ | ✓ |
+| MAIN | ADT existance | ✓ | % |
+| MAID | Map File Data Ids | ✓ | % |
 | MWMO | WMO only map | X | X |
 | MODF | WMO placement info | X | X |
 
@@ -128,8 +131,19 @@ Using Unity 2018.1.0f2
 
 | M2 | Description | Parsed | Implemented |
 |----|----|----|----|
-|  | M2 models | ✓ | % |
+|  | MD20/MD21 | ✓ | % |
+|  | TXID | ✓ | X |
+|  | SKID | X | X |
+|  | PFID | X | X |
+|  | SFID | X | X |
+|  | AFID | X | X |
+|  | BFID | X | X |
+|  | LDV1 | X | X |
+|  | RPID | X | X |
+|  | GPID | X | X |
 
       
 The main source of information when it comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
-Big thanks to the guys who made and update the wiki.
+
+### Big Thanks to:
+* Makers of WoWDev Wiki (https://wowdev.wiki)

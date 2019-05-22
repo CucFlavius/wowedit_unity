@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Microsoft.Win32;
 using Newtonsoft.Json;
+using UnityEngine;
 
 /// General Settings
 /// Static Variables
@@ -10,88 +12,85 @@ namespace Assets.WoWEditSettings
 {
     public static class Settings
     {
-        // Path //
-        public const string SettingsPath = "Settings.json";
+        private static string filePath = "settings.ini";
 
-        // Settings Variables //
-        public static string ApplicationPath, CachePath, ExtractedPath, SelectedPath;
-        public static List<string> WoWPath;
-        public static TerrainImport terrainImport;
-        public static WorldSettings WorldSettings;
-        public static List<string> DropdownGameList;
-        public static WoWSource WoWSource;
-        public static bool LoadWMOs, LoadM2s;
+        // Data Settings //
+        public static string ApplicationPath;
+        public static List<INISection> Sections = new List<INISection>();
 
-        public static void LoadConfig()
+        // World Settings //
+        public static float WorldScale = 10.0f;
+
+        // LoD Settings //
+        public static float terrainMaterialDistance = 300;
+        public static float highMipMapBias = 0.5f; // negative = sharper, 0 = default, positive = blurryer
+        public static float lowMipMapBias = 0f; // negative = sharper, 0 = default, positive = blurryer
+
+        // Terrain Settings //
+        public static bool ShowVertexColors = true;
+
+        public static void Load()
         {
-            terrainImport = new TerrainImport();
-            WorldSettings = new WorldSettings();
-            DropdownGameList = new List<string>();
-            WoWPath = new List<string>();
+            var currentSection = string.Empty;
 
-            if (!File.Exists(SettingsPath))
-                DefaultSettings();
-
-            SettingsManager<Configuration>.Initialise(SettingsPath);
-            terrainImport = SettingsManager<Configuration>.Config.TerrainImport;
-            WorldSettings = SettingsManager<Configuration>.Config.WorldSettings;
-            CachePath = SettingsManager<Configuration>.Config.CachePath;
-            WoWPath = SettingsManager<Configuration>.Config.WoWPath;
-            SelectedPath = SettingsManager<Configuration>.Config.SelectedPath;
-        }
-
-        public static void SaveFile()
-        {
-            Configuration config = new Configuration()
+            using (var sr = File.OpenText("settings.ini"))
             {
-                CachePath       = CachePath,
-                WoWPath         = WoWPath,
-                SelectedPath    = SelectedPath,
-                ApplicationPath = ApplicationPath,
-                ExtractedPath   = ExtractedPath,
-                WoWSource       = WoWSource,
-                TerrainImport   = terrainImport,
-                WorldSettings   = WorldSettings
-            };
+                var line = string.Empty;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (currentSection != string.Empty)
+                    {
+                        if (line.Contains("="))
+                        {
+                            var keyValue = line.Split('=');
+                            var section = Sections.Find(x => x.Name == currentSection);
+                            try { section.AddKeyValue(keyValue[0], keyValue[1]); }
+                            catch
+                            {
+                                section = new INISection() { Name = currentSection };
+                                section.AddKeyValue(keyValue[0], keyValue[1]);
+                                Sections.Add(section);
+                            }
+                        }
+                        else if (line.StartsWith("["))
+                            currentSection = string.Empty;
+                    }
 
-            File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));
+                    if (line.StartsWith("#")) continue;
+                    if (line.StartsWith("["))
+                        currentSection = line;
+                }
+            }
         }
 
-        private static void DefaultSettings()
+        public static void Save()
         {
-            Configuration config = new Configuration()
+            using (var sw = new StreamWriter(filePath))
             {
-                CachePath       = string.Empty,
-                WoWPath         = new List<string>(),
-                ApplicationPath = string.Empty,
-                ExtractedPath   = string.Empty,
-                WoWSource       = WoWSource.Null,
-                TerrainImport   = new TerrainImport()
+                foreach (var section in Sections)
                 {
-                    LoadWMOs    = true,
-                    LoadM2s     = true,
-                    LoadLights  = false,
-                    LoadSoundEmitters   = false,
-                    LoadShadowMaps      = false,
-                    ShowVertexColors    = true,
-                },
-                WorldSettings   = new WorldSettings()
-                {
-                    WorldScale      = 10.0f,
-                    terrainMaterialDistance = 300.0f,
-                    highMipMapBias  = 0.5f,
-                    lowMipMapBias   = 0f
-                },
-            };
+                    sw.WriteLine(section.Name);
 
-            File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));
+                    var keyValues = section.GetKeyValues();
+                    foreach (var pair in keyValues)
+                    {
+                        sw.WriteLine($"{pair.Key}={pair.Value.ToLower()}");
+                    }
+                }
+            }
         }
 
-        public static string GetWoWPath(List<string> WoWPaths)
+        public static INISection GetSection(string name)
         {
-            foreach (string path in WoWPaths)
-                return path;
-            return string.Empty;
+            name = $"[{name}]";
+            return Sections.Find(x => x.Name == name);
+        }
+
+        public enum WoWSource : uint
+        {
+            Game = 0,
+            Online = 1,
+            Extracted = 2
         }
     }
 }

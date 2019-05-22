@@ -17,10 +17,8 @@ namespace Assets.Data
     {
         public static BoundingBox ReadBoundingBoxes(this BinaryReader reader)
         {
-            Vector3 rawMin = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() /
-                SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
-            Vector3 rawMax = new Vector3(reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() /
-                SettingsManager<Configuration>.Config.WorldSettings.WorldScale, reader.ReadSingle() / SettingsManager<Configuration>.Config.WorldSettings.WorldScale);
+            Vector3 rawMin = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            Vector3 rawMax = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
             BoundingBox box = new BoundingBox
             {
                 min = new Vector3(-rawMin.x, rawMin.z, -rawMin.y),
@@ -328,11 +326,6 @@ namespace Assets.Data
                 }
             }
             return (int)(r / 2);
-        }
-
-        public static string ToHexString(this MD5Hash data)
-        {
-            return BitConverter.ToString(data.Hash.Value).Replace("-", string.Empty);
         }
     }
 }

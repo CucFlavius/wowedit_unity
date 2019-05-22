@@ -18,10 +18,8 @@ namespace CASCLib
 
         public int Count => EncodingData.Count;
 
-        public EncodingHandler(BinaryReader stream, BackgroundWorkerEx worker)
+        public EncodingHandler(BinaryReader stream)
         {
-            worker?.ReportProgress(0, "Loading \"encoding\"...");
-
             stream.Skip(2); // EN
             byte Version = stream.ReadByte(); // must be 1
             byte CKeyLength = stream.ReadByte();
@@ -85,8 +83,6 @@ namespace CASCLib
 
                 if (remaining > 0)
                     stream.BaseStream.Position += remaining;
-
-                worker?.ReportProgress((int)((i + 1) / (float)CKeyPageCount * 100));
             }
 
             stream.Skip(EKeyPageCount * 32);

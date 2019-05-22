@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -31,10 +32,8 @@ namespace CASCLib
             get { return InstallData.Count; }
         }
 
-        public InstallHandler(BinaryReader stream, BackgroundWorkerEx worker)
+        public InstallHandler(BinaryReader stream)
         {
-            worker?.ReportProgress(0, "Loading \"install\"...");
-
             stream.ReadBytes(2); // IN
 
             byte b1 = stream.ReadByte();
@@ -74,8 +73,6 @@ namespace CASCLib
                 InstallData.Add(entry);
 
                 entry.Tags = Tags.FindAll(tag => tag.Bits[i]);
-
-                worker?.ReportProgress((int)((i + 1) / (float)numFiles * 100));
             }
         }
 
@@ -115,9 +112,9 @@ namespace CASCLib
             {
                 var data = InstallData[i];
 
-                Logger.WriteLine("{0:D4}: {1} {2}", i, data.MD5.ToHexString(), data.Name);
+                Debug.Log($"{i:D4}: {data.MD5.ToHexString()} {data.Name}");
 
-                Logger.WriteLine("    {0}", string.Join(",", data.Tags.Select(t => t.Name)));
+                Debug.Log($"    {string.Join(",", data.Tags.Select(t => t.Name))}");
             }
         }
 

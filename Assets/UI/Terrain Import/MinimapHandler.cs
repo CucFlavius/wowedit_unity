@@ -5,27 +5,31 @@ using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
 using Assets.World;
-using Assets.Data.CASC;
+using CASCLib;
+using Assets.UI.CASC;
 
 public class MinimapHandler : MonoBehaviour {
-
+    public Jenkins96 Hasher = new Jenkins96();
     public GameObject MinimapBlock;
     public GameObject ScrollPanel;
     public GameObject World;
+    public GameObject CASC;
     public GameObject SelectPlayerBlockIcon;
     public GameObject SelectPlayerBlockIcon_prefab;
     public GameObject LoadingText;
-    private List<string> MinimapFileList = new List<string>();
+    public Vector2 currentSelectedPlayerSpawn;
     public string minimap_Path;
     public string map_name;
+
+    private List<string> MinimapFileList = new List<string>();
     private int firstxCoord;
     private int firstyCoord;
     private int lastyCoord;
     private int lastxCoord;
-    public Vector2 currentSelectedPlayerSpawn;
 
     void Start()
     {
+        CASC = GameObject.Find("[CASC]");
         currentSelectedPlayerSpawn = new Vector2(0, 0); // default
     }
 
@@ -35,15 +39,15 @@ public class MinimapHandler : MonoBehaviour {
         ClearData();
 
         // update global list of minimap files : MinimapFileList //
-        List<string> FileList = Casc.GetFileListFromFolder(minimapPath);
-        foreach (string file in FileList)
-        {
-            var fileName = Path.GetFileNameWithoutExtension(file);
-            if (fileName.StartsWith("m"))
-            {
-                MinimapFileList.Add(fileName);
-            }
-        }
+        // List<string> FileList = Casc.GetFileListFromFolder(minimapPath);
+        // foreach (string file in FileList)
+        // {
+        //     var fileName = Path.GetFileNameWithoutExtension(file);
+        //     if (fileName.StartsWith("m"))
+        //     {
+        //         MinimapFileList.Add(fileName);
+        //     }
+        // }
 
         // resize scroll area to encapsulate all minimap blocks //
         AdjustScrollableArea();
@@ -58,7 +62,6 @@ public class MinimapHandler : MonoBehaviour {
         if (currentSelectedPlayerSpawn == new Vector2(0,0) || currentSelectedPlayerSpawn == null)
         {
             currentSelectedPlayerSpawn = new Vector2(firstyCoord + ((lastyCoord - firstyCoord) / 2), firstxCoord + ((lastxCoord - firstxCoord) / 2));
-            //currentSelectedPlayerSpawn = new Vector2(firstyCoord , firstxCoord);
         }
         Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
         World.GetComponent<WorldLoader>().LoadFullWorld(map_name, currentSelectedPlayerSpawn);
@@ -149,20 +152,24 @@ public class MinimapHandler : MonoBehaviour {
 
     private void AssignMinimapTexture(GameObject MinimapObject, string minimapName)
     {
-        string path = @"world\minimaps\" + minimapName + @"\" + MinimapObject.name + ".blp";
-        int fdid = Casc.GetFileDataIdByName(path);
-        string extractedPath = Casc.GetFile(fdid);
-        Stream stream = File.Open(extractedPath, FileMode.Open);
-        BLP blp = new BLP();
-        byte[] data = blp.GetUncompressed(stream, false);
-        BLPinfo info = blp.Info();
-        Texture2D tex = new Texture2D(info.width, info.height, blp.TxFormat(), false);
-        tex.LoadRawTextureData(data);
-        MinimapObject.GetComponent<RawImage>().texture = tex;
-        MinimapObject.GetComponent<RawImage>().uvRect = new Rect(0, 0, 1, -1);
-        tex.Apply();
-        stream.Close();
-        blp.Close();
+        string path     = $"world/minimaps/{minimapName}/{MinimapObject.name}.blp";
+        ulong hash      = Hasher.ComputeHash(path);
+        BLP blp         = new BLP();
+        if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
+        {
+            using (var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash))
+            {
+                byte[] data     = blp.GetUncompressed(stream, false);
+                BLPinfo info    = blp.Info();
+                Texture2D tex   = new Texture2D(info.width, info.height, blp.TxFormat(), false);
+                tex.LoadRawTextureData(data);
+                MinimapObject.GetComponent<RawImage>().texture = tex;
+                MinimapObject.GetComponent<RawImage>().uvRect = new Rect(0, 0, 1, -1);
+                tex.Apply();
+                stream.Close();
+                blp.Close();
+            }
+        }
     }
 
     public void LoadBlankMinimaps(string mapPath, string mapName)

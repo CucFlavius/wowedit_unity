@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -12,34 +13,28 @@ namespace CASCLib
         private readonly Dictionary<MD5Hash, IndexEntry> CDNIndexData;
         private readonly Dictionary<MD5Hash, IndexEntry> LocalIndexData;
 
-        private CASCHandlerLite(CASCConfig config, LocaleFlags locale, BackgroundWorkerEx worker) : base(config, worker)
+        private CASCHandlerLite(CASCConfig config, LocaleFlags locale) : base(config)
         {
             if (config.GameType != CASCGameType.WoW)
                 throw new Exception("Unsupported game " + config.BuildUID);
 
-            Logger.WriteLine("CASCHandlerLite: loading encoding data...");
+            Debug.Log("CASCHandlerLite: loading encoding data...");
 
             EncodingHandler EncodingHandler;
 
-            using (var _ = new PerfCounter("new EncodingHandler()"))
-            {
-                using (var fs = OpenEncodingFile(this))
-                    EncodingHandler = new EncodingHandler(fs, worker);
-            }
+            using (var fs = OpenEncodingFile(this))
+                EncodingHandler = new EncodingHandler(fs);
 
-            Logger.WriteLine("CASCHandlerLite: loaded {0} encoding data", EncodingHandler.Count);
+            Debug.Log($"CASCHandlerLite: loaded {EncodingHandler.Count} encoding data");
 
-            Logger.WriteLine("CASCHandlerLite: loading root data...");
+            Debug.Log("CASCHandlerLite: loading root data...");
 
             WowRootHandler RootHandler;
 
-            using (var _ = new PerfCounter("new RootHandler()"))
-            {
-                using (var fs = OpenRootFile(EncodingHandler, this))
-                    RootHandler = new WowRootHandler(fs, worker);
-            }
+            using (var fs = OpenRootFile(EncodingHandler, this))
+                RootHandler = new WowRootHandler(fs);
 
-            Logger.WriteLine("CASCHandlerLite: loaded {0} root data", RootHandler.Count);
+            Debug.Log($"CASCHandlerLite: loaded {RootHandler.Count} root data");
 
             RootHandler.SetFlags(locale, false, false);
 
@@ -90,7 +85,7 @@ namespace CASCLib
             EncodingHandler = null;
             GC.Collect();
 
-            Logger.WriteLine("CASCHandlerLite: loaded {0} files", HashToKey.Count);
+            Debug.Log($"CASCHandlerLite: loaded {HashToKey.Count} files");
         }
 
         protected override Stream OpenFileOnline(MD5Hash key)
@@ -125,31 +120,28 @@ namespace CASCLib
             ExtractFileOnlineInternal(idxInfo, key, path, name);
         }
 
-        public static CASCHandlerLite OpenStorage(LocaleFlags locale, CASCConfig config, BackgroundWorkerEx worker = null)
+        public static CASCHandlerLite OpenStorage(LocaleFlags locale, CASCConfig config)
         {
-            return Open(locale, worker, config);
+            return Open(locale, config);
         }
 
-        public static CASCHandlerLite OpenLocalStorage(string basePath, LocaleFlags locale, string product = null, BackgroundWorkerEx worker = null)
+        public static CASCHandlerLite OpenLocalStorage(string basePath, LocaleFlags locale, string product = null)
         {
             CASCConfig config = CASCConfig.LoadLocalStorageConfig(basePath);
 
-            return Open(locale, worker, config);
+            return Open(locale, config);
         }
 
-        public static CASCHandlerLite OpenOnlineStorage(string product, LocaleFlags locale, string region = "us", BackgroundWorkerEx worker = null)
+        public static CASCHandlerLite OpenOnlineStorage(string product, LocaleFlags locale, string region = "us")
         {
             CASCConfig config = CASCConfig.LoadOnlineStorageConfig(product, region);
 
-            return Open(locale, worker, config);
+            return Open(locale, config);
         }
 
-        private static CASCHandlerLite Open(LocaleFlags locale, BackgroundWorkerEx worker, CASCConfig config)
+        private static CASCHandlerLite Open(LocaleFlags locale, CASCConfig config)
         {
-            using (var _ = new PerfCounter("new CASCHandlerLite()"))
-            {
-                return new CASCHandlerLite(config, locale, worker);
-            }
+            return new CASCHandlerLite(config, locale);
         }
 
         public override bool FileExists(int fileDataId) => FileDataIdToHash.ContainsKey(fileDataId);

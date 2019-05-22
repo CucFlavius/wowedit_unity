@@ -9,9 +9,9 @@ public class Minimap : MonoBehaviour
     private GameObject ScrollParent;
     public GameObject MinimapPrefab;
     public GameObject LoadingPanel;
-    public UnityEngine.UI.Image LoadingBar;
+    public Image LoadingBar;
     public GameObject PanelErrorMessage;
-    public UnityEngine.UI.Text ErrorMessageText;
+    public Text ErrorMessageText;
     private int RemainingMinimaps = 0;
     public bool pause = false;
     

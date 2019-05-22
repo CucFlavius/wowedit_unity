@@ -10,76 +10,29 @@ using UnityEngine;
 
 namespace Assets.Tools.CSV
 {
-    public class CSVReader
+    public class ListfileLoader
     {
-        private static WebClient client = new WebClient();
-        private static string csvFile = "listfile.csv";
-        private static string listUrl = "https://bnet.marlam.in/listfile.php?type=csv";
-
-        public static ListFile listFile = new ListFile();
-        public static List<string> TextureFileNames;
+        private string ListFile = "listfile.csv";
+        public Dictionary<string, uint> ListFileEntry;
 
         /// <summary>
-        /// Load Listfile.CSV from the current directory.
+        /// Loads listfile.csv and adds all of the entries into a Dictionary.
         /// </summary>
-        public static void LoadCSV()
+        public void LoadListfile()
         {
-            listFile.TexturePath = new Dictionary<uint, string>();
+            ListFileEntry = new Dictionary<string, uint>();
 
-            if (!File.Exists(csvFile))
+            using (var sr = new StreamReader(ListFile))
             {
-                client.DownloadFile(listUrl, csvFile);
-                using (var streamReader = new StreamReader(csvFile))
+                while (!sr.EndOfStream)
                 {
-                    while (!streamReader.EndOfStream)
-                    {
-                        var line = streamReader.ReadLine();
-                        string[] values = line.Split(';');
+                    var line = sr.ReadLine();
+                    string[] values = line.Split(';');
 
-                        listFile.TexturePath.Add(uint.Parse(values[0]), values[1]);
-                    }
+                    ListFileEntry.Add(values[1], uint.Parse(values[0]));
                 }
+                Debug.Log($"ListFileLoader: Loaded {ListFileEntry.Count} file names...");
             }
-            else
-            {
-                using (var streamReader = new StreamReader(csvFile))
-                {
-                    while (!streamReader.EndOfStream)
-                    {
-                        var line = streamReader.ReadLine();
-                        string[] values = line.Split(';');
-
-                        listFile.TexturePath.Add(uint.Parse(values[0]), values[1]);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Searches the Id referenced in TXID and other FileDataId chunks.
-        /// </summary>
-        /// <param name="id"></param>
-        public static string LookupId(uint id)
-        {
-            if (listFile.TexturePath.TryGetValue(id, out string Filename))
-            {
-                // Debug.Log($"Id: {id} Filename: {Filename}");
-                return Filename;
-            }
-            else
-            {
-                if (id != 0)
-                {
-                    string filename = $"{id}.blp";
-                    Debug.Log($"Unknown Filename - {filename}");
-                }
-                return string.Empty;
-            }
-        }
-
-        public struct ListFile
-        {
-            public Dictionary<uint, string> TexturePath;
         }
     }
 }

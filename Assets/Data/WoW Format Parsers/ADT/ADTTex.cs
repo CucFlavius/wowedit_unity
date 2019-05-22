@@ -1,4 +1,4 @@
-﻿using Assets.Data.CASC;
+﻿using CASCLib;
 using Assets.Data.WoW_Format_Parsers;
 using Assets.Tools.CSV;
 using Assets.WoWEditSettings;
@@ -40,25 +40,25 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 else if (b == 0)
                 {
                     ADTTexData.textureBlockData.terrainTexturePaths.Add(texturePath);
-                    int filedata            = Casc.GetFileDataIdByName(texturePath);
-                    string extractedPath    = Casc.GetFile(filedata);
-                    using (Stream stream    = File.Open(extractedPath, FileMode.Open))
-                    {
-                        BLP blp                         = new BLP();
-                        byte[] data                     = blp.GetUncompressed(stream, true);
-                        BLPinfo info                    = blp.Info();
-                        ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                        texture2Ddata.hasMipmaps        = info.hasMipmaps;
-                        texture2Ddata.width             = info.width;
-                        texture2Ddata.height            = info.height;
-                        if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                            texture2Ddata.hasMipmaps    = false;
-                        texture2Ddata.textureFormat     = info.textureFormat;
-                        texture2Ddata.TextureData       = data;
-                        ADTTexData.textureBlockData.terrainTextures.Add(texturePath, texture2Ddata);
-                        texturePath = null;
-                        numberOfTextures++;
-                    }
+                    // int filedata            = Casc.GetFileDataIdByName(texturePath);
+                    // string extractedPath    = Casc.GetFile(filedata);
+                    // using (Stream stream    = File.Open(extractedPath, FileMode.Open))
+                    // {
+                    //     BLP blp                         = new BLP();
+                    //     byte[] data                     = blp.GetUncompressed(stream, true);
+                    //     BLPinfo info                    = blp.Info();
+                    //     ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
+                    //     texture2Ddata.hasMipmaps        = info.hasMipmaps;
+                    //     texture2Ddata.width             = info.width;
+                    //     texture2Ddata.height            = info.height;
+                    //     if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
+                    //         texture2Ddata.hasMipmaps    = false;
+                    //     texture2Ddata.textureFormat     = info.textureFormat;
+                    //     texture2Ddata.TextureData       = data;
+                    //     ADTTexData.textureBlockData.terrainTextures.Add(texturePath, texture2Ddata);
+                    //     texturePath = null;
+                    //     numberOfTextures++;
+                    // }
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
             byte[] ByteArray = new byte[64 * 64];
             ADTtexstream.Read(ByteArray, 0, 8 * 64);
-            if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
+            if (SettingsTerrainImport.LoadShadowMaps)
             {
                 BitArray bits = new BitArray(ByteArray);
                 for (int b = 4095; b >= 0; b--) // LSB
@@ -190,33 +190,33 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             for (int tex = 0; tex < numTextures; tex++)
             {
                 int DataId     = br.ReadInt32();
-                string fileName = Casc.GetFile(DataId);
-                if (fileName.Length != 0 && DataId != 0)
-                {
-                    // Checking if the filename exists in the TexturePaths.
-                    if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
-                    {
-                        // Opening the BLP.
-                        Stream stream                           = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                        BLP blp                                 = new BLP();
-                        byte[] data                             = blp.GetUncompressed(stream, true);
-                        BLPinfo info                            = blp.Info();
-                    
-                        // Making a texture2Ddata instance for it to load the textures onto the terrain.
-                        ADTTexData.Texture2Ddata texture2Ddata  = new ADTTexData.Texture2Ddata();
-                        texture2Ddata.hasMipmaps                = info.hasMipmaps;
-                        texture2Ddata.width                     = info.width;
-                        texture2Ddata.height                    = info.height;
-                        if (info.width != info.height)          // Unity doesn't support nonsquare mipmaps // sigh
-                            texture2Ddata.hasMipmaps            = false;
-                        texture2Ddata.textureFormat             = info.textureFormat;
-                        texture2Ddata.TextureData               = data;
-                    
-                        // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
-                        ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
-                        ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
-                    }
-                }
+                // string fileName = Casc.GetFile(DataId);
+                // if (fileName.Length != 0 && DataId != 0)
+                // {
+                //     // Checking if the filename exists in the TexturePaths.
+                //     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
+                //     {
+                //         // Opening the BLP.
+                //         Stream stream                           = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                //         BLP blp                                 = new BLP();
+                //         byte[] data                             = blp.GetUncompressed(stream, true);
+                //         BLPinfo info                            = blp.Info();
+                //     
+                //         // Making a texture2Ddata instance for it to load the textures onto the terrain.
+                //         ADTTexData.Texture2Ddata texture2Ddata  = new ADTTexData.Texture2Ddata();
+                //         texture2Ddata.hasMipmaps                = info.hasMipmaps;
+                //         texture2Ddata.width                     = info.width;
+                //         texture2Ddata.height                    = info.height;
+                //         if (info.width != info.height)          // Unity doesn't support nonsquare mipmaps // sigh
+                //             texture2Ddata.hasMipmaps            = false;
+                //         texture2Ddata.textureFormat             = info.textureFormat;
+                //         texture2Ddata.TextureData               = data;
+                //     
+                //         // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
+                //         ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
+                //         ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
+                //     }
+                // }
             }
         }
 
@@ -227,33 +227,33 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             for (int tex = 0; tex < numTextures; tex++)
             {
                 int DataId     = br.ReadInt32();
-                string fileName = Casc.GetFile(DataId);
+                // string fileName = Casc.GetFile(DataId);
 
-                if (fileName.Length != 0 && DataId != 0)
-                {
-                    // Checking if the filename exists in the TexturePaths.
-                    if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
-                    {
-                        Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                        BLP blp = new BLP();
-                        byte[] data = blp.GetUncompressed(stream, true);
-                        BLPinfo info = blp.Info();
+                // if (fileName.Length != 0 && DataId != 0)
+                // {
+                //     // Checking if the filename exists in the TexturePaths.
+                //     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
+                //     {
+                //         Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                //         BLP blp = new BLP();
+                //         byte[] data = blp.GetUncompressed(stream, true);
+                //         BLPinfo info = blp.Info();
 
-                        // Making a texture2Ddata instance for it to load the textures onto the terrain.
-                        ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                        texture2Ddata.hasMipmaps = info.hasMipmaps;
-                        texture2Ddata.width = info.width;
-                        texture2Ddata.height = info.height;
-                        if (info.width != info.height)  // Unity doesn't support nonsquare mipmaps // sigh
-                            texture2Ddata.hasMipmaps = false;
-                        texture2Ddata.textureFormat = info.textureFormat;
-                        texture2Ddata.TextureData = data;
+                //         // Making a texture2Ddata instance for it to load the textures onto the terrain.
+                //         ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
+                //         texture2Ddata.hasMipmaps = info.hasMipmaps;
+                //         texture2Ddata.width = info.width;
+                //         texture2Ddata.height = info.height;
+                //         if (info.width != info.height)  // Unity doesn't support nonsquare mipmaps // sigh
+                //             texture2Ddata.hasMipmaps = false;
+                //         texture2Ddata.textureFormat = info.textureFormat;
+                //         texture2Ddata.TextureData = data;
 
-                        // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
-                        ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
-                        ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
-                    }
-                }
+                //         // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
+                //         ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
+                //         ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
+                //     }
+                // }
             }
             ADTTexData.textureBlockData.MTXP = true;
         }

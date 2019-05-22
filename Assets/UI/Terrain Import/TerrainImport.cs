@@ -1,4 +1,4 @@
-﻿using Assets.Data.CASC;
+﻿using CASCLib;
 using Assets.World;
 using Assets.WoWEditSettings;
 using System;
@@ -50,10 +50,9 @@ public class TerrainImport : MonoBehaviour
     public void Initialize()
     {
         string mapPath = @"world\maps\";
-        if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Extracted) // extracted //
+        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
             DataText.text = "Data: Extracted";
-        else if (SettingsManager<Configuration>.Config.WoWSource == WoWSource.Game) // game //
-            DataText.text = "Data: " + Casc.WoWVersion;
+
         GetMapList(mapPath);
         ClearMapList();
         PopulateMapList();
@@ -74,8 +73,8 @@ public class TerrainImport : MonoBehaviour
         currentSelectedPlayerSpawn = new Vector2(0, 0); // default
 
         // reset toggles //
-        wmoToggle.isOn  = SettingsManager<Configuration>.Config.TerrainImport.LoadWMOs;
-        m2Toggle.isOn   = SettingsManager<Configuration>.Config.TerrainImport.LoadM2s;
+        wmoToggle.isOn  = SettingsTerrainImport.LoadWMOs;
+        m2Toggle.isOn   = SettingsTerrainImport.LoadM2s;
     }
 
     ////////////////////
@@ -84,10 +83,10 @@ public class TerrainImport : MonoBehaviour
     // Get a List of Maps from the ADT Maps Directory //
     public void GetMapList (string mapPath)
     {
-        string[] list = Casc.GetFolderListFromFolder(mapPath);
-
-        ExtractedMapList = new List<string>();
-        ExtractedMapList.AddRange(list);
+        // string[] list = Casc.GetFolderListFromFolder(mapPath);
+        // 
+        // ExtractedMapList = new List<string>();
+        // ExtractedMapList.AddRange(list);
     }
 
     // Create UI Buttons in the Map List Panel //
@@ -182,15 +181,15 @@ public class TerrainImport : MonoBehaviour
     // Load WMO's Toggle Interaction //
     public void Toggle_WMO(bool on)
     {
-        Settings.LoadWMOs = on;
-        Settings.SaveFile();
+        SettingsTerrainImport.LoadWMOs = on;
+        Settings.Save();
     }
 
     // Load M2's Toggle Interaction //
     public void Toggle_M2(bool on)
     {
-        Settings.LoadM2s = on;
-        Settings.SaveFile();
+        SettingsTerrainImport.LoadM2s = on;
+        Settings.Save();
     }
 
     #endregion

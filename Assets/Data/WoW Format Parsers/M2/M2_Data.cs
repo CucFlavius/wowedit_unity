@@ -18,6 +18,7 @@ namespace Assets.Data.WoW_Format_Parsers.M2
         public class M2Data
         {
             // Object //
+            public ulong dataHash;
             public string dataPath;
             public int uniqueID;
             public Vector3 position;

@@ -136,4 +136,12 @@ namespace Assets.Data.WoW_Format_Parsers
         MPBI = 0x4d504249,
         MPBG = 0x4d504247
     }
+
+    public enum WDTChunkId
+    {
+        MVER = 0x4d564552,
+        MPHD = 0x4d504844,
+        MAIN = 0x4d41494e,
+        MAID = 0x4d414944,
+    }
 }

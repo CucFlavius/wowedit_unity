@@ -1,11 +1,11 @@
-﻿
-using Assets.Data.CASC;
+﻿using CASCLib;
 using Assets.WoWEditSettings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Assets.UI.CASC;
 
 namespace Assets.Data.WoW_Format_Parsers.ADT
 {
@@ -27,12 +27,15 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         public static Vector2[] Chunk_UVs;
         public static List<Vector2[]> Chunk_UVs2;
         public static Vector2[] Chunk_UVsLod1;
+        public static GameObject CASC;
+        public static Jenkins96 Hasher = new Jenkins96();
 
         public static bool working = false;
 
         // Run at Startup to Precalculate Some of the Chunk Mesh Data //
         public static void Initialize()
         {
+            CASC = GameObject.Find("[CASC]");
             ////////////////////////////////////////
             #region Verts LoD0 (needs fix, unused)
 
@@ -44,9 +47,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        Chunk_Vertices[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.WorldSettings.WorldScale,
+                        Chunk_Vertices[currentVertex] = new Vector3((float)((-i * 0.5) * 0.208333125 * 20) / Settings.WorldScale,
                                                                             0,
-                                                                            (float)(-j * 0.208333125 * 20) / Settings.WorldSettings.WorldScale);
+                                                                            (float)(-j * 0.208333125 * 20) / Settings.WorldScale);
                         currentVertex++;
                     }
                 }
@@ -54,9 +57,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 {
                     for (int j1 = 0; j1 < 8; j1++)
                     {
-                        Chunk_Vertices[currentVertex] = new Vector3((float)(-i * 0.5 * 0.208333125 * 20) / Settings.WorldSettings.WorldScale,
+                        Chunk_Vertices[currentVertex] = new Vector3((float)(-i * 0.5 * 0.208333125 * 20) / Settings.WorldScale,
                                                                             0,
-                                                                            (float)((-j1 - 0.5) * 0.208333125 * 20) / Settings.WorldSettings.WorldScale);
+                                                                            (float)((-j1 - 0.5) * 0.208333125 * 20) / Settings.WorldScale);
                         currentVertex++;
                     }
                 }
@@ -170,8 +173,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             Chunk_UVs = new Vector2[145];
             for (int u = 144; u >= 0; u--)
             {
-                Chunk_UVs[u] = new Vector2(-(Chunk_Vertices[u].z / (33.3333f / Settings.WorldSettings.WorldScale)),
-                                           -(Chunk_Vertices[u].x / (33.3333f / Settings.WorldSettings.WorldScale)));
+                Chunk_UVs[u] = new Vector2(-(Chunk_Vertices[u].z / (33.3333f / Settings.WorldScale)),
+                                           -(Chunk_Vertices[u].x / (33.3333f / Settings.WorldScale)));
             }
 
             #endregion
@@ -188,8 +191,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     Vector2[] UVs = new Vector2[145];
                     for (int u = 0; u < 145; u++)
                     {
-                        UVs[u] = new Vector2(1 - ((Chunk_Vertices[u].z / (33.3333f / Settings.WorldSettings.WorldScale) * 0.0625f) + (r * 0.0625f)),
-                                             1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.WorldSettings.WorldScale) * 0.0625f) + (c * 0.0625f)));
+                        UVs[u] = new Vector2(1 - ((Chunk_Vertices[u].z / (33.3333f / Settings.WorldScale) * 0.0625f) + (r * 0.0625f)),
+                                             1 - ((Chunk_Vertices[u].x / (33.3333f / Settings.WorldScale) * 0.0625f) + (c * 0.0625f)));
                     }
                     Chunk_UVs2.Add(UVs);
                 }
@@ -237,24 +240,24 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         // Run Terrain Texture Parser //
         public static void LoadTerrainTextures(string Path, string MapName, Vector2 Coords)
         {
-            ThreadWorkingTextures   = true;
-            long millisecondsStart  = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            ThreadWorkingTextures = true;
+            long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            ADTTexData.textureBlockData                     = new ADTTexData.TextureBlockData();
-            ADTTexData.textureBlockData.textureChunksData   = new List<ADTTexData.TextureChunkData>();
+            ADTTexData.textureBlockData = new ADTTexData.TextureBlockData();
+            ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
 
             ParseADT_Tex(Path, MapName, Coords);
-            if (SettingsManager<Configuration>.Config.TerrainImport.LoadShadowMaps)
+            if (SettingsTerrainImport.LoadShadowMaps)
                 ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
             ADT_ProcessData.Load_hTextures();
 
             if (working)
                 ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
 
-            long millisecondsStop       = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long millisecondsStop = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             finishedTimeTerrainTextures = (millisecondsStop - millisecondsStart) / 1000f;
 
-            ThreadWorkingTextures       = false;
+            ThreadWorkingTextures = false;
         }
 
         // Run Terrain Models Parser //
@@ -265,8 +268,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
             ADTObjData.modelBlockData = new ADTObjData.ModelBlockData();
             ADTObjData.modelBlockData.terrainPos = Coords;
-            if (Settings.terrainImport.LoadWMOs ||
-                Settings.terrainImport.LoadM2s)
+            if (SettingsTerrainImport.LoadWMOs ||
+                SettingsTerrainImport.LoadM2s)
                 ParseADT_Obj(Path, MapName, Coords);
 
             if (working)
@@ -283,50 +286,47 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTRoot r = new ADTRoot();
             string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
-            int filedata    = Casc.GetFileDataIdByName(ADTmainPath);
-            string path     = Casc.GetFile(filedata);
-            byte[] ADTmainData = File.ReadAllBytes(path);
+            ulong hash = Hasher.ComputeHash(ADTmainPath);
 
-            int MCNKchunkNumber = 0;
-            // long streamPosition = 0;
-
-            using (MemoryStream ms = new MemoryStream(ADTmainData))
-            using (BinaryReader s = new BinaryReader(ms))
+            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
             {
-                while (ms.Position < ms.Length)
-                {
-                    //ms.Position = streamPosition;
-                    ADTChunkId chunkID = (ADTChunkId)s.ReadInt32();
-                    int chunkSize = s.ReadInt32();
-                    //streamPosition = ms.Position + chunkSize;
+                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
+                int MCNKchunkNumber = 0;
 
-                    switch (chunkID)
+                using (BinaryReader s = new BinaryReader(stream))
+                {
+                    while (stream.Position < stream.Length)
                     {
-                        case ADTChunkId.MVER:
-                            r.ReadMVER(s); // ADT file version
-                            break;
-                        case ADTChunkId.MHDR:
-                            r.ReadMHDR(s); // Offsets for specific chunks 0000 if chunks don't exist.
-                            break;
-                        case ADTChunkId.MH2O:
-                            r.ReadMH2O(s, chunkSize); // Water Data
-                            break;
-                        case ADTChunkId.MCNK:
-                            {
-                                r.ReadMCNK(s, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
-                                MCNKchunkNumber++;
-                            }
-                            break;
-                        case ADTChunkId.MFBO:
-                            r.ReadMFBO(s); // FlightBounds plane & Death plane
-                            break;
-                        default:
-                            ADTRoot.SkipUnknownChunk(s, chunkID, chunkSize);
-                            break;
+                        ADTChunkId chunkID = (ADTChunkId)s.ReadInt32();
+                        int chunkSize = s.ReadInt32();
+
+                        switch (chunkID)
+                        {
+                            case ADTChunkId.MVER:
+                                r.ReadMVER(s); // ADT file version
+                                break;
+                            case ADTChunkId.MHDR:
+                                r.ReadMHDR(s); // Offsets for specific chunks 0000 if chunks don't exist.
+                                break;
+                            case ADTChunkId.MH2O:
+                                r.ReadMH2O(s, chunkSize); // Water Data
+                                break;
+                            case ADTChunkId.MCNK:
+                                {
+                                    r.ReadMCNK(s, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
+                                    MCNKchunkNumber++;
+                                }
+                                break;
+                            case ADTChunkId.MFBO:
+                                r.ReadMFBO(s); // FlightBounds plane & Death plane
+                                break;
+                            default:
+                                SkipUnknownChunk(s, chunkID, chunkSize);
+                                break;
+                        }
                     }
                 }
             }
-            ADTmainData = null;
         }
 
         // Terrain Texture Parser //
@@ -334,57 +334,53 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTTex t = new ADTTex();
             string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
-            int filedata = Casc.GetFileDataIdByName(ADTtexPath);
-            string path = Casc.GetFile(filedata);
+            ulong hash = Hasher.ComputeHash(ADTtexPath);
 
-            byte[] ADTtexData = File.ReadAllBytes(path);
-
-            int MCNKchunkNumber = 0;
-            long streamPosition = 0;
-
-            using (MemoryStream ms = new MemoryStream(ADTtexData))
-            using (BinaryReader reader = new BinaryReader(ms))
+            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
             {
-                while (streamPosition < ms.Length)
-                {
-                    ms.Position = streamPosition;
-                    ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
-                    int chunkSize = reader.ReadInt32();
-                    streamPosition = ms.Position + chunkSize;
+                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
+                int MCNKchunkNumber = 0;
 
-                    switch (chunkID)
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    while (stream.Position < stream.Length)
                     {
-                        case ADTChunkId.MVER:
-                            t.ReadMVER(reader); // ADT file version
-                            break;
-                        case ADTChunkId.MAMP:
-                            t.ReadMAMP(reader); // Single value - texture size = 64
-                            break;
-                        case ADTChunkId.MTEX:
-                            t.ReadMTEX(reader, chunkSize); // Texture Paths
-                            break;
-                        case ADTChunkId.MCNK:
-                            {
-                                t.ReadMCNKtex(reader, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
-                                MCNKchunkNumber++;
-                            }
-                            break;
-                        case ADTChunkId.MTXP:
-                            t.ReadMTXP(reader, chunkSize);
-                            break;
-                        case ADTChunkId.MHID:
-                            t.ReadMHID(reader, chunkSize);
-                            break;
-                        case ADTChunkId.MDID:
-                            t.ReadMDID(reader, chunkSize);
-                            break;
-                        default:
-                            ADTTex.SkipUnknownChunk(reader, chunkID, chunkSize);
-                            break;
+                        ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
+                        int chunkSize = reader.ReadInt32();
+
+                        switch (chunkID)
+                        {
+                            case ADTChunkId.MVER:
+                                t.ReadMVER(reader); // ADT file version
+                                break;
+                            case ADTChunkId.MAMP:
+                                t.ReadMAMP(reader); // Single value - texture size = 64
+                                break;
+                            case ADTChunkId.MTEX:
+                                t.ReadMTEX(reader, chunkSize); // Texture Paths
+                                break;
+                            case ADTChunkId.MCNK:
+                                {
+                                    t.ReadMCNKtex(reader, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
+                                    MCNKchunkNumber++;
+                                }
+                                break;
+                            case ADTChunkId.MTXP:
+                                t.ReadMTXP(reader, chunkSize);
+                                break;
+                            case ADTChunkId.MHID:
+                                t.ReadMHID(reader, chunkSize);
+                                break;
+                            case ADTChunkId.MDID:
+                                t.ReadMDID(reader, chunkSize);
+                                break;
+                            default:
+                                SkipUnknownChunk(reader, chunkID, chunkSize);
+                                break;
+                        }
                     }
                 }
             }
-            ADTtexData = null;
         }
 
         // Terrain Models Parser //
@@ -392,43 +388,41 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         {
             ADTObj o = new ADTObj();
             string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
-            int filedata = Casc.GetFileDataIdByName(ADTobjPath);
-            string path = Casc.GetFile(filedata);
+            ulong hash = Hasher.ComputeHash(ADTobjPath);
 
-            byte[] ADTobjData = File.ReadAllBytes(path);
-
-            int MCNKchunkNumber = 0;
-            long streamPosition = 0;
-            using (MemoryStream ms = new MemoryStream(ADTobjData))
-            using (BinaryReader reader = new BinaryReader(ms))
+            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
             {
-                while (streamPosition < ms.Length)
-                {
-                    ms.Position = streamPosition;
-                    ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
-                    int chunkSize = reader.ReadInt32();
-                    streamPosition = ms.Position + chunkSize;
+                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
+                int MCNKchunkNumber = 0;
 
-                    switch (chunkID)
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    while (stream.Position < stream.Length)
                     {
-                        case ADTChunkId.MVER:
-                            o.ReadMVER(reader); // ADT file version
-                            break;
-                        case ADTChunkId.MDDF:
-                            o.ReadMDDF(reader, chunkSize); // Placement information for doodads (M2 models).
-                            break;
-                        case ADTChunkId.MODF:
-                            o.ReadMODF(reader, chunkSize); // Placement information for WMOs.
-                            break;
-                        case ADTChunkId.MCNK:
-                            {
-                                o.ReadMCNKObj(reader, MapName, MCNKchunkNumber, chunkSize); // 256chunks
-                                MCNKchunkNumber++;
-                            }
-                            break;
-                        default:
-                            SkipUnknownChunk(reader, chunkID, chunkSize);
-                            break;
+                        ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
+                        int chunkSize = reader.ReadInt32();
+
+                        switch (chunkID)
+                        {
+                            case ADTChunkId.MVER:
+                                o.ReadMVER(reader); // ADT file version
+                                break;
+                            case ADTChunkId.MDDF:
+                                o.ReadMDDF(reader, chunkSize); // Placement information for doodads (M2 models).
+                                break;
+                            case ADTChunkId.MODF:
+                                o.ReadMODF(reader, chunkSize); // Placement information for WMOs.
+                                break;
+                            case ADTChunkId.MCNK:
+                                {
+                                    o.ReadMCNKObj(reader, MapName, MCNKchunkNumber, chunkSize); // 256chunks
+                                    MCNKchunkNumber++;
+                                }
+                                break;
+                            default:
+                                SkipUnknownChunk(reader, chunkID, chunkSize);
+                                break;
+                        }
                     }
                 }
             }
@@ -440,6 +434,5 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             Debug.Log("Missing chunk ID : " + chunkID);
             reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
         }
-
     }
 }

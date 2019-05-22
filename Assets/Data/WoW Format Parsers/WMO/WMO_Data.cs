@@ -14,6 +14,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public struct WMOStruct
         {
             // object //
+            public ulong dataHash;
             public string dataPath;
             public int uniqueID;
             public Vector3 position;

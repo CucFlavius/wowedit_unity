@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -75,13 +76,13 @@ namespace CASCLib
 
             string file = Path.Combine(CachePath, cdnPath);
 
-            Logger.WriteLine("CDNCache: {0} opening...", file);
+            Debug.Log("CDNCache: {file} opening...");
 
             Stream stream = GetDataStream(file, cdnPath);
 
             if (stream != null)
             {
-                Logger.WriteLine("CDNCache: {0} has been opened", file);
+                Debug.Log("CDNCache: {file} has been opened");
                 numFilesOpened++;
             }
 
@@ -125,7 +126,7 @@ namespace CASCLib
                 }
                 else
                 {
-                    Logger.WriteLine($"CDNCache: {file} not validated, sizeOk {sizeOk}, md5Ok {md5Ok}, size {stream.Length}, expected size {meta.Size}");
+                    Debug.Log($"CDNCache: {file} not validated, sizeOk {sizeOk}, md5Ok {md5Ok}, size {stream.Length}, expected size {meta.Size}");
 
                     stream.Close();
                     _metaData.Remove(fileName);
@@ -183,13 +184,13 @@ namespace CASCLib
         {
             if (numRetries >= 5)
             {
-                Logger.WriteLine($"CDNCache: failed to download {cdnPath} after 5 tries");
+                Debug.Log($"CDNCache: failed to download {cdnPath} after 5 tries");
                 return false;
             }
 
             string url = "http://" + _config.CDNHost + "/" + cdnPath;
 
-            Logger.WriteLine("CDNCache: downloading file {0} to {1}", url, path);
+            Debug.Log($"CDNCache: downloading file {url} to {path}");
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
@@ -238,7 +239,7 @@ namespace CASCLib
                 }
                 else
                 {
-                    Logger.WriteLine($"CDNCache: error while downloading {url}: Status {exc.Status}, StatusCode {resp?.StatusCode}");
+                    Debug.Log($"CDNCache: error while downloading {url}: Status {exc.Status}, StatusCode {resp?.StatusCode}");
                     return false;
                 }
             }
@@ -247,7 +248,7 @@ namespace CASCLib
             timeSpentDownloading += timeSpent;
             numFilesDownloaded++;
 
-            Logger.WriteLine("CDNCache: {0} has been downloaded, spent {1}", url, timeSpent);
+            Debug.Log($"CDNCache: {url} has been downloaded, spent {timeSpent}");
 
             return true;
         }
@@ -256,7 +257,7 @@ namespace CASCLib
         {
             if (numRetries >= 5)
             {
-                Logger.WriteLine($"CDNCache: GetFileSize for {cdnPath} failed after 5 tries");
+                Debug.Log($"CDNCache: GetFileSize for {cdnPath} failed after 5 tries");
                 return -1;
             }
 
@@ -284,7 +285,7 @@ namespace CASCLib
                 }
                 else
                 {
-                    Logger.WriteLine($"CDNCache: error at GetFileSize {url}: Status {exc.Status}, StatusCode {resp.StatusCode}");
+                    Debug.Log($"CDNCache: error at GetFileSize {url}: Status {exc.Status}, StatusCode {resp.StatusCode}");
                     return -1;
                 }
             }
@@ -294,7 +295,7 @@ namespace CASCLib
         {
             if (numRetries >= 5)
             {
-                Logger.WriteLine($"CDNCache: GetMetaData for {cdnPath} failed after 5 tries");
+                Debug.Log($"CDNCache: GetMetaData for {cdnPath} failed after 5 tries");
                 return null;
             }
 
@@ -322,7 +323,7 @@ namespace CASCLib
                 }
                 else
                 {
-                    Logger.WriteLine($"CDNCache: error at GetMetaData {url}: Status {exc.Status}, StatusCode {resp.StatusCode}");
+                    Debug.Log($"CDNCache: error at GetMetaData {url}: Status {exc.Status}, StatusCode {resp.StatusCode}");
                     return null;
                 }
             }

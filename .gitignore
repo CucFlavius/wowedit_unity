@@ -42,3 +42,6 @@ sysinfo.txt
 *.ini
 *.json
 *.db2
+
+# Listfile
+listfile.csv
