@@ -3,12 +3,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
-using UnityEngine;
 
 namespace CASCLib
 {
     [Serializable]
-    public class BLTEDecoderException : Exception
+    class BLTEDecoderException : Exception
     {
         public int ErrorCode { get; }
 
@@ -31,7 +30,7 @@ namespace CASCLib
         public byte[] Data;
     }
 
-    public class BLTEStream : Stream
+    class BLTEStream : Stream
     {
         private BinaryReader _reader;
         private MD5 _md5 = MD5.Create();
@@ -297,7 +296,7 @@ namespace CASCLib
                 byte[] blockHash = _md5.ComputeHash(block.Data);
 
                 if (!block.Hash.EqualsTo(blockHash))
-                    Debug.Log($"MD5 mismatch ({block.Hash})");
+                    Console.WriteLine("MD5 Mismatch...");
             }
 
             HandleDataBlock(block.Data, _blocksIndex);

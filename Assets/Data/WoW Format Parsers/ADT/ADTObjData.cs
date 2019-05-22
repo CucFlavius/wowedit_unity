@@ -23,7 +23,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public List<WMOPlacementInfo> WMOInfo       = new List<WMOPlacementInfo>();
 
             // M2 data //
-            public Dictionary<uint, ulong> M2PathHash   = new Dictionary<uint, ulong>();
+            public Dictionary<uint, uint> M2PathFDIDs   = new Dictionary<uint, uint>();
             public Dictionary<uint, string> M2Paths     = new Dictionary<uint, string>();
             public List<uint> M2Offsets                 = new List<uint>();
             public List<M2PlacementInfo> M2Info         = new List<M2PlacementInfo>();

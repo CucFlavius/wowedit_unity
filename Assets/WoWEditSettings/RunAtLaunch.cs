@@ -6,6 +6,8 @@ using UnityEngine;
 using Assets.WoWEditSettings;
 using CASCLib;
 using Assets.UI.CASC;
+using System.Threading;
+using System.Collections;
 
 public class RunAtLaunch : MonoBehaviour {
 
@@ -27,6 +29,13 @@ public class RunAtLaunch : MonoBehaviour {
 
         SettingsInit();
         ADT.Initialize();
+
+        if (Settings.GetSection("misc").GetString("wowsource") == "game")
+        {
+            CASCConfig config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), "wowt");
+
+            CASC.GetComponent<CascHandler>().InitCasc(config);
+        }
     }
 
     private void SettingsInit()
@@ -85,14 +94,6 @@ public class RunAtLaunch : MonoBehaviour {
             // open Data Source Manager //
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             DataSourceManagerPanel.SetActive(true);
-        }
-
-        if (Settings.GetSection("misc").GetString("wowsource") == "game") // game mode //
-        {
-            CASCConfig config   = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), 
-                                                                    "wowt");
-            CASC.GetComponent<CascHandler>().cascHandler = CASCHandler.OpenStorage(config);
-            CASC.GetComponent<CascHandler>().cascHandler.Root.SetFlags(LocaleFlags.None, false, false);
         }
     }
 }

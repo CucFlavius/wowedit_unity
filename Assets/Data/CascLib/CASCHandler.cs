@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 
 namespace CASCLib
 {
@@ -19,67 +18,26 @@ namespace CASCLib
 
         private CASCHandler(CASCConfig config) : base(config)
         {
-            Debug.Log("CASCHandler: loading encoding data...");
-
             using (var fs = OpenEncodingFile(this))
                 EncodingHandler = new EncodingHandler(fs);
 
-            Debug.Log($"CASCHandler: loaded {EncodingHandler.Count} encoding data");
-
             if ((CASCConfig.LoadFlags & LoadFlags.Download) != 0)
             {
-                Debug.Log("CASCHandler: loading download data...");
-
                 using (var fs = OpenDownloadFile(EncodingHandler, this))
                     DownloadHandler = new DownloadHandler(fs);
-
-                Debug.Log($"CASCHandler: loaded {EncodingHandler.Count} download data");
             }
-
-            Debug.Log("CASCHandler: loading root data...");
 
             using (var fs = OpenRootFile(EncodingHandler, this))
-            {
-                if (config.GameType == CASCGameType.WoW)
-                    RootHandler = new WowRootHandler(fs);
-                else
-                {
-                    using (var ufs = new FileStream("unk_root", FileMode.Create))
-                        fs.BaseStream.CopyTo(ufs);
-                    throw new Exception("Unsupported game " + config.BuildUID);
-                }
-            }
-
-            Debug.Log($"CASCHandler: loaded {RootHandler.Count} root data");
+                RootHandler = new WowRootHandler(fs);
 
             if ((CASCConfig.LoadFlags & LoadFlags.Install) != 0)
             {
-                Debug.Log("CASCHandler: loading install data...");
-
                 using (var fs = OpenInstallFile(EncodingHandler, this))
                     InstallHandler = new InstallHandler(fs);
-
-                Debug.Log($"CASCHandler: loaded {InstallHandler.Count} install data");
             }
         }
 
-        public static CASCHandler OpenStorage(CASCConfig config, BackgroundWorkerEx worker = null) => Open(config);
-
-        public static CASCHandler OpenLocalStorage(string basePath, string product = null)
-        {
-            CASCConfig config = CASCConfig.LoadLocalStorageConfig(basePath, product);
-
-            return Open(config);
-        }
-
-        public static CASCHandler OpenOnlineStorage(string product, string region = "us")
-        {
-            CASCConfig config = CASCConfig.LoadOnlineStorageConfig(product, region);
-
-            return Open(config);
-        }
-
-        private static CASCHandler Open(CASCConfig config)
+        public static CASCHandler OpenStorage(CASCConfig config)
         {
             return new CASCHandler(config);
         }
@@ -87,7 +45,7 @@ namespace CASCLib
         public override bool FileExists(int fileDataId)
         {
             if (Root is WowRootHandler rh)
-                return rh.FileExist(fileDataId);
+                return FileExists(rh.GetHashByFileDataId(fileDataId));
             return false;
         }
 
@@ -138,18 +96,6 @@ namespace CASCLib
             return null;
         }
 
-        public override void SaveFileTo(ulong hash, string extractPath, string fullName)
-        {
-            if (GetEncodingEntry(hash, out EncodingEntry encInfo))
-            {
-                SaveFileTo(encInfo.Key, extractPath, fullName);
-                return;
-            }
-
-            if (CASCConfig.ThrowOnFileNotFound)
-                throw new FileNotFoundException(fullName);
-        }
-
         protected override Stream OpenFileOnline(MD5Hash key)
         {
             IndexEntry idxInfo = CDNIndex.GetIndexInfo(key);
@@ -160,7 +106,7 @@ namespace CASCLib
         {
             IndexEntry idxInfo = LocalIndex.GetIndexInfo(key);
             if (idxInfo == null)
-                Debug.Log($"Local index missing: {key.ToHexString()}");
+                Console.WriteLine("Local index missing: {0}", key.ToHexString());
 
             return GetLocalDataStreamInternal(idxInfo, key);
         }

@@ -250,29 +250,40 @@ public static partial class M2
 
         for (int i = 0; i < numTextures; i++)
         {
-            int texture    = br.ReadInt32();
-            // string Filename = Casc.GetFile(texture);
-            // M2Texture m2Texture         = new M2Texture();
-            // m2Texture.TXIDFileName      = Filename;
-            // Texture2Ddata texture2Ddata = new Texture2Ddata();
-            // if (!LoadedBLPs.Contains(Filename))
-            // {
-            //     string extractedPath        = Casc.GetFile(texture);
-            //     Stream stream               = File.Open(extractedPath, FileMode.Open);
-            //     BLP blp                     = new BLP();
-            //     byte[] data                 = blp.GetUncompressed(stream, true);
-            //     BLPinfo info                = blp.Info();
-            //     texture2Ddata.hasMipmaps    = info.hasMipmaps;
-            //     texture2Ddata.width         = info.width;
-            //     texture2Ddata.height        = info.height;
-            //     texture2Ddata.textureFormat = info.textureFormat;
-            //     texture2Ddata.TextureData   = data;
-            //     m2Texture.texture2Ddata     = texture2Ddata;
-            //     stream.Close();
-            //     stream.Dispose();
-            //     LoadedBLPs.Add(extractedPath);
-            // }
-            // m2Data.m2Tex.Add(m2Texture);
+            int texture = br.ReadInt32();
+            ulong Hash = CascHandler.Root.GetHashByFileDataId(texture);
+
+            M2Texture m2Texture         = new M2Texture();
+            Texture2Ddata texture2Ddata = new Texture2Ddata();
+            if (!LoadedBLPHashes.Contains(Hash))
+            {
+                var stream                  = CascHandler.OpenFile(Hash);
+                BLP blp                     = new BLP();
+                byte[] data                 = blp.GetUncompressed(stream, true);
+                BLPinfo info                = blp.Info();
+                texture2Ddata.hasMipmaps    = info.hasMipmaps;
+                texture2Ddata.width         = info.width;
+                texture2Ddata.height        = info.height;
+                texture2Ddata.textureFormat = info.textureFormat;
+                texture2Ddata.TextureData   = data;
+                m2Texture.texture2Ddata     = texture2Ddata;
+                stream.Close();
+                stream.Dispose();
+                LoadedBLPHashes.Add(Hash);
+            }
+            m2Data.m2Tex.Add(m2Texture);
+        }
+    }
+
+    public static void ReadSFID(BinaryReader br)
+    {
+        br.BaseStream.Position -= 4;
+        var size = br.ReadUInt32();
+        var numSkins = size / 4;
+
+        for (int i = 0; i < numSkins; i++)
+        {
+            SkinFiles.Add(br.ReadUInt32());
         }
     }
 

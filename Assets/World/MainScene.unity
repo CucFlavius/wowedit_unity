@@ -1209,7 +1209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &75
 GameObject:
   m_ObjectHideFlags: 0
@@ -5461,7 +5461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &319
 GameObject:
   m_ObjectHideFlags: 0
@@ -19421,6 +19421,7 @@ MonoBehaviour:
   ToggleOnline: {fileID: 1757904167}
   ToggleExtracted: {fileID: 1390}
   World: {fileID: 85}
+  CASC: {fileID: 648161244}
   IsExtracted: 0
   WoWPath: {fileID: 141102896}
   Extracted: {fileID: 1271}
@@ -21637,7 +21638,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '...'
+  m_Text: ...
 --- !u!114 &1317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21673,7 +21674,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'No cache directory present
 
-    Pick a directory where to save cached data.
+    Pick a directory where to save cached
+    data.
 
     Recomended 1 GB of free space.'
 --- !u!114 &1318
@@ -30801,7 +30803,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &1604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35454,6 +35456,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   World: {fileID: 1295}
+  CASC: {fileID: 648161244}
+  CascHandler: {fileID: 648161245}
 --- !u!114 &1756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37814,7 +37818,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: world\wmo\KulTiras\Human\8hu_warfronts_altarofkings01.wmo
+          m_StringArgument: world/expansion07/doodads/kultiraszone/8kul_shorerock_b02.m2
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -43213,7 +43217,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1821433346
 GameObject:
   m_ObjectHideFlags: 0

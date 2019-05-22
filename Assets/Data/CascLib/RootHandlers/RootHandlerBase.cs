@@ -23,6 +23,10 @@ namespace CASCLib
 
         public abstract ulong GetHashByFileDataId(int FileDataId);
 
+        public abstract int GetFileDataIdByHash(ulong hash);
+
+        public abstract int GetFileDataIdByName(string name);
+
         public abstract void LoadListFile();
 
         public abstract void Clear();
@@ -93,10 +97,10 @@ namespace CASCLib
             }
         }
 
-        public CASCFolder SetFlags(LocaleFlags locale, bool overrideArchive = false, bool createTree = true)
+        public CASCFolder SetFlags(LocaleFlags locale, bool overridearchive = false, bool createTree = true)
         {
             Locale = locale;
-            OverrideArchive = overrideArchive;
+            OverrideArchive = overridearchive;
 
             if (createTree)
                 Root = CreateStorageTree();

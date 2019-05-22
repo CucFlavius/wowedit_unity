@@ -1,23 +1,24 @@
-﻿using Assets.Data.WoW_Format_Parsers.WMO;
+﻿using Assets.UI.CASC;
 using Assets.World;
-using Assets.World.Models;
 using CASCLib;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DevTools : MonoBehaviour {
 
     public WorldLoader World;
     public Jenkins96 Hasher = new Jenkins96();
+    public GameObject CASC;
+    public CASCHandler CASCHandler;
+    public CascHandler CascHandler;
 
     public void ReadDB2(string filename)
     {
-        //DB2 db2 = new DB2();
-        //db2.Read(filename);
-        // WMO.Load(@"world\wmo\KulTiras\Human\8ara_warfronts_mine01.wmo", -1, Vector3.zero, Quaternion.identity, Vector3.one);
+        // CASCHandler = CASC.GetComponent<CascHandler>().cascHandler;
+        CascHandler = CASC.GetComponent<CascHandler>();
+        // int fileDataId = Casc.GetComponent<CascHandler>().cascHandler.Root.GetFileDataIdByName(filename);
 
-        ulong hash = Hasher.ComputeHash(filename);
-        M2.Load(hash, -1, Vector3.zero, Quaternion.identity, Vector3.one);
+        if (CascHandler.listfileLoader.ListFileEntry.TryGetValue(filename, out uint fileDataId))
+            M2.Load(fileDataId, -1, Vector3.zero, Quaternion.identity, Vector3.one);
     }
 
     public void Button_LoadTestMap (string id)

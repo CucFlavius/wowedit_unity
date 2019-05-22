@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 
 namespace CASCLib
 {
@@ -30,13 +29,8 @@ namespace CASCLib
             if (idxFiles.Count == 0)
                 throw new FileNotFoundException("idx files missing!");
 
-
-            int idxIndex = 0;
-
             foreach (var idx in idxFiles)
                 handler.ParseIndex(idx);
-
-            Debug.Log($"LocalIndexHandler: loaded {handler.Count} indexes");
 
             return handler;
         }
@@ -130,7 +124,7 @@ namespace CASCLib
             ptr[1] &= 0xFF;
 
             if (!LocalIndexData.TryGetValue(key, out IndexEntry result))
-                Debug.Log($"LocalIndexHandler: missing index: {key.ToHexString()}");
+                Console.WriteLine("LocalIndexHandler: missing index: {0}", key.ToHexString());
 
             return result;
         }

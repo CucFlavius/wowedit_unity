@@ -1,8 +1,10 @@
-﻿using Assets.WoWEditSettings;
+﻿using Assets.UI.CASC;
+using Assets.WoWEditSettings;
 using CASCLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +14,7 @@ public class DataSourceManager : MonoBehaviour
     public Toggle ToggleOnline;
     public Toggle ToggleExtracted;
     public GameObject World;
+    public GameObject CASC;
 
     public bool IsExtracted;
 
@@ -23,20 +26,18 @@ public class DataSourceManager : MonoBehaviour
     public Text FolderBrowser_SelectedFolderText;
 
     private CASCGameType _gameType;
-    public CASCHandler CascHandler;
+    public CASCHandler cascHandler;
 
     public void Initialize ()
     {
-        Debug.Log("Init");
-
         // Update Online List //
         DropdownOnline.ClearOptions();
 
         // Update Toggles //
         if (Settings.GetSection("misc").GetString("wowsource") == "game")
             ToggleGame.isOn = true;
-        else if (Settings.GetSection("misc").GetString("wowsource") == "online")
-            ToggleOnline.isOn = true;
+        // else if (Settings.GetSection("misc").GetString("wowsource") == "online")
+        //     ToggleOnline.isOn = true;
         else if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
             ToggleExtracted.isOn = true;
         else
@@ -61,21 +62,24 @@ public class DataSourceManager : MonoBehaviour
             // start Initialize casc thread //
             _gameType = CASCGame.DetectLocalGame(WoWPath.text);
 
-            CASCConfig config   = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), "wowt");
-            CascHandler         = CASCHandler.OpenStorage(config);
-            CascHandler.Root.SetFlags(LocaleFlags.None, false, false);
+            CASCConfig config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), "wowt");
+            new Thread(() => {
+                cascHandler = CASCHandler.OpenStorage(config);
+                cascHandler.Root.SetFlags(LocaleFlags.None, false);
+                Debug.Log($"Locale: {cascHandler.Root.Locale} Count Unk: {cascHandler.Root.CountUnknown} Total: {cascHandler.Root.CountTotal}");
+            }).Start();
 
             Settings.GetSection("misc").SetValueOfKey("wowproduct", _gameType.ToString());
             Settings.Save();
 
             gameObject.SetActive(false);
         }
-        if (ToggleOnline.isOn)
-        {
-            Settings.GetSection("misc").SetValueOfKey("wowsource", "online");
-            Settings.Save();
-            gameObject.SetActive(false);
-        }
+        // if (ToggleOnline.isOn)
+        // {
+        //     Settings.GetSection("misc").SetValueOfKey("wowsource", "online");
+        //     Settings.Save();
+        //     gameObject.SetActive(false);
+        // }
         if (ToggleExtracted.isOn)
         {
             if (Extracted.text != "" && Extracted.text != null)

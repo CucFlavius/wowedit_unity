@@ -602,8 +602,8 @@ namespace Assets.World.Terrain
 
                                 if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
                                 {
-                                    ulong m2Hash = data.M2PathHash[m2Info.nameId];
-                                    M2Handler.AddToQueue(m2Hash, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+                                    uint m2FileDataId = data.M2PathFDIDs[m2Info.nameId];
+                                    M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
                                 }
                                 else if (Settings.GetSection("misc").GetString("wowsource") == "game")
                                 {

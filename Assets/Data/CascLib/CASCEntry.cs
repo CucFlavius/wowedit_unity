@@ -14,15 +14,17 @@ namespace CASCLib
 
     public class CASCFolder : ICASCEntry
     {
+        private string _name;
+
         public Dictionary<string, ICASCEntry> Entries { get; set; }
 
         public CASCFolder(string name)
         {
             Entries = new Dictionary<string, ICASCEntry>(StringComparer.OrdinalIgnoreCase);
-            Name = name;
+            _name = name;
         }
 
-        public string Name { get; private set; }
+        public string Name => _name;
 
         public ulong Hash => 0;
 

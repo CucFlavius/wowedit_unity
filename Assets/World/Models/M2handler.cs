@@ -19,29 +19,29 @@ namespace Assets.World.Models
         public Material defaultMaterial;
 
         private string currentM2datapath;
-        private ulong currentM2Hash;
+        private uint currentM2FileDataId;
         private int currentM2uniqueID;
         private Vector3 currentM2position;
         private Quaternion currentM2rotation;
         private Vector3 currentM2scale;
-        private Dictionary<string, Texture2D> LoadedM2Textures = new Dictionary<string, Texture2D>();
-        private Dictionary<ulong, Texture2D> LoadedM2TexturesHash = new Dictionary<ulong, Texture2D>();
+        private Dictionary<string, Texture2D> LoadedM2Textures      = new Dictionary<string, Texture2D>();
+        private Dictionary<uint, Texture2D> LoadedM2TextureIds    = new Dictionary<uint, Texture2D>();
         private List<M2QueueItem> M2Clones = new List<M2QueueItem>();
 
         public class M2QueueItem
         {
             public string objectDataPath;
-            public ulong Hash;
+            public uint FileDataId;
             public int uniqueID;
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector3 Scale;
         }
 
-        public void AddToQueue(ulong modelHash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void AddToQueue(uint fileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             M2QueueItem item = new M2QueueItem();
-            item.Hash       = modelHash;
+            item.FileDataId = fileDataId;
             item.uniqueID   = uniqueID;
             item.Position   = position;
             item.Rotation   = rotation;
@@ -60,18 +60,18 @@ namespace Assets.World.Models
             M2ThreadQueue.Enqueue(item);
         }
 
-        public void M2ThreadRun(ulong modelHash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void M2ThreadRun(uint fileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            currentM2Hash       = modelHash;
+            currentM2FileDataId = fileDataId;
             currentM2uniqueID   = uniqueID;
             currentM2position   = position;
             currentM2rotation   = rotation;
             currentM2scale      = scale;
 
-            if (!terrainHandler.LoadedM2Hashes.ContainsKey(modelHash))
+            if (!terrainHandler.LoadedM2Hashes.ContainsKey(fileDataId))
             {
                 //ParseM2Block(); //nonthreaded - for testing purposes
-                terrainHandler.LoadedM2Hashes.Add(modelHash, null);
+                terrainHandler.LoadedM2Hashes.Add(fileDataId, null);
                 M2Thread = new Thread(ParseM2Block);
                 M2Thread.IsBackground = true;
                 M2Thread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -79,7 +79,7 @@ namespace Assets.World.Models
             }
             else
             {
-                CloneM2(modelHash, uniqueID, position, rotation, scale);
+                CloneM2(fileDataId, uniqueID, position, rotation, scale);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Assets.World.Models
                 if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
                     M2ThreadRun(queueItem.objectDataPath, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
                 else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                    M2ThreadRun(queueItem.Hash, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+                    M2ThreadRun(queueItem.FileDataId, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
             }
             else if (M2ThreadQueue.Count == 0)
                 busy = false;
@@ -163,13 +163,13 @@ namespace Assets.World.Models
                     }
                     else if (Settings.GetSection("misc").GetString("wowsource") == "game")
                     {
-                        if (terrainHandler.LoadedM2Hashes.ContainsKey(item.Hash))
+                        if (terrainHandler.LoadedM2Hashes.ContainsKey(item.FileDataId))
                         {
-                            if (terrainHandler.LoadedM2Hashes[item.Hash] != null)
+                            if (terrainHandler.LoadedM2Hashes[item.FileDataId] != null)
                             {
                                 M2QueueItem clone = item;
                                 RemoveElements.Add(item);
-                                GameObject instance = Instantiate(terrainHandler.LoadedM2Hashes[item.Hash]);
+                                GameObject instance = Instantiate(terrainHandler.LoadedM2Hashes[item.FileDataId]);
                                 instance.transform.position = clone.Position;
                                 instance.transform.rotation = clone.Rotation;
                                 instance.transform.localScale = Vector3.one;
@@ -187,10 +187,10 @@ namespace Assets.World.Models
             }
         }
 
-        public void CloneM2(ulong modelHash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void CloneM2(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             M2QueueItem item = new M2QueueItem();
-            item.Hash       = modelHash;
+            item.FileDataId = FileDataId;
             item.uniqueID   = uniqueID;
             item.Position   = position;
             item.Rotation   = rotation;
@@ -214,7 +214,7 @@ namespace Assets.World.Models
             if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
                 M2.Load(currentM2datapath, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
             else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                M2.Load(currentM2Hash, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
+                M2.Load(currentM2FileDataId, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
         }
 
         public void CreateM2Object(M2Data data)
@@ -230,9 +230,9 @@ namespace Assets.World.Models
             }
             else if (Settings.GetSection("misc").GetString("wowsource") == "game")
             {
-                terrainHandler.LoadedM2Hashes[data.dataHash] = M2Instance;
-                terrainHandler.LoadedM2Hashes[data.dataHash].name = data.name;
-                LODGroup Lodgroup = terrainHandler.LoadedM2Hashes[data.dataHash].AddComponent<LODGroup>();
+                terrainHandler.LoadedM2Hashes[data.FileDataId] = M2Instance;
+                terrainHandler.LoadedM2Hashes[data.FileDataId].name = data.name;
+                LODGroup Lodgroup = terrainHandler.LoadedM2Hashes[data.FileDataId].AddComponent<LODGroup>();
             }
 
             // LoD Group //
@@ -375,13 +375,13 @@ namespace Assets.World.Models
             // Textures //
             for (int tex = 0; tex < data.submeshData.Count; tex++)
             {
-                string textureName  = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].TXIDFileName;
+                uint FDID          = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].FileDataId;
                 Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
-                if (textureName != null && textureName != "" && tdata.TextureData != null)
+                if (FDID != 0 && tdata.TextureData != null)
                 {
-                    if (LoadedM2Textures.ContainsKey(textureName))
+                    if (LoadedM2TextureIds.ContainsKey(FDID))
                     {
-                        materials[tex].SetTexture("_MainTex", LoadedM2Textures[textureName]);
+                        materials[tex].SetTexture("_MainTex", LoadedM2TextureIds[FDID]);
                     }
                     else
                     {
@@ -390,7 +390,7 @@ namespace Assets.World.Models
                             Texture2D texture = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                             texture.LoadRawTextureData(tdata.TextureData);
                             texture.Apply();
-                            LoadedM2Textures[textureName] = texture;
+                            LoadedM2TextureIds[FDID] = texture;
                             materials[tex].SetTexture("_MainTex", texture);
                         }
                         catch
@@ -422,16 +422,16 @@ namespace Assets.World.Models
             }
             else if (Settings.GetSection("misc").GetString("wowsource") == "game")
             {
-                terrainHandler.LoadedM2Hashes[data.dataHash].transform.position = data.position;
-                terrainHandler.LoadedM2Hashes[data.dataHash].transform.rotation = data.rotation;
-                terrainHandler.LoadedM2Hashes[data.dataHash].transform.localScale = data.scale;
+                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.position = data.position;
+                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.rotation = data.rotation;
+                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.localScale = data.scale;
 
                 if (data.uniqueID != -1)
                 {
                     if (terrainHandler.ADTBlockM2Parents[data.uniqueID].transform != null)
-                        terrainHandler.LoadedM2Hashes[data.dataHash].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
+                        terrainHandler.LoadedM2Hashes[data.FileDataId].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
                     else
-                        Destroy(terrainHandler.LoadedM2Hashes[data.dataHash]);
+                        Destroy(terrainHandler.LoadedM2Hashes[data.FileDataId]);
                 }
             }
 

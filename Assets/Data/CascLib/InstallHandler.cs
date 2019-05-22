@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
+using System;
 
 namespace CASCLib
 {
@@ -78,15 +78,10 @@ namespace CASCLib
 
         public InstallEntry GetEntry(string name)
         {
-            return InstallData.Where(i => i.Name.ToLower() == name.ToLower()).FirstOrDefault();
+            return InstallData.Where(i => i.Name == name).FirstOrDefault();
         }
 
-        public IEnumerable<InstallEntry> GetEntriesByName(string name)
-        {
-            return InstallData.Where(i => i.Name.ToLower() == name.ToLower());
-        }
-
-        public IEnumerable<InstallEntry> GetEntriesByTag(string tag)
+        public IEnumerable<InstallEntry> GetEntries(string tag)
         {
             foreach (var entry in InstallData)
                 if (entry.Tags.Any(t => t.Name == tag))
@@ -104,18 +99,6 @@ namespace CASCLib
         {
             foreach (var entry in InstallData)
                 yield return entry;
-        }
-
-        public void Print()
-        {
-            for (int i = 0; i < InstallData.Count; ++i)
-            {
-                var data = InstallData[i];
-
-                Debug.Log($"{i:D4}: {data.MD5.ToHexString()} {data.Name}");
-
-                Debug.Log($"    {string.Join(",", data.Tags.Select(t => t.Name))}");
-            }
         }
 
         public void Clear()

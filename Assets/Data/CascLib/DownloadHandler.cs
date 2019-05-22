@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
+using System;
 
 namespace CASCLib
 {
@@ -30,7 +30,6 @@ namespace CASCLib
 
         public DownloadHandler(BinaryReader stream)
         {
-
             stream.Skip(2); // DL
 
             byte b1 = stream.ReadByte();
@@ -79,8 +78,6 @@ namespace CASCLib
             {
                 if (entry.Value.Tags == null)
                     entry.Value.Tags = Tags.Where(kv => kv.Value.Bits[entry.Value.Index]);
-
-                Debug.Log($"{entry.Key.ToHexString()} {string.Join(", ", entry.Value.Tags.Select(tag => tag.Key))}");
             }
         }
 

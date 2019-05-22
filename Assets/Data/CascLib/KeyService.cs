@@ -2,7 +2,7 @@
 
 namespace CASCLib
 {
-    public class KeyService
+    class KeyService
     {
         private static Dictionary<ulong, byte[]> keys = new Dictionary<ulong, byte[]>()
         {
@@ -132,7 +132,9 @@ namespace CASCLib
             [0x2C547F26A2613E01] = "37C50C102D4C9E3A5AC069F072B1417D".ToByteArray(),
         };
 
-        public static Salsa20 SalsaInstance { get; } = new Salsa20();
+        private static Salsa20 salsa = new Salsa20();
+
+        public static Salsa20 SalsaInstance => salsa;
 
         public static byte[] GetKey(ulong keyName)
         {

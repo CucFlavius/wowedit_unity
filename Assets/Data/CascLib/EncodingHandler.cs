@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace CASCLib
 {
@@ -69,9 +70,9 @@ namespace CASCLib
                         if (ki == 0)
                             entry.Key = eKey;
                         //else
-                        //    Logger.WriteLine("Multiple encoding keys for MD5 {0}: {1}", md5.ToHexString(), key.ToHexString());
+                        //    Console.WriteLine("Multiple encoding keys for MD5 {0}: {1}", md5.ToHexString(), key.ToHexString());
 
-                        //Logger.WriteLine("Encoding {0:D2} {1} {2} {3} {4}", keysCount, aEntries[i].Item1.ToHexString(), aEntries[i].Item2.ToHexString(), md5.ToHexString(), key.ToHexString());
+                        // Console.WriteLine("Encoding {0:D2} {1} {2} {3} {4}", keysCount, aEntries[i].Item1.ToHexString(), aEntries[i].Item2.ToHexString(), md5.ToHexString(), key.ToHexString());
                     }
 
                     //Encodings[md5] = entry;
@@ -83,7 +84,9 @@ namespace CASCLib
 
                 if (remaining > 0)
                     stream.BaseStream.Position += remaining;
+
             }
+
 
             stream.Skip(EKeyPageCount * 32);
             //for (int i = 0; i < EKeyPageCount; ++i)
@@ -108,8 +111,6 @@ namespace CASCLib
             }
 
             // string block till the end of file
-
-            //EncodingData.Dump();
         }
 
         public IEnumerable<KeyValuePair<MD5Hash, EncodingEntry>> Entries

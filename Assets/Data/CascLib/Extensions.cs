@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace CASCLib
@@ -16,7 +13,7 @@ namespace CASCLib
             byte[] val = reader.ReadBytes(4);
             return val[3] | val[2] << 8 | val[1] << 16 | val[0] << 24;
         }
-
+        
         public static long ReadInt40BE(this BinaryReader reader)
         {
             byte[] val = reader.ReadBytes(5);
@@ -34,61 +31,6 @@ namespace CASCLib
             return (uint)(val[3] | val[2] << 8 | val[1] << 16 | val[0] << 24);
         }
 
-        public static Action<T, V> GetSetter<T, V>(this FieldInfo fieldInfo)
-        {
-            var paramExpression = Expression.Parameter(typeof(T));
-            var fieldExpression = Expression.Field(paramExpression, fieldInfo);
-            var valueExpression = Expression.Parameter(fieldInfo.FieldType);
-            var assignExpression = Expression.Assign(fieldExpression, valueExpression);
-
-            return Expression.Lambda<Action<T, V>>(assignExpression, paramExpression, valueExpression).Compile();
-        }
-
-        public static Func<T, V> GetGetter<T, V>(this FieldInfo fieldInfo)
-        {
-            var paramExpression = Expression.Parameter(typeof(T));
-            var fieldExpression = Expression.Field(paramExpression, fieldInfo);
-
-            return Expression.Lambda<Func<T, V>>(fieldExpression, paramExpression).Compile();
-        }
-
-        public static T Read<T>(this BinaryReader reader) where T : unmanaged
-        {
-            byte[] result = reader.ReadBytes(Unsafe.SizeOf<T>());
-
-            return Unsafe.ReadUnaligned<T>(ref result[0]);
-        }
-
-        public static T[] ReadArray<T>(this BinaryReader reader) where T : unmanaged
-        {
-            int numBytes = (int)reader.ReadInt64();
-
-            byte[] source = reader.ReadBytes(numBytes);
-
-            reader.BaseStream.Position += (0 - numBytes) & 0x07;
-
-            return source.CopyTo<T>();
-        }
-
-        public static T[] ReadArray<T>(this BinaryReader reader, int size) where T : unmanaged
-        {
-            int numBytes = Unsafe.SizeOf<T>() * size;
-
-            byte[] source = reader.ReadBytes(numBytes);
-
-            return source.CopyTo<T>();
-        }
-
-        public static unsafe T[] CopyTo<T>(this byte[] src) where T : unmanaged
-        {
-            T[] result = new T[src.Length / Unsafe.SizeOf<T>()];
-
-            if (src.Length > 0)
-                Unsafe.CopyBlockUnaligned(Unsafe.AsPointer(ref result[0]), Unsafe.AsPointer(ref src[0]), (uint)src.Length);
-
-            return result;
-        }
-
         public static short ReadInt16BE(this BinaryReader reader)
         {
             byte[] val = reader.ReadBytes(2);
@@ -97,35 +39,13 @@ namespace CASCLib
 
         public static void CopyBytes(this Stream input, Stream output, int bytes)
         {
-            byte[] buffer = new byte[0x4000];
+            byte[] buffer = new byte[32768];
             int read;
             while (bytes > 0 && (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
             {
                 output.Write(buffer, 0, read);
                 bytes -= read;
             }
-        }
-
-        public static void CopyToStream(this Stream src, Stream dst, long len, BackgroundWorkerEx progressReporter = null)
-        {
-            long done = 0;
-
-            // TODO: Span<byte>+stackalloc
-            byte[] buf = new byte[0x10000];
-
-            int count;
-            do
-            {
-                if (progressReporter != null && progressReporter.CancellationPending)
-                    return;
-
-                count = src.Read(buf, 0, buf.Length);
-                dst.Write(buf, 0, count);
-
-                done += count;
-
-                progressReporter?.ReportProgress((int)(done / (float)len * 100));
-            } while (count > 0);
         }
 
         public static void ExtractToFile(this Stream input, string path, string name)
@@ -180,7 +100,7 @@ namespace CASCLib
 
             for (int i = 0; i < bits.Length; ++i)
             {
-                sb.Append(bits[i] ? '1' : '0');
+                sb.Append(bits[i] ? "1" : "0");
             }
 
             return sb.ToString();
