@@ -5,7 +5,7 @@ Using Unity 2019.3.0a9
 
 **Currently supported** : 8.2/1.13.2
 
-### Current [[Progress|https://github.com/CucFlavius/wowedit_unity/wiki/Progress]] on importing WoW Data
+### Current [Progress](https://github.com/CucFlavius/wowedit_unity/wiki/Progress) on importing WoW Data
 
 The main source of information when it comes to extracting and parsing the World of Warcrat data comes from https://wowdev.wiki/Main_Page 
 
