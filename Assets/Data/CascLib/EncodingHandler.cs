@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Text;
 
 namespace CASCLib
 {
@@ -22,28 +23,27 @@ namespace CASCLib
         public EncodingHandler(BinaryReader stream)
         {
             stream.Skip(2); // EN
-            byte Version = stream.ReadByte(); // must be 1
-            byte CKeyLength = stream.ReadByte();
-            byte EKeyLength = stream.ReadByte();
-            int CKeyPageSize = stream.ReadInt16BE() * 1024; // KB to bytes
-            int EKeyPageSize = stream.ReadInt16BE() * 1024; // KB to bytes
-            int CKeyPageCount = stream.ReadInt32BE();
-            int EKeyPageCount = stream.ReadInt32BE();
-            byte unk1 = stream.ReadByte(); // must be 0
-            int ESpecBlockSize = stream.ReadInt32BE();
+            byte Version        = stream.ReadByte(); // must be 1
+            byte CKeyLength     = stream.ReadByte();
+            byte EKeyLength     = stream.ReadByte();
+            int CKeyPageSize    = stream.ReadInt16BE() * 1024; // KB to bytes
+            int EKeyPageSize    = stream.ReadInt16BE() * 1024; // KB to bytes
+            int CKeyPageCount   = stream.ReadInt32BE();
+            int EKeyPageCount   = stream.ReadInt32BE();
+            byte unk1           = stream.ReadByte(); // must be 0
+            int ESpecBlockSize  = stream.ReadInt32BE();
 
-            stream.Skip(ESpecBlockSize);
-            //string[] strings = Encoding.ASCII.GetString(stream.ReadBytes(ESpecBlockSize)).Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+            // stream.Skip(ESpecBlockSize);
+            string[] strings = Encoding.ASCII.GetString(stream.ReadBytes(ESpecBlockSize)).Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
 
-            stream.Skip(CKeyPageCount * 32);
-            //ValueTuple<byte[], byte[]>[] aEntries = new ValueTuple<byte[], byte[]>[CKeyPageCount];
-
-            //for (int i = 0; i < CKeyPageCount; ++i)
-            //{
-            //    byte[] firstHash = stream.ReadBytes(16);
-            //    byte[] blockHash = stream.ReadBytes(16);
-            //    aEntries[i] = (firstHash, blockHash);
-            //}
+            // stream.Skip(CKeyPageCount * 32);
+            ValueTuple<MD5Hash, MD5Hash>[] aEntries = new ValueTuple<MD5Hash, MD5Hash>[CKeyPageCount];
+            for (int i = 0; i < CKeyPageCount; ++i)
+            {
+                var firstHash = stream.Read<MD5Hash>();
+                var blockHash = stream.Read<MD5Hash>();
+                aEntries[i] = (firstHash, blockHash);
+            }
 
             long chunkStart = stream.BaseStream.Position;
 
@@ -53,29 +53,23 @@ namespace CASCLib
 
                 while ((keysCount = stream.ReadByte()) != 0)
                 {
-                    long fileSize = stream.ReadInt40BE();
-                    MD5Hash cKey = stream.Read<MD5Hash>();
-
-                    EncodingEntry entry = new EncodingEntry()
+                    var entry = new EncodingEntry()
                     {
-                        Size = fileSize
+                        Size = stream.ReadInt40BE()
                     };
 
+                    var cKey = stream.Read<MD5Hash>();
+
                     // how do we handle multiple keys?
-                    for (int ki = 0; ki < keysCount; ++ki)
+                    for (var key = 0; key < keysCount; ++key)
                     {
-                        MD5Hash eKey = stream.Read<MD5Hash>();
-
                         // use first key for now
-                        if (ki == 0)
-                            entry.Key = eKey;
-                        //else
-                        //    Console.WriteLine("Multiple encoding keys for MD5 {0}: {1}", md5.ToHexString(), key.ToHexString());
-
-                        // Console.WriteLine("Encoding {0:D2} {1} {2} {3} {4}", keysCount, aEntries[i].Item1.ToHexString(), aEntries[i].Item2.ToHexString(), md5.ToHexString(), key.ToHexString());
+                        if (key == 0)
+                            entry.Key = stream.Read<MD5Hash>();
+                        else
+                            stream.ReadBytes(16);
                     }
 
-                    //Encodings[md5] = entry;
                     EncodingData.Add(cKey, entry);
                 }
 
@@ -84,31 +78,31 @@ namespace CASCLib
 
                 if (remaining > 0)
                     stream.BaseStream.Position += remaining;
-
             }
 
-
-            stream.Skip(EKeyPageCount * 32);
-            //for (int i = 0; i < EKeyPageCount; ++i)
-            //{
-            //    byte[] firstKey = stream.ReadBytes(16);
-            //    byte[] blockHash = stream.ReadBytes(16);
-            //}
+            // stream.Skip(EKeyPageCount * 32);
+            for (int i = 0; i < EKeyPageCount; ++i)
+            {
+                var firstKey  = stream.Read<MD5Hash>();
+                var blockHash = stream.Read<MD5Hash>();
+            }
 
             long chunkStart2 = stream.BaseStream.Position;
 
-            for (int i = 0; i < EKeyPageCount; ++i)
+            while(stream.BaseStream.Position < chunkStart2 + CHUNK_SIZE * EKeyPageCount)
             {
-                byte[] eKey = stream.ReadBytes(16);
-                int eSpecIndex = stream.ReadInt32BE();
-                long fileSize = stream.ReadInt40BE();
+                var remaining = CHUNK_SIZE - (stream.BaseStream.Position - chunkStart2) % CHUNK_SIZE;
 
-                // each chunk is 4096 bytes, and zero padding at the end
-                long remaining = CHUNK_SIZE - ((stream.BaseStream.Position - chunkStart2) % CHUNK_SIZE);
-
-                if (remaining > 0)
+                if (remaining < 25)
                     stream.BaseStream.Position += remaining;
+
+                var eKey        = stream.Read<MD5Hash>();
+                int eSpecIndex  = stream.ReadInt32BE();
+                long fileSize   = stream.ReadInt40BE();
+
+                if (eSpecIndex == int.MaxValue) break;
             }
+
 
             // string block till the end of file
         }

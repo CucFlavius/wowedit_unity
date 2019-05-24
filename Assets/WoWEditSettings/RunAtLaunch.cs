@@ -16,6 +16,8 @@ public class RunAtLaunch : MonoBehaviour {
     public GameObject DataSourceManagerPanel;
     public GameObject CASC;
 
+    private LocaleFlags firstInstalledLocale = LocaleFlags.enUS;
+
     /// <summary>
     ///  Run this code at launch
     /// </summary>
@@ -89,22 +91,16 @@ public class RunAtLaunch : MonoBehaviour {
         }
 
         if (Settings.GetSection("path").GetString("wowsource") == null ||
-            Settings.GetSection("path").GetString("wowsource") == "")
-        {
-            
-        }
+            Settings.GetSection("path").GetString("wowsource") == "") { }
         else
         {
             CASCConfig config = null;
             if (Settings.GetSection("misc").GetString("wowsource") == "game")
                 config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), Settings.GetSection("misc").GetString("localproduct"));
             else if (Settings.GetSection("misc").GetString("wowsource") == "online")
-            {
-                config = CASCConfig.LoadOnlineStorageConfig(Settings.GetSection("misc").GetString("onlineproduct"), "us");
-                config.ActiveBuild = Settings.GetSection("misc").GetInt("latestbuild");
-            }
+                config = CASCConfig.LoadOnlineStorageConfig(Settings.GetSection("misc").GetString("onlineproduct"), "us", true);
 
-            CASC.GetComponent<CascHandler>().InitCasc(config);
+            CASC.GetComponent<CascHandler>().InitCasc(config, firstInstalledLocale);
         }
     }
 }

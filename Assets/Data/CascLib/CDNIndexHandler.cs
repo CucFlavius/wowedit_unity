@@ -87,17 +87,8 @@ namespace CASCLib
                 string file = config.CDNPath + "/data/" + archive.Substring(0, 2) + "/" + archive.Substring(2, 2) + "/" + archive + ".index";
                 string url = "http://" + config.CDNHost + "/" + file;
 
-                Stream stream = Cache.OpenFile(file, url, false);
-
-                if (stream != null)
-                {
-                    ParseIndex(stream, i);
-                }
-                else
-                {
-                    using (var fs = downloader.OpenFile(url))
-                        ParseIndex(fs, i);
-                }
+                using (var fs = downloader.OpenFile(url))
+                    ParseIndex(fs, i);
             }
             catch
             {
@@ -135,18 +126,7 @@ namespace CASCLib
 
             string file = config.CDNPath + "/data/" + archive.Substring(0, 2) + "/" + archive.Substring(2, 2) + "/" + archive;
             string url = "http://" + config.CDNHost + "/" + file;
-
-            Stream stream = Cache.OpenFile(file, url, true);
-
-            if (stream != null)
-            {
-                stream.Position = entry.Offset;
-                MemoryStream ms = new MemoryStream(entry.Size);
-                stream.CopyBytes(ms, entry.Size);
-                ms.Position = 0;
-                return ms;
-            }
-
+            
             //using (HttpClient client = new HttpClient())
             //{
             //    client.DefaultRequestHeaders.Range = new RangeHeaderValue(entry.Offset, entry.Offset + entry.Size - 1);
@@ -178,11 +158,6 @@ namespace CASCLib
             string file = config.CDNPath + "/data/" + keyStr.Substring(0, 2) + "/" + keyStr.Substring(2, 2) + "/" + keyStr;
             string url = "http://" + config.CDNHost + "/" + file;
 
-            MemoryStream stream = Cache.OpenFile(file, url, false);
-
-            if (stream != null)
-                return stream;
-
             return downloader.OpenFile(url);
         }
 
@@ -191,26 +166,11 @@ namespace CASCLib
             string file = cfg.CDNPath + "/config/" + key.Substring(0, 2) + "/" + key.Substring(2, 2) + "/" + key;
             string url = "http://" + cfg.CDNHost + "/" + file;
 
-            Stream stream = Cache.OpenFile(file, url, false);
-
-            if (stream != null)
-                return stream;
-
             return OpenFileDirect(url);
         }
 
         public static Stream OpenFileDirect(string url)
         {
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    var resp = client.GetStreamAsync(url).Result;
-
-            //    MemoryStream ms = new MemoryStream();
-            //    resp.CopyTo(ms);
-            //    ms.Position = 0;
-            //    return ms;
-            //}
-
             HttpWebRequest req = WebRequest.CreateHttp(url);
             using (HttpWebResponse resp = (HttpWebResponse)req.GetResponseAsync().Result)
             {

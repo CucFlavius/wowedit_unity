@@ -74,21 +74,21 @@ namespace CASCLib
 
             if (Validate)
             {
-                CacheMetaData meta = CacheMetaData.Load(file) ?? _downloader.GetMetaData(url, file);
-
-                if (meta == null)
-                    throw new Exception(string.Format("unable to validate file {0}", file));
-
-                bool sizeOk, md5Ok;
-
-                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    sizeOk = fs.Length == meta.Size;
-                    md5Ok = _md5.ComputeHash(fs).EqualsTo(meta.MD5);
-                }
-
-                if (!sizeOk || !md5Ok)
-                    _downloader.DownloadFile(url, file);
+                // CacheMetaData meta = CacheMetaData.Load(file) ?? _downloader.GetMetaData(url, file);
+                // 
+                // if (meta == null)
+                //     throw new Exception(string.Format("unable to validate file {0}", file));
+                // 
+                // bool sizeOk, md5Ok;
+                // 
+                // using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                // {
+                //     sizeOk = fs.Length == meta.Size;
+                //     md5Ok = _md5.ComputeHash(fs).EqualsTo(meta.MD5);
+                // }
+                // 
+                // if (!sizeOk || !md5Ok)
+                //     _downloader.DownloadFile(url, file);
             }
 
             MemoryStream ms = new MemoryStream();

@@ -173,23 +173,14 @@ namespace CASCLib
 
             config._Builds = new List<KeyValueConfig>();
 
-            Debug.Log($"INFO: CDNConfig Builds -> {config._CDNConfig["builds"]}");
-
             if (config._CDNConfig["builds"] != null)
             {
                 for (int i = 0; i < config._CDNConfig["builds"].Count; i++)
                 {
-                    try
+                    using (Stream stream = CDNIndexHandler.OpenConfigFileDirect(config, config._CDNConfig["builds"][i]))
                     {
-                        using (Stream stream = CDNIndexHandler.OpenConfigFileDirect(config, config._CDNConfig["builds"][i]))
-                        {
-                            var cfg = KeyValueConfig.ReadKeyValueConfig(stream);
-                            config._Builds.Add(cfg);
-                        }
-                    }
-                    catch
-                    {
-
+                        var cfg = KeyValueConfig.ReadKeyValueConfig(stream);
+                        config._Builds.Add(cfg);
                     }
                 }
 

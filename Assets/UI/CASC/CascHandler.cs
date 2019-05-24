@@ -13,41 +13,10 @@ namespace Assets.UI.CASC
 {
     public class CascHandler : MonoBehaviour
     {
-        private LocaleFlags installedLocalesMask;
-        private LocaleFlags firstInstalledLocale;
         public CASCHandler cascHandler;
 
-        public void InitCasc(CASCConfig config)
+        public void InitCasc(CASCConfig config, LocaleFlags firstInstalledLocale)
         {
-            uint localeMask = 0;
-
-            string[] tagLines = config.BuildInfo[0]["Tags"].Split(' ');
-            foreach (var line in tagLines)
-            {
-                if (!Enum.TryParse(line, true, out LocaleFlags locale))
-                    continue;
-
-                localeMask = localeMask | Convert.ToUInt32(locale);
-            }
-
-            installedLocalesMask = (LocaleFlags)localeMask;
-            firstInstalledLocale = LocaleFlags.None;
-
-            for (Locale i = 0; i < Locale.Total; ++i)
-            {
-                if (i == Locale.None)
-                    continue;
-
-                if (!Convert.ToBoolean(installedLocalesMask & SharedConst.WowLocaleToCascLocaleFlags[(int)i]))
-                    continue;
-
-                firstInstalledLocale = SharedConst.WowLocaleToCascLocaleFlags[(int)i];
-                break;
-            }
-
-            if (firstInstalledLocale < LocaleFlags.None)
-                Debug.Log("No locales detected.");
-
             // Opens Storage
             cascHandler = CASCHandler.OpenStorage(config);
             cascHandler.Root.SetFlags(firstInstalledLocale, false);

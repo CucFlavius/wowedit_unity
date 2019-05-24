@@ -25,15 +25,13 @@ public class DataSourceManager : MonoBehaviour
     public GameObject FolderBrowser;
     public Text FolderBrowser_SelectedFolderText;
 
-    public GameObject SelectBuild;
-    public Dropdown Builds;
-    public CASCConfig config;
-
+    private LocaleFlags firstInstalledLocale = LocaleFlags.enUS;
     public string _gameType;
-    public CASCHandler cascHandler;
+    public CascHandler Casc = new CascHandler();
 
     public void Initialize ()
     {
+        Casc = CASC.GetComponent<CascHandler>();
         // Update Toggles //
         if (Settings.GetSection("misc").GetString("wowsource") == "game")
             ToggleGame.isOn = true;
@@ -49,42 +47,36 @@ public class DataSourceManager : MonoBehaviour
             WoWPath.text = Settings.GetSection("path").GetString("selectedpath");
 
         string onlineProduct = Settings.GetSection("misc").GetString("onlineproduct");
+        string localProduct = Settings.GetSection("misc").GetString("localproduct");
+
         // Update Online Product //
         if (onlineProduct != null || onlineProduct != "" || onlineProduct != string.Empty)
         {
             switch (onlineProduct)
             {
                 case "wowt":
-                    DropdownOnline.value = 1;
+                    DropdownOnline.value = 0;
                     break;
                 case "wow":
-                    DropdownOnline.value = 2;
+                    DropdownOnline.value = 1;
                     break;
                 case "wow_classic_beta":
-                    DropdownOnline.value = 3;
+                    DropdownOnline.value = 2;
                     break;
                 case "wow_classic":
-                    DropdownOnline.value = 4;
+                    DropdownOnline.value = 3;
                     break;
                 case "wow_beta":
-                    DropdownOnline.value = 5;
+                    DropdownOnline.value = 4;
                     break;
                 default:
-                    DropdownOnline.value = 0;
+                    DropdownOnline.value = 5;
                     break;
             }
         }
-    }
 
-    public void ValueChangeCheck()
-    {
-        DropdownProduct.interactable = true;
-        DropdownProduct.AddOptions(CASC.GetComponent<CascHandler>().ReadBuildInfo(WoWPath.text));
-
-        string localProduct = Settings.GetSection("misc").GetString("localproduct");
         // Update Game Product //
-        if (localProduct == null || localProduct == "" || localProduct == string.Empty) { }
-        else
+        if (localProduct != null || localProduct != "" || localProduct != string.Empty)
         {
             switch (localProduct)
             {
@@ -110,6 +102,12 @@ public class DataSourceManager : MonoBehaviour
         }
     }
 
+    public void ValueChangeCheck()
+    {
+        DropdownProduct.interactable = true;
+        DropdownProduct.AddOptions(CASC.GetComponent<CascHandler>().ReadBuildInfo(WoWPath.text));
+    }
+
     public void Ok ()
     {
         if (ToggleGame.isOn)
@@ -121,10 +119,10 @@ public class DataSourceManager : MonoBehaviour
             {
                 // start Initialize casc thread //
                 _gameType = DropdownProduct.options[DropdownProduct.value].text;
-                config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), _gameType);
 
                 new Thread(() => {
-                    CASC.GetComponent<CascHandler>().InitCasc(config);
+                    var config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), _gameType);
+                    Casc.InitCasc(config, firstInstalledLocale);
                 }).Start();
 
                 // Save Settings //
@@ -138,25 +136,16 @@ public class DataSourceManager : MonoBehaviour
                 Debug.Log("ERROR: Incorrect WoW Path...");
             }
         }
-        if (ToggleOnline.isOn)
+        else if (ToggleOnline.isOn)
         {
             Settings.GetSection("misc").SetValueOfKey("wowsource", "online");
 
             // Initializes CASC Thread //
             _gameType = DropdownOnline.options[DropdownOnline.value].text;
 
-            config = CASCConfig.LoadOnlineStorageConfig(_gameType, "us");
-
-            SelectBuild.SetActive(true);
-            List<string> builds = new List<string>();
-
-            foreach (var cfg in config.Builds)
-                builds.Add(cfg["build-name"][0]);
-
-            Builds.AddOptions(builds);
-
             new Thread(() => {
-                CASC.GetComponent<CascHandler>().InitCasc(config);
+                var config = CASCConfig.LoadOnlineStorageConfig(_gameType, "us", true);
+                Casc.InitCasc(config, firstInstalledLocale);
             }).Start();
 
             // Save Settings //
@@ -164,15 +153,7 @@ public class DataSourceManager : MonoBehaviour
             Settings.Save();
 
             gameObject.SetActive(false);
-
-            terrainImport.GetComponent<TerrainImport>().Initialize();
         }
-    }
-
-    public void OkBuildSelect()
-    {
-        config.ActiveBuild = Builds.value;
-        SelectBuild.SetActive(false);
     }
 
     public void AddButon ()

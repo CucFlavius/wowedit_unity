@@ -50,11 +50,6 @@ public class TerrainImport : MonoBehaviour
     // Initialize Terrain Importer //
     public void Initialize()
     {
-        string mapPath = @"world\maps\";
-        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-            DataText.text = "Data: Extracted";
-
-        GetMapList(mapPath);
         ClearMapList();
         PopulateMapList();
         Initialized = true;
