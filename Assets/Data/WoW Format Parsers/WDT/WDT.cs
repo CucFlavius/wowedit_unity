@@ -21,10 +21,36 @@ public static partial class WDT
 
         if (CASC.FileExists(FileDataId))
         {
-            var stream = CASC.OpenFile(FileDataId);
-            WDTflagsdata WDTFlags = new WDTflagsdata();
-            ParseWDT(WDTFlags, stream);
-            Flags.Add(FileDataId, WDTFlags);
+            using (var stream = CASC.OpenFile(FileDataId))
+            using (var reader = new BinaryReader(stream))
+            {
+                while (stream.Position < stream.Length)
+                {
+                    WDTflagsdata WDTFlags = new WDTflagsdata();
+                    WDTChunkId ChunkId = (WDTChunkId)reader.ReadUInt32();
+                    uint ChunkSize = reader.ReadUInt32();
+    
+                    switch (ChunkId)
+                    {
+                        case WDTChunkId.MVER:
+                            ReadMVER(reader);
+                            break;
+                        case WDTChunkId.MPHD:
+                            ReadMPHD(reader, WDTFlags);
+                            break;
+                        case WDTChunkId.MAIN:
+                            ReadMAIN(reader, WDTFlags);
+                            break;
+                        case WDTChunkId.MAID:
+                            ReadMAID(reader, FileDataId);
+                            break;
+                        default:
+                            SkipUnknownChunk(reader, ChunkId, ChunkSize);
+                            break;
+                    }
+                    Flags.Add(FileDataId, WDTFlags);
+                }
+            }
 
             return true;
         }
@@ -34,33 +60,7 @@ public static partial class WDT
 
     public static void ParseWDT(WDTflagsdata WDTFlags, Stream stream)
     {
-        using (BinaryReader reader = new BinaryReader(stream))
-        {
-            while (stream.Position < stream.Length)
-            {
-                WDTChunkId ChunkId = (WDTChunkId)reader.ReadUInt32();
-                uint ChunkSize = reader.ReadUInt32();
-    
-                switch (ChunkId)
-                {
-                    case WDTChunkId.MVER:
-                        ReadMVER(reader);
-                        break;
-                    case WDTChunkId.MPHD:
-                        ReadMPHD(reader, WDTFlags);
-                        break;
-                    case WDTChunkId.MAIN:
-                        ReadMAIN(reader, WDTFlags);
-                        break;
-                    case WDTChunkId.MAID:
-                        ReadMAID(reader);
-                        break;
-                    default:
-                        SkipUnknownChunk(reader, ChunkId, ChunkSize);
-                        break;
-                }
-            }
-        }
+        
     }
 
     // Move the stream forward upon finding unknown chunks //

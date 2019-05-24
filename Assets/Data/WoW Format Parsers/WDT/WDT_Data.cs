@@ -15,7 +15,7 @@ public static partial class WDT  {
     }
 
     public static Dictionary<uint, WDTflagsdata> Flags = new Dictionary<uint, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
-    public static List<WDTEntry> WDTEntries = new List<WDTEntry>();
+    public static Dictionary<List<uint>, uint> MinimapIds = new Dictionary<List<uint>, uint>();
     public class WDTEntry
     {
         public uint RootADT;

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static DB2;
 
 public class TerrainImport : MonoBehaviour
 {
@@ -36,13 +37,12 @@ public class TerrainImport : MonoBehaviour
     ////////////////////
     #region Globals
 
-    public Dictionary<string ,GameObject> MapTabs = new Dictionary<string, GameObject>();
-    public List<string> ExtractedMapList;
-    public List<string> FilteredList;
-    public string FilterWord;
+    public Dictionary<string, GameObject> MapTabs = new Dictionary<string, GameObject>();
     public static bool Initialized = false;
     public Vector2 currentSelectedPlayerSpawn = new Vector2(0, 0); // default
     private string selectedMapName = "";
+    public Storage<MapRecord> MapRecords;
+    public Dictionary<string, MapRecord> miniMap = new Dictionary<string, MapRecord>();
 
     #endregion
     ////////////////////
@@ -50,6 +50,9 @@ public class TerrainImport : MonoBehaviour
     // Initialize Terrain Importer //
     public void Initialize()
     {
+        var reader = new DB2Reader(1349477);
+        MapRecords = reader.GetRecords<MapRecord>();
+
         ClearMapList();
         PopulateMapList();
         Initialized = true;
@@ -75,26 +78,23 @@ public class TerrainImport : MonoBehaviour
 
     ////////////////////
     #region Map List Methods
-    
-    // Get a List of Maps from the ADT Maps Directory //
-    public void GetMapList (string mapPath)
-    {
-        // string[] list = Casc.GetFolderListFromFolder(mapPath);
-        // 
-        // ExtractedMapList = new List<string>();
-        // ExtractedMapList.AddRange(list);
-    }
 
     // Create UI Buttons in the Map List Panel //
     public void PopulateMapList ()
     {
-        for (int i =0; i < ExtractedMapList.Count; i++)
+        foreach (var record in MapRecords)
         {
             GameObject MapItem = Instantiate(MapTabPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            string fileName = Path.GetFileName(ExtractedMapList[i]);
-            MapTabs.Add(fileName, MapItem);
+            string MapName = record.Value.MapName;
+
+            if (!MapTabs.ContainsKey(MapName))
+                MapTabs.Add(MapName, MapItem);
+
             MapItem.transform.SetParent(MapScrollList.transform);
-            MapItem.transform.GetChild(0).GetComponent<Text>().text = fileName;
+            MapItem.transform.GetChild(0).GetComponent<Text>().text = MapName;
+
+            if (!miniMap.ContainsKey(MapName))
+                miniMap.Add(MapName, record.Value);
         }
     }
 
@@ -114,22 +114,16 @@ public class TerrainImport : MonoBehaviour
         if (filter == null)
         {
             foreach (KeyValuePair<string, GameObject> entry in MapTabs)
-            {
                 entry.Value.SetActive(true);
-            }
         }
         else
         {
             foreach (KeyValuePair<string, GameObject> entry in MapTabs)
             {
-                if (entry.Key.Contains(filter.ToLower()))
-                {
+                if (entry.Key.Contains(filter))
                     entry.Value.SetActive(true);
-                }
                 else
-                {
                     entry.Value.SetActive(false);
-                }
             }
         }
     }
@@ -145,7 +139,12 @@ public class TerrainImport : MonoBehaviour
     {
         selectedMapName = mapName;
         minimap.ClearMinimaps(minimapScrollPanel);
-        // minimap.Load(mapName, minimapScrollPanel);
+
+        if (miniMap.TryGetValue(mapName, out MapRecord record))
+        {
+            WDT.ParseWDT(record.WdtFileDataID);
+            // minimap.Load(mapName, minimapScrollPanel);
+        }
     }
 
     // Select a Player Spawn when Right Clicking on a Minimap Block //

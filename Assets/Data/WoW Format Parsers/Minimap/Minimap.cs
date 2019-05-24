@@ -80,11 +80,13 @@ public class Minimap : MonoBehaviour
     {
         MinimapData.MinimapBlockData blockData = MinimapData.MinimapDataQueue.Dequeue();
         GameObject instance = Instantiate(MinimapPrefab, Vector3.zero, Quaternion.identity);
+
         instance.transform.SetParent(ScrollParent.transform, false);
         instance.GetComponent<RectTransform>().anchoredPosition = new Vector2((blockData.coords.x - MinimapData.Min.x) * 100, -(blockData.coords.y - MinimapData.Min.y) * 100);
         instance.name = "map" + blockData.coords.x + "_" + blockData.coords.y + ".blp";
         instance.tag = "MinimapBlock";
         instance.GetComponent<MinimapBlock>().minimapCoords = blockData.coords;
+        
         if (MinimapData.mapAvailability[(int)blockData.coords.x, (int)blockData.coords.y].Minimap)
         {
             Texture2D tex = new Texture2D(blockData.textureInfo.width, blockData.textureInfo.height, blockData.textureInfo.textureFormat, false);

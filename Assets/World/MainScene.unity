@@ -15075,7 +15075,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 240, y: -110}
+  m_AnchoredPosition: {x: 601, y: -284}
   m_SizeDelta: {x: 800, y: 500}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &1081
@@ -24742,9 +24742,6 @@ MonoBehaviour:
   ErrorMessageText: {fileID: 1698}
   wmoToggle: {fileID: 1345}
   m2Toggle: {fileID: 1517}
-  ExtractedMapList: []
-  FilteredList: []
-  FilterWord: 
   currentSelectedPlayerSpawn: {x: 0, y: 0}
 --- !u!114 &1449
 MonoBehaviour:
