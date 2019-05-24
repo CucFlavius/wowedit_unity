@@ -12,7 +12,6 @@ namespace Assets.World.Terrain
 {
     public class TerrainHandler : MonoBehaviour
     {
-        public string MapName;
         public int BlockX;
         public int BlockY;
         public GameObject currentBlock;
@@ -50,14 +49,12 @@ namespace Assets.World.Terrain
         public Dictionary<string, Texture2D> LoadedHTerrainTextures = new Dictionary<string, Texture2D>();
 
         public WMOhandler WMOHandler;
-        public Dictionary<string, GameObject> LoadedWMOs        = new Dictionary<string, GameObject>();
-        public Dictionary<ulong, GameObject> LoadedWMOHashes    = new Dictionary<ulong, GameObject>();
+        public Dictionary<uint, GameObject> LoadedWMOIds        = new Dictionary<uint, GameObject>();
         public Dictionary<int, GameObject> ADTBlockWMOParents   = new Dictionary<int, GameObject>();
         public List<int> LoadedUniqueWMOs                       = new List<int>();
 
         public M2handler M2Handler;
-        public Dictionary<string, GameObject> LoadedM2s         = new Dictionary<string, GameObject>();
-        public Dictionary<ulong, GameObject> LoadedM2Hashes     = new Dictionary<ulong, GameObject>();
+        public Dictionary<uint, GameObject> LoadedM2Ids         = new Dictionary<uint, GameObject>();
         public Dictionary<int, GameObject> ADTBlockM2Parents    = new Dictionary<int, GameObject>();
         public List<int> LoadedUniqueM2s                        = new List<int>();
 
@@ -78,7 +75,7 @@ namespace Assets.World.Terrain
 
         public class QueueItem
         {
-            public string mapName;
+            public uint FileDataId;
             public int x;
             public int y;
             public GameObject Block;
@@ -173,10 +170,10 @@ namespace Assets.World.Terrain
             }
         }
 
-        public void AddToQueue(string mapName, int x, int y, GameObject Block)
+        public void AddToQueue(uint FileDataID, int x, int y, GameObject Block)
         {
             QueueItem item = new QueueItem();
-            item.mapName = mapName;
+            item.FileDataId = FileDataID;
             item.x = x;
             item.y = y;
             item.Block = Block;
@@ -229,25 +226,25 @@ namespace Assets.World.Terrain
 
         public void ADTRootThread()
         {
-            string ADTpath = @"\world\maps\" + currentHTerrain.mapName + @"\";
-            ADT.LoadTerrainMesh(ADTpath, currentHTerrain.mapName, new Vector2(currentHTerrain.x, currentHTerrain.y));
+            //string ADTpath = @"\world\maps\" + currentHTerrain.mapName + @"\";
+            //ADT.LoadTerrainMesh(ADTpath, currentHTerrain.mapName, new Vector2(currentHTerrain.x, currentHTerrain.y));
         }
 
         public void ADTTexThread()
         {
-            string ADTpath = @"\world\maps\" + currentHTexture.mapName + @"\";
-            ADT.LoadTerrainTextures(ADTpath, currentHTexture.mapName, new Vector2(currentHTexture.x, currentHTexture.y));
+            //string ADTpath = @"\world\maps\" + currentHTexture.mapName + @"\";
+            //ADT.LoadTerrainTextures(ADTpath, currentHTexture.mapName, new Vector2(currentHTexture.x, currentHTexture.y));
         }
 
         public void ADTObjThread()
         {
-            string ADTpath = @"\world\maps\" + currentObj.mapName + @"\";
-            ADT.LoadTerrainModels(ADTpath, currentObj.mapName, new Vector2(currentObj.x, currentObj.y));
+            //string ADTpath = @"\world\maps\" + currentObj.mapName + @"\";
+            //ADT.LoadTerrainModels(ADTpath, currentObj.mapName, new Vector2(currentObj.x, currentObj.y));
         }
 
         public void MapTextureThread()
         {
-            MapTexture.Load(currentMapTexture.mapName, new Vector2(currentMapTexture.x, currentMapTexture.y));
+            // MapTexture.Load(currentMapTexture.mapName, new Vector2(currentMapTexture.x, currentMapTexture.y));
         }
 
         #endregion
@@ -265,7 +262,7 @@ namespace Assets.World.Terrain
 
                 if (HTGroupItem.Block != null)
                 {
-                    HTGroupItem.Block.name = HTGroupItem.mapName + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
+                    // HTGroupItem.Block.name = HTGroupItem.mapName + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -316,7 +313,7 @@ namespace Assets.World.Terrain
                 QueueItem HTextureItem = currentLoadingHTextureBlock.Dequeue();
                 if (HTextureItem.Block != null)
                 {
-                    HTextureItem.Block.name = HTextureItem.mapName + "_" + HTextureItem.x + "_" + HTextureItem.y;
+                    // HTextureItem.Block.name = HTextureItem.mapName + "_" + HTextureItem.x + "_" + HTextureItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -521,14 +518,14 @@ namespace Assets.World.Terrain
                 mat.enableInstancing = true;
                 for (int i = 0; i < LoadedQueueItems.Count; i++)
                 {
-                    if (LoadedQueueItems[i].mapName == mapTextureBlock.mapName && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
-                    {
-                        for (int j = 0; j < 256; j++)
-                        {
-                            if (LoadedQueueItems[i].Block != null)
-                                LoadedQueueItems[i].Block.transform.GetChild(j).GetComponent<ADTChunk>().MaterialReady(1, mat);
-                        }
-                    }
+                    // if (LoadedQueueItems[i].mapName == mapTextureBlock.mapName && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
+                    // {
+                    //     for (int j = 0; j < 256; j++)
+                    //     {
+                    //         if (LoadedQueueItems[i].Block != null)
+                    //             LoadedQueueItems[i].Block.transform.GetChild(j).GetComponent<ADTChunk>().MaterialReady(1, mat);
+                    //     }
+                    // }
                 }
                 frameBusy = false;
             }
@@ -567,16 +564,8 @@ namespace Assets.World.Terrain
                                                                   wmoInfo.position.y,
                                                                   wmoInfo.position.z);
 
-                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                {
-                                    ulong WMOHash = data.WMOPathHash[wmoInfo.nameId];
-                                    WMOHandler.AddToQueue(WMOHash, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
-                                }
-                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                {
-                                    string WMOName = data.WMOPaths[wmoInfo.nameId];
-                                    WMOHandler.AddToQueue(WMOName, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
-                                }
+                                uint WMOFileDataId = data.WMOPathFDIDs[wmoInfo.nameId];
+                                WMOHandler.AddToQueue(WMOFileDataId, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
                             }
                         }
                     }
@@ -600,16 +589,8 @@ namespace Assets.World.Terrain
                                                                   m2Info.position.y,
                                                                   m2Info.position.z);
 
-                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                {
-                                    uint m2FileDataId = data.M2PathFDIDs[m2Info.nameId];
-                                    M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
-                                }
-                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                {
-                                    string m2Name = data.M2Paths[m2Info.nameId];
-                                    M2Handler.AddToQueue(m2Name, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
-                                }
+                               uint m2FileDataId = data.M2PathFDIDs[m2Info.nameId];
+                               M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
                             }
                         }
                     }

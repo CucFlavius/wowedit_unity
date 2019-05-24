@@ -10,7 +10,7 @@ public static partial class WDT {
         uint WDTfileversion = br.ReadUInt32();
     }
 
-    private static void ReadMPHD (BinaryReader br, string mapname, WDTflagsdata WDTflags)
+    private static void ReadMPHD (BinaryReader br, WDTflagsdata WDTflags)
     {
         byte[] arrayOfBytes = new byte[4];
         br.Read(arrayOfBytes, 0, 4);
@@ -56,12 +56,12 @@ public static partial class WDT {
                 // 8 bytes //
                 byte[] arrayOfBytes = new byte[4];
                 br.Read(arrayOfBytes, 0, 4);
-                BitArray flags = new BitArray(arrayOfBytes);
+                BitArray flags      = new BitArray(arrayOfBytes);
 
                 // <flags>
-                WDTflags.HasADT[x,y] = flags[0]; // flags 0 and 1 always alternate, when one is true other is false.
-                bool Flag_AllWater = flags[1];
-                bool Flag_Loaded = flags[2]; // always false (only set during runtime?)
+                WDTflags.HasADT[x,y]    = flags[0]; // flags 0 and 1 always alternate, when one is true other is false.
+                bool Flag_AllWater      = flags[1];
+                bool Flag_Loaded        = flags[2]; // always false (only set during runtime?)
                 // </flags>
 
                 uint asyncId = br.ReadUInt32();

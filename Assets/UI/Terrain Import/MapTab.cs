@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using UnityEngine.UI;
 
 public class MapTab : MonoBehaviour {
 
@@ -10,7 +9,7 @@ public class MapTab : MonoBehaviour {
 
     public void MapTabClicked ()
     {
-        string selectedMap = gameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text;
+        string selectedMap = gameObject.transform.GetChild(0).GetComponent<Text>().text;
 
         terrain = GameObject.Find("[UI Manager]");
         TerrainImport terrainImport = terrain.GetComponent<TerrainImport>();

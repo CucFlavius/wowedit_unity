@@ -1,4 +1,5 @@
-﻿using CASCLib;
+﻿using Assets.UI.CASC;
+using CASCLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -8,67 +9,47 @@ public static class MinimapThread
 {
     public static bool ResetParentSize = false;
     public static bool ThreadAlive = false;
-    public static string currentMapName = "";
+    public static uint currentMapFileDataId;
     public static bool WMOOnlyZone = false;
     public static bool checkWMOonly = false;
+    public static CASCHandler CascHandler;
 
     public static void LoadThread()
     {
+        CascHandler = GameObject.Find("[CASC]").GetComponent<CascHandler>().cascHandler;
+
         ThreadAlive = true;
-        CompileMapList(currentMapName);
+        CompileMapList(currentMapFileDataId, CascHandler);
         GetMinMax();
         checkWMOonly = true;
         ResetParentSize = true;
-        RequestAvailableBLPs(currentMapName);
+        RequestAvailableBLPs(currentMapFileDataId);
         ThreadAlive = false;
     }
 
     // Build an array of available minimaps and maps //
-    public static void CompileMapList(string mapName)
+    public static void CompileMapList(uint FileDataId, CASCHandler cascHandler)
     {
-        // MinimapData.dataExists.WDT = false;
-        // if (!WDT.Flags.ContainsKey(mapName))
-        //     MinimapData.dataExists.WDT = WDT.Load(@"world\maps\" + mapName + @"\", mapName);
+        MinimapData.dataExists.WDT = false;
+
+        // if (Settings.)
+        // if (!WDT.Flags.ContainsKey(FileDataId))
+        //     MinimapData.dataExists.WDT = WDT.ParseWDT(FileDataId);
         // else
         //     MinimapData.dataExists.WDT = true;
-        // MinimapData.dataExists.ADT = Casc.FolderExists(@"world\maps\" + mapName);
-        // MinimapData.dataExists.Minimap = Casc.FolderExists(@"world\minimaps\" + mapName);
-        // // sort data //
-        // MinimapData.mapAvailability = new MinimapData.MapAvailability[64, 64];
-        // List<string> ADTs = new List<string>();
-        // List<string> Minimaps = new List<string>();
 
-        // if (MinimapData.dataExists.ADT)
-        //     ADTs = Casc.GetFileListFromFolder(@"world\maps\" + mapName);
-        // if (MinimapData.dataExists.Minimap)
-        //     Minimaps = Casc.GetFileListFromFolder(@"world\minimaps\" + mapName);
-        // for (int x = 0; x < 64; x++)
-        // {
-        //     for (int y = 0; y < 64; y++)
-        //     {
-        //         // WDT data //
-        //         if (MinimapData.dataExists.WDT)
-        //         {
-        //             MinimapData.mapAvailability[x, y].WDT = WDT.Flags[mapName].HasADT[x, y];
-        //         }
-        //         // ADT files //
-        //         if (MinimapData.dataExists.ADT)
-        //         {
-        //             if (ADTs.Contains(mapName + "_" + x + "_" + y + ".adt"))
-        //                 MinimapData.mapAvailability[x, y].ADT = true;
-        //             else
-        //                 MinimapData.mapAvailability[x, y].ADT = false;
-        //         }
-        //         // Minimap files //
-        //         if (MinimapData.dataExists.Minimap)
-        //         {
-        //             if (Minimaps.Contains("map" + x + "_" + y + ".blp"))
-        //                 MinimapData.mapAvailability[x, y].Minimap = true;
-        //             else
-        //                 MinimapData.mapAvailability[x, y].Minimap = false;
-        //         }
-        //     }
-        // }
+        // sort data //
+        MinimapData.mapAvailability = new MinimapData.MapAvailability[64, 64];
+
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 64; y++)
+            {
+                // WDT data //
+                if (MinimapData.dataExists.WDT)
+                    MinimapData.mapAvailability[x, y].WDT = WDT.Flags[FileDataId].HasADT[x, y];
+            }
+        }
     }
 
     private static void GetMinMax()
@@ -111,7 +92,7 @@ public static class MinimapThread
     }
 
     // Request BLP blocks //
-    private static void RequestAvailableBLPs(string mapName)
+    private static void RequestAvailableBLPs(uint FileDataId)
     {
         int X = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
         int Y = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
@@ -129,7 +110,7 @@ public static class MinimapThread
                 if (MinimapData.mapAvailability[x + Y, y + Y].Minimap)
                 {
                     Minimap.MinimapRequest minimapRequest = new Minimap.MinimapRequest();
-                    minimapRequest.mapName = mapName;
+                    minimapRequest.fileDataId = FileDataId;
                     minimapRequest.coords = new Vector2(x + X, y + Y);
                     RequestBlock(minimapRequest);
                 }
@@ -138,7 +119,7 @@ public static class MinimapThread
                     if (MinimapData.mapAvailability[x + Y, y + Y].ADT)
                     {
                         Minimap.MinimapRequest minimapRequest = new Minimap.MinimapRequest();
-                        minimapRequest.mapName = mapName;
+                        minimapRequest.fileDataId = FileDataId;
                         minimapRequest.coords = new Vector2(x + Y, y + Y);
                         EnqueueEmptyBlock(minimapRequest);
                     }
@@ -180,9 +161,9 @@ public static class MinimapThread
 
     private static void EnqueueEmptyBlock(Minimap.MinimapRequest minimapRequest)
     {
-        string mapName = minimapRequest.mapName;
+        uint fileDataId = minimapRequest.fileDataId;
         MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
-        blockData.mapName = mapName;
+        blockData.fileDataId = fileDataId;
         blockData.coords = minimapRequest.coords;
         blockData.minimapByteData = null;
         MinimapData.MinimapDataQueue.Enqueue(blockData);

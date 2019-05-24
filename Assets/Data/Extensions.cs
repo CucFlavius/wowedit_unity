@@ -327,5 +327,40 @@ namespace Assets.Data
             }
             return (int)(r / 2);
         }
+
+        public static bool IsEmpty(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
+    }
+
+    public static class CollecionExtensions
+    {
+        public static TValue LookupByKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, object key)
+        {
+            TValue val;
+            TKey newkey = (TKey)Convert.ChangeType(key, typeof(TKey));
+            return dict.TryGetValue(newkey, out val) ? val : default(TValue);
+        }
+
+        public static TValue LookupByKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        {
+            TValue val;
+            return dict.TryGetValue(key, out val) ? val : default;
+        }
+
+        public static KeyValuePair<TKey, TValue> Find<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        {
+            if (!dict.ContainsKey(key))
+                return default(KeyValuePair<TKey, TValue>);
+
+            return new KeyValuePair<TKey, TValue>(key, dict[key]);
+        }
+
+        public static bool ContainsKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, object key)
+        {
+            TKey newkey = (TKey)Convert.ChangeType(key, typeof(TKey));
+            return dict.ContainsKey(newkey);
+        }
     }
 }

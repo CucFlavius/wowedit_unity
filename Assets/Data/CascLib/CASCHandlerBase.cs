@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -20,20 +21,22 @@ namespace CASCLib
         {
             Config = config;
 
+            Debug.Log("CASCHandlerBase: Initializing Index Handler...");
             CDNIndex = CDNIndexHandler.Initialize(config);
 
             if (!config.OnlineMode)
             {
                 CDNCache.Enabled = false;
+                Debug.Log("CASCHandlerBase: Initializing Local Index Handler...");
                 LocalIndex = LocalIndexHandler.Initialize(config);
             }
         }
 
-        public abstract bool FileExists(int fileDataId);
+        public abstract bool FileExists(uint fileDataId);
         public abstract bool FileExists(string file);
         public abstract bool FileExists(ulong hash);
 
-        public abstract Stream OpenFile(int filedata);
+        public abstract Stream OpenFile(uint filedata);
         public abstract Stream OpenFile(string name);
         public abstract Stream OpenFile(ulong hash);
 

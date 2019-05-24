@@ -147,17 +147,18 @@ namespace Assets.Data.WoW_Format_Parsers.M2
     public class M2BatchIndices
     {
         public int M2Batch_flags;
+        public int M2Batch_priorityPlane;
         public int M2Batch_shader_id;
-        public int M2Batch_submesh_index;
-        public int M2Batch_submesh_index2;
+        public int M2Batch_skinSectionIndex;
+        public int M2Batch_geosetIndex;
         public int M2Batch_color_index;
-        public int M2Batch_render_flags;
-        public int M2Batch_layer;
-        public int M2Batch_op_count;
-        public int M2Batch_texture;
-        public int M2Batch_tex_unit_number2;
-        public int M2Batch_transparency;
-        public int M2Batch_texture_anim;
+        public int M2Batch_materialIndex;
+        public int M2Batch_materialLayer;
+        public int M2Batch_textureCount;
+        public int M2Batch_textureComboIndex;
+        public int M2Batch_textureCoordComboIndex;
+        public int M2Batch_textureWeightComboIndex;
+        public int M2Batch_textureTransformComboIndex;
     }
 
     public class M2CompBone

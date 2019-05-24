@@ -1,8 +1,8 @@
 [path]
 cachepath=
-extracted=
 selectedpath=
-
 [misc]
 wowsource=
-wowproduct=
+localproduct=
+onlineproduct=
+latestbuild=

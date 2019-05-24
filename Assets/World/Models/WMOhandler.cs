@@ -20,8 +20,7 @@ namespace Assets.World.Models
         public Material missingMaterial;
         public Material[] WMOmaterials; // 0 - diffuse, 1 - Specular, 2 - Metal, 3 - Environment Mapped, 4 - Opaque
 
-        private string currentWMOdatapath;
-        private ulong currentWMOdatahash;
+        private uint currentWMOFileDataId;
         private int currentWMOuniqueID;
         private Vector3 currentWMOposition;
         private Quaternion currentWMOrotation;
@@ -31,8 +30,7 @@ namespace Assets.World.Models
 
         public class WMOQueueItem
         {
-            public string objectDataPath;
-            public ulong Hash;
+            public uint FileDataId;
             public int uniqueID;
             public Vector3 Position;
             public Quaternion Rotation;
@@ -45,10 +43,10 @@ namespace Assets.World.Models
             WMOThreadQueue = new Queue<WMOQueueItem>();
         }
 
-        public void AddToQueue(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void AddToQueue(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             WMOQueueItem item = new WMOQueueItem();
-            item.objectDataPath = objectDataPath;
+            item.FileDataId = FileDataId;
             item.uniqueID = uniqueID;
             item.Position = position;
             item.Rotation = rotation;
@@ -56,30 +54,18 @@ namespace Assets.World.Models
             WMOThreadQueue.Enqueue(item);
         }
 
-        public void AddToQueue(ulong Hash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void WMOThreadRun(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            WMOQueueItem item = new WMOQueueItem();
-            item.Hash = Hash;
-            item.uniqueID = uniqueID;
-            item.Position = position;
-            item.Rotation = rotation;
-            item.Scale = scale;
-            WMOThreadQueue.Enqueue(item);
-        }
-
-        // Parsing thread - Unless it's a copy //
-        public void WMOThreadRun(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            currentWMOdatapath = objectDataPath;
+            currentWMOFileDataId = FileDataId;
             currentWMOuniqueID = uniqueID;
             currentWMOposition = position;
             currentWMOrotation = rotation;
             currentWMOscale = scale;
 
-            if (!terrainHandler.LoadedWMOs.ContainsKey(objectDataPath))
+            if (!terrainHandler.LoadedWMOIds.ContainsKey(FileDataId))
             {
                 //ParseWMOBlock(); // nonthreaded - for testing purposes
-                terrainHandler.LoadedWMOs.Add(objectDataPath, null);
+                terrainHandler.LoadedWMOIds.Add(FileDataId, null);
                 WMOThread = new Thread(ParseWMOBlock);
                 WMOThread.IsBackground = true;
                 WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -87,48 +73,15 @@ namespace Assets.World.Models
             }
             else
             {
-                CloneWMO(objectDataPath, uniqueID, position, rotation, scale);
-            }
-        }
-
-        public void WMOThreadRun(ulong Hash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            currentWMOdatahash = Hash;
-            currentWMOuniqueID = uniqueID;
-            currentWMOposition = position;
-            currentWMOrotation = rotation;
-            currentWMOscale = scale;
-
-            if (!terrainHandler.LoadedWMOHashes.ContainsKey(Hash))
-            {
-                //ParseWMOBlock(); // nonthreaded - for testing purposes
-                terrainHandler.LoadedWMOHashes.Add(Hash, null);
-                WMOThread = new Thread(ParseWMOBlock);
-                WMOThread.IsBackground = true;
-                WMOThread.Priority = System.Threading.ThreadPriority.AboveNormal;
-                WMOThread.Start();
-            }
-            else
-            {
-                CloneWMO(Hash, uniqueID, position, rotation, scale);
+                CloneWMO(FileDataId, uniqueID, position, rotation, scale);
             }
         }
 
         // Add WMO copies to a list so they will be copied after loading is done //
-        public void CloneWMO(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void CloneWMO(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             WMOQueueItem item = new WMOQueueItem();
-            item.objectDataPath = objectDataPath;
-            item.uniqueID = uniqueID;
-            item.Position = position;
-            item.Rotation = rotation;
-            item.Scale = scale;
-            WMOClones.Add(item);
-        }
-        public void CloneWMO(ulong Hash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            WMOQueueItem item = new WMOQueueItem();
-            item.Hash = Hash;
+            item.FileDataId = FileDataId;
             item.uniqueID = uniqueID;
             item.Position = position;
             item.Rotation = rotation;
@@ -144,10 +97,7 @@ namespace Assets.World.Models
                 {
                     WMOQueueItem queueItem = WMOThreadQueue.Dequeue();
 
-                    if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                        WMOThreadRun(queueItem.objectDataPath, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
-                    else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                        WMOThreadRun(queueItem.Hash, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+                    WMOThreadRun(queueItem.FileDataId, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
                 }
             }
             else if (WMOThreadQueue.Count == 0)
@@ -171,36 +121,17 @@ namespace Assets.World.Models
                 // Check if Copies are Required //
                 foreach (WMOQueueItem item in WMOClones)
                 {
-                    if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                    if (terrainHandler.LoadedWMOIds.ContainsKey(item.FileDataId))
                     {
-                        if (terrainHandler.LoadedWMOs.ContainsKey(item.objectDataPath))
+                        if (terrainHandler.LoadedWMOIds[item.FileDataId] != null)
                         {
-                            if (terrainHandler.LoadedWMOs[item.objectDataPath] != null)
-                            {
-                                WMOQueueItem clone = item;
-                                RemoveElements.Add(item);
-                                GameObject instance = Instantiate(terrainHandler.LoadedWMOs[item.objectDataPath]);
-                                instance.transform.position = clone.Position;
-                                instance.transform.rotation = clone.Rotation;
-                                instance.transform.localScale = Vector3.one;
-                                instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
-                            }
-                        }
-                    }
-                    else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                    {
-                        if (terrainHandler.LoadedWMOHashes.ContainsKey(item.Hash))
-                        {
-                            if (terrainHandler.LoadedWMOHashes[item.Hash] != null)
-                            {
-                                WMOQueueItem clone = item;
-                                RemoveElements.Add(item);
-                                GameObject instance = Instantiate(terrainHandler.LoadedWMOHashes[item.Hash]);
-                                instance.transform.position = clone.Position;
-                                instance.transform.rotation = clone.Rotation;
-                                instance.transform.localScale = Vector3.one;
-                                instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
-                            }
+                            WMOQueueItem clone = item;
+                            RemoveElements.Add(item);
+                            GameObject instance = Instantiate(terrainHandler.LoadedWMOIds[item.FileDataId]);
+                            instance.transform.position = clone.Position;
+                            instance.transform.rotation = clone.Rotation;
+                            instance.transform.localScale = Vector3.one;
+                            instance.transform.SetParent(terrainHandler.ADTBlockWMOParents[item.uniqueID].transform);
                         }
                     }
                 }
@@ -214,10 +145,7 @@ namespace Assets.World.Models
 
         public void ParseWMOBlock()
         {
-            if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                WMO.Load(currentWMOdatapath, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
-            else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                WMO.Load(currentWMOdatahash, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
+            WMO.Load(currentWMOFileDataId, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
         }
 
         public void CreateWMOObject()
@@ -227,10 +155,7 @@ namespace Assets.World.Models
                 WMO.WMOStruct data = WMO.AllWMOData.Dequeue();
                 GameObject WMOinstance = new GameObject();
 
-                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                    terrainHandler.LoadedWMOs[data.dataPath] = WMOinstance;
-                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                    terrainHandler.LoadedWMOHashes[data.dataHash] = WMOinstance;
+                terrainHandler.LoadedWMOIds[data.fileDataId] = WMOinstance;
 
 
                 int nGroups = data.Info.nGroups;
@@ -239,12 +164,7 @@ namespace Assets.World.Models
                     // group object //
                     GameObject GroupInstance = new GameObject();
                     GroupInstance.isStatic = true;
-
-                    if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                        GroupInstance.transform.SetParent(terrainHandler.LoadedWMOs[data.dataPath].transform);
-                    else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                        GroupInstance.transform.SetParent(terrainHandler.LoadedWMOHashes[data.dataHash].transform);
-
+                    GroupInstance.transform.SetParent(terrainHandler.LoadedWMOIds[data.fileDataId].transform);
                     GroupInstance.name = data.groupsData[g].groupName;
 
                     LODGroup Lodgroup = GroupInstance.AddComponent<LODGroup>();
@@ -500,34 +420,17 @@ namespace Assets.World.Models
                     Lodgroup.RecalculateBounds();
                 }
 
-                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                terrainHandler.LoadedWMOIds[data.fileDataId].transform.position = data.position;
+                terrainHandler.LoadedWMOIds[data.fileDataId].transform.rotation = data.rotation;
+                terrainHandler.LoadedWMOIds[data.fileDataId].transform.localScale = data.scale;
+                if (data.uniqueID != -1)
                 {
-                    terrainHandler.LoadedWMOs[data.dataPath].transform.position = data.position;
-                    terrainHandler.LoadedWMOs[data.dataPath].transform.rotation = data.rotation;
-                    terrainHandler.LoadedWMOs[data.dataPath].transform.localScale = data.scale;
-                    if (data.uniqueID != -1)
-                    {
-                        if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
-                            terrainHandler.LoadedWMOs[data.dataPath].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
-                        else
-                            Destroy(terrainHandler.LoadedWMOs[data.dataPath]);
-                    }
-                    terrainHandler.LoadedWMOs[data.dataPath].name = data.Info.wmoID.ToString();
+                    if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
+                        terrainHandler.LoadedWMOIds[data.fileDataId].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
+                    else
+                        Destroy(terrainHandler.LoadedWMOIds[data.fileDataId]);
                 }
-                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                {
-                    terrainHandler.LoadedWMOHashes[data.dataHash].transform.position = data.position;
-                    terrainHandler.LoadedWMOHashes[data.dataHash].transform.rotation = data.rotation;
-                    terrainHandler.LoadedWMOHashes[data.dataHash].transform.localScale = data.scale;
-                    if (data.uniqueID != -1)
-                    {
-                        if (terrainHandler.ADTBlockWMOParents[data.uniqueID] != null)
-                            terrainHandler.LoadedWMOHashes[data.dataHash].transform.SetParent(terrainHandler.ADTBlockWMOParents[data.uniqueID].transform);
-                        else
-                            Destroy(terrainHandler.LoadedWMOHashes[data.dataHash]);
-                    }
-                    terrainHandler.LoadedWMOHashes[data.dataHash].name = data.Info.wmoID.ToString();
-                }
+                terrainHandler.LoadedWMOIds[data.fileDataId].name = data.Info.wmoID.ToString();
 
                 terrainHandler.frameBusy = false;
             }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 using Assets.Data.DataLocal;
 using Assets.UI.CASC;
+using CASCLib;
 
 namespace Assets.Data.WoW_Format_Parsers.WMO
 {
@@ -13,13 +14,17 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public static bool ThreadWorking;
         public static GroupData groupDataBuffer;
         public static List<string> LoadedBLPs = new List<string>();
-        public static GameObject Casc = GameObject.Find("[CASC]");
+        public static GameObject Casc;
+        public static CASCHandler CascHandler;
 
-        public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static void Load(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
+            Casc = GameObject.Find("[CASC]");
+            CascHandler = Casc.GetComponent<CascHandler>().cascHandler;
+
             wmoData = new WMOStruct();
 
-            wmoData.dataPath = dataPath;
+            wmoData.fileDataId = FileDataId;
             wmoData.uniqueID = uniqueID;
             wmoData.position = position;
             wmoData.rotation = rotation;
@@ -36,7 +41,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             {
                 ThreadWorking = true;
 
-                ParseWMO_Root(dataPath);
+                ParseWMO_Root(FileDataId);
 
                 AllWMOData.Enqueue(wmoData);
 
@@ -44,58 +49,15 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             }
             catch (Exception ex)
             {
-                Debug.Log("Error : Trying to parse WMO - " + dataPath);
+                Debug.Log("Error : Trying to parse WMO - " + FileDataId);
                 Debug.LogException(ex);
             }
         }
 
-        public static void Load(ulong Hash, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        private static void ParseWMO_Root(uint FileDataId)
         {
-            wmoData = new WMOStruct();
-
-            wmoData.dataHash = Hash;
-            wmoData.uniqueID = uniqueID;
-            wmoData.position = position;
-            wmoData.rotation = rotation;
-            wmoData.scale = scale;
-
-            wmoData.Info = new HeaderData();
-            wmoData.texturePaths = new Dictionary<uint, string>();
-            wmoData.textureData = new Dictionary<string, Texture2Ddata>();
-            wmoData.MOGNgroupnames = new Dictionary<int, string>();
-            wmoData.materials = new List<WMOMaterial>();
-
-            wmoData.groupsData = new List<GroupData>();
-            try
-            {
-                ThreadWorking = true;
-
-                ParseWMO_Root(Hash);
-
-                AllWMOData.Enqueue(wmoData);
-
-                ThreadWorking = false;
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("Error : Trying to parse WMO - " + Hash);
-                Debug.LogException(ex);
-            }
-        }
-
-        private static void ParseWMO_Root(string dataPath)
-        {
-            using (Stream WMOrootstream = DataLocalHandler.GetFileStream(dataPath))
-                ParseWMO_Root(WMOrootstream);
-        }
-
-        private static void ParseWMO_Root(ulong hash)
-        {
-            if (Casc.GetComponent<CascHandler>().cascHandler.FileExists(hash))
-            {
-                var stream = Casc.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
-                ParseWMO_Root(stream);
-            }
+            var stream = CascHandler.OpenFile(FileDataId);
+            ParseWMO_Root(stream);
         }
 
         private static void ParseWMO_Root(Stream stream)

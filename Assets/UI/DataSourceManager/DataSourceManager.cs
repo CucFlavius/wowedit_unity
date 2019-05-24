@@ -1,6 +1,7 @@
 ﻿using Assets.UI.CASC;
 using Assets.WoWEditSettings;
 using CASCLib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -12,44 +13,101 @@ public class DataSourceManager : MonoBehaviour
 {
     public Toggle ToggleGame;
     public Toggle ToggleOnline;
-    public Toggle ToggleExtracted;
     public GameObject World;
     public GameObject CASC;
 
     public bool IsExtracted;
 
     public InputField WoWPath;
-    public InputField Extracted;
     public Dropdown DropdownOnline;
+    public Dropdown DropdownProduct;
     public GameObject terrainImport;
     public GameObject FolderBrowser;
     public Text FolderBrowser_SelectedFolderText;
 
-    private CASCGameType _gameType;
+    public GameObject SelectBuild;
+    public Dropdown Builds;
+    public CASCConfig config;
+
+    public string _gameType;
     public CASCHandler cascHandler;
 
     public void Initialize ()
     {
-        // Update Online List //
-        DropdownOnline.ClearOptions();
-
         // Update Toggles //
         if (Settings.GetSection("misc").GetString("wowsource") == "game")
             ToggleGame.isOn = true;
-        // else if (Settings.GetSection("misc").GetString("wowsource") == "online")
-        //     ToggleOnline.isOn = true;
-        else if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-            ToggleExtracted.isOn = true;
+        else if (Settings.GetSection("misc").GetString("wowsource") == "online")
+            ToggleOnline.isOn = true;
         else
             ToggleGame.isOn = true;
+
+        WoWPath.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
 
         // Update WoW Path //
         if (Settings.GetSection("path").GetString("selectedpath") != null)
             WoWPath.text = Settings.GetSection("path").GetString("selectedpath");
 
-        // Update Extracted Path //
-        if (Settings.GetSection("path").GetString("extracted") != null)
-            Extracted.text = Settings.GetSection("path").GetString("extracted");
+        string onlineProduct = Settings.GetSection("misc").GetString("onlineproduct");
+        // Update Online Product //
+        if (onlineProduct != null || onlineProduct != "" || onlineProduct != string.Empty)
+        {
+            switch (onlineProduct)
+            {
+                case "wowt":
+                    DropdownOnline.value = 1;
+                    break;
+                case "wow":
+                    DropdownOnline.value = 2;
+                    break;
+                case "wow_classic_beta":
+                    DropdownOnline.value = 3;
+                    break;
+                case "wow_classic":
+                    DropdownOnline.value = 4;
+                    break;
+                case "wow_beta":
+                    DropdownOnline.value = 5;
+                    break;
+                default:
+                    DropdownOnline.value = 0;
+                    break;
+            }
+        }
+    }
+
+    public void ValueChangeCheck()
+    {
+        DropdownProduct.interactable = true;
+        DropdownProduct.AddOptions(CASC.GetComponent<CascHandler>().ReadBuildInfo(WoWPath.text));
+
+        string localProduct = Settings.GetSection("misc").GetString("localproduct");
+        // Update Game Product //
+        if (localProduct == null || localProduct == "" || localProduct == string.Empty) { }
+        else
+        {
+            switch (localProduct)
+            {
+                case "wowt":
+                    DropdownProduct.value = DropdownProduct.options.FindIndex((i) => { return i.text.Equals("wowt"); });
+                    break;
+                case "wow":
+                    DropdownProduct.value = DropdownProduct.options.FindIndex((i) => { return i.text.Equals("wow"); });
+                    break;
+                case "wow_classic_beta":
+                    DropdownProduct.value = DropdownProduct.options.FindIndex((i) => { return i.text.Equals("wow_classic_beta"); });
+                    break;
+                case "wow_classic":
+                    DropdownProduct.value = DropdownProduct.options.FindIndex((i) => { return i.text.Equals("wow_classic"); });
+                    break;
+                case "wow_beta":
+                    DropdownProduct.value = DropdownProduct.options.FindIndex((i) => { return i.text.Equals("wow_beta"); });
+                    break;
+                default:
+                    DropdownProduct.value = 0;
+                    break;
+            }
+        }
     }
 
     public void Ok ()
@@ -59,40 +117,62 @@ public class DataSourceManager : MonoBehaviour
             Settings.GetSection("misc").SetValueOfKey("wowsource", "game");
             Settings.GetSection("path").SetValueOfKey("selectedpath", WoWPath.text);
 
-            // start Initialize casc thread //
-            _gameType = CASCGame.DetectLocalGame(WoWPath.text);
+            if (CheckValidWoWPath(WoWPath.text))
+            {
+                // start Initialize casc thread //
+                _gameType = DropdownProduct.options[DropdownProduct.value].text;
+                config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), _gameType);
 
-            CASCConfig config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), "wowt");
+                new Thread(() => {
+                    CASC.GetComponent<CascHandler>().InitCasc(config);
+                }).Start();
+
+                // Save Settings //
+                Settings.GetSection("misc").SetValueOfKey("localproduct", _gameType);
+                Settings.Save();
+
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.Log("ERROR: Incorrect WoW Path...");
+            }
+        }
+        if (ToggleOnline.isOn)
+        {
+            Settings.GetSection("misc").SetValueOfKey("wowsource", "online");
+
+            // Initializes CASC Thread //
+            _gameType = DropdownOnline.options[DropdownOnline.value].text;
+
+            config = CASCConfig.LoadOnlineStorageConfig(_gameType, "us");
+
+            SelectBuild.SetActive(true);
+            List<string> builds = new List<string>();
+
+            foreach (var cfg in config.Builds)
+                builds.Add(cfg["build-name"][0]);
+
+            Builds.AddOptions(builds);
+
             new Thread(() => {
-                cascHandler = CASCHandler.OpenStorage(config);
-                cascHandler.Root.SetFlags(LocaleFlags.None, false);
-                Debug.Log($"Locale: {cascHandler.Root.Locale} Count Unk: {cascHandler.Root.CountUnknown} Total: {cascHandler.Root.CountTotal}");
+                CASC.GetComponent<CascHandler>().InitCasc(config);
             }).Start();
 
-            Settings.GetSection("misc").SetValueOfKey("wowproduct", _gameType.ToString());
+            // Save Settings //
+            Settings.GetSection("misc").SetValueOfKey("onlineproduct", _gameType);
             Settings.Save();
 
             gameObject.SetActive(false);
-        }
-        // if (ToggleOnline.isOn)
-        // {
-        //     Settings.GetSection("misc").SetValueOfKey("wowsource", "online");
-        //     Settings.Save();
-        //     gameObject.SetActive(false);
-        // }
-        if (ToggleExtracted.isOn)
-        {
-            if (Extracted.text != "" && Extracted.text != null)
-            {
-                Settings.GetSection("misc").SetValueOfKey("wowsource", "extracted");
-                Settings.GetSection("misc").SetValueOfKey("extractedpath", Extracted.text);
-                Settings.Save();
-                gameObject.SetActive(false);
-            }
-            IsExtracted = true;
-        }
-        if (Settings.GetSection("misc").GetString("wowsource") == "online")
+
             terrainImport.GetComponent<TerrainImport>().Initialize();
+        }
+    }
+
+    public void OkBuildSelect()
+    {
+        config.ActiveBuild = Builds.value;
+        SelectBuild.SetActive(false);
     }
 
     public void AddButon ()
@@ -107,17 +187,6 @@ public class DataSourceManager : MonoBehaviour
         WoWPath.text = tempPath;
         Settings.GetSection("path").SetValueOfKey("selectedpath", tempPath);
         Settings.Save();
-    }
-
-    public void BrowseButton ()
-    {
-        FolderBrowser.SetActive(true);
-        FolderBrowser.GetComponent<FolderBrowserLogic>().Link("FillInExtractedPath", this);
-    }
-
-    public void FillInExtractedPath ()
-    {
-        Extracted.text = FolderBrowser_SelectedFolderText.text;
     }
 
     public bool CheckValidWoWPath (string path)

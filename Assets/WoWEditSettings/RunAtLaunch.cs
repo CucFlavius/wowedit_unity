@@ -1,6 +1,5 @@
 ﻿using Assets.Data.Agent;
 using Assets.Data.WoW_Format_Parsers.ADT;
-using Assets.Tools.CSV;
 using System.IO;
 using UnityEngine;
 using Assets.WoWEditSettings;
@@ -8,6 +7,7 @@ using CASCLib;
 using Assets.UI.CASC;
 using System.Threading;
 using System.Collections;
+using System;
 
 public class RunAtLaunch : MonoBehaviour {
 
@@ -19,7 +19,6 @@ public class RunAtLaunch : MonoBehaviour {
     /// <summary>
     ///  Run this code at launch
     /// </summary>
-
     void Start()
     {
         UserPreferences.Load();
@@ -29,13 +28,6 @@ public class RunAtLaunch : MonoBehaviour {
 
         SettingsInit();
         ADT.Initialize();
-
-        if (Settings.GetSection("misc").GetString("wowsource") == "game")
-        {
-            CASCConfig config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), "wowt");
-
-            CASC.GetComponent<CascHandler>().InitCasc(config);
-        }
     }
 
     private void SettingsInit()
@@ -94,6 +86,25 @@ public class RunAtLaunch : MonoBehaviour {
             // open Data Source Manager //
             DataSourceManagerPanel.GetComponent<DataSourceManager>().Initialize();
             DataSourceManagerPanel.SetActive(true);
+        }
+
+        if (Settings.GetSection("path").GetString("wowsource") == null ||
+            Settings.GetSection("path").GetString("wowsource") == "")
+        {
+            
+        }
+        else
+        {
+            CASCConfig config = null;
+            if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                config = CASCConfig.LoadLocalStorageConfig(Settings.GetSection("path").GetString("selectedpath"), Settings.GetSection("misc").GetString("localproduct"));
+            else if (Settings.GetSection("misc").GetString("wowsource") == "online")
+            {
+                config = CASCConfig.LoadOnlineStorageConfig(Settings.GetSection("misc").GetString("onlineproduct"), "us");
+                config.ActiveBuild = Settings.GetSection("misc").GetInt("latestbuild");
+            }
+
+            CASC.GetComponent<CascHandler>().InitCasc(config);
         }
     }
 }

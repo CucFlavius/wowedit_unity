@@ -31,43 +31,43 @@ public static partial class M2
         {
             M2BatchIndices m2BatchIndices = new M2BatchIndices();
 
-            m2BatchIndices.M2Batch_flags            = reader.ReadUInt16();      // probably two uint8_t? -- Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: transparency something
-            m2BatchIndices.M2Batch_shader_id        = reader.ReadUInt16();      // See below.
-            m2BatchIndices.M2Batch_submesh_index    = reader.ReadUInt16();      // A duplicate entry of a submesh from the list above.
-            m2BatchIndices.M2Batch_submesh_index2   = reader.ReadUInt16();      // See below.
-            m2BatchIndices.M2Batch_color_index      = reader.ReadUInt16();      // A Color out of the Colors-Block or -1 if none.
-            m2BatchIndices.M2Batch_render_flags     = reader.ReadUInt16();      // The renderflags used on this texture-unit.
-            m2BatchIndices.M2Batch_layer            = reader.ReadUInt16();      //
-            m2BatchIndices.M2Batch_op_count         = reader.ReadUInt16();      // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
-            m2BatchIndices.M2Batch_texture          = reader.ReadUInt16();      // Index into Texture lookup table
-            m2BatchIndices.M2Batch_tex_unit_number2 = reader.ReadUInt16();      // Index into the texture unit lookup table.
-            m2BatchIndices.M2Batch_transparency     = reader.ReadUInt16();      // Index into transparency lookup table.
-            m2BatchIndices.M2Batch_texture_anim     = reader.ReadUInt16();      // Index into uvanimation lookup table. 
+            m2BatchIndices.M2Batch_flags                        = reader.ReadByte();        // Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: use textureWeights
+            m2BatchIndices.M2Batch_priorityPlane                = reader.ReadByte(); 
+            m2BatchIndices.M2Batch_shader_id                    = reader.ReadUInt16();      // See below.
+            m2BatchIndices.M2Batch_skinSectionIndex             = reader.ReadUInt16();      // A duplicate entry of a submesh from the list above.
+            m2BatchIndices.M2Batch_geosetIndex                  = reader.ReadUInt16();      // See below.
+            m2BatchIndices.M2Batch_color_index                  = reader.ReadUInt16();      // A Color out of the Colors-Block or -1 if none.
+            m2BatchIndices.M2Batch_materialIndex                = reader.ReadUInt16();      // The renderflags used on this texture-unit.
+            m2BatchIndices.M2Batch_materialLayer                = reader.ReadUInt16();      // Capped at 7 (see CM2Scene::BeginDraw)
+            m2BatchIndices.M2Batch_textureCount                 = reader.ReadUInt16();      // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
+            m2BatchIndices.M2Batch_textureComboIndex            = reader.ReadUInt16();      // Index into Texture lookup table
+            m2BatchIndices.M2Batch_textureCoordComboIndex       = reader.ReadUInt16();      // Index into the texture unit lookup table.
+            m2BatchIndices.M2Batch_textureWeightComboIndex      = reader.ReadUInt16();      // Index into transparency lookup table.
+            m2BatchIndices.M2Batch_textureTransformComboIndex   = reader.ReadUInt16();      // Index into uvanimation lookup table. 
 
             m2Data.m2BatchIndices.Add(m2BatchIndices);
         }
 
         // Read SubMesh Data //
+        int[] Indices                           = new int[indices.Size];            // Three indices which make up a triangle.
+        int[] Triangles                         = new int[triangles.Size];          // Bone indices (Index into BoneLookupTable)
 
-        int[] Indices = new int[indices.Size];
-        int[] Triangles = new int[triangles.Size];
+        int[] skinSectionId                     = new int[submeshes.Size];          // Mesh part ID, see below.
+        int[] submesh_StartVertex               = new int[submeshes.Size];          // Starting vertex number.
+        int[] submesh_NbrVerts                  = new int[submeshes.Size];          // Number of vertices.
+        int[] submesh_StartTriangle             = new int[submeshes.Size];          // Starting triangle index (that's 3* the number of triangles drawn so far).
+        int[] submesh_NbrTris                   = new int[submeshes.Size];          // Number of triangle indices.
 
-        int[] skinSectionId = new int[submeshes.Size];                          // Mesh part ID, see below.
-        int[] submesh_StartVertex = new int[submeshes.Size];                    // Starting vertex number.
-        int[] submesh_NbrVerts = new int[submeshes.Size];                       // Number of vertices.
-        int[] submesh_StartTriangle = new int[submeshes.Size];                  // Starting triangle index (that's 3* the number of triangles drawn so far).
-        int[] submesh_NbrTris = new int[submeshes.Size];                        // Number of triangle indices.
-
-        int[] submesh_boneCount = new int[submeshes.Size];                      // Number of elements in the bone lookup table. Max seems to be 256 in Wrath. Shall be ≠ 0.
-        int[] submesh_boneComboIndex = new int[submeshes.Size];                 // Starting index in the bone lookup table.
-        int[] submesh_boneInfluences = new int[submeshes.Size];                 // <= 4
-                                                                                // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
-                                                                                // In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
-                                                                                // Highest number of bones referenced by a vertex of this submesh. 3.3.5a and suspectedly all other client revisions. -- Skarn
-        int[] submesh_centerBoneIndex = new int[submeshes.Size];
-        Vector3[] submesh_centerPosition = new Vector3[submeshes.Size];         // Average position of all the vertices in the sub mesh.
-        Vector3[] submesh_sortCenterPosition = new Vector3[submeshes.Size];     // The center of the box when an axis aligned box is built around the vertices in the submesh.
-        float[] submesh_sortRadius = new float[submeshes.Size];                 // Distance of the vertex farthest from CenterBoundingBox.
+        int[] submesh_boneCount                 = new int[submeshes.Size];          // Number of elements in the bone lookup table. Max seems to be 256 in Wrath. Shall be ≠ 0.
+        int[] submesh_boneComboIndex            = new int[submeshes.Size];          // Starting index in the bone lookup table.
+        int[] submesh_boneInfluences            = new int[submeshes.Size];          // <= 4
+                                                                                    // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
+                                                                                    // In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
+                                                                                    // Highest number of bones referenced by a vertex of this submesh. 3.3.5a and suspectedly all other client revisions. -- Skarn
+        int[] submesh_centerBoneIndex           = new int[submeshes.Size];
+        Vector3[] submesh_centerPosition        = new Vector3[submeshes.Size];      // Average position of all the vertices in the sub mesh.
+        Vector3[] submesh_sortCenterPosition    = new Vector3[submeshes.Size];      // The center of the box when an axis aligned box is built around the vertices in the submesh.
+        float[] submesh_sortRadius              = new float[submeshes.Size];        // Distance of the vertex farthest from CenterBoundingBox.
 
         /// Indices ///
         reader.BaseStream.Seek(indices.Offset, SeekOrigin.Begin);
@@ -98,10 +98,12 @@ public static partial class M2
             submesh_boneComboIndex[sub]     = reader.ReadUInt16();
             submesh_boneInfluences[sub]     = reader.ReadUInt16();
             submesh_centerBoneIndex[sub]    = reader.ReadUInt16();
-            Vector3 raw_centerPosition      = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
-            submesh_centerPosition[sub]     = new Vector3(-raw_centerPosition.x, raw_centerPosition.z, -raw_centerPosition.y);
-            Vector3 raw_sortCenterPosition  = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
-            submesh_sortCenterPosition[sub] = new Vector3(-raw_sortCenterPosition.x, raw_sortCenterPosition.z, -raw_sortCenterPosition.y);
+
+            Vector3 canterPosition          = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            submesh_centerPosition[sub]     = new Vector3(-canterPosition.x, canterPosition.z, -canterPosition.y);
+            Vector3 sortCenterPosition      = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            submesh_sortCenterPosition[sub] = new Vector3(-sortCenterPosition.x, sortCenterPosition.z, -sortCenterPosition.y);
+
             submesh_sortRadius[sub]         = reader.ReadSingle();
         }
 

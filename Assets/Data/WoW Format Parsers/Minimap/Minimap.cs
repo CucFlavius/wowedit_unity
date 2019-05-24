@@ -60,14 +60,14 @@ public class Minimap : MonoBehaviour
     }
 
     // Create Minimap Blocks //
-    public void Load(string mapName, GameObject scrollParent)
+    public void Load(uint FileDataId, GameObject scrollParent)
     {
         ScrollParent = scrollParent;
         RemainingMinimaps = 1; // resetting above 0
         MinimapData.Total = 0;
         LoadingBar.fillAmount = 0;
         LoadingPanel.SetActive(true);
-        MinimapThread.currentMapName = mapName;
+        MinimapThread.currentMapFileDataId = FileDataId;
         System.Threading.Thread minimapThread = new System.Threading.Thread(MinimapThread.LoadThread);
         minimapThread.IsBackground = true;
         minimapThread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -106,7 +106,7 @@ public class Minimap : MonoBehaviour
 
     public struct MinimapRequest
     {
-        public string mapName;
+        public uint fileDataId;
         public Vector2 coords;
     }
 

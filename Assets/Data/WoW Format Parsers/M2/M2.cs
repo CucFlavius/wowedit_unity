@@ -9,7 +9,6 @@ using Assets.Data.WoW_Format_Parsers.M2;
 using static Assets.Data.WoW_Format_Parsers.M2.M2_Data;
 using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.Data.WoW_Format_Parsers;
-using Assets.Tools.CSV;
 using CASCLib;
 using Assets.UI.CASC;
 using Assets.Data.DataLocal;
@@ -19,11 +18,12 @@ public static partial class M2
     public static bool ThreadWorking;
     public static GroupData groupDataBuffer;
     public static List<string> LoadedBLPs = new List<string>();
-    public static List<ulong> LoadedBLPHashes = new List<ulong>();
+    public static List<uint> LoadedBLPFileDataIds = new List<uint>();
     public static GameObject Casc;
     public static CASCHandler CascHandler;
     public static Jenkins96 Hasher = new Jenkins96();
     public static List<uint> SkinFiles = new List<uint>();
+    public static DataLocalHandler Local = new DataLocalHandler();
 
     public static void Load(string dataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
     {
@@ -98,45 +98,45 @@ public static partial class M2
 
     private static void ParseM2_Root(string dataPath, M2Data m2Data, M2Texture m2Tex)
     {
-        var stream = DataLocalHandler.GetFileStream(dataPath);
+        var stream = Local.GetFileStream(dataPath);
         ParseM2(stream, m2Data, m2Tex);
     }
     
     private static void ParseM2_Root(uint fileDataID, M2Data m2Data, M2Texture m2Tex)
     {
-        // if (CascHandler.FileExists((int)fileDataID))
-        // {
-        //     Debug.Log($"Found {fileDataID}");
-        ulong hash = FileDataHash.ComputeHash((int)fileDataID);
-        var stream = CascHandler.OpenFile(hash);
+        var stream = CascHandler.OpenFile(fileDataID);
         ParseM2(stream, m2Data, m2Tex);
-        // }
-        // else
-        //     Debug.Log($"Model not found - {fileDataID}");
     }
 
     private static void ParseM2(Stream stream, M2Data m2Data, M2Texture m2Tex)
     {
+        long streamPos = 0;
+
         using (BinaryReader reader = new BinaryReader(stream))
         {
-            while (stream.Position < stream.Length)
+            while (streamPos < stream.Length)
             {
-                M2ChunkId chunkID = (M2ChunkId)reader.ReadInt32();
-                int chunkSize = reader.ReadInt32();
+                stream.Position = streamPos;
+                M2ChunkId chunkID = (M2ChunkId)reader.ReadUInt32();
+                uint chunkSize = reader.ReadUInt32();
+
+                streamPos = stream.Position + chunkSize;
+
+                // Debug.Log($"M2: ChunkId -> {chunkID} ChunkSize -> {chunkSize} Position -> {reader.BaseStream.Position}:{stream.Position}");
 
                 switch (chunkID)
                 {
                     case M2ChunkId.MD21:
                         ReadMD21(reader, m2Data, m2Tex);
                         break;
-                    case M2ChunkId.TXID:
-                        ReadTXID(reader, m2Data);
-                        break;
                     case M2ChunkId.SFID:
                         ReadSFID(reader);
                         break;
+                    case M2ChunkId.TXID:
+                        ReadTXID(reader, m2Data);
+                        break;
                     default:
-                        SkipUnknownChunk(stream, chunkID, chunkSize);
+                        SkipUnknownChunk(stream, chunkSize);
                         break;
                 }
             }
@@ -145,13 +145,13 @@ public static partial class M2
 
     private static void ParseM2_Skin(string dataPath, M2Data m2Data)
     {
-        var stream = DataLocalHandler.GetFileStream(dataPath);
+        var stream = Local.GetFileStream(dataPath);
         ParseSkin(stream, m2Data);
     }
 
     private static void ParseM2_Skin(uint skinFileId, M2Data m2Data)
     {
-        var stream = CascHandler.OpenFile((int)skinFileId);
+        var stream = CascHandler.OpenFile(skinFileId);
         ParseSkin(stream, m2Data);
     }
 

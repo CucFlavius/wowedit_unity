@@ -16,6 +16,7 @@ namespace Assets.World.Terrain
         Camera cameraMain;
         public Vector2 coords;
         public string mapName;
+        public uint FileDataId;
 
         private void Start()
         {

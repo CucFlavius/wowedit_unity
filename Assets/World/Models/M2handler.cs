@@ -49,17 +49,6 @@ namespace Assets.World.Models
             M2ThreadQueue.Enqueue(item);
         }
 
-        public void AddToQueue(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            M2QueueItem item    = new M2QueueItem();
-            item.objectDataPath = objectDataPath;
-            item.uniqueID       = uniqueID;
-            item.Position       = position;
-            item.Rotation       = rotation;
-            item.Scale          = scale;
-            M2ThreadQueue.Enqueue(item);
-        }
-
         public void M2ThreadRun(uint fileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             currentM2FileDataId = fileDataId;
@@ -68,10 +57,10 @@ namespace Assets.World.Models
             currentM2rotation   = rotation;
             currentM2scale      = scale;
 
-            if (!terrainHandler.LoadedM2Hashes.ContainsKey(fileDataId))
+            if (!terrainHandler.LoadedM2Ids.ContainsKey(fileDataId))
             {
                 //ParseM2Block(); //nonthreaded - for testing purposes
-                terrainHandler.LoadedM2Hashes.Add(fileDataId, null);
+                terrainHandler.LoadedM2Ids.Add(fileDataId, null);
                 M2Thread = new Thread(ParseM2Block);
                 M2Thread.IsBackground = true;
                 M2Thread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -80,29 +69,6 @@ namespace Assets.World.Models
             else
             {
                 CloneM2(fileDataId, uniqueID, position, rotation, scale);
-            }
-        }
-
-        public void M2ThreadRun(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            currentM2datapath = objectDataPath;
-            currentM2uniqueID = uniqueID;
-            currentM2position = position;
-            currentM2rotation = rotation;
-            currentM2scale = scale;
-
-            if (!terrainHandler.LoadedM2s.ContainsKey(objectDataPath))
-            {
-                //ParseM2Block(); //nonthreaded - for testing purposes
-                terrainHandler.LoadedM2s.Add(objectDataPath, null);
-                M2Thread = new Thread(ParseM2Block);
-                M2Thread.IsBackground = true;
-                M2Thread.Priority = System.Threading.ThreadPriority.AboveNormal;
-                M2Thread.Start();
-            }
-            else
-            {
-                CloneM2(objectDataPath, uniqueID, position, rotation, scale);
             }
         }
 
@@ -117,10 +83,7 @@ namespace Assets.World.Models
             if (M2ThreadQueue.Count > 0)
             {
                 M2QueueItem queueItem = M2ThreadQueue.Dequeue();
-                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                    M2ThreadRun(queueItem.objectDataPath, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
-                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                    M2ThreadRun(queueItem.FileDataId, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
+                M2ThreadRun(queueItem.FileDataId, queueItem.uniqueID, queueItem.Position, queueItem.Rotation, queueItem.Scale);
             }
             else if (M2ThreadQueue.Count == 0)
                 busy = false;
@@ -145,36 +108,17 @@ namespace Assets.World.Models
                 // Check if copies are Required //
                 foreach (M2QueueItem item in M2Clones)
                 {
-                    if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                    if (terrainHandler.LoadedM2Ids.ContainsKey(item.FileDataId))
                     {
-                        if (terrainHandler.LoadedM2s.ContainsKey(item.objectDataPath))
+                        if (terrainHandler.LoadedM2Ids[item.FileDataId] != null)
                         {
-                            if (terrainHandler.LoadedM2s[item.objectDataPath] != null)
-                            {
-                                M2QueueItem clone = item;
-                                RemoveElements.Add(item);
-                                GameObject instance = Instantiate(terrainHandler.LoadedM2s[item.objectDataPath]);
-                                instance.transform.position = clone.Position;
-                                instance.transform.rotation = clone.Rotation;
-                                instance.transform.localScale = Vector3.one;
-                                instance.transform.SetParent(terrainHandler.ADTBlockM2Parents[item.uniqueID].transform);
-                            }
-                        }
-                    }
-                    else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                    {
-                        if (terrainHandler.LoadedM2Hashes.ContainsKey(item.FileDataId))
-                        {
-                            if (terrainHandler.LoadedM2Hashes[item.FileDataId] != null)
-                            {
-                                M2QueueItem clone = item;
-                                RemoveElements.Add(item);
-                                GameObject instance = Instantiate(terrainHandler.LoadedM2Hashes[item.FileDataId]);
-                                instance.transform.position = clone.Position;
-                                instance.transform.rotation = clone.Rotation;
-                                instance.transform.localScale = Vector3.one;
-                                instance.transform.SetParent(terrainHandler.ADTBlockM2Parents[item.uniqueID].transform);
-                            }
+                            M2QueueItem clone = item;
+                            RemoveElements.Add(item);
+                            GameObject instance = Instantiate(terrainHandler.LoadedM2Ids[item.FileDataId]);
+                            instance.transform.position = clone.Position;
+                            instance.transform.rotation = clone.Rotation;
+                            instance.transform.localScale = Vector3.one;
+                            instance.transform.SetParent(terrainHandler.ADTBlockM2Parents[item.uniqueID].transform);
                         }
                     }
                 }
@@ -198,44 +142,18 @@ namespace Assets.World.Models
             M2Clones.Add(item);
         }
 
-        public void CloneM2(string objectDataPath, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            M2QueueItem item    = new M2QueueItem();
-            item.objectDataPath = objectDataPath;
-            item.uniqueID       = uniqueID;
-            item.Position       = position;
-            item.Rotation       = rotation;
-            item.Scale          = scale;
-            M2Clones.Add(item);
-        }
-
-        public void ParseM2Block()
-        {
-            if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                M2.Load(currentM2datapath, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
-            else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                M2.Load(currentM2FileDataId, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
-        }
+        public void ParseM2Block() => M2.Load(currentM2FileDataId, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
 
         public void CreateM2Object(M2Data data)
         {
             // M2 Object //
             GameObject M2Instance = new GameObject();
 
-            if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-            {
-                terrainHandler.LoadedM2s[data.dataPath] = M2Instance;
-                terrainHandler.LoadedM2s[data.dataPath].name = data.name;
-                LODGroup Lodgroup = terrainHandler.LoadedM2s[data.dataPath].AddComponent<LODGroup>();
-            }
-            else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-            {
-                terrainHandler.LoadedM2Hashes[data.FileDataId] = M2Instance;
-                terrainHandler.LoadedM2Hashes[data.FileDataId].name = data.name;
-                LODGroup Lodgroup = terrainHandler.LoadedM2Hashes[data.FileDataId].AddComponent<LODGroup>();
-            }
+            terrainHandler.LoadedM2Ids[data.FileDataId] = M2Instance;
+            terrainHandler.LoadedM2Ids[data.FileDataId].name = data.name;
 
             // LoD Group //
+            LODGroup Lodgroup = terrainHandler.LoadedM2Ids[data.FileDataId].AddComponent<LODGroup>();
             LOD[] lods = new LOD[1];
             Renderer[] renderers = new Renderer[data.submeshData.Count];
 
@@ -373,16 +291,17 @@ namespace Assets.World.Models
             rend.materials = materials;
 
             // Textures //
-            for (int tex = 0; tex < data.submeshData.Count; tex++)
+            for (var tex = 0; tex < data.submeshData.Count; tex++)
             {
-                uint FDID          = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].FileDataId;
-                Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_submesh_index].M2Batch_texture]].texture2Ddata;
+                uint FDID           = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_skinSectionIndex].M2Batch_textureComboIndex]].FileDataId;
+                Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_skinSectionIndex].M2Batch_textureComboIndex]].texture2Ddata;
+
+                Debug.Log($"M2Handler: FileDataId -> {FDID} Width -> {tdata.width} Height -> {tdata.height}");
+
                 if (FDID != 0 && tdata.TextureData != null)
                 {
                     if (LoadedM2TextureIds.ContainsKey(FDID))
-                    {
                         materials[tex].SetTexture("_MainTex", LoadedM2TextureIds[FDID]);
-                    }
                     else
                     {
                         try
@@ -405,34 +324,16 @@ namespace Assets.World.Models
             BonesRoot.AddComponent<DrawBones>();
 
             // Object Transforms //
+            terrainHandler.LoadedM2Ids[data.FileDataId].transform.position = data.position;
+            terrainHandler.LoadedM2Ids[data.FileDataId].transform.rotation = data.rotation;
+            terrainHandler.LoadedM2Ids[data.FileDataId].transform.localScale = data.scale;
 
-            if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+            if (data.uniqueID != -1)
             {
-                terrainHandler.LoadedM2s[data.dataPath].transform.position = data.position;
-                terrainHandler.LoadedM2s[data.dataPath].transform.rotation = data.rotation;
-                terrainHandler.LoadedM2s[data.dataPath].transform.localScale = data.scale;
-
-                if (data.uniqueID != -1)
-                {
-                    if (terrainHandler.ADTBlockM2Parents[data.uniqueID].transform != null)
-                        terrainHandler.LoadedM2s[data.dataPath].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
-                    else
-                        Destroy(terrainHandler.LoadedM2s[data.dataPath]);
-                }
-            }
-            else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-            {
-                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.position = data.position;
-                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.rotation = data.rotation;
-                terrainHandler.LoadedM2Hashes[data.FileDataId].transform.localScale = data.scale;
-
-                if (data.uniqueID != -1)
-                {
-                    if (terrainHandler.ADTBlockM2Parents[data.uniqueID].transform != null)
-                        terrainHandler.LoadedM2Hashes[data.FileDataId].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
-                    else
-                        Destroy(terrainHandler.LoadedM2Hashes[data.FileDataId]);
-                }
+                if (terrainHandler.ADTBlockM2Parents[data.uniqueID].transform != null)
+                    terrainHandler.LoadedM2Ids[data.FileDataId].transform.SetParent(terrainHandler.ADTBlockM2Parents[data.uniqueID].transform);
+                else
+                    Destroy(terrainHandler.LoadedM2Ids[data.FileDataId]);
             }
 
             terrainHandler.frameBusy = false;

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -18,20 +20,24 @@ namespace CASCLib
 
         private CASCHandler(CASCConfig config) : base(config)
         {
+            Debug.Log("CASCHandler: Loading Encoding Handler...");
             using (var fs = OpenEncodingFile(this))
                 EncodingHandler = new EncodingHandler(fs);
 
             if ((CASCConfig.LoadFlags & LoadFlags.Download) != 0)
             {
+                Debug.Log("CASCHandler: Loading Download Handler...");
                 using (var fs = OpenDownloadFile(EncodingHandler, this))
                     DownloadHandler = new DownloadHandler(fs);
             }
 
+            Debug.Log("CASCHandler: Loading WoW Root Handler...");
             using (var fs = OpenRootFile(EncodingHandler, this))
                 RootHandler = new WowRootHandler(fs);
 
             if ((CASCConfig.LoadFlags & LoadFlags.Install) != 0)
             {
+                Debug.Log("CASCHandler: Loading Install Handler...");
                 using (var fs = OpenInstallFile(EncodingHandler, this))
                     InstallHandler = new InstallHandler(fs);
             }
@@ -42,7 +48,7 @@ namespace CASCLib
             return new CASCHandler(config);
         }
 
-        public override bool FileExists(int fileDataId)
+        public override bool FileExists(uint fileDataId)
         {
             if (Root is WowRootHandler rh)
                 return FileExists(rh.GetHashByFileDataId(fileDataId));
@@ -74,13 +80,14 @@ namespace CASCLib
             return false;
         }
 
-        public override Stream OpenFile(int fileDataId)
+        public override Stream OpenFile(uint fileDataId)
         {
             if (Root is WowRootHandler rh)
                 return OpenFile(rh.GetHashByFileDataId(fileDataId));
 
             if (CASCConfig.ThrowOnFileNotFound)
-                throw new FileNotFoundException("FileData: " + fileDataId.ToString());
+                Debug.Log($"File not found: {fileDataId}");
+
             return null;
         }
 
@@ -92,7 +99,8 @@ namespace CASCLib
                 return OpenFile(encInfo.Key);
 
             if (CASCConfig.ThrowOnFileNotFound)
-                throw new FileNotFoundException(string.Format("{0:X16}", hash));
+                Debug.Log($"File not found: {hash:X16}");
+
             return null;
         }
 
@@ -106,7 +114,7 @@ namespace CASCLib
         {
             IndexEntry idxInfo = LocalIndex.GetIndexInfo(key);
             if (idxInfo == null)
-                Console.WriteLine("Local index missing: {0}", key.ToHexString());
+                Debug.Log($"Local index missing: {key.ToHexString()}");
 
             return GetLocalDataStreamInternal(idxInfo, key);
         }

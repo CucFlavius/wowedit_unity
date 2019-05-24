@@ -2,7 +2,6 @@
 using Assets.Data.WoW_Format_Parsers;
 using Assets.Data.WoW_Format_Parsers.M2;
 using Assets.Data.WoW_Format_Parsers.WMO;
-using Assets.Tools.CSV;
 using Assets.WoWEditSettings;
 using System;
 using System.Collections;
@@ -63,8 +62,6 @@ public static partial class M2
         for (int n = 0; n < name.Size; n++)
             m2Data.name += Convert.ToChar(br.ReadByte());
 
-        Debug.Log(m2Data.name);
-
         // Bones //
         br.BaseStream.Position = bones.Offset + md20position;
         M2TrackBase[] translationM2track = new M2TrackBase[bones.Size];
@@ -90,7 +87,6 @@ public static partial class M2
 
             m2Data.m2CompBone.Add(m2CompBone);
         }
-
 
         // Animations //
         int numberOfAnimations = 0;
@@ -250,26 +246,30 @@ public static partial class M2
 
         for (int i = 0; i < numTextures; i++)
         {
-            int texture = br.ReadInt32();
-            ulong Hash = CascHandler.Root.GetHashByFileDataId(texture);
+            uint texture = br.ReadUInt32();
 
             M2Texture m2Texture         = new M2Texture();
             Texture2Ddata texture2Ddata = new Texture2Ddata();
-            if (!LoadedBLPHashes.Contains(Hash))
+            if (!LoadedBLPFileDataIds.Contains(texture))
             {
-                var stream                  = CascHandler.OpenFile(Hash);
+                var stream                  = CascHandler.OpenFile(texture);
                 BLP blp                     = new BLP();
                 byte[] data                 = blp.GetUncompressed(stream, true);
                 BLPinfo info                = blp.Info();
+
                 texture2Ddata.hasMipmaps    = info.hasMipmaps;
                 texture2Ddata.width         = info.width;
                 texture2Ddata.height        = info.height;
                 texture2Ddata.textureFormat = info.textureFormat;
                 texture2Ddata.TextureData   = data;
+
                 m2Texture.texture2Ddata     = texture2Ddata;
+                m2Texture.FileDataId        = texture;
+
                 stream.Close();
                 stream.Dispose();
-                LoadedBLPHashes.Add(Hash);
+
+                LoadedBLPFileDataIds.Add(texture);
             }
             m2Data.m2Tex.Add(m2Texture);
         }
@@ -287,8 +287,8 @@ public static partial class M2
         }
     }
 
-    public static void SkipUnknownChunk(Stream ms, M2ChunkId chunkID, int chunkSize)
+    public static void SkipUnknownChunk(Stream ms, uint chunkSize)
     {
-        ms.Seek(chunkSize, SeekOrigin.Current);
+        ms.Position += chunkSize;
     }
 }

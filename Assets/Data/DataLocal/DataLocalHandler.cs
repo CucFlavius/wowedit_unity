@@ -11,7 +11,7 @@ namespace Assets.Data.DataLocal
 {
     public class DataLocalHandler
     {
-        public static string GetFile(string fileNameRaw)
+        public string GetFile(string fileNameRaw)
         {
             string fileLocation = null;
             string fileName = string.Empty;
@@ -29,7 +29,7 @@ namespace Assets.Data.DataLocal
             return fileLocation;
         }
 
-        public static Stream GetFileStream(string filename)
+        public Stream GetFileStream(string filename)
         {
             Stream stream = File.OpenRead(GetFile(filename));
             return stream;

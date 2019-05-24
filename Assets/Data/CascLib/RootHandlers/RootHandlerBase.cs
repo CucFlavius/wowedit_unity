@@ -8,11 +8,12 @@ namespace CASCLib
         protected readonly Jenkins96 Hasher = new Jenkins96();
         protected CASCFolder Root;
 
-        public virtual int Count { get; protected set; }
-        public virtual int CountTotal { get; protected set; }
-        public virtual int CountSelect { get; protected set; }
-        public virtual int CountUnknown { get; protected set; }
+        public virtual uint Count { get; protected set; }
+        public virtual uint CountTotal { get; protected set; }
+        public virtual uint CountSelect { get; protected set; }
+        public virtual uint CountUnknown { get; protected set; }
         public virtual LocaleFlags Locale { get; protected set; }
+        public virtual Dictionary<string, uint> ListFileEntries { get; set; }
         public bool OverrideArchive { get; protected set; }
 
         public abstract IEnumerable<KeyValuePair<ulong, RootEntry>> GetAllEntries();
@@ -21,11 +22,11 @@ namespace CASCLib
 
         public abstract IEnumerable<RootEntry> GetEntries(ulong hash);
 
-        public abstract ulong GetHashByFileDataId(int FileDataId);
+        public abstract ulong GetHashByFileDataId(uint FileDataId);
 
-        public abstract int GetFileDataIdByHash(ulong hash);
+        public abstract uint GetFileDataIdByHash(ulong hash);
 
-        public abstract int GetFileDataIdByName(string name);
+        public abstract uint GetFileDataIdByName(string name);
 
         public abstract void LoadListFile();
 

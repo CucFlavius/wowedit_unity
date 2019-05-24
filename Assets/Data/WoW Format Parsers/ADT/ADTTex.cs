@@ -1,6 +1,5 @@
 ﻿using CASCLib;
 using Assets.Data.WoW_Format_Parsers;
-using Assets.Tools.CSV;
 using Assets.WoWEditSettings;
 using System.Collections;
 using System.Collections.Generic;
@@ -264,34 +263,34 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             int numberofLayers      = chunkData.NumberOfTextureLayers;
             if (numberofLayers > 1)
             {
-                chunkData.alphaLayers = new List<byte[]>();
-                for (int l = 1; l < numberofLayers; l++)
-                {
-                    if (WDT.Flags[mapname].adt_has_height_texturing == true)
-                    {
-                        if (chunkData.alpha_map_compressed[l] == false)
-                            chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
-                        else if (chunkData.alpha_map_compressed[l] == true)
-                            chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                    }
-                    else if (WDT.Flags[mapname].adt_has_height_texturing == false)
-                    {
-                        if (WDT.Flags[mapname].adt_has_big_alpha == false)
-                        {
-                            if (chunkData.alpha_map_compressed[l] == false)
-                                chunkData.alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
-                            else if (chunkData.alpha_map_compressed[l] == true)
-                                chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                        }
-                        else if (WDT.Flags[mapname].adt_has_big_alpha == true)
-                        {
-                            if (chunkData.alpha_map_compressed[l] == false)
-                                chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
-                            else if (chunkData.alpha_map_compressed[l] == true)
-                                chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                        }
-                    }
-                }
+                // chunkData.alphaLayers = new List<byte[]>();
+                // for (int l = 1; l < numberofLayers; l++)
+                // {
+                //     if (WDT.Flags[mapname].adt_has_height_texturing == true)
+                //     {
+                //         if (chunkData.alpha_map_compressed[l] == false)
+                //             chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                //         else if (chunkData.alpha_map_compressed[l] == true)
+                //             chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                //     }
+                //     else if (WDT.Flags[mapname].adt_has_height_texturing == false)
+                //     {
+                //         if (WDT.Flags[mapname].adt_has_big_alpha == false)
+                //         {
+                //             if (chunkData.alpha_map_compressed[l] == false)
+                //                 chunkData.alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
+                //             else if (chunkData.alpha_map_compressed[l] == true)
+                //                 chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                //         }
+                //         else if (WDT.Flags[mapname].adt_has_big_alpha == true)
+                //         {
+                //             if (chunkData.alpha_map_compressed[l] == false)
+                //                 chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                //             else if (chunkData.alpha_map_compressed[l] == true)
+                //                 chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                //         }
+                //     }
+                // }
             }
         }
 

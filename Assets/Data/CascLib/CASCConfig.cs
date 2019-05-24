@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CASCLib
 {
@@ -134,19 +135,18 @@ namespace CASCLib
 
         public static CASCConfig LoadOnlineStorageConfig(string product, string region, bool useCurrentBuild = false)
         {
-            var config = new CASCConfig { OnlineMode = true };
-
-            config.Region = region;
-            config.Product = product;
+            var config = new CASCConfig { OnlineMode = true, Region = region, Product = product };
 
             using (var ribbit = new RibbitClient("us"))
             using (var cdnsStream = ribbit.GetAsStream($"v1/products/{product}/cdns"))
+            //using (var cdnsStream = CDNIndexHandler.OpenFileDirect(string.Format("http://us.patch.battle.net:1119/{0}/cdns", product)))
             {
                 config._CDNData = VerBarConfig.ReadVerBarConfig(cdnsStream);
             }
 
             using (var ribbit = new RibbitClient("us"))
             using (var versionsStream = ribbit.GetAsStream($"v1/products/{product}/versions"))
+            //using (var versionsStream = CDNIndexHandler.OpenFileDirect(string.Format("http://us.patch.battle.net:1119/{0}/versions", product)))
             {
                 config._VersionsData = VerBarConfig.ReadVerBarConfig(versionsStream);
             }
@@ -163,6 +163,7 @@ namespace CASCLib
             config.GameType = CASCGame.DetectOnlineGame(product);
 
             string cdnKey = config._VersionsData[config._versionsIndex]["CDNConfig"].ToLower();
+            //string cdnKey = "da4896ce91922122bc0a2371ee114423";
             using (Stream stream = CDNIndexHandler.OpenConfigFileDirect(config, cdnKey))
             {
                 config._CDNConfig = KeyValueConfig.ReadKeyValueConfig(stream);
@@ -171,6 +172,8 @@ namespace CASCLib
             config.ActiveBuild = 0;
 
             config._Builds = new List<KeyValueConfig>();
+
+            Debug.Log($"INFO: CDNConfig Builds -> {config._CDNConfig["builds"]}");
 
             if (config._CDNConfig["builds"] != null)
             {
@@ -202,6 +205,7 @@ namespace CASCLib
             }
 
             string buildKey = config._VersionsData[config._versionsIndex]["BuildConfig"].ToLower();
+            //string buildKey = "3b0517b51edbe0b96f6ac5ea7eaaed38";
             using (Stream stream = CDNIndexHandler.OpenConfigFileDirect(config, buildKey))
             {
                 var cfg = KeyValueConfig.ReadKeyValueConfig(stream);

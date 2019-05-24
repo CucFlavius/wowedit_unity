@@ -32,12 +32,14 @@ namespace Assets.World
         public Vector2 CameraStartBlock;
         private int PreviousCamX;
         private int PreviousCamY;
+        public uint fileDataId;
         public string MapName;
         private int pullFrom = 0;
 
         // Use this for initialization
         void Start()
         {
+            blockSize           = 533.33333f / Settings.WorldScale;
             // create matrices //
             ADTMatrix           = new int[maxWorldSize, maxWorldSize];
             //LoadedADTBlocks   = new Queue<GameObject>();
@@ -46,7 +48,6 @@ namespace Assets.World
             existingADTs        = new bool[maxWorldSize, maxWorldSize];
             previousTerrainLod  = new int[maxWorldSize, maxWorldSize];
             currentTerrainLod   = new int[maxWorldSize, maxWorldSize];
-            blockSize           = 533.33333f / Settings.WorldScale;
             // clear Matrix //
             ClearMatrix();
         }
@@ -71,26 +72,26 @@ namespace Assets.World
                 {
                     GameObject PulledObj = LoadedADTBlocks[pullFrom];
                     Vector2 coords = PulledObj.GetComponent<ADTBlock>().coords;
-                    string mapName = PulledObj.GetComponent<ADTBlock>().mapName;
-                    ADTMatrix[(int)coords.x, (int)coords.y] = 0;
+
                     TerrainHandler.QueueItem queueItem = new TerrainHandler.QueueItem();
+                    uint fileDataId = PulledObj.GetComponent<ADTBlock>().FileDataId;
+                    queueItem.FileDataId = fileDataId;
+
+                    ADTMatrix[(int)coords.x, (int)coords.y] = 0;
                     queueItem.x = (int)coords.x;
                     queueItem.y = (int)coords.y;
-                    queueItem.mapName = mapName;
                     queueItem.Block = PulledObj;
+
                     if (terainHandler.ADTTexQueue.Contains(queueItem))
-                    {
                         terainHandler.ADTTexQueue.Remove(queueItem);
-                    }
+
                     PulledObj.GetComponent<ADTBlock>().UnloadAsset();
                     LoadedADTBlocks.RemoveAt(pullFrom);
                     terainHandler.LoadedQueueItems.Remove(queueItem);
                     pullFrom = 0;
                 }
                 else
-                {
                     pullFrom++;
-                }
             }
 
         }
@@ -100,12 +101,23 @@ namespace Assets.World
             Resources.UnloadUnusedAssets();
         }
 
-        public void LoadFullWorld(string map_name, Vector2 playerSpawn)
+        public void LoadWorld(uint FileDataId, Vector2 playerSpawn)
+        {
+            fileDataId = FileDataId;
+            LoadFullWorld(playerSpawn);
+        }
+
+        public void LoadWorld(string mapName, Vector2 playerSpawn)
+        {
+            MapName = mapName;
+            LoadFullWorld(playerSpawn);
+        }
+
+        public void LoadFullWorld(Vector2 playerSpawn)
         {
             ADT.working = true;
             TerrainParent.GetComponent<TerrainHandler>().frameBusy = false;
             pullFrom = 0;
-            MapName = map_name;
 
             // clear Matrix //
             ClearMatrix();
@@ -207,8 +219,13 @@ namespace Assets.World
                                 GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTblock.transform.SetParent(TerrainParent.transform);
                                 ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
-                                ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+
+                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                    ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
+
+                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
                                 LoadedADTBlocks.Add(ADTblock);
                             }
                         }
@@ -269,8 +286,13 @@ namespace Assets.World
                                 GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTblock.transform.SetParent(TerrainParent.transform);
                                 ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
-                                ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+
+                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                    ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
+
+                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
                                 LoadedADTBlocks.Add(ADTblock);
                             }
                         }
@@ -345,8 +367,13 @@ namespace Assets.World
                                         GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                         ADTblock.transform.SetParent(TerrainParent.transform);
                                         ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
-                                        ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+
+                                        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                            ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                        else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                            ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
+
+                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
                                         LoadedADTBlocks.Add(ADTblock);
                                     }
                                 }
@@ -407,8 +434,13 @@ namespace Assets.World
                                         GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                         ADTblock.transform.SetParent(TerrainParent.transform);
                                         ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
-                                        ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(MapName, x, y, ADTblock);
+
+                                        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
+                                            ADTblock.GetComponent<ADTBlock>().mapName = MapName;
+                                        else if (Settings.GetSection("misc").GetString("wowsource") == "game")
+                                            ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
+
+                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
                                         LoadedADTBlocks.Add(ADTblock);
                                     }
                                 }
@@ -486,31 +518,26 @@ namespace Assets.World
                 WMOParent.GetComponent<WMOhandler>().StopLoading();
                 M2Parent.GetComponent<M2handler>().StopLoading();
 
-                ADTMatrix = new int[maxWorldSize, maxWorldSize];
-                LoadedADTBlocks = new List<GameObject>();
-                ADTLowMatrix = new GameObject[maxWorldSize, maxWorldSize];
-                existingADTs = new bool[maxWorldSize, maxWorldSize];
-                previousTerrainLod = new int[maxWorldSize, maxWorldSize];
-                currentTerrainLod = new int[maxWorldSize, maxWorldSize];
-                pullFrom = 0;
+                ADTMatrix           = new int[maxWorldSize, maxWorldSize];
+                LoadedADTBlocks     = new List<GameObject>();
+                ADTLowMatrix        = new GameObject[maxWorldSize, maxWorldSize];
+                existingADTs        = new bool[maxWorldSize, maxWorldSize];
+                previousTerrainLod  = new int[maxWorldSize, maxWorldSize];
+                currentTerrainLod   = new int[maxWorldSize, maxWorldSize];
+                pullFrom            = 0;
                 // clear Matrix //
                 ClearMatrix();
 
 
                 foreach (Transform child in WMOParent.transform)
-                {
-                    //child.gameObject.GetComponent<WMOObject>().UnloadAsset();
-                    GameObject.Destroy(child.gameObject);
-                }
+                    Destroy(child.gameObject);
+
                 foreach (Transform child in TerrainParent.transform)
-                {
                     child.gameObject.GetComponent<ADTBlock>().UnloadAsset();
-                }
+
                 foreach (Transform child in M2Parent.transform)
-                {
-                    //child.gameObject.GetComponent<M2Object>().UnloadAsset();
-                    GameObject.Destroy(child.gameObject);
-                }
+                    Destroy(child.gameObject);
+
                 Resources.UnloadUnusedAssets();
             }
         }

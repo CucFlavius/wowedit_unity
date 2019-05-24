@@ -1,12 +1,17 @@
-﻿using System.Collections;
+﻿using Assets.Const;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public partial class DB2
 {
-    public class Data
+    [Serializable]
+    public class DB2Storage<T> : Dictionary<uint, T> where T : new()
     {
-        //public static Dictionary<int, Definitions.AnimationData> AnimationData;
+        public bool HasRecord(uint id)
+        {
+            return ContainsKey(id);
+        }
     }
-
 }

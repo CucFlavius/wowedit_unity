@@ -1,4 +1,4 @@
-﻿using Assets.Tools.CSV;
+﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,13 +85,13 @@ namespace CASCLib
 
     class FileDataHash
     {
-        public static ulong ComputeHash(int fileDataId)
+        public static ulong ComputeHash(uint fileDataId)
         {
             ulong baseOffset = 0xCBF29CE484222325UL;
 
             for (int i = 0; i < 4; i++)
             {
-                baseOffset = 0x100000001B3L * ((((uint)fileDataId >> (8 * i)) & 0xFF) ^ baseOffset);
+                baseOffset = 0x100000001B3L * (((fileDataId >> (8 * i)) & 0xFF) ^ baseOffset);
             }
 
             return baseOffset;
@@ -100,31 +100,32 @@ namespace CASCLib
 
     public class WowRootHandler : RootHandlerBase
     {
-        private MultiDictionary<int, RootEntry> RootData = new MultiDictionary<int, RootEntry>();
-        private Dictionary<int, ulong> FileDataStore = new Dictionary<int, ulong>();
-        private Dictionary<ulong, int> FileDataStoreReverse = new Dictionary<ulong, int>();
+        private MultiDictionary<uint, RootEntry> RootData = new MultiDictionary<uint, RootEntry>();
+        private Dictionary<uint, ulong> FileDataStore = new Dictionary<uint, ulong>();
+        private Dictionary<ulong, uint> FileDataStoreReverse = new Dictionary<ulong, uint>();
         private HashSet<ulong> UnknownFiles = new HashSet<ulong>();
-        private ListfileLoader ListfileLoader = new ListfileLoader();
+        private Dictionary<string, uint> ListFileEntry = new Dictionary<string, uint>();
         private string ListFile = "listfile.csv";
         private string listUrl = "https://wow.tools/casc/listfile/download/csv/build?buildConfig=54b3dc4ced90d45071f72a05fecfd063";
         private WebClient client = new WebClient();
 
-        public override int Count => RootData.Count;
-        public override int CountTotal => RootData.Sum(re => re.Value.Count);
-        public override int CountUnknown => UnknownFiles.Count;
+        public override Dictionary<string, uint> ListFileEntries => ListFileEntry;
+        public override uint Count => (uint)RootData.Count;
+        public override uint CountTotal => (uint)RootData.Sum(re => re.Value.Count);
+        public override uint CountUnknown => (uint)UnknownFiles.Count;
 
         public WowRootHandler(BinaryReader stream)
         {
-            int magic = stream.ReadInt32();
+            uint magic = stream.ReadUInt32();
 
-            int numFilesTotal = 0, numFilesWithNameHash = 0, numFilesRead = 0;
+            uint numFilesTotal = 0, numFilesWithNameHash = 0, numFilesRead = 0;
 
-            const int TSFMMagic = 0x4D465354;
+            const uint TSFMMagic = 0x4D465354;
 
             if (magic == TSFMMagic)
             {
-                numFilesTotal = stream.ReadInt32();
-                numFilesWithNameHash = stream.ReadInt32();
+                numFilesTotal           = stream.ReadUInt32();
+                numFilesWithNameHash    = stream.ReadUInt32();
             }
             else
             {
@@ -133,7 +134,7 @@ namespace CASCLib
 
             while (stream.BaseStream.Position < stream.BaseStream.Length)
             {
-                int count = stream.ReadInt32();
+                uint count = stream.ReadUInt32();
 
                 numFilesRead += count;
 
@@ -147,17 +148,17 @@ namespace CASCLib
                     throw new Exception("block.ContentFlags != ContentFlags.None");
 
                 RootEntry[] entries = new RootEntry[count];
-                int[] filedataIds = new int[count];
+                uint[] filedataIds = new uint[count];
 
-                int fileDataIndex = 0;
+                uint fileDataIndex = 0;
 
                 for (var i = 0; i < count; ++i)
                 {
                     entries[i].LocaleFlags = localeFlags;
                     entries[i].ContentFlags = contentFlags;
 
-                    filedataIds[i] = fileDataIndex + stream.ReadInt32();
-                    fileDataIndex = filedataIds[i] + 1;
+                    filedataIds[i] = fileDataIndex + stream.ReadUInt32();
+                    fileDataIndex  = filedataIds[i] + 1;
                 }
 
                 //Console.WriteLine("Block: {0} {1} (size {2})", block.ContentFlags, block.LocaleFlags, count);
@@ -190,7 +191,7 @@ namespace CASCLib
 
                 for (var i = 0; i < count; ++i)
                 {
-                    int fileDataId = filedataIds[i];
+                    uint fileDataId = filedataIds[i];
 
                     //Logger.WriteLine("filedataid {0}", fileDataId);
 
@@ -245,7 +246,7 @@ namespace CASCLib
 
         public override IEnumerable<RootEntry> GetAllEntries(ulong hash)
         {
-            if (!FileDataStoreReverse.TryGetValue(hash, out int fileDataId))
+            if (!FileDataStoreReverse.TryGetValue(hash, out uint fileDataId))
                 yield break;
 
             if (!RootData.TryGetValue(fileDataId, out List<RootEntry> result))
@@ -255,7 +256,7 @@ namespace CASCLib
                 yield return entry;
         }
 
-        public IEnumerable<RootEntry> GetEntriesByFileDataId(int fileDataId) => GetEntries(GetHashByFileDataId(fileDataId));
+        public IEnumerable<RootEntry> GetEntriesByFileDataId(uint fileDataId) => GetEntries(GetHashByFileDataId(fileDataId));
 
         // Returns only entries that match current locale and content flags
         public override IEnumerable<RootEntry> GetEntries(ulong hash)
@@ -284,21 +285,21 @@ namespace CASCLib
                 yield return entry;
         }
 
-        public bool FileExist(int fileDataId) => RootData.ContainsKey(fileDataId);
+        public bool FileExist(uint fileDataId) => RootData.ContainsKey(fileDataId);
 
-        public override ulong GetHashByFileDataId(int FileDataId)
+        public override ulong GetHashByFileDataId(uint FileDataId)
         {
             FileDataStore.TryGetValue(FileDataId, out ulong hash);
             return hash;
         }
 
-        public override int GetFileDataIdByHash(ulong hash)
+        public override uint GetFileDataIdByHash(ulong hash)
         {
-            FileDataStoreReverse.TryGetValue(hash, out int fid);
+            FileDataStoreReverse.TryGetValue(hash, out uint fid);
             return fid;
         }
 
-        public override int GetFileDataIdByName(string name) => GetFileDataIdByHash(Hasher.ComputeHash(name));
+        public override uint GetFileDataIdByName(string name) => GetFileDataIdByHash(Hasher.ComputeHash(name));
 
         public override void LoadListFile()
         {
@@ -324,7 +325,7 @@ namespace CASCLib
                         continue;
                     }
 
-                    if (!int.TryParse(tokens[0], out int fileDataId))
+                    if (!uint.TryParse(tokens[0], out uint fileDataId))
                     {
                         Console.WriteLine($"Invalid line in listfile: {line}");
                         continue;
@@ -339,15 +340,18 @@ namespace CASCLib
 
                     string file = tokens[1];
 
+                    ListFileEntry.Add(tokens[1], uint.Parse(tokens[0]));
+
                     ulong fileHash = FileDataStore[fileDataId];
 
                     if (!CASCFile.Files.ContainsKey(fileHash))
                         CASCFile.Files.Add(fileHash, new CASCFile(fileHash, file));
                     else
-                        Console.WriteLine($"Duplicate fileDataId {fileDataId} detected: {line}");
+                        Debug.Log($"Duplicate fileDataId {fileDataId} detected: {line}");
                 }
 
-                Console.WriteLine($"WowRootHandler: Loaded {CASCFile.Files.Count} valid file names");
+                Debug.Log($"WowRootHandler: Loaded {ListFileEntry.Count} file names");
+                Debug.Log($"WowRootHandler: Loaded {CASCFile.Files.Count} valid file names");
             }
         }
 

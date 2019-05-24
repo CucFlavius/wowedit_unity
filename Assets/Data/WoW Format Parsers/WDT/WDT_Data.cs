@@ -14,7 +14,7 @@ public static partial class WDT  {
         public bool[,] HasADT = new bool[64,64];
     }
 
-    public static Dictionary<string, WDTflagsdata> Flags = new Dictionary<string, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
+    public static Dictionary<uint, WDTflagsdata> Flags = new Dictionary<uint, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
     public static List<WDTEntry> WDTEntries = new List<WDTEntry>();
     public class WDTEntry
     {

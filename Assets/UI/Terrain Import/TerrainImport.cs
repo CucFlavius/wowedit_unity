@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TerrainImport : MonoBehaviour
 {
@@ -24,10 +25,10 @@ public class TerrainImport : MonoBehaviour
     public GameObject World;
     public GameObject LoadingText;
     public Minimap minimap;
-    public UnityEngine.UI.Text DataText;
-    public UnityEngine.UI.Text ErrorMessageText;
-    public UnityEngine.UI.Toggle wmoToggle;
-    public UnityEngine.UI.Toggle m2Toggle;
+    public Text DataText;
+    public Text ErrorMessageText;
+    public Toggle wmoToggle;
+    public Toggle m2Toggle;
 
     #endregion
     ////////////////////
@@ -98,7 +99,7 @@ public class TerrainImport : MonoBehaviour
             string fileName = Path.GetFileName(ExtractedMapList[i]);
             MapTabs.Add(fileName, MapItem);
             MapItem.transform.SetParent(MapScrollList.transform);
-            MapItem.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = fileName;
+            MapItem.transform.GetChild(0).GetComponent<Text>().text = fileName;
         }
     }
 
@@ -149,7 +150,7 @@ public class TerrainImport : MonoBehaviour
     {
         selectedMapName = mapName;
         minimap.ClearMinimaps(minimapScrollPanel);
-        minimap.Load(mapName, minimapScrollPanel);
+        // minimap.Load(mapName, minimapScrollPanel);
     }
 
     // Select a Player Spawn when Right Clicking on a Minimap Block //
@@ -174,7 +175,7 @@ public class TerrainImport : MonoBehaviour
             currentSelectedPlayerSpawn = new Vector2(MinimapData.Min.y + ((MinimapData.Max.y - MinimapData.Min.y) / 2), MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
         }
         Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
-        World.GetComponent<WorldLoader>().LoadFullWorld(selectedMapName, currentSelectedPlayerSpawn);
+        // World.GetComponent<WorldLoader>().LoadFullWorld(selectedMapName, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);
     }
 

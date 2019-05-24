@@ -20,7 +20,7 @@ public static class MinimapData
 
     public struct MinimapBlockData
     {
-        public string mapName;
+        public uint fileDataId;
         public Vector2 coords;
         public byte[] minimapByteData;
         public BLPinfo textureInfo;

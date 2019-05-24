@@ -17,7 +17,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public Vector2 terrainPos = new Vector2();
 
             // WMO data //
-            public Dictionary<uint, ulong> WMOPathHash  = new Dictionary<uint, ulong>();
+            public Dictionary<uint, uint> WMOPathFDIDs  = new Dictionary<uint, uint>();
             public Dictionary<uint, string> WMOPaths    = new Dictionary<uint, string>();
             public List<uint> WMOOffsets                = new List<uint>();
             public List<WMOPlacementInfo> WMOInfo       = new List<WMOPlacementInfo>();
