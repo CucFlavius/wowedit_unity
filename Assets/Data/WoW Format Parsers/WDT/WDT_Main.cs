@@ -71,20 +71,23 @@ public static partial class WDT {
 
     private static void ReadMAID (BinaryReader br, uint WDTFileDataId)
     {
-        List<uint> MiniMapIds = new List<uint>();
-        for (int i = 0; i < 128; i++)
+        for (uint x = 0; x < 64; x++)
         {
-            WDTEntry Entry = new WDTEntry();
-            Entry.RootADT         = br.ReadUInt32();
-            Entry.OBJ0ADT         = br.ReadUInt32();
-            Entry.OBJ1ADT         = br.ReadUInt32();
-            Entry.TEX0ADT         = br.ReadUInt32();
-            Entry.LODADT          = br.ReadUInt32();
-            Entry.MapTexture      = br.ReadUInt32();
-            Entry.MapTextureN     = br.ReadUInt32();
-            Entry.MiniMapTexture  = br.ReadUInt32();
-            MiniMapIds.Add(Entry.MiniMapTexture);
+            for (uint y = 0; y < 64; y++)
+            {
+                WDTEntry[,] Entry   = new WDTEntry[64, 64];
+
+                Entry[x, y].RootADT         = br.ReadUInt32();
+                Entry[x, y].OBJ0ADT         = br.ReadUInt32();
+                Entry[x, y].OBJ1ADT         = br.ReadUInt32();
+                Entry[x, y].TEX0ADT         = br.ReadUInt32();
+                Entry[x, y].LODADT          = br.ReadUInt32();
+                Entry[x, y].MapTexture      = br.ReadUInt32();
+                Entry[x, y].MapTextureN     = br.ReadUInt32();
+                Entry[x, y].MiniMapTexture  = br.ReadUInt32();
+
+                WDTEntries.Add((x, y), Entry[x, y]);
+            }
         }
-        MinimapIds.Add(MiniMapIds, WDTFileDataId);
     }
 }

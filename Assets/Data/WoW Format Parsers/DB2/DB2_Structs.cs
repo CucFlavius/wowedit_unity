@@ -181,26 +181,4 @@ public partial class DB2
             return Math.Max(attr?.Count ?? 1, 1);
         }
     }
-
-    public class LocalizedString
-    {
-        public bool HasString(SharedConst.LocaleConstant locale = SharedConst.DefaultLocale)
-        {
-            return !string.IsNullOrEmpty(stringStorage[(int)locale]);
-        }
-
-        public string this[SharedConst.LocaleConstant locale]
-        {
-            get
-            {
-                return stringStorage[(int)locale] ?? "";
-            }
-            set
-            {
-                stringStorage[(int)locale] = value;
-            }
-        }
-
-        StringArray stringStorage = new StringArray((int)SharedConst.LocaleConstant.Total);
-    }
 }

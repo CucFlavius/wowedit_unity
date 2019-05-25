@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using Assets.UI.CASC;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +11,7 @@ public class Minimap : MonoBehaviour
     private GameObject ScrollParent;
     public GameObject MinimapPrefab;
     public GameObject LoadingPanel;
+    public CascHandler CascHandler;
     public Image LoadingBar;
     public GameObject PanelErrorMessage;
     public Text ErrorMessageText;
@@ -66,9 +69,11 @@ public class Minimap : MonoBehaviour
         RemainingMinimaps = 1; // resetting above 0
         MinimapData.Total = 0;
         LoadingBar.fillAmount = 0;
+
         LoadingPanel.SetActive(true);
         MinimapThread.currentMapFileDataId = FileDataId;
-        System.Threading.Thread minimapThread = new System.Threading.Thread(MinimapThread.LoadThread);
+
+        Thread minimapThread = new Thread(() => MinimapThread.LoadThread(CascHandler.cascHandler));
         minimapThread.IsBackground = true;
         minimapThread.Priority = System.Threading.ThreadPriority.AboveNormal;
         minimapThread.Start();
@@ -83,7 +88,7 @@ public class Minimap : MonoBehaviour
 
         instance.transform.SetParent(ScrollParent.transform, false);
         instance.GetComponent<RectTransform>().anchoredPosition = new Vector2((blockData.coords.x - MinimapData.Min.x) * 100, -(blockData.coords.y - MinimapData.Min.y) * 100);
-        instance.name = "map" + blockData.coords.x + "_" + blockData.coords.y + ".blp";
+        instance.name = blockData.fileDataId.ToString();
         instance.tag = "MinimapBlock";
         instance.GetComponent<MinimapBlock>().minimapCoords = blockData.coords;
         

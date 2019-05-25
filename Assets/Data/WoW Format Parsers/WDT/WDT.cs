@@ -2,6 +2,7 @@
 using Assets.Data.WoW_Format_Parsers;
 using Assets.UI.CASC;
 using CASCLib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,7 @@ public static partial class WDT
 
     public static bool ParseWDT(uint FileDataId)
     {
+        long streamPos = 0;
         CASC = GameObject.Find("[CASC]").GetComponent<CascHandler>().cascHandler;
 
         if (CASC.FileExists(FileDataId))
@@ -24,12 +26,15 @@ public static partial class WDT
             using (var stream = CASC.OpenFile(FileDataId))
             using (var reader = new BinaryReader(stream))
             {
-                while (stream.Position < stream.Length)
+                WDTflagsdata WDTFlags = new WDTflagsdata();
+                while (streamPos < stream.Length)
                 {
-                    WDTflagsdata WDTFlags = new WDTflagsdata();
+                    stream.Position = streamPos;
                     WDTChunkId ChunkId = (WDTChunkId)reader.ReadUInt32();
                     uint ChunkSize = reader.ReadUInt32();
-    
+
+                    streamPos = stream.Position + ChunkSize;
+
                     switch (ChunkId)
                     {
                         case WDTChunkId.MVER:
@@ -45,28 +50,24 @@ public static partial class WDT
                             ReadMAID(reader, FileDataId);
                             break;
                         default:
-                            SkipUnknownChunk(reader, ChunkId, ChunkSize);
+                            SkipUnknownChunk(stream, ChunkId, ChunkSize);
                             break;
                     }
-                    Flags.Add(FileDataId, WDTFlags);
                 }
+                Flags.Add(FileDataId, WDTFlags);
             }
-
             return true;
         }
         else
             return false;
     }
 
-    public static void ParseWDT(WDTflagsdata WDTFlags, Stream stream)
-    {
-        
-    }
-
     // Move the stream forward upon finding unknown chunks //
-    public static void SkipUnknownChunk(BinaryReader reader, WDTChunkId chunkID, uint chunkSize)
+    public static void SkipUnknownChunk(Stream stream, WDTChunkId chunkID, uint chunkSize)
     {
-        Debug.Log("Missing chunk ID : " + chunkID);
-        reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
+        if (Enum.IsDefined(typeof(WDTChunkId), chunkID))
+            Debug.Log($"Missing chunk ID : {chunkID}");
+
+        stream.Seek(chunkSize, SeekOrigin.Current);
     }
 }

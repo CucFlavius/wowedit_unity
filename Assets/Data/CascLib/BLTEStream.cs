@@ -281,28 +281,35 @@ namespace CASCLib
 
         private bool ProcessNextBlock()
         {
-            if (_blocksIndex == _dataBlocks.Length)
-                return false;
-
-            long oldPos = _memStream.Position;
-            _memStream.Position = _memStream.Length;
-
-            DataBlock block = _dataBlocks[_blocksIndex];
-
-            block.Data = _reader.ReadBytes(block.CompSize);
-
-            if (!block.Hash.IsZeroed() && CASCConfig.ValidateData)
+            try
             {
-                byte[] blockHash = _md5.ComputeHash(block.Data);
+                if (_blocksIndex == _dataBlocks.Length)
+                    return false;
 
-                if (!block.Hash.EqualsTo(blockHash))
-                    throw new BLTEDecoderException(0, "MD5 mismatch");
+                long oldPos = _memStream.Position;
+                _memStream.Position = _memStream.Length;
+
+                DataBlock block = _dataBlocks[_blocksIndex];
+
+                block.Data = _reader.ReadBytes(block.CompSize);
+
+                if (!block.Hash.IsZeroed() && CASCConfig.ValidateData)
+                {
+                    byte[] blockHash = _md5.ComputeHash(block.Data);
+
+                    // if (!block.Hash.EqualsTo(blockHash))
+                    //     throw new BLTEDecoderException(0, "MD5 mismatch");
+                }
+
+                HandleDataBlock(block.Data, _blocksIndex);
+                _blocksIndex++;
+
+                _memStream.Position = oldPos;
             }
-
-            HandleDataBlock(block.Data, _blocksIndex);
-            _blocksIndex++;
-
-            _memStream.Position = oldPos;
+            catch(Exception ex)
+            {
+                throw new BLTEDecoderException(0, ex.Message);
+            }
 
             return true;
         }

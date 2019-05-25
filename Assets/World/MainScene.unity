@@ -16392,6 +16392,7 @@ MonoBehaviour:
   MinimapPrefab: {fileID: 1967915011876050, guid: c07927c5938dadb4d97a7dbce61df718,
     type: 3}
   LoadingPanel: {fileID: 370}
+  CascHandler: {fileID: 648161245}
   LoadingBar: {fileID: 1758}
   PanelErrorMessage: {fileID: 236}
   ErrorMessageText: {fileID: 1698}
@@ -29528,9 +29529,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1244}
-        m_MethodName: Ok
-        m_Mode: 1
+      - m_Target: {fileID: 52}
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

@@ -37,11 +37,11 @@ namespace CASCLib
             string[] strings = Encoding.ASCII.GetString(stream.ReadBytes(ESpecBlockSize)).Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
 
             // stream.Skip(CKeyPageCount * 32);
-            ValueTuple<MD5Hash, MD5Hash>[] aEntries = new ValueTuple<MD5Hash, MD5Hash>[CKeyPageCount];
+            ValueTuple<byte[], byte[]>[] aEntries = new ValueTuple<byte[], byte[]>[CKeyPageCount];
             for (int i = 0; i < CKeyPageCount; ++i)
             {
-                var firstHash = stream.Read<MD5Hash>();
-                var blockHash = stream.Read<MD5Hash>();
+                var firstHash = stream.ReadBytes(16);
+                var blockHash = stream.ReadBytes(16);
                 aEntries[i] = (firstHash, blockHash);
             }
 
@@ -83,26 +83,26 @@ namespace CASCLib
             // stream.Skip(EKeyPageCount * 32);
             for (int i = 0; i < EKeyPageCount; ++i)
             {
-                var firstKey  = stream.Read<MD5Hash>();
-                var blockHash = stream.Read<MD5Hash>();
+                var firstKey  = stream.ReadBytes(16);
+                var blockHash = stream.ReadBytes(16);
             }
 
             long chunkStart2 = stream.BaseStream.Position;
-
+            
             while(stream.BaseStream.Position < chunkStart2 + CHUNK_SIZE * EKeyPageCount)
             {
                 var remaining = CHUNK_SIZE - (stream.BaseStream.Position - chunkStart2) % CHUNK_SIZE;
 
+                var eKey        = stream.ReadBytes(16);
+                int eSpecIndex  = stream.ReadInt32BE();
+                long fileSize   = stream.ReadInt40BE();
+                
                 if (remaining < 25)
                     stream.BaseStream.Position += remaining;
 
-                var eKey        = stream.Read<MD5Hash>();
-                int eSpecIndex  = stream.ReadInt32BE();
-                long fileSize   = stream.ReadInt40BE();
 
                 if (eSpecIndex == int.MaxValue) break;
             }
-
 
             // string block till the end of file
         }

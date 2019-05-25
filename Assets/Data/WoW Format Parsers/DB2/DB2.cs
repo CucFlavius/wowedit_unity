@@ -17,13 +17,6 @@ public partial class DB2
         private BaseReader _reader;
         private CASCHandler Casc;
 
-        public void Initialize()
-        {
-            // Check existing DB2 files //
-            // if (Casc.Root.ListFileEntries.TryGetValue("dbfilesclient/map.db2", out uint fileDataId))
-            //     Read(fileDataId);
-        }
-
         public DB2Reader(uint FileDataId)
         {
             Casc = GameObject.Find("[CASC]").GetComponent<CascHandler>().cascHandler;

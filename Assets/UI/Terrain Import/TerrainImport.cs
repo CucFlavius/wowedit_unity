@@ -142,7 +142,8 @@ public class TerrainImport : MonoBehaviour
 
         if (miniMap.TryGetValue(mapName, out MapRecord record))
         {
-            WDT.ParseWDT(record.WdtFileDataID);
+            if (WDT.ParseWDT(record.WdtFileDataID))
+                minimap.Load(record.WdtFileDataID, minimapScrollPanel);
             // minimap.Load(mapName, minimapScrollPanel);
         }
     }

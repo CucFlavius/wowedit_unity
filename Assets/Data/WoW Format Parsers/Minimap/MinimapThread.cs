@@ -14,40 +14,32 @@ public static class MinimapThread
     public static bool checkWMOonly = false;
     public static CASCHandler CascHandler;
 
-    public static void LoadThread()
+    public static void LoadThread(CASCHandler Handler)
     {
-        CascHandler = GameObject.Find("[CASC]").GetComponent<CascHandler>().cascHandler;
-
+        CascHandler = Handler;
         ThreadAlive = true;
         CompileMapList(currentMapFileDataId, CascHandler);
         GetMinMax();
         checkWMOonly = true;
         ResetParentSize = true;
-        RequestAvailableBLPs(currentMapFileDataId);
+        // RequestAvailableBLPs(currentMapFileDataId);
         ThreadAlive = false;
     }
 
     // Build an array of available minimaps and maps //
     public static void CompileMapList(uint FileDataId, CASCHandler cascHandler)
     {
-        MinimapData.dataExists.WDT = false;
-
-        // if (Settings.)
-        // if (!WDT.Flags.ContainsKey(FileDataId))
-        //     MinimapData.dataExists.WDT = WDT.ParseWDT(FileDataId);
-        // else
-        //     MinimapData.dataExists.WDT = true;
-
-        // sort data //
-        MinimapData.mapAvailability = new MinimapData.MapAvailability[64, 64];
-
-        for (int x = 0; x < 64; x++)
+        for (uint x = 0; x < 64; x++)
         {
-            for (int y = 0; y < 64; y++)
+            for (uint y = 0; y < 64; y++)
             {
-                // WDT data //
-                if (MinimapData.dataExists.WDT)
-                    MinimapData.mapAvailability[x, y].WDT = WDT.Flags[FileDataId].HasADT[x, y];
+                var MiniMapTexture = WDT.WDTEntries[(x, y)].MiniMapTexture;
+                
+                Minimap.MinimapRequest request = new Minimap.MinimapRequest();
+                request.coords = new Vector2(x, y);
+                request.fileDataId = MiniMapTexture;
+
+                RequestBlock(request);
             }
         }
     }
@@ -139,33 +131,29 @@ public static class MinimapThread
     // Request a minimap image from the parser //
     private static void RequestBlock(Minimap.MinimapRequest minimapRequest)
     {
-        // string mapName = minimapRequest.mapName;
-        // string fileName = "map" + minimapRequest.coords.x + "_" + minimapRequest.coords.y + ".blp";
-        // string path = @"world\minimaps\" + mapName + @"\" + fileName;
-        // int fdid = Casc.GetFileDataIdByName(path);
-        // string extractedPath = Casc.GetFile(fdid);
-        // using (Stream stream = File.Open(extractedPath, FileMode.Open))
-        // {
-        //     BLP blp = new BLP();
-        //     byte[] data = blp.GetUncompressed(stream, true);
-        //     BLPinfo info = blp.Info();
-        //     MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
-        //     blockData.mapName = mapName;
-        //     blockData.coords = minimapRequest.coords;
-        //     blockData.textureInfo = info;
-        //     blockData.minimapByteData = data;
+        uint fileDataId = minimapRequest.fileDataId;
+        using (Stream stream = CascHandler.OpenFile(fileDataId))
+        {
+             BLP blp                    = new BLP();
+             byte[] data                = blp.GetUncompressed(stream, true);
+             BLPinfo info               = blp.Info();
+             MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
+             blockData.fileDataId       = fileDataId;
+             blockData.coords           = minimapRequest.coords;
+             blockData.textureInfo      = info;
+             blockData.minimapByteData  = data;
 
-        //     MinimapData.MinimapDataQueue.Enqueue(blockData);
-        // }
+             MinimapData.MinimapDataQueue.Enqueue(blockData);
+        }
     }
 
     private static void EnqueueEmptyBlock(Minimap.MinimapRequest minimapRequest)
     {
-        uint fileDataId = minimapRequest.fileDataId;
+        uint fileDataId             = minimapRequest.fileDataId;
         MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
-        blockData.fileDataId = fileDataId;
-        blockData.coords = minimapRequest.coords;
-        blockData.minimapByteData = null;
+        blockData.fileDataId        = fileDataId;
+        blockData.coords            = minimapRequest.coords;
+        blockData.minimapByteData   = null;
         MinimapData.MinimapDataQueue.Enqueue(blockData);
     }
 }
