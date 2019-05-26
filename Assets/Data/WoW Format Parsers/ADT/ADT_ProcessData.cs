@@ -10,7 +10,6 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 {
     public static class ADT_ProcessData
     {
-
         // mesh handler //
         public static void GenerateMeshArrays()
         {
@@ -211,39 +210,29 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             */
         }
 
-        public static void Load_hTextures()
+        public static void Load_hTextures(CASCHandler Handler)
         {
             if (ADTTexData.textureBlockData.MTXP)
             {
-                ADTTexData.textureBlockData.terrainHTextures = new Dictionary<string, ADTTexData.Texture2Ddata>();
-                foreach (string texturePath in ADTTexData.textureBlockData.terrainTexturePaths)
+                ADTTexData.textureBlockData.terrainHTextures = new Dictionary<uint, ADTTexData.Texture2Ddata>();
+                foreach (uint TextureFileDataId in ADTTexData.textureBlockData.terrainTextureFileDataIds)
                 {
-                    string noExtension      = Path.GetFileNameWithoutExtension(texturePath);
-                    string directoryPath    = Path.GetDirectoryName(texturePath);
-                    string hTexturePath     = directoryPath + @"\" + noExtension + "_h" + ".blp";
-                    // if (Casc.FileExists(hTexturePath))
-                    // {
-                    //     // string extractedPath        = Casc.GetFile(hTexturePath);
-                    //     // Stream stream               = File.Open(extractedPath, FileMode.Open);
-                    //     // BLP blp                     = new BLP();
-                    //     // byte[] data                 = blp.GetUncompressed(stream, true);
-                    //     // BLPinfo info                = blp.Info();
-                    //     // ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                    //     // texture2Ddata.hasMipmaps    = info.hasMipmaps;
-                    //     // texture2Ddata.width         = info.width;
-                    //     // texture2Ddata.height        = info.height;
-                    //     // if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                    //     //     texture2Ddata.hasMipmaps = false;
-                    //     // texture2Ddata.textureFormat = info.textureFormat;
-                    //     // texture2Ddata.TextureData   = data;
-                    //     // ADTTexData.textureBlockData.terrainHTextures.Add(texturePath, texture2Ddata);
-                    //     // stream.Close();
-                    //     // stream = null;
-                    // }
-                    // else
-                    // {
-                    //     Debug.Log($"Filepath does not exists: {hTexturePath}");
-                    // }
+                    using (var stream = Handler.OpenFile(TextureFileDataId))
+                    {
+                        BLP blp                     = new BLP();
+                        byte[] data                 = blp.GetUncompressed(stream, true);
+                        BLPinfo info                = blp.Info();
+                        ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
+                        texture2Ddata.hasMipmaps    = info.hasMipmaps;
+                        texture2Ddata.width         = info.width;
+                        texture2Ddata.height        = info.height;
+                        if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
+                            texture2Ddata.hasMipmaps = false;
+                        texture2Ddata.textureFormat = info.textureFormat;
+                        texture2Ddata.TextureData   = data;
+                        ADTTexData.textureBlockData.terrainHTextures.Add(TextureFileDataId, texture2Ddata);
+                        stream.Close();
+                    }
                 }
             }
         }

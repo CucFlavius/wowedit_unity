@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using CASCLib;
 using UnityEngine;
+using System;
 
 namespace Assets.Data.WoW_Format_Parsers.ADT
 {
@@ -17,7 +18,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         
         // Placement information for doodads (M2 models). //
         // Additional to this, the models to render are referenced in each MCRF chunk. //
-        public void ReadMDDF(BinaryReader reader, int MDDFsize)
+        public void ReadMDDF(BinaryReader reader, uint MDDFsize)
         {
             Flags f = new Flags();
             ADTObjData.modelBlockData.M2Info = new List<ADTObjData.M2PlacementInfo>();
@@ -43,10 +44,8 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 data.scale      = reader.ReadUInt16() / 1024.0f;                                // 1024 is the default size equaling 1.0f.
                 data.flags      = f.ReadMDDFFlags(reader);                                      // values from struct MDDFFlags.
 
-                // string filename = ListfileLoader.LookupId(data.nameId);
-
-                // if (!ADTObjData.modelBlockData.M2Paths.ContainsKey(data.nameId))
-                //     ADTObjData.modelBlockData.M2Paths.Add(data.nameId, filename);
+                if (!ADTObjData.modelBlockData.M2Path.ContainsKey(data.nameId))
+                    ADTObjData.modelBlockData.M2Path.Add(data.nameId, data.nameId);
 
                 ADTObjData.modelBlockData.M2Info.Add(data);
             }
@@ -54,7 +53,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
         // Placement information for WMOs. //
         // Additional to this, the WMOs to render are referenced in each MCRF chunk. (?) //
-        public void ReadMODF(BinaryReader reader, int MODFsize)
+        public void ReadMODF(BinaryReader reader, uint MODFsize)
         {
             Flags f = new Flags();
             ADTObjData.modelBlockData.WMOInfo = new List<ADTObjData.WMOPlacementInfo>();
@@ -83,17 +82,15 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 data.nameSet    = reader.ReadUInt16();                                          // which WMO name set is used. Used for renaming goldshire inn to northshire inn while using the same model.
                 data.Scale      = reader.ReadUInt16() / 1024.0f;                                // Legion+: scale, 1024 means 1 (same as MDDF). Padding in 0.5.3 alpha.
 
-                // string filename = ListfileLoader.LookupId(data.nameId);
-
-                // if (!ADTObjData.modelBlockData.WMOPaths.ContainsKey(data.nameId))
-                //     ADTObjData.modelBlockData.WMOPaths.Add(data.nameId, filename);
+                if (!ADTObjData.modelBlockData.WMOPath.ContainsKey(data.nameId))
+                    ADTObjData.modelBlockData.WMOPath.Add(data.nameId, data.nameId);
 
                 ADTObjData.modelBlockData.WMOInfo.Add(data);
             }
         }
 
         // Chunk Data //
-        public void ReadMCNKObj(BinaryReader reader, string mapname, int MCNKchunkNumber, int MCNKsize)
+        public void ReadMCNKObj(BinaryReader reader,  int MCNKchunkNumber, uint MCNKsize)
         {
             if (reader.BaseStream.Length == reader.BaseStream.Position)
                 return;
@@ -104,7 +101,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             {
                 reader.BaseStream.Position = streamPosition;
                 ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
-                int chunkSize = reader.ReadInt32();
+                uint chunkSize = reader.ReadUInt32();
                 streamPosition = reader.BaseStream.Position + chunkSize;
                 switch (chunkID)
                 {
@@ -126,7 +123,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         /////////////////////
 
         // MCNK.nDoodadRefs into the file's MDDF //
-        public void ReadMCRD(BinaryReader reader, int MCNKchunkNumber, int MCRDsize)
+        public void ReadMCRD(BinaryReader reader, int MCNKchunkNumber, uint MCRDsize)
         {
             List<int> MDDFentries = new List<int>();
             long currentPos = reader.BaseStream.Position;
@@ -137,7 +134,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // MCNK.nMapObjRefs into the file's MODF //
-        public void ReadMCRW(BinaryReader reader, int MCNKchunkNumber, int MCRWsize)
+        public void ReadMCRW(BinaryReader reader, int MCNKchunkNumber, uint MCRWsize)
         {
             List<int> MODFentries = new List<int>();
             long currentPos = reader.BaseStream.Position;
@@ -148,11 +145,12 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Move the stream forward upon finding unknown chunks //
-        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, int chunkSize)
+        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, uint chunkSize)
         {
-            Debug.Log("Missing chunk ID : " + chunkID);
+            if (Enum.IsDefined(typeof(ADTChunkId), chunkID))
+                Debug.Log($"Missing chunk ID : {chunkID}");
+
             reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
         }
     }
-
 }

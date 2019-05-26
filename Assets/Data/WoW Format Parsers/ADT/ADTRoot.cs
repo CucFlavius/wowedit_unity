@@ -1,4 +1,5 @@
 ﻿using Assets.Data.WoW_Format_Parsers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -42,7 +43,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             unused[2]       = ADTstream.ReadUInt32();
         }
 
-        public void ReadMH2O(BinaryReader reader, int MH2Osize)
+        public void ReadMH2O(BinaryReader reader, uint MH2Osize)
         {
             long chunkStartPosition = reader.BaseStream.Position;
 
@@ -87,7 +88,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
 
-        public void ReadMCNK(BinaryReader reader, int MCNKchunkNumber, int MCNKsize)
+        public void ReadMCNK(BinaryReader reader, int MCNKchunkNumber, uint MCNKsize)
         {
             Flags f                     = new Flags();
             ADTRootData.MeshChunkData chunkData = new ADTRootData.MeshChunkData();
@@ -136,7 +137,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             {
                 reader.BaseStream.Position = streamPosition;
                 ADTChunkId chunkId = (ADTChunkId)reader.ReadInt32();
-                int chunkSize = reader.ReadInt32();
+                uint chunkSize = reader.ReadUInt32();
                 streamPosition = reader.BaseStream.Position + chunkSize;
                 switch (chunkId)
                 {
@@ -266,7 +267,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             reader.BaseStream.Seek(13, SeekOrigin.Current);
         }   // normals
 
-        public void ReadMCSE(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, int MCSEsize)
+        public void ReadMCSE(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, uint MCSEsize)
         {
             if (MCSEsize != 0)
             {
@@ -275,14 +276,14 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             }
         }
 
-        public void ReadMCBB(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, int MCBBsize) // blend batches. max 256 per MCNK
+        public void ReadMCBB(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, uint MCBBsize) // blend batches. max 256 per MCNK
         {
             //Debug.Log(MCBB + "found " + MCBBsize + " ----------I have info to parse it now");
             // skip for now
             ADTstream.BaseStream.Seek(MCBBsize, SeekOrigin.Current);
         }
 
-        public void ReadMCDD(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, int MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
+        public void ReadMCDD(BinaryReader ADTstream, ADTRootData.MeshChunkData chunkData, uint MCDDsize) // there seems to be a high-res (?) mode which is not taken into account 
                                                                                                         // in live clients (32 bytes instead of 8) (?). if inlined to MCNK is low-res.
         {
             //Debug.Log(MCDD + "found " + MCDDsize + " ----------I have info to parse it now");
@@ -292,11 +293,12 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Move the stream forward upon finding unknown chunks //
-        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, int chunkSize)
+        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, uint chunkSize)
         {
-            Debug.Log("Missing chunk ID : " + chunkID);
+            if (Enum.IsDefined(typeof(ADTChunkId), chunkID))
+                Debug.Log($"Missing chunk ID : {chunkID}");
+
             reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
         }
-
     }
 }

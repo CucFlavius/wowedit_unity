@@ -23,8 +23,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
 
             // root //
             public HeaderData Info;
-            public Dictionary<uint, string> texturePaths; // offset -> dataPath
-            public Dictionary<string, Texture2Ddata> textureData; // dataPath -> Texture2Ddata
+            public Dictionary<uint, uint> texturePaths; // offset -> dataPath
+            public Dictionary<uint, Texture2Ddata> textureData; // dataPath -> Texture2Ddata
             public Dictionary<int, string> MOGNgroupnames; // offset -> name
             public List<WMOMaterial> materials;
 

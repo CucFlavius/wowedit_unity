@@ -1,6 +1,7 @@
 ﻿using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.World.Terrain;
 using Assets.WoWEditSettings;
+using CASCLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,8 +26,9 @@ namespace Assets.World.Models
         private Vector3 currentWMOposition;
         private Quaternion currentWMOrotation;
         private Vector3 currentWMOscale;
-        private Dictionary<string, Texture2D> LoadedWMOTextures = new Dictionary<string, Texture2D>();
+        private Dictionary<uint, Texture2D> LoadedWMOTextures = new Dictionary<uint, Texture2D>();
         private List<WMOQueueItem> WMOClones = new List<WMOQueueItem>();
+        private CASCHandler CascHandler;
 
         public class WMOQueueItem
         {
@@ -43,8 +45,9 @@ namespace Assets.World.Models
             WMOThreadQueue = new Queue<WMOQueueItem>();
         }
 
-        public void AddToQueue(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void AddToQueue(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale, CASCHandler Handler)
         {
+            CascHandler = Handler;
             WMOQueueItem item = new WMOQueueItem();
             item.FileDataId = FileDataId;
             item.uniqueID = uniqueID;
@@ -145,7 +148,7 @@ namespace Assets.World.Models
 
         public void ParseWMOBlock()
         {
-            WMO.Load(currentWMOFileDataId, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale);
+            WMO.Load(currentWMOFileDataId, currentWMOuniqueID, currentWMOposition, currentWMOrotation, currentWMOscale, CascHandler);
         }
 
         public void CreateWMOObject()
@@ -251,7 +254,7 @@ namespace Assets.World.Models
                         ////////////////////////////////
                         #region material
 
-                        string textureName = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
+                        uint TextureFileDataId = data.texturePaths[data.materials[data.groupsData[g].batchMaterialIDs[bn]].TextureId1];
                         BatchInstance.GetComponent<Renderer>().material = WMOmaterials[(int)data.materials[data.groupsData[g].batchMaterialIDs[bn]].ShaderType];
 
                         ////////////////////////////////
@@ -370,7 +373,7 @@ namespace Assets.World.Models
                                 }
                             default:
                                 {
-                                    Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + textureName);
+                                    Debug.Log("BlendMode To Add: " + blending.ToString() + " Texture Used: " + TextureFileDataId);
                                     source = UnityEngine.Rendering.BlendMode.One;
                                     destination = UnityEngine.Rendering.BlendMode.Zero;
                                     break;
@@ -385,19 +388,19 @@ namespace Assets.World.Models
                         ////////////////////////////////
                         #region Assign Textures
 
-                        if (LoadedWMOTextures.ContainsKey(textureName))
+                        if (LoadedWMOTextures.ContainsKey(TextureFileDataId))
                         {
-                            BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[textureName]);
+                            BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", LoadedWMOTextures[TextureFileDataId]);
                         }
                         else
                         {
                             try
                             {
-                                Texture2Ddata tdata = data.textureData[textureName];
+                                Texture2Ddata tdata = data.textureData[TextureFileDataId];
                                 Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                                 tex.LoadRawTextureData(tdata.TextureData);
                                 tex.Apply();
-                                LoadedWMOTextures[textureName] = tex;
+                                LoadedWMOTextures[TextureFileDataId] = tex;
                                 BatchInstance.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
                             }
                             catch (Exception ex)

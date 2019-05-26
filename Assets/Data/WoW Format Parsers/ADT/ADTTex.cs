@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System;
 
 namespace Assets.Data.WoW_Format_Parsers.ADT
 {
@@ -20,49 +21,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             int texture_size = reader.ReadInt32(); // either defined here or in MHDR.mamp_value.
         }
 
-        public void ReadMTEX(BinaryReader reader, int MTEXsize)
-        {
-            if (reader.BaseStream.Length == reader.BaseStream.Position)
-                return;
-
-            // texture path strings, separated by 0
-            string texturePath = "";
-            int numberOfTextures = 0;
-            for (int a = 0; a < MTEXsize; a++)
-            {
-                int b = reader.ReadByte();
-                if (b != 0)
-                {
-                    var stringSymbol = System.Convert.ToChar(b);
-                    texturePath = texturePath + stringSymbol;
-                }
-                else if (b == 0)
-                {
-                    ADTTexData.textureBlockData.terrainTexturePaths.Add(texturePath);
-                    // int filedata            = Casc.GetFileDataIdByName(texturePath);
-                    // string extractedPath    = Casc.GetFile(filedata);
-                    // using (Stream stream    = File.Open(extractedPath, FileMode.Open))
-                    // {
-                    //     BLP blp                         = new BLP();
-                    //     byte[] data                     = blp.GetUncompressed(stream, true);
-                    //     BLPinfo info                    = blp.Info();
-                    //     ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                    //     texture2Ddata.hasMipmaps        = info.hasMipmaps;
-                    //     texture2Ddata.width             = info.width;
-                    //     texture2Ddata.height            = info.height;
-                    //     if (info.width != info.height) // Unity doesn't support nonsquare mipmaps // sigh
-                    //         texture2Ddata.hasMipmaps    = false;
-                    //     texture2Ddata.textureFormat     = info.textureFormat;
-                    //     texture2Ddata.TextureData       = data;
-                    //     ADTTexData.textureBlockData.terrainTextures.Add(texturePath, texture2Ddata);
-                    //     texturePath = null;
-                    //     numberOfTextures++;
-                    // }
-                }
-            }
-        }
-
-        public void ReadMCNKtex(BinaryReader reader, string mapname, int MCNKchunkNumber, int MCNKsize)
+        public void ReadMCNKtex(BinaryReader reader, uint WdtFileDataId, int MCNKchunkNumber, uint MCNKsize)
         {
             if (reader.BaseStream.Length == reader.BaseStream.Position)
                 return;
@@ -75,7 +34,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             {
                 reader.BaseStream.Position = streamPosition;
                 ADTChunkId chunkID  = (ADTChunkId)reader.ReadInt32();
-                int chunkSize       = reader.ReadInt32();
+                uint chunkSize      = reader.ReadUInt32();
                 streamPosition      = reader.BaseStream.Position + chunkSize;
                 switch (chunkID)
                 {
@@ -86,7 +45,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                         ReadMCSH(reader, chunkData); // static shadow maps
                         break;
                     case ADTChunkId.MCAL:
-                        ReadMCAL(reader, mapname, chunkData); // alpha layers
+                        ReadMCAL(reader, WdtFileDataId, chunkData); // alpha layers
+                        break;
+                    case ADTChunkId.MCMT:
+                        ReadMCMT(reader);
                         break;
                     default:
                         SkipUnknownChunk(reader, chunkID, chunkSize);
@@ -96,18 +58,18 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTTexData.textureBlockData.textureChunksData.Add(chunkData);
         }
 
-        public void ReadMTXP(BinaryReader reader, int MTXPsize) // 16 bytes per MTEX texture
+        public void ReadMTXP(BinaryReader reader, uint MTXPsize) // 16 bytes per MTEX texture
         {
             Flags f = new Flags();
             ADTTexData.textureBlockData.MTXP = true;
             for (int i = 0; i < MTXPsize / 16; i++)
             {
-                ADTTexData.textureBlockData.textureFlags.Add(ADTTexData.textureBlockData.terrainTexturePaths[i], f.ReadTerrainTextureFlag(reader));
+                ADTTexData.textureBlockData.textureFlags.Add(ADTTexData.textureBlockData.terrainTextureFileDataIds[i], f.ReadTerrainTextureFlag(reader));
                 // default 0.0 -- the _h texture values are scaled to [0, value) to determine actual "height".
                 // this determines if textures overlap or not (e.g. roots on top of roads).
-                ADTTexData.textureBlockData.heightScales.Add(ADTTexData.textureBlockData.terrainTexturePaths[i], reader.ReadSingle());
+                ADTTexData.textureBlockData.heightScales.Add(ADTTexData.textureBlockData.terrainTextureFileDataIds[i], reader.ReadSingle());
                 // default 1.0 -- note that _h based chunks are still influenced by MCAL (blendTex below)
-                ADTTexData.textureBlockData.heightOffsets.Add(ADTTexData.textureBlockData.terrainTexturePaths[i], reader.ReadSingle());
+                ADTTexData.textureBlockData.heightOffsets.Add(ADTTexData.textureBlockData.terrainTextureFileDataIds[i], reader.ReadSingle());
                 // no default, no non-zero values in 20490
                 int padding = reader.ReadInt32();
             }
@@ -115,7 +77,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
 
         # region MCNKtex Subchunks
 
-        public void ReadMCLY(BinaryReader reader, ADTTexData.TextureChunkData chunkData, int MCLYsize)
+        public void ReadMCLY(BinaryReader reader, ADTTexData.TextureChunkData chunkData, uint MCLYsize)
         {
             /*
             *  Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
@@ -129,7 +91,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 return;
 
             long MCLYStartPosition = reader.BaseStream.Position;
-            int numberOfLayers = MCLYsize / 16;
+            uint numberOfLayers = MCLYsize / 16;
             chunkData.NumberOfTextureLayers = numberOfLayers;
             chunkData.textureIds = new int[numberOfLayers];
             chunkData.LayerOffsetsInMCAL = new int[numberOfLayers];
@@ -180,117 +142,127 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 }
             }
         }
+
+        public void ReadMCMT(BinaryReader reader)
+        {
+            byte[] MaterialId = new byte[4];
+
+            for (int i = 0; i < 4; i++)
+                MaterialId[i] = reader.ReadByte();
+        }
         #endregion
 
-        public void ReadMDID(BinaryReader br, int chunkSize)
+        public void ReadMDID(BinaryReader br, uint chunkSize, CASCHandler Handler)
         {
             var numTextures = chunkSize / 4;
 
             for (int tex = 0; tex < numTextures; tex++)
             {
-                int DataId     = br.ReadInt32();
-                // string fileName = Casc.GetFile(DataId);
-                // if (fileName.Length != 0 && DataId != 0)
-                // {
-                //     // Checking if the filename exists in the TexturePaths.
-                //     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
-                //     {
-                //         // Opening the BLP.
-                //         Stream stream                           = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                //         BLP blp                                 = new BLP();
-                //         byte[] data                             = blp.GetUncompressed(stream, true);
-                //         BLPinfo info                            = blp.Info();
-                //     
-                //         // Making a texture2Ddata instance for it to load the textures onto the terrain.
-                //         ADTTexData.Texture2Ddata texture2Ddata  = new ADTTexData.Texture2Ddata();
-                //         texture2Ddata.hasMipmaps                = info.hasMipmaps;
-                //         texture2Ddata.width                     = info.width;
-                //         texture2Ddata.height                    = info.height;
-                //         if (info.width != info.height)          // Unity doesn't support nonsquare mipmaps // sigh
-                //             texture2Ddata.hasMipmaps            = false;
-                //         texture2Ddata.textureFormat             = info.textureFormat;
-                //         texture2Ddata.TextureData               = data;
-                //     
-                //         // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
-                //         ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
-                //         ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
-                //     }
-                // }
+                uint DataId = br.ReadUInt32();
+                if (DataId != 0)
+                {
+                    // Checking if the filename exists in the TexturePaths.
+                    if (!ADTTexData.textureBlockData.terrainTextureFileDataIds.Contains(DataId))
+                    {
+                        // Opening the BLP.
+                        using (var stream = Handler.OpenFile(DataId))
+                        {
+                            BLP blp         = new BLP();
+                            byte[] data     = blp.GetUncompressed(stream, true);
+                            BLPinfo info    = blp.Info();
+                    
+                            // Making a texture2Ddata instance for it to load the textures onto the terrain.
+                            ADTTexData.Texture2Ddata texture2Ddata  = new ADTTexData.Texture2Ddata();
+                            texture2Ddata.hasMipmaps                = info.hasMipmaps;
+                            texture2Ddata.width                     = info.width;
+                            texture2Ddata.height                    = info.height;
+                            if (info.width != info.height)          // Unity doesn't support nonsquare mipmaps // sigh
+                                texture2Ddata.hasMipmaps            = false;
+                            texture2Ddata.textureFormat             = info.textureFormat;
+                            texture2Ddata.TextureData               = data;
+                    
+                            // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
+                            ADTTexData.textureBlockData.terrainTextures.Add(DataId, texture2Ddata);
+                            ADTTexData.textureBlockData.terrainTextureFileDataIds.Add(DataId);
+                        }
+                    }
+                }
             }
         }
 
-        public void ReadMHID(BinaryReader br, int chunkSize)
+        public void ReadMHID(BinaryReader br, uint chunkSize, CASCHandler Handler)
         {
             var numTextures = chunkSize / 4;
 
             for (int tex = 0; tex < numTextures; tex++)
             {
-                int DataId     = br.ReadInt32();
-                // string fileName = Casc.GetFile(DataId);
-
-                // if (fileName.Length != 0 && DataId != 0)
-                // {
-                //     // Checking if the filename exists in the TexturePaths.
-                //     if (!ADTTexData.textureBlockData.terrainTexturePaths.Contains(fileName))
-                //     {
-                //         Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                //         BLP blp = new BLP();
-                //         byte[] data = blp.GetUncompressed(stream, true);
-                //         BLPinfo info = blp.Info();
-
-                //         // Making a texture2Ddata instance for it to load the textures onto the terrain.
-                //         ADTTexData.Texture2Ddata texture2Ddata = new ADTTexData.Texture2Ddata();
-                //         texture2Ddata.hasMipmaps = info.hasMipmaps;
-                //         texture2Ddata.width = info.width;
-                //         texture2Ddata.height = info.height;
-                //         if (info.width != info.height)  // Unity doesn't support nonsquare mipmaps // sigh
-                //             texture2Ddata.hasMipmaps = false;
-                //         texture2Ddata.textureFormat = info.textureFormat;
-                //         texture2Ddata.TextureData = data;
-
-                //         // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
-                //         ADTTexData.textureBlockData.terrainTextures.Add(fileName, texture2Ddata);
-                //         ADTTexData.textureBlockData.terrainTexturePaths.Add(fileName);
-                //     }
-                // }
+                uint DataId     = br.ReadUInt32();
+                if (DataId != 0)
+                {
+                    // Checking if the filename exists in the TexturePaths.
+                    if (!ADTTexData.textureBlockData.terrainTextureFileDataIds.Contains(DataId))
+                    {
+                        // Opening the BLP.
+                        using (var stream = Handler.OpenFile(DataId))
+                        {
+                            BLP blp         = new BLP();
+                            byte[] data     = blp.GetUncompressed(stream, true);
+                            BLPinfo info    = blp.Info();
+                    
+                            // Making a texture2Ddata instance for it to load the textures onto the terrain.
+                            ADTTexData.Texture2Ddata texture2Ddata  = new ADTTexData.Texture2Ddata();
+                            texture2Ddata.hasMipmaps                = info.hasMipmaps;
+                            texture2Ddata.width                     = info.width;
+                            texture2Ddata.height                    = info.height;
+                            if (info.width != info.height)          // Unity doesn't support nonsquare mipmaps // sigh
+                                texture2Ddata.hasMipmaps            = false;
+                            texture2Ddata.textureFormat             = info.textureFormat;
+                            texture2Ddata.TextureData               = data;
+                    
+                            // Adding the Filename to the TexturePaths and texture2Ddata to the TextureData
+                            ADTTexData.textureBlockData.terrainTextures.Add(DataId, texture2Ddata);
+                            ADTTexData.textureBlockData.terrainTextureFileDataIds.Add(DataId);
+                        }
+                    }
+                }
             }
             ADTTexData.textureBlockData.MTXP = true;
         }
 
-        public void ReadMCAL(BinaryReader ADTtexstream, string mapname, ADTTexData.TextureChunkData chunkData)
+        public void ReadMCAL(BinaryReader ADTtexstream, uint WdtFileDataId, ADTTexData.TextureChunkData chunkData)
         {
             long McalStartPosition  = ADTtexstream.BaseStream.Position;
-            int numberofLayers      = chunkData.NumberOfTextureLayers;
+            uint numberofLayers     = chunkData.NumberOfTextureLayers;
             if (numberofLayers > 1)
             {
-                // chunkData.alphaLayers = new List<byte[]>();
-                // for (int l = 1; l < numberofLayers; l++)
-                // {
-                //     if (WDT.Flags[mapname].adt_has_height_texturing == true)
-                //     {
-                //         if (chunkData.alpha_map_compressed[l] == false)
-                //             chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
-                //         else if (chunkData.alpha_map_compressed[l] == true)
-                //             chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                //     }
-                //     else if (WDT.Flags[mapname].adt_has_height_texturing == false)
-                //     {
-                //         if (WDT.Flags[mapname].adt_has_big_alpha == false)
-                //         {
-                //             if (chunkData.alpha_map_compressed[l] == false)
-                //                 chunkData.alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
-                //             else if (chunkData.alpha_map_compressed[l] == true)
-                //                 chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                //         }
-                //         else if (WDT.Flags[mapname].adt_has_big_alpha == true)
-                //         {
-                //             if (chunkData.alpha_map_compressed[l] == false)
-                //                 chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
-                //             else if (chunkData.alpha_map_compressed[l] == true)
-                //                 chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
-                //         }
-                //     }
-                // }
+                chunkData.alphaLayers = new List<byte[]>();
+                for (int l = 1; l < numberofLayers; l++)
+                {
+                    if (WDT.Flags[WdtFileDataId].adt_has_height_texturing == true)
+                    {
+                        if (chunkData.alpha_map_compressed[l] == false)
+                            chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                        else if (chunkData.alpha_map_compressed[l] == true)
+                            chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                    }
+                    else if (WDT.Flags[WdtFileDataId].adt_has_height_texturing == false)
+                    {
+                        if (WDT.Flags[WdtFileDataId].adt_has_big_alpha == false)
+                        {
+                            if (chunkData.alpha_map_compressed[l] == false)
+                                chunkData.alphaLayers.Add(AlphaMap_UncompressedHalfRes(ADTtexstream));
+                            else if (chunkData.alpha_map_compressed[l] == true)
+                                chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                        }
+                        else if (WDT.Flags[WdtFileDataId].adt_has_big_alpha == true)
+                        {
+                            if (chunkData.alpha_map_compressed[l] == false)
+                                chunkData.alphaLayers.Add(AlphaMap_UncompressedFullRes(ADTtexstream));
+                            else if (chunkData.alpha_map_compressed[l] == true)
+                                chunkData.alphaLayers.Add(AlphaMap_Compressed(ADTtexstream));
+                        }
+                    }
+                }
             }
         }
 
@@ -375,10 +347,11 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             return textureArray;
         }
 
-        // Move the stream forward upon finding unknown chunks //
-        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, int chunkSize)
+        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, uint chunkSize)
         {
-            Debug.Log($"Missing chunk ID : {chunkID} Size: {chunkSize}");
+            // if (Enum.IsDefined(typeof(ADTChunkId), chunkID))
+            //     Debug.Log($"Missing chunk ID : {chunkID}");
+
             reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
         }
     }

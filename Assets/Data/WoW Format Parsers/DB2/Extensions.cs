@@ -24,9 +24,9 @@ public static class Extensions
 
     public static T Read<T>(this BinaryReader reader) where T : struct
     {
-        byte[] result = reader.ReadBytes(FastStruct<T>.Size);
+        byte[] result = reader.ReadBytes(Unsafe.SizeOf<T>());
 
-        return FastStruct<T>.ArrayToStructure(result);
+        return Unsafe.ReadUnaligned<T>(ref result[0]);
     }
 
     public static T[] ReadArray<T>(this BinaryReader reader) where T : struct

@@ -29,7 +29,7 @@ public class RunAtLaunch : MonoBehaviour {
         Settings.Load();
 
         SettingsInit();
-        ADT.Initialize();
+        ADT.Initialize(CASC.GetComponent<CascHandler>().cascHandler);
 
         if (Settings.GetSection("path").GetString("wowsource") == null ||
             Settings.GetSection("path").GetString("wowsource") == "") { }

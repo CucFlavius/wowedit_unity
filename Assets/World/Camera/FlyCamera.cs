@@ -13,7 +13,7 @@ public class FlyCamera : MonoBehaviour
     shift : Makes camera accelerate
     space : Moves camera on X and Z axis only.  So camera doesn't gain any height*/
 
-
+    float upgradeSpeed = 5.0f;
     float mainSpeed = 50.0f; //regular speed
     float shiftAdd  = 150.0f; //multiplied by how long shift is held.  Basically running
     float maxShift  = 250.0f; //Maximum speed when holdin gshift

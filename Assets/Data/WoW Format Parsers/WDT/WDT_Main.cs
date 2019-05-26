@@ -71,22 +71,12 @@ public static partial class WDT {
 
     private static void ReadMAID (BinaryReader br, uint WDTFileDataId)
     {
-        for (uint x = 0; x < 64; x++)
+        for (var x = 0; x < 64; x++)
         {
-            for (uint y = 0; y < 64; y++)
+            for (var y = 0; y < 64; y++)
             {
-                WDTEntry[,] Entry   = new WDTEntry[64, 64];
-
-                Entry[x, y].RootADT         = br.ReadUInt32();
-                Entry[x, y].OBJ0ADT         = br.ReadUInt32();
-                Entry[x, y].OBJ1ADT         = br.ReadUInt32();
-                Entry[x, y].TEX0ADT         = br.ReadUInt32();
-                Entry[x, y].LODADT          = br.ReadUInt32();
-                Entry[x, y].MapTexture      = br.ReadUInt32();
-                Entry[x, y].MapTextureN     = br.ReadUInt32();
-                Entry[x, y].MiniMapTexture  = br.ReadUInt32();
-
-                WDTEntries.Add((x, y), Entry[x, y]);
+                var MapFileDataId = br.Read<MapFileDataIds>();
+                WDTEntries.Add((y, x), MapFileDataId);
             }
         }
     }

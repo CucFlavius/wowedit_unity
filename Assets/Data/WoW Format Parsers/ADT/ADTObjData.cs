@@ -17,14 +17,12 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             public Vector2 terrainPos = new Vector2();
 
             // WMO data //
-            public Dictionary<uint, uint> WMOPathFDIDs  = new Dictionary<uint, uint>();
-            public Dictionary<uint, string> WMOPaths    = new Dictionary<uint, string>();
+            public Dictionary<uint, uint> WMOPath  = new Dictionary<uint, uint>();
             public List<uint> WMOOffsets                = new List<uint>();
             public List<WMOPlacementInfo> WMOInfo       = new List<WMOPlacementInfo>();
 
             // M2 data //
-            public Dictionary<uint, uint> M2PathFDIDs   = new Dictionary<uint, uint>();
-            public Dictionary<uint, string> M2Paths     = new Dictionary<uint, string>();
+            public Dictionary<uint, uint> M2Path   = new Dictionary<uint, uint>();
             public List<uint> M2Offsets                 = new List<uint>();
             public List<M2PlacementInfo> M2Info         = new List<M2PlacementInfo>();
         }

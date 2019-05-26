@@ -25,7 +25,7 @@ public class TerrainImport : MonoBehaviour
     public GameObject SelectPlayerBlockIcon_prefab;
     public GameObject World;
     public GameObject LoadingText;
-    public Minimap minimap;
+    public Minimap MiniMap;
     public Text DataText;
     public Text ErrorMessageText;
     public Toggle wmoToggle;
@@ -40,7 +40,7 @@ public class TerrainImport : MonoBehaviour
     public Dictionary<string, GameObject> MapTabs = new Dictionary<string, GameObject>();
     public static bool Initialized = false;
     public Vector2 currentSelectedPlayerSpawn = new Vector2(0, 0); // default
-    private string selectedMapName = "";
+    public uint selectedWDTId;
     public Storage<MapRecord> MapRecords;
     public Dictionary<string, MapRecord> miniMap = new Dictionary<string, MapRecord>();
 
@@ -64,7 +64,7 @@ public class TerrainImport : MonoBehaviour
         if (!Initialized)
         {
             Initialize();
-            minimap.pause = false;
+            MiniMap.Pause = false;
         }
         TerrainImporterPanel.SetActive(true);
 
@@ -84,11 +84,10 @@ public class TerrainImport : MonoBehaviour
     {
         foreach (var record in MapRecords)
         {
-            GameObject MapItem = Instantiate(MapTabPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            string MapName = record.Value.MapName;
+            GameObject MapItem  = Instantiate(MapTabPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            string MapName      = $"{record.Value.Directory} ({record.Value.MapName})";
 
-            if (!MapTabs.ContainsKey(MapName))
-                MapTabs.Add(MapName, MapItem);
+            MapTabs.Add(MapName, MapItem);
 
             MapItem.transform.SetParent(MapScrollList.transform);
             MapItem.transform.GetChild(0).GetComponent<Text>().text = MapName;
@@ -103,9 +102,7 @@ public class TerrainImport : MonoBehaviour
     {
         MapTabs.Clear();
         foreach (Transform child in MapScrollList.transform)
-        {
             Destroy(child);
-        }
     }
 
     // Filter Buttons in the Map List Panel based on keyword //
@@ -137,14 +134,15 @@ public class TerrainImport : MonoBehaviour
     // Map Selected in the Map List Panel //
     public void MapSelected(string mapName)
     {
-        selectedMapName = mapName;
-        minimap.ClearMinimaps(minimapScrollPanel);
+        MiniMap.ClearMinimaps(minimapScrollPanel);
 
         if (miniMap.TryGetValue(mapName, out MapRecord record))
         {
+            selectedWDTId = record.WdtFileDataID;
+
+            WDT.WDTEntries.Clear();
             if (WDT.ParseWDT(record.WdtFileDataID))
-                minimap.Load(record.WdtFileDataID, minimapScrollPanel);
-            // minimap.Load(mapName, minimapScrollPanel);
+                MiniMap.Load(record.WdtFileDataID, minimapScrollPanel);
         }
     }
 
@@ -164,13 +162,28 @@ public class TerrainImport : MonoBehaviour
     // Clicked the Load Full Map Button //
     public void ClickedLoadFull()
     {
-        minimap.pause = true;
+        MiniMap.Pause = true;
         if (currentSelectedPlayerSpawn == new Vector2(0, 0) || currentSelectedPlayerSpawn == null)
-        {
             currentSelectedPlayerSpawn = new Vector2(MinimapData.Min.y + ((MinimapData.Max.y - MinimapData.Min.y) / 2), MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
-        }
+        
         Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
-        // World.GetComponent<WorldLoader>().LoadFullWorld(selectedMapName, currentSelectedPlayerSpawn);
+
+        World.GetComponent<WorldLoader>().LoadWorld(selectedWDTId, currentSelectedPlayerSpawn);
+        LoadingText.SetActive(true);
+    }
+
+    // Clicked the Load Selected Area //
+    public void ClickedLoadSelectedArea()
+    {
+        MiniMap.Pause = true;
+
+        if (currentSelectedPlayerSpawn == new Vector2(0, 0) || currentSelectedPlayerSpawn == null)
+            currentSelectedPlayerSpawn = new Vector2(MinimapData.Min.y + ((MinimapData.Max.y - MinimapData.Min.y) / 2), MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
+
+        Debug.Log($"Spawn: {currentSelectedPlayerSpawn.x} {currentSelectedPlayerSpawn.y}");
+
+        // uint ADTFileDataId = WDT.WDTEntries[((int)currentSelectedPlayerSpawn.x, (int)currentSelectedPlayerSpawn.y)].RootADT;
+        World.GetComponent<WorldLoader>().LoadSingleADT(selectedWDTId, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);
     }
 

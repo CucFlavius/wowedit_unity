@@ -5,7 +5,6 @@ using UnityEngine;
 public static class MinimapData
 {
     public static Queue<MinimapBlockData> MinimapDataQueue = new Queue<MinimapBlockData>();
-    public static MapAvailability dataExists = new MapAvailability();
     public static MapAvailability[,] mapAvailability = new MapAvailability[64,64];
     public static Vector2 Min;
     public static Vector2 Max;

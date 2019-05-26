@@ -41,6 +41,8 @@ namespace CASCLib
                 using (var fs = OpenInstallFile(EncodingHandler, this))
                     InstallHandler = new InstallHandler(fs);
             }
+
+            Debug.Log("CASCHandler: Initialized CASC...");
         }
 
         public static CASCHandler OpenStorage(CASCConfig config)

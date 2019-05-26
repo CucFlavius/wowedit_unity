@@ -16,7 +16,7 @@ public class Minimap : MonoBehaviour
     public GameObject PanelErrorMessage;
     public Text ErrorMessageText;
     private int RemainingMinimaps = 0;
-    public bool pause = false;
+    public bool Pause = false;
     
     void Update()
     {
@@ -26,23 +26,27 @@ public class Minimap : MonoBehaviour
             RemainingMinimaps = MinimapData.Total;
             MinimapThread.ResetParentSize = false;
         }
+
         if (MinimapData.MinimapDataQueue.Count > 0)
         {
             AssembleMinimap();
             RemainingMinimaps--;
             LoadingBar.fillAmount = 1 - ((float)RemainingMinimaps / (float)MinimapData.Total);
         }
-        if (LoadingBar.fillAmount >= 0.99f)
+
+        if (LoadingBar.fillAmount >= 0.90f)
         {
             if (LoadingPanel.activeSelf)
                 LoadingPanel.SetActive(false);
         }
+
         if (MinimapThread.checkWMOonly)
         {
             if (MinimapThread.WMOOnlyZone)
             {
                 if (LoadingPanel.activeSelf)
                     LoadingPanel.SetActive(false);
+
                 if (!PanelErrorMessage.activeSelf)
                 {
                     PanelErrorMessage.SetActive(true);
@@ -53,17 +57,16 @@ public class Minimap : MonoBehaviour
             {
                 if (!LoadingPanel.activeSelf)
                     LoadingPanel.SetActive(true);
+
                 if (PanelErrorMessage.activeSelf)
-                {
                     PanelErrorMessage.SetActive(false);
-                }
             }
             MinimapThread.checkWMOonly = false;
         }
     }
 
     // Create Minimap Blocks //
-    public void Load(uint FileDataId, GameObject scrollParent)
+    public void Load(uint WdtFileDataId, GameObject scrollParent)
     {
         ScrollParent = scrollParent;
         RemainingMinimaps = 1; // resetting above 0
@@ -71,7 +74,7 @@ public class Minimap : MonoBehaviour
         LoadingBar.fillAmount = 0;
 
         LoadingPanel.SetActive(true);
-        MinimapThread.currentMapFileDataId = FileDataId;
+        MinimapThread.currentWdtFileDataId = WdtFileDataId;
 
         Thread minimapThread = new Thread(() => MinimapThread.LoadThread(CascHandler.cascHandler));
         minimapThread.IsBackground = true;

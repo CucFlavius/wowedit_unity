@@ -7,7 +7,6 @@ namespace Assets.World.Terrain
 {
     public class ADTBlock : MonoBehaviour
     {
-
         Vector3 blockCenter;
         Vector3[] blockCorners;
         int materialLoDState;
@@ -15,7 +14,6 @@ namespace Assets.World.Terrain
         public bool reCheck;
         Camera cameraMain;
         public Vector2 coords;
-        public string mapName;
         public uint FileDataId;
 
         private void Start()

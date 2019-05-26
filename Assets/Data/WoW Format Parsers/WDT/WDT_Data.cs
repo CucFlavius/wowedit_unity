@@ -13,8 +13,8 @@ public static partial class WDT  {
     }
 
     public static Dictionary<uint, WDTflagsdata> Flags = new Dictionary<uint, WDTflagsdata>(); // flags in a mapname dictionary (one wdt per map)
-    public static Dictionary<(uint, uint), WDTEntry> WDTEntries = new Dictionary<(uint, uint), WDTEntry>();
-    public class WDTEntry
+    public static Dictionary<(int, int), MapFileDataIds> WDTEntries = new Dictionary<(int, int), MapFileDataIds>();
+    public struct MapFileDataIds
     {
         public uint RootADT;
         public uint OBJ0ADT;

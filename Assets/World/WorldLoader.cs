@@ -32,8 +32,7 @@ namespace Assets.World
         public Vector2 CameraStartBlock;
         private int PreviousCamX;
         private int PreviousCamY;
-        public uint fileDataId;
-        public string MapName;
+        public uint WdtFileDataId;
         private int pullFrom = 0;
 
         // Use this for initialization
@@ -75,7 +74,7 @@ namespace Assets.World
 
                     TerrainHandler.QueueItem queueItem = new TerrainHandler.QueueItem();
                     uint fileDataId = PulledObj.GetComponent<ADTBlock>().FileDataId;
-                    queueItem.FileDataId = fileDataId;
+                    queueItem.ADTFileDataId = fileDataId;
 
                     ADTMatrix[(int)coords.x, (int)coords.y] = 0;
                     queueItem.x = (int)coords.x;
@@ -101,23 +100,42 @@ namespace Assets.World
             Resources.UnloadUnusedAssets();
         }
 
-        public void LoadWorld(uint FileDataId, Vector2 playerSpawn)
-        {
-            fileDataId = FileDataId;
-            LoadFullWorld(playerSpawn);
-        }
-
-        public void LoadWorld(string mapName, Vector2 playerSpawn)
-        {
-            MapName = mapName;
-            LoadFullWorld(playerSpawn);
-        }
-
-        public void LoadFullWorld(Vector2 playerSpawn)
+        public void LoadSingleADT(uint WdtFileDataId, Vector2 playerSpawn)
         {
             ADT.working = true;
             TerrainParent.GetComponent<TerrainHandler>().frameBusy = false;
             pullFrom = 0;
+            this.WdtFileDataId = WdtFileDataId;
+
+            // clear Matrix //
+            ClearMatrix();
+
+            existingADTs[(int)playerSpawn.x, (int)playerSpawn.y] = MinimapData.mapAvailability[(int)playerSpawn.x, (int)playerSpawn.y].ADT;
+            
+            // Initial spawn //
+            ClearLoDArray(previousTerrainLod);
+            //ClearLoDArray(currentTerrainLod);
+
+            playerSpawn = new Vector2(playerSpawn.y, playerSpawn.x);
+
+            // position camera obj //
+            Camera.transform.position = new Vector3((32 - playerSpawn.x) * blockSize, 60f, (32 - playerSpawn.y) * blockSize);
+
+            int CurrentCamX = (int)playerSpawn.y;
+            int CurrentCamY = (int)playerSpawn.x;
+            PreviousCamX = CurrentCamX;
+            PreviousCamY = CurrentCamY;
+
+            UpdateLodMatrices(CurrentCamX, CurrentCamY);
+            // Loader();
+        }
+
+        public void LoadWorld(uint WdtFileDataId, Vector2 playerSpawn)
+        {
+            ADT.working = true;
+            TerrainParent.GetComponent<TerrainHandler>().frameBusy = false;
+            pullFrom = 0;
+            this.WdtFileDataId = WdtFileDataId;
 
             // clear Matrix //
             ClearMatrix();
@@ -145,7 +163,7 @@ namespace Assets.World
             PreviousCamY = CurrentCamY;
 
             UpdateLodMatrices(CurrentCamX, CurrentCamY);
-            //Loader();
+            // Loader();
         }
 
         public void UpdateLodMatrices(int currentPosX, int currentPosY)
@@ -153,7 +171,6 @@ namespace Assets.World
             ClearLoDArray(currentTerrainLod);
             Spiral(currentPosX, currentPosY);
         }
-
 
         public void Spiral(int X, int Y)
         {
@@ -219,13 +236,9 @@ namespace Assets.World
                                 GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTblock.transform.SetParent(TerrainParent.transform);
                                 ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                ADTblock.GetComponent<ADTBlock>().FileDataId = WDT.WDTEntries[(x, y)].RootADT;
 
-                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                    ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
-
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
+                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(WDT.WDTEntries[(x, y)].RootADT, x, y, ADTblock, WdtFileDataId);
                                 LoadedADTBlocks.Add(ADTblock);
                             }
                         }
@@ -286,13 +299,9 @@ namespace Assets.World
                                 GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                 ADTblock.transform.SetParent(TerrainParent.transform);
                                 ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                ADTblock.GetComponent<ADTBlock>().FileDataId = WDT.WDTEntries[(x, y)].RootADT;
 
-                                if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                    ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                    ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
-
-                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
+                                TerrainParent.GetComponent<TerrainHandler>().AddToQueue(WDT.WDTEntries[(x, y)].RootADT, x, y, ADTblock, WdtFileDataId);
                                 LoadedADTBlocks.Add(ADTblock);
                             }
                         }
@@ -332,7 +341,7 @@ namespace Assets.World
                 }
             }
         }
-
+        
         public void Loader()
         {
             for (int x = 0; x < maxWorldSize - 1; x++)
@@ -367,13 +376,9 @@ namespace Assets.World
                                         GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                         ADTblock.transform.SetParent(TerrainParent.transform);
                                         ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                        ADTblock.GetComponent<ADTBlock>().FileDataId = WDT.WDTEntries[(x, y)].RootADT;
 
-                                        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                            ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                        else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                            ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
-
-                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
+                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(WDT.WDTEntries[(x, y)].RootADT, x, y, ADTblock, WdtFileDataId);
                                         LoadedADTBlocks.Add(ADTblock);
                                     }
                                 }
@@ -434,13 +439,9 @@ namespace Assets.World
                                         GameObject ADTblock = Instantiate(ADTBlockObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
                                         ADTblock.transform.SetParent(TerrainParent.transform);
                                         ADTblock.GetComponent<ADTBlock>().coords = new Vector2(x, y);
+                                        ADTblock.GetComponent<ADTBlock>().FileDataId = WDT.WDTEntries[(x, y)].RootADT;
 
-                                        if (Settings.GetSection("misc").GetString("wowsource") == "extracted")
-                                            ADTblock.GetComponent<ADTBlock>().mapName = MapName;
-                                        else if (Settings.GetSection("misc").GetString("wowsource") == "game")
-                                            ADTblock.GetComponent<ADTBlock>().FileDataId = fileDataId;
-
-                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(fileDataId, x, y, ADTblock);
+                                        TerrainParent.GetComponent<TerrainHandler>().AddToQueue(WDT.WDTEntries[(x, y)].RootADT, x, y, ADTblock, WdtFileDataId);
                                         LoadedADTBlocks.Add(ADTblock);
                                     }
                                 }

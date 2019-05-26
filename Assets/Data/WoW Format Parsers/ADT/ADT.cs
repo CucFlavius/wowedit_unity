@@ -27,15 +27,14 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         public static Vector2[] Chunk_UVs;
         public static List<Vector2[]> Chunk_UVs2;
         public static Vector2[] Chunk_UVsLod1;
-        public static GameObject CASC;
-        public static Jenkins96 Hasher = new Jenkins96();
+        public static CASCHandler CASC;
 
         public static bool working = false;
 
         // Run at Startup to Precalculate Some of the Chunk Mesh Data //
-        public static void Initialize()
+        public static void Initialize(CASCHandler Handler)
         {
-            CASC = GameObject.Find("[CASC]");
+            CASC = Handler;
             ////////////////////////////////////////
             #region Verts LoD0 (needs fix, unused)
 
@@ -217,7 +216,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Run Terrain Mesh Parser //
-        public static void LoadTerrainMesh(string Path, string MapName, Vector2 Coords)
+        public static void LoadTerrainMesh(uint AdtFileDataId, Vector2 Coords, CASCHandler Handler)
         {
             ThreadWorkingMesh = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -225,7 +224,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
             ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();
 
-            ParseADT_Main(Path, MapName, Coords);
+            ParseADT_Main(AdtFileDataId, Coords, Handler);
             ADT_ProcessData.GenerateMeshArrays();
 
             if (working)
@@ -238,7 +237,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Run Terrain Texture Parser //
-        public static void LoadTerrainTextures(string Path, string MapName, Vector2 Coords)
+        public static void LoadTerrainTextures(uint TexAdtFileId, Vector2 Coords, CASCHandler Handler, uint WdtFileDataId)
         {
             ThreadWorkingTextures = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -246,10 +245,10 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTTexData.textureBlockData = new ADTTexData.TextureBlockData();
             ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
 
-            ParseADT_Tex(Path, MapName, Coords);
-            if (SettingsTerrainImport.LoadShadowMaps)
-                ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
-            ADT_ProcessData.Load_hTextures();
+            ParseADT_Tex(TexAdtFileId, Coords, Handler, WdtFileDataId);
+            // if (SettingsTerrainImport.LoadShadowMaps)
+            //     ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
+            ADT_ProcessData.Load_hTextures(Handler);
 
             if (working)
                 ADTTexData.TextureBlockDataQueue.Enqueue(ADTTexData.textureBlockData);
@@ -261,7 +260,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Run Terrain Models Parser //
-        public static void LoadTerrainModels(string Path, string MapName, Vector2 Coords)
+        public static void LoadTerrainModels(uint OBJFileDataId, Vector2 Coords, CASCHandler Handler)
         {
             ThreadWorkingModels = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -270,7 +269,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTObjData.modelBlockData.terrainPos = Coords;
             if (SettingsTerrainImport.LoadWMOs ||
                 SettingsTerrainImport.LoadM2s)
-                ParseADT_Obj(Path, MapName, Coords);
+                ParseADT_Obj(OBJFileDataId, Coords, Handler);
 
             if (working)
                 ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
@@ -282,157 +281,150 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Terrain Mesh Parser //
-        private static void ParseADT_Main(string Path, string MapName, Vector2 coords)  // MS version
+        private static void ParseADT_Main(uint RootAdtFileDataId, Vector2 coords, CASCHandler Handler)  // MS version
         {
             ADTRoot r = new ADTRoot();
-            string ADTmainPath = Path + MapName + "_" + coords.x + "_" + coords.y + ".adt";
-            ulong hash = Hasher.ComputeHash(ADTmainPath);
+            int MCNKchunkNumber = 0;
+            long StreamPos = 0;
 
-            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
+            using (var stream = Handler.OpenFile(RootAdtFileDataId))
+            using (var reader = new BinaryReader(stream))
             {
-                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
-                int MCNKchunkNumber = 0;
-
-                using (BinaryReader s = new BinaryReader(stream))
+                while (StreamPos < stream.Length)
                 {
-                    while (stream.Position < stream.Length)
-                    {
-                        ADTChunkId chunkID = (ADTChunkId)s.ReadInt32();
-                        int chunkSize = s.ReadInt32();
+                    stream.Position = StreamPos;
+                    ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
+                    uint chunkSize = reader.ReadUInt32();
 
-                        switch (chunkID)
-                        {
-                            case ADTChunkId.MVER:
-                                r.ReadMVER(s); // ADT file version
-                                break;
-                            case ADTChunkId.MHDR:
-                                r.ReadMHDR(s); // Offsets for specific chunks 0000 if chunks don't exist.
-                                break;
-                            case ADTChunkId.MH2O:
-                                r.ReadMH2O(s, chunkSize); // Water Data
-                                break;
-                            case ADTChunkId.MCNK:
-                                {
-                                    r.ReadMCNK(s, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
-                                    MCNKchunkNumber++;
-                                }
-                                break;
-                            case ADTChunkId.MFBO:
-                                r.ReadMFBO(s); // FlightBounds plane & Death plane
-                                break;
-                            default:
-                                SkipUnknownChunk(s, chunkID, chunkSize);
-                                break;
-                        }
+                    StreamPos = stream.Position + chunkSize;
+
+                    switch (chunkID)
+                    {
+                        case ADTChunkId.MVER:
+                            r.ReadMVER(reader); // ADT file version
+                            break;
+                        case ADTChunkId.MHDR:
+                            r.ReadMHDR(reader); // Offsets for specific chunks 0000 if chunks don't exist.
+                            break;
+                        // case ADTChunkId.MH2O:
+                        //     r.ReadMH2O(reader, chunkSize); // Water Data
+                        //     break;
+                        case ADTChunkId.MCNK:
+                            {
+                                r.ReadMCNK(reader, MCNKchunkNumber, chunkSize); // Terrain Data - 256chunks
+                                MCNKchunkNumber++;
+                            }
+                            break;
+                        case ADTChunkId.MFBO:
+                            r.ReadMFBO(reader); // FlightBounds plane & Death plane
+                            break;
+                        default:
+                            SkipUnknownChunk(stream, chunkID, chunkSize);
+                            break;
                     }
                 }
             }
         }
 
         // Terrain Texture Parser //
-        private static void ParseADT_Tex(string Path, string MapName, Vector2 coords)
+        private static void ParseADT_Tex(uint TexFileDataId, Vector2 coords, CASCHandler Handler, uint WdtFileDataId)
         {
             ADTTex t = new ADTTex();
-            string ADTtexPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_tex0" + ".adt";
-            ulong hash = Hasher.ComputeHash(ADTtexPath);
+            int MCNKchunkNumber = 0;
+            long StreamPos = 0;
 
-            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
+            using (var stream = Handler.OpenFile(TexFileDataId))
+            using (var reader = new BinaryReader(stream))
             {
-                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
-                int MCNKchunkNumber = 0;
-
-                using (BinaryReader reader = new BinaryReader(stream))
+                while (StreamPos < stream.Length)
                 {
-                    while (stream.Position < stream.Length)
-                    {
-                        ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
-                        int chunkSize = reader.ReadInt32();
+                    stream.Position = StreamPos;
+                    ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
+                    uint chunkSize = reader.ReadUInt32();
 
-                        switch (chunkID)
-                        {
-                            case ADTChunkId.MVER:
-                                t.ReadMVER(reader); // ADT file version
-                                break;
-                            case ADTChunkId.MAMP:
-                                t.ReadMAMP(reader); // Single value - texture size = 64
-                                break;
-                            case ADTChunkId.MTEX:
-                                t.ReadMTEX(reader, chunkSize); // Texture Paths
-                                break;
-                            case ADTChunkId.MCNK:
-                                {
-                                    t.ReadMCNKtex(reader, MapName, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
-                                    MCNKchunkNumber++;
-                                }
-                                break;
-                            case ADTChunkId.MTXP:
-                                t.ReadMTXP(reader, chunkSize);
-                                break;
-                            case ADTChunkId.MHID:
-                                t.ReadMHID(reader, chunkSize);
-                                break;
-                            case ADTChunkId.MDID:
-                                t.ReadMDID(reader, chunkSize);
-                                break;
-                            default:
-                                SkipUnknownChunk(reader, chunkID, chunkSize);
-                                break;
-                        }
+                    StreamPos = stream.Position + chunkSize;
+
+                    switch (chunkID)
+                    {
+                        case ADTChunkId.MVER:
+                            t.ReadMVER(reader); // ADT file version
+                            break;
+                        case ADTChunkId.MAMP:
+                            t.ReadMAMP(reader); // Single value - texture size = 64
+                            break;
+                        case ADTChunkId.MCNK:
+                            {
+                                t.ReadMCNKtex(reader, WdtFileDataId, MCNKchunkNumber, chunkSize); // Texture Data - 256chunks
+                                MCNKchunkNumber++;
+                            }
+                            break;
+                        case ADTChunkId.MTXP:
+                            t.ReadMTXP(reader, chunkSize);
+                            break;
+                        case ADTChunkId.MHID:
+                            t.ReadMHID(reader, chunkSize, Handler);
+                            break;
+                        case ADTChunkId.MDID:
+                            t.ReadMDID(reader, chunkSize, Handler);
+                            break;
+                        default:
+                            SkipUnknownChunk(stream, chunkID, chunkSize);
+                            break;
                     }
                 }
             }
         }
 
         // Terrain Models Parser //
-        public static void ParseADT_Obj(string Path, string MapName, Vector2 coords)
+        public static void ParseADT_Obj(uint OBJFileDataId, Vector2 coords, CASCHandler Handler)
         {
             ADTObj o = new ADTObj();
-            string ADTobjPath = Path + MapName + "_" + coords.x + "_" + coords.y + "_obj0" + ".adt";
-            ulong hash = Hasher.ComputeHash(ADTobjPath);
+            int MCNKchunkNumber = 0;
+            long StreamPos = 0;
 
-            if (CASC.GetComponent<CascHandler>().cascHandler.FileExists(hash))
+            using(var stream = Handler.OpenFile(OBJFileDataId))
+            using (BinaryReader reader = new BinaryReader(stream))
             {
-                var stream = CASC.GetComponent<CascHandler>().cascHandler.OpenFile(hash);
-                int MCNKchunkNumber = 0;
-
-                using (BinaryReader reader = new BinaryReader(stream))
+                while (stream.Position < stream.Length)
                 {
-                    while (stream.Position < stream.Length)
-                    {
-                        ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
-                        int chunkSize = reader.ReadInt32();
+                    stream.Position = StreamPos;
+                    ADTChunkId chunkID = (ADTChunkId)reader.ReadInt32();
+                    uint chunkSize = reader.ReadUInt32();
 
-                        switch (chunkID)
-                        {
-                            case ADTChunkId.MVER:
-                                o.ReadMVER(reader); // ADT file version
-                                break;
-                            case ADTChunkId.MDDF:
-                                o.ReadMDDF(reader, chunkSize); // Placement information for doodads (M2 models).
-                                break;
-                            case ADTChunkId.MODF:
-                                o.ReadMODF(reader, chunkSize); // Placement information for WMOs.
-                                break;
-                            case ADTChunkId.MCNK:
-                                {
-                                    o.ReadMCNKObj(reader, MapName, MCNKchunkNumber, chunkSize); // 256chunks
-                                    MCNKchunkNumber++;
-                                }
-                                break;
-                            default:
-                                SkipUnknownChunk(reader, chunkID, chunkSize);
-                                break;
-                        }
+                    StreamPos = stream.Position + chunkSize;
+
+                    switch (chunkID)
+                    {
+                        case ADTChunkId.MVER:
+                            o.ReadMVER(reader); // ADT file version
+                            break;
+                        case ADTChunkId.MDDF:
+                            o.ReadMDDF(reader, chunkSize); // Placement information for doodads (M2 models).
+                            break;
+                        case ADTChunkId.MODF:
+                            o.ReadMODF(reader, chunkSize); // Placement information for WMOs.
+                            break;
+                        case ADTChunkId.MCNK:
+                            {
+                                o.ReadMCNKObj(reader, MCNKchunkNumber, chunkSize); // 256chunks
+                                MCNKchunkNumber++;
+                            }
+                            break;
+                        default:
+                            SkipUnknownChunk(stream, chunkID, chunkSize);
+                            break;
                     }
                 }
             }
         }
 
         // Move the stream forward upon finding unknown chunks //
-        public static void SkipUnknownChunk(BinaryReader reader, ADTChunkId chunkID, int chunkSize)
+        public static void SkipUnknownChunk(Stream stream, ADTChunkId chunkID, uint chunkSize)
         {
-            Debug.Log("Missing chunk ID : " + chunkID);
-            reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
+            // if (Enum.IsDefined(typeof(ADTChunkId), chunkID))
+            //     Debug.Log($"Missing chunk ID : {chunkID}");
+
+            stream.Seek(chunkSize, SeekOrigin.Current);
         }
     }
 }

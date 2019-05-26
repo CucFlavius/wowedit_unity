@@ -14,14 +14,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public static bool ThreadWorking;
         public static GroupData groupDataBuffer;
         public static List<string> LoadedBLPs = new List<string>();
-        public static GameObject Casc;
-        public static CASCHandler CascHandler;
 
-        public static void Load(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static void Load(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale, CASCHandler Handler)
         {
-            Casc = GameObject.Find("[CASC]");
-            CascHandler = Casc.GetComponent<CascHandler>().cascHandler;
-
             wmoData = new WMOStruct();
 
             wmoData.fileDataId = FileDataId;
@@ -31,8 +26,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             wmoData.scale = scale;
 
             wmoData.Info = new HeaderData();
-            wmoData.texturePaths = new Dictionary<uint, string>();
-            wmoData.textureData = new Dictionary<string, Texture2Ddata>();
+            wmoData.texturePaths = new Dictionary<uint, uint>();
+            wmoData.textureData = new Dictionary<uint, Texture2Ddata>();
             wmoData.MOGNgroupnames = new Dictionary<int, string>();
             wmoData.materials = new List<WMOMaterial>();
 
@@ -41,7 +36,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             {
                 ThreadWorking = true;
 
-                ParseWMO_Root(FileDataId);
+                ParseWMO_Root(FileDataId, Handler);
 
                 AllWMOData.Enqueue(wmoData);
 
@@ -54,20 +49,19 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             }
         }
 
-        private static void ParseWMO_Root(uint FileDataId)
+        private static void ParseWMO_Root(uint FileDataId, CASCHandler CascHandler)
         {
-            var stream = CascHandler.OpenFile(FileDataId);
-            ParseWMO_Root(stream);
-        }
-
-        private static void ParseWMO_Root(Stream stream)
-        {
+            long StreamPos = 0;
+            using (var stream = CascHandler.OpenFile(FileDataId))
             using (BinaryReader reader = new BinaryReader(stream))
             {
-                while (stream.Position < stream.Length)
+                while (StreamPos < stream.Length)
                 {
+                    stream.Position = StreamPos;
                     WMOChunkId chunkID = (WMOChunkId)reader.ReadInt32();
                     int chunkSize = reader.ReadInt32();
+
+                    StreamPos = stream.Position + chunkSize;
 
                     switch (chunkID)
                     {
@@ -78,7 +72,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                             ReadMOHD(reader); // root file header
                             break;
                         case WMOChunkId.MOMT:
-                            ReadMOMT(reader, chunkSize); // materials
+                            ReadMOMT(reader, chunkSize, CascHandler); // materials
                             break;
                         case WMOChunkId.MOUV:
                             ReadMOUV(reader); // texture animation // optional
@@ -129,12 +123,17 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                             ReadGFID(reader, chunkSize); // required when WMO is loaded from fileID
                             break;
                         default:
-                            SkipUnknownChunk(reader, chunkID, chunkSize);
+                            SkipUnknownChunk(stream, chunkID, chunkSize);
                             break;
                     }
                 }
                 stream.Close();
             }
+        }
+
+        private static void ParseWMO_Root(Stream stream)
+        {
+            
         }
 
         private static void ParseWMO_Groups(string dataPath)
@@ -219,10 +218,10 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             }
         }
 
-        public static void SkipUnknownChunk(BinaryReader reader, WMOChunkId chunkID, int chunkSize)
+        public static void SkipUnknownChunk(Stream stream, WMOChunkId chunkID, int chunkSize)
         {
             // Debug.Log("Missing chunk ID : " + chunkID);
-            reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
+            stream.Seek(chunkSize, SeekOrigin.Current);
         }
     }
 

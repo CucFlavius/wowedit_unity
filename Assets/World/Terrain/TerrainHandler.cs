@@ -7,11 +7,16 @@ using System.Threading;
 using System.IO;
 using UnityEngine;
 using Assets.WoWEditSettings;
+using CASCLib;
+using Assets.UI.CASC;
+using System;
+using System.Linq;
 
 namespace Assets.World.Terrain
 {
     public class TerrainHandler : MonoBehaviour
     {
+        public uint WDTFileDataID;
         public int BlockX;
         public int BlockY;
         public GameObject currentBlock;
@@ -33,6 +38,8 @@ namespace Assets.World.Terrain
         public Shader shaderWoWTerrainHigh;
         public bool frameBusy;
         public bool working;
+        public CascHandler CascHandler;
+        public CASCHandler Handler;
 
         public List<QueueItem> LoadedQueueItems = new List<QueueItem>();
         public List<QueueItem> ADTRootQueue = new List<QueueItem>();
@@ -45,8 +52,8 @@ namespace Assets.World.Terrain
         public static Queue<QueueItem> mapTextureQueue = new Queue<QueueItem>();
         public static bool FinishedCreatingObject;
 
-        public Dictionary<string, Texture2D> LoadedTerrainTextures = new Dictionary<string, Texture2D>();
-        public Dictionary<string, Texture2D> LoadedHTerrainTextures = new Dictionary<string, Texture2D>();
+        public Dictionary<uint, Texture2D> LoadedTerrainTextures = new Dictionary<uint, Texture2D>();
+        public Dictionary<uint, Texture2D> LoadedHTerrainTextures = new Dictionary<uint, Texture2D>();
 
         public WMOhandler WMOHandler;
         public Dictionary<uint, GameObject> LoadedWMOIds        = new Dictionary<uint, GameObject>();
@@ -75,7 +82,7 @@ namespace Assets.World.Terrain
 
         public class QueueItem
         {
-            public uint FileDataId;
+            public uint ADTFileDataId;
             public int x;
             public int y;
             public GameObject Block;
@@ -170,10 +177,11 @@ namespace Assets.World.Terrain
             }
         }
 
-        public void AddToQueue(uint FileDataID, int x, int y, GameObject Block)
+        public void AddToQueue(uint FileDataID, int x, int y, GameObject Block, uint WdtFileDataId)
         {
+            WDTFileDataID = WdtFileDataId;
             QueueItem item = new QueueItem();
-            item.FileDataId = FileDataID;
+            item.ADTFileDataId = FileDataID;
             item.x = x;
             item.y = y;
             item.Block = Block;
@@ -226,26 +234,27 @@ namespace Assets.World.Terrain
 
         public void ADTRootThread()
         {
-            //string ADTpath = @"\world\maps\" + currentHTerrain.mapName + @"\";
-            //ADT.LoadTerrainMesh(ADTpath, currentHTerrain.mapName, new Vector2(currentHTerrain.x, currentHTerrain.y));
+            Handler = CascHandler.cascHandler;
+            uint ADTFileDataId = currentHTerrain.ADTFileDataId;
+            ADT.LoadTerrainMesh(ADTFileDataId, new Vector2(currentHTerrain.x, currentHTerrain.y), Handler);
         }
 
         public void ADTTexThread()
         {
-            //string ADTpath = @"\world\maps\" + currentHTexture.mapName + @"\";
-            //ADT.LoadTerrainTextures(ADTpath, currentHTexture.mapName, new Vector2(currentHTexture.x, currentHTexture.y));
+            Handler = CascHandler.cascHandler;
+            uint TexDataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].TEX0ADT;
+            ADT.LoadTerrainTextures(TexDataFileId, new Vector2(currentHTexture.x, currentHTexture.y), Handler, WDTFileDataID);
         }
 
         public void ADTObjThread()
         {
-            //string ADTpath = @"\world\maps\" + currentObj.mapName + @"\";
-            //ADT.LoadTerrainModels(ADTpath, currentObj.mapName, new Vector2(currentObj.x, currentObj.y));
+            Handler = CascHandler.cascHandler;
+            uint OBJ0DataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].OBJ0ADT;
+            uint OBJ1DataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].OBJ1ADT;
+            ADT.LoadTerrainModels(OBJ0DataFileId, new Vector2(currentObj.x, currentObj.y), Handler);
         }
 
-        public void MapTextureThread()
-        {
-            // MapTexture.Load(currentMapTexture.mapName, new Vector2(currentMapTexture.x, currentMapTexture.y));
-        }
+        public void MapTextureThread() => MapTexture.Load(new Vector2(currentMapTexture.x, currentMapTexture.y), Handler);
 
         #endregion
         ///////////////////////////////////
@@ -262,7 +271,7 @@ namespace Assets.World.Terrain
 
                 if (HTGroupItem.Block != null)
                 {
-                    // HTGroupItem.Block.name = HTGroupItem.mapName + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
+                    HTGroupItem.Block.name = HTGroupItem.ADTFileDataId + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -293,7 +302,7 @@ namespace Assets.World.Terrain
                             ADTTexQueue.Add(HTGroupItem);
                             currentLoadingHTextureBlock.Enqueue(HTGroupItem);
                         }
-                        catch { }
+                        catch (Exception ex) { Debug.LogError($"ERROR: {ex.Message}"); }
                     }
                 }
 
@@ -313,7 +322,7 @@ namespace Assets.World.Terrain
                 QueueItem HTextureItem = currentLoadingHTextureBlock.Dequeue();
                 if (HTextureItem.Block != null)
                 {
-                    // HTextureItem.Block.name = HTextureItem.mapName + "_" + HTextureItem.x + "_" + HTextureItem.y;
+                    HTextureItem.Block.name = HTextureItem.ADTFileDataId + "_" + HTextureItem.x + "_" + HTextureItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -384,8 +393,8 @@ namespace Assets.World.Terrain
 
                         float[] HeightScales = new float[4];
                         float[] heightOffsets = new float[4];
-                        string[] DiffuseLayers = new string[4];
-                        string[] HeightLayers = new string[4];
+                        uint[] DiffuseLayers = new uint[4];
+                        uint[] HeightLayers = new uint[4];
                         Flags.TerrainTextureFlag[] TextureFlags = new Flags.TerrainTextureFlag[4];
                         Texture2D[] AlphaLayers = new Texture2D[4];
                         Texture2D ShadowMap = null;
@@ -393,35 +402,35 @@ namespace Assets.World.Terrain
                         for (int layer = 0; layer < data.textureChunksData[i].NumberOfTextureLayers; layer++)
                         {
                             // Diffuse Texture //
-                            string textureName = data.terrainTexturePaths[data.textureChunksData[i].textureIds[layer]];
-                            if (!LoadedTerrainTextures.ContainsKey(textureName))
+                            uint textureFileDataId = data.terrainTextureFileDataIds[data.textureChunksData[i].textureIds[layer]];
+                            if (!LoadedTerrainTextures.ContainsKey(textureFileDataId))
                             {
-                                ADTTexData.Texture2Ddata tdata = data.terrainTextures[textureName];
+                                ADTTexData.Texture2Ddata tdata = data.terrainTextures[textureFileDataId];
                                 Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                                 tex.LoadRawTextureData(tdata.TextureData);
                                 tex.mipMapBias = Settings.highMipMapBias;
                                 tex.Apply();
-                                LoadedTerrainTextures[textureName] = tex;
+                                LoadedTerrainTextures[textureFileDataId] = tex;
                             }
-                            DiffuseLayers[layer] = textureName;
+                            DiffuseLayers[layer] = textureFileDataId;
 
                             // Height Texture //
-                            if (data.terrainHTextures.ContainsKey(textureName))
+                            if (data.terrainHTextures.ContainsKey(textureFileDataId))
                             {
-                                if (!LoadedHTerrainTextures.ContainsKey(textureName))
+                                if (!LoadedHTerrainTextures.ContainsKey(textureFileDataId))
                                 {
-                                    ADTTexData.Texture2Ddata tdata = data.terrainHTextures[textureName];
+                                    ADTTexData.Texture2Ddata tdata = data.terrainHTextures[textureFileDataId];
                                     Texture2D tex = new Texture2D(tdata.width, tdata.height, tdata.textureFormat, tdata.hasMipmaps);
                                     tex.LoadRawTextureData(tdata.TextureData);
                                     tex.Apply();
-                                    LoadedHTerrainTextures[textureName] = tex;
+                                    LoadedHTerrainTextures[textureFileDataId] = tex;
                                 }
-                                HeightLayers[layer] = textureName;
+                                HeightLayers[layer] = textureFileDataId;
                             }
                             // Height Values //
-                            data.heightScales.TryGetValue(textureName, out HeightScales[layer]);
-                            data.heightOffsets.TryGetValue(textureName, out heightOffsets[layer]);
-                            data.textureFlags.TryGetValue(textureName, out TextureFlags[layer]);
+                            data.heightScales.TryGetValue(textureFileDataId, out HeightScales[layer]);
+                            data.heightOffsets.TryGetValue(textureFileDataId, out heightOffsets[layer]);
+                            data.textureFlags.TryGetValue(textureFileDataId, out TextureFlags[layer]);
 
                             // Alpha Texture //
                             if (data.textureChunksData[i].alphaLayers.Count > 0 && layer > 0)
@@ -465,10 +474,10 @@ namespace Assets.World.Terrain
 
                         for (int ln = 0; ln < 4; ln++)
                         {
-                            if (DiffuseLayers[ln] != null)
+                            if (DiffuseLayers[ln] != 0)
                                 mat.SetTexture("_layer" + ln, LoadedTerrainTextures[DiffuseLayers[ln]]);
                             mat.SetTextureScale("_layer" + ln, new Vector2(1, 1));
-                            if (HeightLayers[ln] != null)
+                            if (HeightLayers[ln] != 0)
                                 mat.SetTexture("_height" + ln, LoadedHTerrainTextures[HeightLayers[ln]]);
                             mat.SetTextureScale("_height" + ln, new Vector2(1, 1));
                             if (ln > 0 && AlphaLayers[ln] != null)
@@ -518,14 +527,14 @@ namespace Assets.World.Terrain
                 mat.enableInstancing = true;
                 for (int i = 0; i < LoadedQueueItems.Count; i++)
                 {
-                    // if (LoadedQueueItems[i].mapName == mapTextureBlock.mapName && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
-                    // {
-                    //     for (int j = 0; j < 256; j++)
-                    //     {
-                    //         if (LoadedQueueItems[i].Block != null)
-                    //             LoadedQueueItems[i].Block.transform.GetChild(j).GetComponent<ADTChunk>().MaterialReady(1, mat);
-                    //     }
-                    // }
+                    if (LoadedQueueItems[i].ADTFileDataId == mapTextureBlock.FileDataId && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
+                    {
+                        for (int j = 0; j < 256; j++)
+                        {
+                            if (LoadedQueueItems[i].Block != null)
+                                LoadedQueueItems[i].Block.transform.GetChild(j).GetComponent<ADTChunk>().MaterialReady(1, mat);
+                        }
+                    }
                 }
                 frameBusy = false;
             }
@@ -564,8 +573,8 @@ namespace Assets.World.Terrain
                                                                   wmoInfo.position.y,
                                                                   wmoInfo.position.z);
 
-                                uint WMOFileDataId = data.WMOPathFDIDs[wmoInfo.nameId];
-                                WMOHandler.AddToQueue(WMOFileDataId, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one);
+                                uint WMOFileDataId = data.WMOPath[wmoInfo.nameId];
+                                WMOHandler.AddToQueue(WMOFileDataId, wmoInfo.uniqueID, addPosition, wmoInfo.rotation, Vector3.one, Handler);
                             }
                         }
                     }
@@ -589,7 +598,7 @@ namespace Assets.World.Terrain
                                                                   m2Info.position.y,
                                                                   m2Info.position.z);
 
-                               uint m2FileDataId = data.M2PathFDIDs[m2Info.nameId];
+                               uint m2FileDataId = data.M2Path[m2Info.nameId];
                                M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
                             }
                         }

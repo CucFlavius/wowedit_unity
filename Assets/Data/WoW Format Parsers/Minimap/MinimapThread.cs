@@ -9,37 +9,53 @@ public static class MinimapThread
 {
     public static bool ResetParentSize = false;
     public static bool ThreadAlive = false;
-    public static uint currentMapFileDataId;
+    public static uint currentWdtFileDataId;
     public static bool WMOOnlyZone = false;
     public static bool checkWMOonly = false;
     public static CASCHandler CascHandler;
 
     public static void LoadThread(CASCHandler Handler)
     {
-        CascHandler = Handler;
-        ThreadAlive = true;
-        CompileMapList(currentMapFileDataId, CascHandler);
+        CascHandler     = Handler;
+        ThreadAlive     = true;
+        CompileMapList(currentWdtFileDataId);
         GetMinMax();
-        checkWMOonly = true;
+        checkWMOonly    = true;
         ResetParentSize = true;
-        // RequestAvailableBLPs(currentMapFileDataId);
-        ThreadAlive = false;
+        ThreadAlive     = false;
     }
 
     // Build an array of available minimaps and maps //
-    public static void CompileMapList(uint FileDataId, CASCHandler cascHandler)
+    public static void CompileMapList(uint WdtFileDataId, CASCHandler Handler = null)
     {
-        for (uint x = 0; x < 64; x++)
-        {
-            for (uint y = 0; y < 64; y++)
-            {
-                var MiniMapTexture = WDT.WDTEntries[(x, y)].MiniMapTexture;
-                
-                Minimap.MinimapRequest request = new Minimap.MinimapRequest();
-                request.coords = new Vector2(x, y);
-                request.fileDataId = MiniMapTexture;
+        if (Handler != null)
+            CascHandler = Handler;
 
-                RequestBlock(request);
+        for (var x = 0; x < 64; x++)
+        {
+            for (var y = 0; y < 64; y++)
+            {
+                MinimapData.mapAvailability[x, y].WDT = WDT.Flags[WdtFileDataId].HasADT[x, y];
+
+                var MiniMapTexture = WDT.WDTEntries[(x, y)].MiniMapTexture;
+                var RootAdt        = WDT.WDTEntries[(x, y)].RootADT;
+                
+                if (MiniMapTexture != 0)
+                {
+                    MinimapData.mapAvailability[x, y].Minimap = true;
+                    Minimap.MinimapRequest request = new Minimap.MinimapRequest();
+                    request.coords = new Vector2(x, y);
+                    request.fileDataId = MiniMapTexture;
+
+                    RequestBlock(request);
+                }
+                else
+                    MinimapData.mapAvailability[x, y].Minimap = false;
+
+                if (RootAdt != 0)
+                    MinimapData.mapAvailability[x, y].ADT = true;
+                else
+                    MinimapData.mapAvailability[x, y].ADT = false;
             }
         }
     }
@@ -83,67 +99,22 @@ public static class MinimapThread
             WMOOnlyZone = false;
     }
 
-    // Request BLP blocks //
-    private static void RequestAvailableBLPs(uint FileDataId)
-    {
-        int X = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
-        int Y = (int)(MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
-        Debug.Log(X + " " + Y);
-        int x, y, dx, dy;
-        x = y = dx = 0;
-        dx = 0;
-        dy = -1;
-        int t = 64;
-        int maxI = t * t;
-        for (int i = 0; i < maxI; i++)
-        {
-            if (((x + X) > 0) && ((x + X) < maxI) && ((y + Y) > 0) && ((y + Y) < maxI))
-            {
-                if (MinimapData.mapAvailability[x + Y, y + Y].Minimap)
-                {
-                    Minimap.MinimapRequest minimapRequest = new Minimap.MinimapRequest();
-                    minimapRequest.fileDataId = FileDataId;
-                    minimapRequest.coords = new Vector2(x + X, y + Y);
-                    RequestBlock(minimapRequest);
-                }
-                else
-                {
-                    if (MinimapData.mapAvailability[x + Y, y + Y].ADT)
-                    {
-                        Minimap.MinimapRequest minimapRequest = new Minimap.MinimapRequest();
-                        minimapRequest.fileDataId = FileDataId;
-                        minimapRequest.coords = new Vector2(x + Y, y + Y);
-                        EnqueueEmptyBlock(minimapRequest);
-                    }
-                }
-            }
-            if ((x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1 - y)))
-            {
-                t = dx;
-                dx = -dy;
-                dy = t;
-            }
-            x += dx;
-            y += dy;
-        }
-    }
-
     // Request a minimap image from the parser //
     private static void RequestBlock(Minimap.MinimapRequest minimapRequest)
     {
         uint fileDataId = minimapRequest.fileDataId;
         using (Stream stream = CascHandler.OpenFile(fileDataId))
         {
-             BLP blp                    = new BLP();
-             byte[] data                = blp.GetUncompressed(stream, true);
-             BLPinfo info               = blp.Info();
-             MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
-             blockData.fileDataId       = fileDataId;
-             blockData.coords           = minimapRequest.coords;
-             blockData.textureInfo      = info;
-             blockData.minimapByteData  = data;
+            BLP blp                    = new BLP();
+            byte[] data                = blp.GetUncompressed(stream, true);
+            BLPinfo info               = blp.Info();
+            MinimapData.MinimapBlockData blockData = new MinimapData.MinimapBlockData();
+            blockData.fileDataId       = fileDataId;
+            blockData.coords           = minimapRequest.coords;
+            blockData.textureInfo      = info;
+            blockData.minimapByteData  = data;
 
-             MinimapData.MinimapDataQueue.Enqueue(blockData);
+            MinimapData.MinimapDataQueue.Enqueue(blockData);
         }
     }
 

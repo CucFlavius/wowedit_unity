@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 public class BLPinfo
 {
@@ -59,24 +60,22 @@ public class BLP
     {
         BLPinfo blpInfo = new BLPinfo();
 
-        blpInfo.textureFormat = textureFormat;
-        blpInfo.encoding = encoding;
-        blpInfo.alphaDepth = alphaDepth;
-        blpInfo.alphaEncoding = alphaEncoding;
-        if (hasMipmaps > 0)
-        {
-            blpInfo.hasMipmaps = true;
-        }
-        if (hasMipmaps == 0)
-        {
-            blpInfo.hasMipmaps = false;
-        }
-        blpInfo.width = width;
-        blpInfo.height = height;
-        blpInfo.mipmapOffsets = mipmapOffsets;
-        blpInfo.mipmapSize = mipmapSize;
+        blpInfo.textureFormat   = textureFormat;
+        blpInfo.encoding        = encoding;
+        blpInfo.alphaDepth      = alphaDepth;
+        blpInfo.alphaEncoding   = alphaEncoding;
 
-        blpInfo.mipMapCount = MipMapCount;
+        if (hasMipmaps > 0)
+            blpInfo.hasMipmaps  = true;
+
+        if (hasMipmaps == 0)
+            blpInfo.hasMipmaps  = false;
+
+        blpInfo.width           = width;
+        blpInfo.height          = height;
+        blpInfo.mipmapOffsets   = mipmapOffsets;
+        blpInfo.mipmapSize      = mipmapSize;
+        blpInfo.mipMapCount     = MipMapCount;
         
         return blpInfo;
     }
@@ -236,7 +235,7 @@ public class BLP
         return pic;
     }
 
-    private byte GetAlpha (byte[] data, int index, int alphaStart)
+    private byte GetAlpha(byte[] data, int index, int alphaStart)
     {
         switch (alphaDepth)
         {
