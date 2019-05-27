@@ -80,7 +80,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 if (material.TextureId1 != 0)
                 {
                     Texture2Ddata textureData   = new Texture2Ddata();
-                    Stream stream               = Handler.OpenFile(material.Texture1);
+                    Stream stream               = Handler.OpenFile(material.TextureId1);
                     BLP blp                     = new BLP();
                     byte[] data                 = blp.GetUncompressed(stream, true);
                     BLPinfo info                = blp.Info();
@@ -91,7 +91,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                     textureData.TextureData     = data;
                     stream.Close();
                     stream.Dispose();
-                    LoadedBLPs.Add(material.Texture1);
+                    LoadedBLPs.Add(material.TextureId1);
 
                     if (!wmoData.textureData.ContainsKey(material.TextureId1))
                         wmoData.textureData.Add(material.TextureId1, textureData);
@@ -372,13 +372,12 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         // (Legion+) required when WMO is loaded from fileID (e.g. game objects)
         public static void ReadGFID(BinaryReader reader, int GFIDsize)
         {
-            List<float> IDFlags = new List<float>();
-            int flagCount = GFIDsize / sizeof(uint);
+            WMO.WMOGroupIDs = new List<uint>();
+            int flagCount = GFIDsize / 4;
             for (int i = 0; i < flagCount; ++i)
             {
-                IDFlags.Add(reader.ReadSingle());
+                WMO.WMOGroupIDs.Add(reader.ReadUInt32());
             }
         }
-
     }
 }

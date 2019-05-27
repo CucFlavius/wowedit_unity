@@ -28,6 +28,7 @@ public class TerrainImport : MonoBehaviour
     public Minimap MiniMap;
     public Text DataText;
     public Text ErrorMessageText;
+    public Text WDTFileDataIDText;
     public Toggle wmoToggle;
     public Toggle m2Toggle;
 
@@ -140,6 +141,7 @@ public class TerrainImport : MonoBehaviour
         {
             selectedWDTId = record.WdtFileDataID;
 
+            WDTFileDataIDText.text = $"{selectedWDTId}";
             WDT.WDTEntries.Clear();
             if (WDT.ParseWDT(record.WdtFileDataID))
                 MiniMap.Load(record.WdtFileDataID, minimapScrollPanel);
@@ -166,7 +168,7 @@ public class TerrainImport : MonoBehaviour
         if (currentSelectedPlayerSpawn == new Vector2(0, 0) || currentSelectedPlayerSpawn == null)
             currentSelectedPlayerSpawn = new Vector2(MinimapData.Min.y + ((MinimapData.Max.y - MinimapData.Min.y) / 2), MinimapData.Min.x + ((MinimapData.Max.x - MinimapData.Min.x) / 2));
         
-        Debug.Log("Spawn : " + currentSelectedPlayerSpawn.x + " " + currentSelectedPlayerSpawn.y);
+        Debug.Log($"Spawn : {currentSelectedPlayerSpawn.x} {currentSelectedPlayerSpawn.y}");
 
         World.GetComponent<WorldLoader>().LoadWorld(selectedWDTId, currentSelectedPlayerSpawn);
         LoadingText.SetActive(true);

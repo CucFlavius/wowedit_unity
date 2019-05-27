@@ -54,7 +54,9 @@ public static partial class WDT
                             break;
                     }
                 }
-                Flags.Add(FileDataId, WDTFlags);
+                
+                if (!Flags.ContainsKey(FileDataId))
+                    Flags.Add(FileDataId, WDTFlags);
             }
             return true;
         }

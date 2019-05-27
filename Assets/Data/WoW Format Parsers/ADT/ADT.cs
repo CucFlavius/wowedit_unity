@@ -216,7 +216,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Run Terrain Mesh Parser //
-        public static void LoadTerrainMesh(uint AdtFileDataId, Vector2 Coords, CASCHandler Handler)
+        public static void LoadTerrainMesh(uint AdtFileDataId, CASCHandler Handler)
         {
             ThreadWorkingMesh = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -224,7 +224,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTRootData.meshBlockData = new ADTRootData.MeshBlockData();
             ADTRootData.meshBlockData.meshChunksData = new List<ADTRootData.MeshChunkData>();
 
-            ParseADT_Main(AdtFileDataId, Coords, Handler);
+            ParseADT_Main(AdtFileDataId, Handler);
             ADT_ProcessData.GenerateMeshArrays();
 
             if (working)
@@ -237,7 +237,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Run Terrain Texture Parser //
-        public static void LoadTerrainTextures(uint TexAdtFileId, Vector2 Coords, CASCHandler Handler, uint WdtFileDataId)
+        public static void LoadTerrainTextures(uint TexAdtFileId, CASCHandler Handler, uint WdtFileDataId)
         {
             ThreadWorkingTextures = true;
             long millisecondsStart = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -245,7 +245,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTTexData.textureBlockData = new ADTTexData.TextureBlockData();
             ADTTexData.textureBlockData.textureChunksData = new List<ADTTexData.TextureChunkData>();
 
-            ParseADT_Tex(TexAdtFileId, Coords, Handler, WdtFileDataId);
+            ParseADT_Tex(TexAdtFileId, Handler, WdtFileDataId);
             // if (SettingsTerrainImport.LoadShadowMaps)
             //     ADT_ProcessData.AdjustAlphaBasedOnShadowmap(MapName);
             ADT_ProcessData.Load_hTextures(Handler);
@@ -269,7 +269,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             ADTObjData.modelBlockData.terrainPos = Coords;
             if (SettingsTerrainImport.LoadWMOs ||
                 SettingsTerrainImport.LoadM2s)
-                ParseADT_Obj(OBJFileDataId, Coords, Handler);
+                ParseADT_Obj(OBJFileDataId, Handler);
 
             if (working)
                 ADTObjData.ModelBlockDataQueue.Enqueue(ADTObjData.modelBlockData);
@@ -281,7 +281,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Terrain Mesh Parser //
-        private static void ParseADT_Main(uint RootAdtFileDataId, Vector2 coords, CASCHandler Handler)  // MS version
+        private static void ParseADT_Main(uint RootAdtFileDataId, CASCHandler Handler)  // MS version
         {
             ADTRoot r = new ADTRoot();
             int MCNKchunkNumber = 0;
@@ -327,7 +327,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Terrain Texture Parser //
-        private static void ParseADT_Tex(uint TexFileDataId, Vector2 coords, CASCHandler Handler, uint WdtFileDataId)
+        private static void ParseADT_Tex(uint TexFileDataId, CASCHandler Handler, uint WdtFileDataId)
         {
             ADTTex t = new ADTTex();
             int MCNKchunkNumber = 0;
@@ -376,7 +376,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
         }
 
         // Terrain Models Parser //
-        public static void ParseADT_Obj(uint OBJFileDataId, Vector2 coords, CASCHandler Handler)
+        public static void ParseADT_Obj(uint OBJFileDataId, CASCHandler Handler)
         {
             ADTObj o = new ADTObj();
             int MCNKchunkNumber = 0;

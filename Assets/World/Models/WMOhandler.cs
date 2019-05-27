@@ -160,7 +160,6 @@ namespace Assets.World.Models
 
                 terrainHandler.LoadedWMOIds[data.fileDataId] = WMOinstance;
 
-
                 int nGroups = data.Info.nGroups;
                 for (int g = 0; g < nGroups; g++)
                 {

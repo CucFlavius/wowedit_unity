@@ -15,8 +15,8 @@ public static partial class M2
     public static void ParseSkin(BinaryReader reader, M2Data m2Data)
     {
         string magic        = reader.ReadFourCC();              // 'SKIN'
+        M2Array vertices    = reader.ReadM2Array();
         M2Array indices     = reader.ReadM2Array();
-        M2Array triangles   = reader.ReadM2Array();
         M2Array bones       = reader.ReadM2Array();
         M2Array submeshes   = reader.ReadM2Array();
         M2Array batches     = reader.ReadM2Array();             // nTexture_units
@@ -49,8 +49,8 @@ public static partial class M2
         }
 
         // Read SubMesh Data //
-        int[] Indices                           = new int[indices.Size];            // Three indices which make up a triangle.
-        int[] Triangles                         = new int[triangles.Size];          // Bone indices (Index into BoneLookupTable)
+        int[] Indices                           = new int[vertices.Size];            // Three indices which make up a triangle.
+        int[] Triangles                         = new int[indices.Size];          // Bone indices (Index into BoneLookupTable)
 
         int[] skinSectionId                     = new int[submeshes.Size];          // Mesh part ID, see below.
         int[] submesh_StartVertex               = new int[submeshes.Size];          // Starting vertex number.
@@ -70,15 +70,15 @@ public static partial class M2
         float[] submesh_sortRadius              = new float[submeshes.Size];        // Distance of the vertex farthest from CenterBoundingBox.
 
         /// Indices ///
-        reader.BaseStream.Seek(indices.Offset, SeekOrigin.Begin);
-        for (var ind = 0; ind < indices.Size; ind++)
+        reader.BaseStream.Seek(vertices.Offset, SeekOrigin.Begin);
+        for (var ind = 0; ind < vertices.Size; ind++)
         {
             Indices[ind] = reader.ReadUInt16();
         }
 
         /// triangles ///
-        reader.BaseStream.Seek(triangles.Offset, SeekOrigin.Begin);
-        for (var tri = 0; tri < triangles.Size; tri++)
+        reader.BaseStream.Seek(indices.Offset, SeekOrigin.Begin);
+        for (var tri = 0; tri < indices.Size; tri++)
         {
             Triangles[tri] = reader.ReadUInt16();
         }
@@ -163,7 +163,12 @@ public static partial class M2
             m2Data.submeshData.Add(submeshData);
         }
 
-        /// Assemble Bone Data ///
-        /// 
+        /// Read Bone Data ///
+        // byte[] Properties = new byte[bones.Size];
+        // reader.BaseStream.Seek(bones.Offset, SeekOrigin.Current);
+        // for (var bone = 0; bone < bones.Size; bone++)
+        // {
+        //     Properties[bone] = reader.ReadByte();
+        // }
     }
 }

@@ -13,7 +13,8 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
     {
         public static bool ThreadWorking;
         public static GroupData groupDataBuffer;
-        public static List<string> LoadedBLPs = new List<string>();
+        public static List<uint> LoadedBLPs = new List<uint>();
+        public static List<uint> WMOGroupIDs = new List<uint>();
 
         public static void Load(uint FileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale, CASCHandler Handler)
         {
@@ -131,90 +132,79 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             }
         }
 
-        private static void ParseWMO_Root(Stream stream)
-        {
-            
-        }
-
-        private static void ParseWMO_Groups(string dataPath)
+        private static void ParseWMO_Groups(uint FileDataId, CASCHandler CascHandler)
         {
             wmoData.groupsData = new List<GroupData>(wmoData.Info.nGroups);
-
-            string noExtension = Path.GetFileNameWithoutExtension(dataPath);
-            string directoryPath = Path.GetDirectoryName(dataPath);
 
             //for (int grp = 0; grp < 1; grp++)
             for (int grp = 0; grp < wmoData.Info.nGroups; grp++)
             {
                 groupDataBuffer = new GroupData();
 
-                string fileNumber = grp.ToString("000");
-                string fullPath = directoryPath + @"\" + noExtension + "_" + fileNumber + ".wmo";
+                using (var stream = CascHandler.OpenFile(FileDataId))
+                using (var reader = new BinaryReader(stream))
+                {
+                    int MVER        = reader.ReadInt32();
+                    int MVERsize    = reader.ReadInt32();
+                    ReadMVER(reader); // root file version
+                    int MOGP        = reader.ReadInt32();
+                    int MOGPsize    = reader.ReadInt32();
+                    ReadMOGP(reader); // group header (contains the rest of the chunks)
 
-                // using (Stream WMOgroupstream = Casc.GetFileStream(fullPath))
-                // using (BinaryReader reader = new BinaryReader(WMOgroupstream))
-                // {
-                //     int MVER        = reader.ReadInt32();
-                //     int MVERsize    = reader.ReadInt32();
-                //     ReadMVER(reader); // root file version
-                //     int MOGP        = reader.ReadInt32();
-                //     int MOGPsize    = reader.ReadInt32();
-                //     ReadMOGP(reader); // group header (contains the rest of the chunks)
-
-                //     int MOTVcount = 0;
-                //     int MOCVcount = 0;
-                //     long streamPosition = WMOgroupstream.Position;
-                //     while (streamPosition < WMOgroupstream.Length)
-                //     {
-                //         WMOgroupstream.Position = streamPosition;
-                //         WMOChunkId chunkID  = (WMOChunkId)reader.ReadInt32();
-                //         int chunkSize       = reader.ReadInt32();
-                //         streamPosition      = WMOgroupstream.Position + chunkSize;
-                //         switch (chunkID)
-                //         {
-                //             case WMOChunkId.MOPY:
-                //                 ReadMOPY(reader, chunkSize); // Material info for triangles
-                //                 break;
-                //             case WMOChunkId.MOVI:
-                //                 ReadMOVI(reader, chunkSize); // Vertex indices for triangles
-                //                 break;
-                //             case WMOChunkId.MOVT:
-                //                 ReadMOVT(reader, chunkSize); // Vertices chunk
-                //                 break;
-                //             case WMOChunkId.MONR:
-                //                 ReadMONR(reader, chunkSize); // Normals chunk
-                //                 break;
-                //             case WMOChunkId.MOTV:
-                //                 {
-                //                     MOTVcount++;
-                //                     if (MOTVcount == 1)
-                //                         ReadMOTV(reader, chunkSize); // Texture coordinates
-                //                     else if (MOTVcount == 2)
-                //                         ReadMOTV2(reader, chunkSize);
-                //                     else if (MOTVcount == 3)
-                //                         ReadMOTV3(reader, chunkSize);
-                //                 }
-                //                 break;
-                //             case WMOChunkId.MOBA:
-                //                 ReadMOBA(reader, chunkSize); // Render batches
-                //                 break;
-                //             case WMOChunkId.MOCV:
-                //                 {
-                //                     MOCVcount++;
-                //                     if (MOCVcount == 1)
-                //                         ReadMOCV(reader, chunkSize);
-                //                     else if (MOCVcount == 2)
-                //                         ReadMOCV2(reader, chunkSize);
-                //                 }
-                //                 break;
-                //             default:
-                //                 SkipUnknownChunk(reader, chunkID, chunkSize);
-                //                 break;
-                //         }
-                //     }
-                //     wmoData.groupsData.Add(groupDataBuffer);
-                //     WMOgroupstream.Close();
-                // }
+                    int MOTVcount = 0;
+                    int MOCVcount = 0;
+                    long streamPosition = stream.Position;
+                    while (streamPosition < stream.Length)
+                    {
+                        stream.Position = streamPosition;
+                        WMOChunkId chunkID  = (WMOChunkId)reader.ReadInt32();
+                        int chunkSize       = reader.ReadInt32();
+                        streamPosition      = stream.Position + chunkSize;
+                        switch (chunkID)
+                        {
+                            case WMOChunkId.MOPY:
+                                ReadMOPY(reader, chunkSize); // Material info for triangles
+                                break;
+                            case WMOChunkId.MOVI:
+                                ReadMOVI(reader, chunkSize); // Vertex indices for triangles
+                                break;
+                            case WMOChunkId.MOVT:
+                                ReadMOVT(reader, chunkSize); // Vertices chunk
+                                break;
+                            case WMOChunkId.MONR:
+                                ReadMONR(reader, chunkSize); // Normals chunk
+                                break;
+                            case WMOChunkId.MOTV:
+                                {
+                                    MOTVcount++;
+                                    if (MOTVcount == 1)
+                                        ReadMOTV(reader, chunkSize); // Texture coordinates
+                                    else if (MOTVcount == 2)
+                                        ReadMOTV2(reader, chunkSize);
+                                    else if (MOTVcount == 3)
+                                        ReadMOTV3(reader, chunkSize);
+                                }
+                                break;
+                            case WMOChunkId.MOBA:
+                                ReadMOBA(reader, chunkSize); // Render batches
+                                break;
+                            case WMOChunkId.MOCV:
+                                {
+                                    MOCVcount++;
+                                    if (MOCVcount == 1)
+                                        ReadMOCV(reader, chunkSize);
+                                    else if (MOCVcount == 2)
+                                        ReadMOCV2(reader, chunkSize);
+                                }
+                                break;
+                            default:
+                                SkipUnknownChunk(stream, chunkID, chunkSize);
+                                break;
+                        }
+                    }
+                    wmoData.groupsData.Add(groupDataBuffer);
+                    stream.Close();
+                }
             }
         }
 

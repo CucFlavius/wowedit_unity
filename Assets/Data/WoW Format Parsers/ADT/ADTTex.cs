@@ -352,7 +352,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
             // if (Enum.IsDefined(typeof(ADTChunkId), chunkID))
             //     Debug.Log($"Missing chunk ID : {chunkID}");
 
-            reader.BaseStream.Seek(chunkSize, SeekOrigin.Current);
+            reader.BaseStream.Position += chunkSize;
         }
     }
 }

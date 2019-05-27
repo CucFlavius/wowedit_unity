@@ -47,9 +47,6 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
         public uint TextureId3;
         public BGRA Color;
         public MaterialFlags texture3_flags;
-
-        public string Texture1;
-        public string Texture2;
     }
 
     public struct GroupData

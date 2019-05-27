@@ -82,7 +82,7 @@ namespace Assets.World.Terrain
 
         public class QueueItem
         {
-            public uint ADTFileDataId;
+            public uint FileDataId;
             public int x;
             public int y;
             public GameObject Block;
@@ -181,7 +181,7 @@ namespace Assets.World.Terrain
         {
             WDTFileDataID = WdtFileDataId;
             QueueItem item = new QueueItem();
-            item.ADTFileDataId = FileDataID;
+            item.FileDataId = FileDataID;
             item.x = x;
             item.y = y;
             item.Block = Block;
@@ -235,23 +235,27 @@ namespace Assets.World.Terrain
         public void ADTRootThread()
         {
             Handler = CascHandler.cascHandler;
-            uint ADTFileDataId = currentHTerrain.ADTFileDataId;
-            ADT.LoadTerrainMesh(ADTFileDataId, new Vector2(currentHTerrain.x, currentHTerrain.y), Handler);
+            uint ADTFileDataId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].RootADT;
+
+            // if (ADTFileDataId != 0)
+            ADT.LoadTerrainMesh(ADTFileDataId, Handler);
         }
 
         public void ADTTexThread()
         {
             Handler = CascHandler.cascHandler;
-            uint TexDataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].TEX0ADT;
-            ADT.LoadTerrainTextures(TexDataFileId, new Vector2(currentHTexture.x, currentHTexture.y), Handler, WDTFileDataID);
+            uint TexDataFileId = WDT.WDTEntries[(currentHTexture.x, currentHTexture.y)].TEX0ADT;
+            if (TexDataFileId != 0)
+                ADT.LoadTerrainTextures(TexDataFileId, Handler, WDTFileDataID);
         }
 
         public void ADTObjThread()
         {
             Handler = CascHandler.cascHandler;
-            uint OBJ0DataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].OBJ0ADT;
-            uint OBJ1DataFileId = WDT.WDTEntries[(currentHTerrain.x, currentHTerrain.y)].OBJ1ADT;
+            uint OBJ0DataFileId = WDT.WDTEntries[(currentObj.x, currentObj.y)].OBJ0ADT;
+            uint OBJ1DataFileId = WDT.WDTEntries[(currentObj.x, currentObj.y)].OBJ1ADT;
             ADT.LoadTerrainModels(OBJ0DataFileId, new Vector2(currentObj.x, currentObj.y), Handler);
+            ADT.LoadTerrainModels(OBJ1DataFileId, new Vector2(currentObj.x, currentObj.y), Handler);
         }
 
         public void MapTextureThread() => MapTexture.Load(new Vector2(currentMapTexture.x, currentMapTexture.y), Handler);
@@ -271,7 +275,7 @@ namespace Assets.World.Terrain
 
                 if (HTGroupItem.Block != null)
                 {
-                    HTGroupItem.Block.name = HTGroupItem.ADTFileDataId + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
+                    HTGroupItem.Block.name = HTGroupItem.FileDataId + "_" + HTGroupItem.x + "_" + HTGroupItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -322,7 +326,7 @@ namespace Assets.World.Terrain
                 QueueItem HTextureItem = currentLoadingHTextureBlock.Dequeue();
                 if (HTextureItem.Block != null)
                 {
-                    HTextureItem.Block.name = HTextureItem.ADTFileDataId + "_" + HTextureItem.x + "_" + HTextureItem.y;
+                    HTextureItem.Block.name = HTextureItem.FileDataId + "_" + HTextureItem.x + "_" + HTextureItem.y;
 
                     // generate mesh objects //
                     int frameSpread = 8; // spreading terrain chunks creation over multiple frames
@@ -527,7 +531,7 @@ namespace Assets.World.Terrain
                 mat.enableInstancing = true;
                 for (int i = 0; i < LoadedQueueItems.Count; i++)
                 {
-                    if (LoadedQueueItems[i].ADTFileDataId == mapTextureBlock.FileDataId && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
+                    if (LoadedQueueItems[i].FileDataId == mapTextureBlock.FileDataId && LoadedQueueItems[i].x == mapTextureBlock.coords.x && LoadedQueueItems[i].y == mapTextureBlock.coords.y)
                     {
                         for (int j = 0; j < 256; j++)
                         {
@@ -599,7 +603,7 @@ namespace Assets.World.Terrain
                                                                   m2Info.position.z);
 
                                uint m2FileDataId = data.M2Path[m2Info.nameId];
-                               M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one);
+                               M2Handler.AddToQueue(m2FileDataId, m2Info.uniqueID, addPosition, m2Info.rotation, Vector3.one, Handler);
                             }
                         }
                     }

@@ -238,12 +238,10 @@ public static partial class M2
         }
     }
 
-    public static void ReadTXID(BinaryReader br, M2Data m2Data)
+    public static void ReadTXID(BinaryReader br, M2Data m2Data, CASCHandler CascHandler, uint Size)
     {
-        br.BaseStream.Position -= 4;
-        var size = br.ReadUInt32();
-        var numTextures = size / 4;
-
+        LoadedBLPFileDataIds.Clear();
+        var numTextures = Size / 4;
         for (int i = 0; i < numTextures; i++)
         {
             uint texture = br.ReadUInt32();
@@ -275,12 +273,10 @@ public static partial class M2
         }
     }
 
-    public static void ReadSFID(BinaryReader br)
+    public static void ReadSFID(BinaryReader br, uint Size)
     {
-        br.BaseStream.Position -= 4;
-        var size = br.ReadUInt32();
-        var numSkins = size / 4;
-
+        SkinFiles.Clear();
+        var numSkins = Size / 4;
         for (int i = 0; i < numSkins; i++)
         {
             SkinFiles.Add(br.ReadUInt32());

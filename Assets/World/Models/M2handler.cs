@@ -1,6 +1,7 @@
 ﻿using Assets.Data.WoW_Format_Parsers.WMO;
 using Assets.World.Terrain;
 using Assets.WoWEditSettings;
+using CASCLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace Assets.World.Models
         private Dictionary<string, Texture2D> LoadedM2Textures      = new Dictionary<string, Texture2D>();
         private Dictionary<uint, Texture2D> LoadedM2TextureIds    = new Dictionary<uint, Texture2D>();
         private List<M2QueueItem> M2Clones = new List<M2QueueItem>();
+        public CASCHandler CascHandler;
 
         public class M2QueueItem
         {
@@ -38,8 +40,9 @@ namespace Assets.World.Models
             public Vector3 Scale;
         }
 
-        public void AddToQueue(uint fileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void AddToQueue(uint fileDataId, int uniqueID, Vector3 position, Quaternion rotation, Vector3 scale, CASCHandler Handler)
         {
+            CascHandler = Handler;
             M2QueueItem item = new M2QueueItem();
             item.FileDataId = fileDataId;
             item.uniqueID   = uniqueID;
@@ -142,7 +145,7 @@ namespace Assets.World.Models
             M2Clones.Add(item);
         }
 
-        public void ParseM2Block() => M2.Load(currentM2FileDataId, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale);
+        public void ParseM2Block() => M2.Load(currentM2FileDataId, currentM2uniqueID, currentM2position, currentM2rotation, currentM2scale, CascHandler);
 
         public void CreateM2Object(M2Data data)
         {
@@ -295,8 +298,6 @@ namespace Assets.World.Models
             {
                 uint FDID           = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_skinSectionIndex].M2Batch_textureComboIndex]].FileDataId;
                 Texture2Ddata tdata = data.m2Tex[data.textureLookupTable[data.m2BatchIndices[data.m2BatchIndices[tex].M2Batch_skinSectionIndex].M2Batch_textureComboIndex]].texture2Ddata;
-
-                Debug.Log($"M2Handler: FileDataId -> {FDID} Width -> {tdata.width} Height -> {tdata.height}");
 
                 if (FDID != 0 && tdata.TextureData != null)
                 {

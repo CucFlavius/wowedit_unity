@@ -74,7 +74,7 @@ namespace Assets.World
 
                     TerrainHandler.QueueItem queueItem = new TerrainHandler.QueueItem();
                     uint fileDataId = PulledObj.GetComponent<ADTBlock>().FileDataId;
-                    queueItem.ADTFileDataId = fileDataId;
+                    queueItem.FileDataId = fileDataId;
 
                     ADTMatrix[(int)coords.x, (int)coords.y] = 0;
                     queueItem.x = (int)coords.x;
