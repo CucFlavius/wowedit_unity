@@ -99,23 +99,39 @@ public class TreeBranch : MonoBehaviour {
 
         if (Path == "C:\\")
         {
-            string[] SubfoldersArray = Directory.GetDirectories("C:\\");
-            Subfolders = new List<string>(SubfoldersArray);
+            try
+            {
+                string[] SubfoldersArray = Directory.GetDirectories("C:\\");
+                Subfolders = new List<string>(SubfoldersArray);
+            }
+            catch { }
         }
         else if (Path == "D:\\")
         {
-            string[] SubfoldersArray = Directory.GetDirectories("D:\\");
-            Subfolders = new List<string>(SubfoldersArray);
+            try
+            {
+                string[] SubfoldersArray = Directory.GetDirectories("D:\\");
+                Subfolders = new List<string>(SubfoldersArray);
+            }
+            catch { }
         }
         else if (Path == "E:\\")
         {
-            string[] SubfoldersArray = Directory.GetDirectories("E:\\");
-            Subfolders = new List<string>(SubfoldersArray);
+            try
+            {
+                string[] SubfoldersArray = Directory.GetDirectories("E:\\");
+                Subfolders = new List<string>(SubfoldersArray);
+            }
+            catch { }
         }
         else if (Path == "F:\\")
         {
-            string[] SubfoldersArray = Directory.GetDirectories("F:\\");
-            Subfolders = new List<string>(SubfoldersArray);
+            try
+            {
+                string[] SubfoldersArray = Directory.GetDirectories("F:\\");
+                Subfolders = new List<string>(SubfoldersArray);
+            }
+            catch { }
         }
         else if (Path == "G:\\")
         {
@@ -124,11 +140,7 @@ public class TreeBranch : MonoBehaviour {
                 string[] SubfoldersArray = Directory.GetDirectories("G:\\");
                 Subfolders = new List<string>(SubfoldersArray);
             }
-            catch
-            {
-
-            }
-
+            catch { }
         }
         
     }

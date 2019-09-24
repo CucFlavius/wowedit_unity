@@ -15,6 +15,8 @@ public class RunAtLaunch : MonoBehaviour {
     public GameObject FolderBrowserDialog;
     public GameObject DataSourceManagerPanel;
     public GameObject CASC;
+    public UIManager uiManager;
+    public CascHandler cascHandler;
 
     private LocaleFlags firstInstalledLocale = LocaleFlags.enUS;
 
@@ -23,6 +25,9 @@ public class RunAtLaunch : MonoBehaviour {
     /// </summary>
     void Start()
     {
+        cascHandler = CASC.GetComponent<CascHandler>();
+        uiManager.Initialize();
+
         UserPreferences.Load();
 
         Settings.ApplicationPath = Application.streamingAssetsPath;
@@ -31,8 +36,8 @@ public class RunAtLaunch : MonoBehaviour {
         SettingsInit();
         ADT.Initialize(CASC.GetComponent<CascHandler>().cascHandler);
 
-        if (Settings.GetSection("path").GetString("wowsource") == null ||
-            Settings.GetSection("path").GetString("wowsource") == "") { }
+        if (Settings.GetSection("misc").GetString("wowsource") == null ||
+            Settings.GetSection("misc").GetString("wowsource") == "") { }
         else
         {
             CASCConfig config = null;
@@ -41,7 +46,11 @@ public class RunAtLaunch : MonoBehaviour {
             else if (Settings.GetSection("misc").GetString("wowsource") == "online")
                 config = CASCConfig.LoadOnlineStorageConfig(Settings.GetSection("misc").GetString("onlineproduct"), "us", true);
 
-            CASC.GetComponent<CascHandler>().InitCasc(config, firstInstalledLocale);
+            //CASC.GetComponent<CascHandler>().InitCasc(config, firstInstalledLocale);
+
+            new Thread(() => {
+                cascHandler.InitCasc(config, firstInstalledLocale);
+            }).Start();
         }
     }
 

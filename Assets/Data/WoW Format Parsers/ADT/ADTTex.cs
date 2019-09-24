@@ -226,7 +226,7 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     }
                 }
             }
-            ADTTexData.textureBlockData.MTXP = true;
+            //ADTTexData.textureBlockData.MTXP = true;
         }
 
         public void ReadMCAL(BinaryReader ADTtexstream, uint WdtFileDataId, ADTTexData.TextureChunkData chunkData)

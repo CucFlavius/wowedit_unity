@@ -23,6 +23,7 @@ public class FlyCamera : MonoBehaviour
 
     void Update()
     {
+        /*
         if (Input.GetMouseButton(1))
         {
             lastMouse = Input.mousePosition - lastMouse;
@@ -32,7 +33,7 @@ public class FlyCamera : MonoBehaviour
             lastMouse = Input.mousePosition;
             //Mouse  camera angle done.  
         }
-
+        */
         //Keyboard commands
         float f = 0.0f;
         Vector3 p = GetBaseInput();

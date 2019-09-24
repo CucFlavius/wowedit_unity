@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class MapTab : MonoBehaviour {
 
-    private GameObject terrain;
+    //private GameObject terrain;
 
     public void MapTabClicked ()
     {
         string selectedMap = gameObject.transform.GetChild(0).GetComponent<Text>().text;
 
-        terrain = GameObject.Find("[UI Manager]");
-        TerrainImport terrainImport = terrain.GetComponent<TerrainImport>();
+        //terrain = GameObject.Find("[UI Manager]");
+        TerrainImport terrainImport = UIManager.staticUIManager.GetComponent<TerrainImport>();
         terrainImport.MapSelected(selectedMap);
     }
 }

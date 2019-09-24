@@ -2509,11 +2509,11 @@ GameObject:
   m_Component:
   - component: {fileID: 398}
   - component: {fileID: 411}
-  - component: {fileID: 421}
   - component: {fileID: 424}
   - component: {fileID: 420}
   - component: {fileID: 1206}
   - component: {fileID: 176}
+  - component: {fileID: 163}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2575,6 +2575,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb0a0bf277e1244499bc22c19e41855e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 10
+  maxYAngle: 80
 --- !u!1 &164
 GameObject:
   m_ObjectHideFlags: 0
@@ -6840,14 +6854,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 159}
   m_Enabled: 1
---- !u!92 &421
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159}
-  m_Enabled: 1
 --- !u!104 &422
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -6945,7 +6951,7 @@ Behaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 159}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!157 &425
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -15492,7 +15498,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -299.99942}
+  m_AnchoredPosition: {x: 0, y: -299.9999}
   m_SizeDelta: {x: 438.39996, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!224 &1130
@@ -17223,7 +17229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.041}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -22354,6 +22360,8 @@ MonoBehaviour:
   FolderBrowserDialog: {fileID: 291}
   DataSourceManagerPanel: {fileID: 52}
   CASC: {fileID: 648161244}
+  uiManager: {fileID: 1447}
+  cascHandler: {fileID: 0}
 --- !u!114 &1387
 MonoBehaviour:
   m_ObjectHideFlags: 0

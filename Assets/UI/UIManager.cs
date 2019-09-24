@@ -6,16 +6,13 @@ public class UIManager : MonoBehaviour {
 
     public GameObject Panel_DataSourceManager;
     public GameObject Panel_Settings;
+    public static UIManager staticUIManager;        // static reference to this script
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Use this for initialization
+    public void Initialize ()
+    {
+        staticUIManager = this;
+    }
 
     ///////////////////////////////
     ///     Toolbar Buttons     ///

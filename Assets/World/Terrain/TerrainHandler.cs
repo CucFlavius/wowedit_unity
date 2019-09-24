@@ -474,8 +474,9 @@ namespace Assets.World.Terrain
                         #region Material
                         //////////////////////////////
 
-                        Material mat = new Material(shaderWoWTerrainHigh);
-
+                        //Material mat = new Material(shaderWoWTerrainHigh);
+                        Material mat = new Material(HChunkMaterial);
+                        
                         for (int ln = 0; ln < 4; ln++)
                         {
                             if (DiffuseLayers[ln] != 0)
@@ -494,6 +495,12 @@ namespace Assets.World.Terrain
                             mat.SetVector("heightScale", new Vector4(HeightScales[0], HeightScales[1], HeightScales[2], HeightScales[3]));
                             mat.SetVector("heightOffset", new Vector4(heightOffsets[0], heightOffsets[1], heightOffsets[2], heightOffsets[3]));
                         }
+                        else
+                        {
+                            mat.SetVector("heightScale", new Vector4(.01f, .01f, .01f, .01f));
+                            mat.SetVector("heightOffset", new Vector4(.01f, .01f, .01f, .01f));
+                        }
+
                         if (SettingsTerrainImport.LoadShadowMaps)
                         {
                             mat.SetTexture("_shadowMap", ShadowMap);

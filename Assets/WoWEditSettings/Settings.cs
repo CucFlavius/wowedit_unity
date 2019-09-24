@@ -33,7 +33,21 @@ namespace Assets.WoWEditSettings
         {
             var currentSection = string.Empty;
 
-            using (var sr = File.OpenText("settings.ini"))
+            if (!File.Exists(filePath))
+            {
+                //File.Create(filePath);
+                string defaultSettingsFile =
+                "[path]\n" +
+                "cachepath=\n" +
+                "selectedpath=\n" +
+                "[misc]\n" +
+                "wowsource=\n" +
+                "localproduct=\n" +
+                "onlineproduct=";
+                File.WriteAllText(filePath, defaultSettingsFile);
+            }
+
+            using (var sr = File.OpenText(filePath))
             {
                 var line = string.Empty;
                 while ((line = sr.ReadLine()) != null)

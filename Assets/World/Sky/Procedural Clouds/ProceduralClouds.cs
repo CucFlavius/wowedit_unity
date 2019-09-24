@@ -43,7 +43,6 @@ namespace Assets.World.Sky.Procedural_Clouds
                     float xCoord = xOrg + x / noiseTex.width * scale + Time.time / 50;
                     float yCoord = yOrg + y / noiseTex.height * scale;
                     float sample = noise.Sample3D(xCoord, yCoord, zCoord);
-
                     // distance fade - mask //
                     Vector2 maskResolution = new Vector2(noiseTex.height, noiseTex.width);
                     Vector2 maskCenter = new Vector2(maskResolution.x * 0.5f, maskResolution.y * 0.5f);
