@@ -14,6 +14,23 @@ namespace Assets.UI.CASC
     public class CascHandler : MonoBehaviour
     {
         public CASCHandler cascHandler;
+        public GameObject blockUI;
+
+        public static bool unblockUI = false;
+
+        public void Start()
+        {
+            blockUI.SetActive(true);
+        }
+
+        public void Update()
+        {
+            if (unblockUI == true)
+            {
+                blockUI.SetActive(false);
+                unblockUI = false;
+            }
+        }
 
         public void InitCasc(CASCConfig config, LocaleFlags firstInstalledLocale)
         {

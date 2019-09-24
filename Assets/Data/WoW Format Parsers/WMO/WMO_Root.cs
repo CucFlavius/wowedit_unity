@@ -315,9 +315,9 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
                 doodadInstanceFlags.Unknown3                = flags[3];
                 doodadInstance.flags                        = doodadInstanceFlags;
 
-                doodadInstance.position             = new Vector3(reader.ReadSingle() / Settings.WorldScale,  // X
-                                                                  reader.ReadSingle() / Settings.WorldScale,  // Z
-                                                                  reader.ReadSingle() / Settings.WorldScale); // Y
+                doodadInstance.position             = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE,  // X
+                                                                  reader.ReadSingle() / Settings.WORLD_SCALE,  // Z
+                                                                  reader.ReadSingle() / Settings.WORLD_SCALE); // Y
                 doodadInstance.orientation          = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()); // (X, Y, Z, W)
                 doodadInstance.scale                = reader.ReadSingle();      // scale factor
                 doodadInstance.staticLightingColor  = reader.ReadBGRA();        // (B,G,R,A) overrides pc_sunColor

@@ -33,24 +33,17 @@ public static partial class M2
         m2Data.rotation = rotation;
         m2Data.scale = scale;
 
-        try
-        {
-            ThreadWorking = true;
+        ThreadWorking = true;
 
-            ParseM2_Root(FileDataId, m2Data, m2Tex, Handler);
+        ParseM2_Root(FileDataId, m2Data, m2Tex, Handler);
 
-            foreach (uint skinFile in SkinFiles)
-                ParseM2_Skin(skinFile, m2Data, Handler);
+        foreach (uint skinFile in SkinFiles)
+            ParseM2_Skin(skinFile, m2Data, Handler);
 
-            AllM2Data.Enqueue(m2Data);
+        AllM2Data.Enqueue(m2Data);
 
-            ThreadWorking = false;
-        }
-        catch (Exception ex)
-        {
-            Debug.Log("Error : Trying to parse M2 - " + FileDataId);
-            Debug.LogException(ex);
-        }
+        ThreadWorking = false;
+
     }
     private static void ParseM2_Root(uint fileDataID, M2Data m2Data, M2Texture m2Tex, CASCHandler CascHandler)
     {

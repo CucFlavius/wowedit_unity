@@ -82,7 +82,7 @@ public static partial class M2
             rotationM22track[cb]            = br.ReadM2Track();
             scaleM22track[cb]               = br.ReadM2Track();
 
-            Vector3 pivotRaw = new Vector3(br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale);
+            Vector3 pivotRaw = new Vector3(br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE);
             m2CompBone.pivot = new Vector3(-pivotRaw.x, pivotRaw.z, -pivotRaw.y);
 
             m2Data.m2CompBone.Add(m2CompBone);
@@ -122,7 +122,7 @@ public static partial class M2
                 br.BaseStream.Position  = m2AnimationValues.Offset;
                 for (int t = 0; t < m2AnimationValues.Size; t++)
                 {
-                    Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale);
+                    Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE);
                     values.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
                 }
                 positions.values = values;
@@ -187,7 +187,7 @@ public static partial class M2
                 br.BaseStream.Position  = m2AnimationValues.Offset;
                 for (int t = 0; t < m2AnimationValues.Size; t++)
                 {
-                    Vector3 rawScale = new Vector3(br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale);
+                    Vector3 rawScale = new Vector3(br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE);
                     values.Add(new Vector3(-rawScale.x, rawScale.z, -rawScale.y));
                 }
                 scales.values = values;
@@ -219,12 +219,12 @@ public static partial class M2
         m2Data.meshData = new MeshData();
         for (int v = 0; v < vertices.Size; v++)
         {
-            Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale, br.ReadSingle() / Settings.WorldScale);
+            Vector3 rawPosition = new Vector3(br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE, br.ReadSingle() / Settings.WORLD_SCALE);
             m2Data.meshData.pos.Add(new Vector3(-rawPosition.x, rawPosition.z, -rawPosition.y));
             m2Data.meshData.bone_weights.Add(new float[] { br.ReadByte() / 255.0f, br.ReadByte() / 255.0f, br.ReadByte() / 255.0f, br.ReadByte() / 255.0f });
             m2Data.meshData.bone_indices.Add(new int[] { br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte() });
             //Debug.Log(m2Data.meshData.bone_indices[v][0] + " " + m2Data.meshData.bone_indices[v][1] + " " + m2Data.meshData.bone_indices[v][2] + " " + m2Data.meshData.bone_indices[v][3]);
-            Vector3 rawnormal = new Vector3(br.ReadSingle() * Settings.WorldScale, br.ReadSingle() * Settings.WorldScale, br.ReadSingle() * Settings.WorldScale);
+            Vector3 rawnormal = new Vector3(br.ReadSingle() * Settings.WORLD_SCALE, br.ReadSingle() * Settings.WORLD_SCALE, br.ReadSingle() * Settings.WORLD_SCALE);
             m2Data.meshData.normal.Add(new Vector3(-rawnormal.x, rawnormal.z, -rawnormal.y));
             m2Data.meshData.tex_coords.Add(new Vector2(br.ReadSingle(), br.ReadSingle()));
             m2Data.meshData.tex_coords2.Add(new Vector2(br.ReadSingle(), br.ReadSingle()));

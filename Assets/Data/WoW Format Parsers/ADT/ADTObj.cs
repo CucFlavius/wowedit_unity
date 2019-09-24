@@ -31,9 +31,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / Settings.WorldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WORLD_SCALE;     //-- pos X
+                float Z         = reader.ReadSingle() / Settings.WORLD_SCALE;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WORLD_SCALE;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);                                         // This is relative to a corner of the map. Subtract 17066 from the non vertical values and you should start to see 
                                                                                                 // something that makes sense. You'll then likely have to negate one of the non vertical values in whatever coordinate 
                                                                                                 // system you're using to finally move it into place.
@@ -66,9 +66,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                                                                                                 // if flag mddf_entry_is_filedata_id is set, a file data id instead, ignoring MMID.
                 data.uniqueID   = reader.ReadInt32();                                           // This ID should be unique for all ADTs currently loaded.
                                                                                                 // Best, they are unique for the whole map. Blizzard has these unique for the whole game.
-                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos X
-                float Z         = reader.ReadSingle() / Settings.WorldScale;                    //-- Height
-                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WorldScale;     //-- pos Z
+                float Y         = (reader.ReadSingle() - 17066) * -1 / Settings.WORLD_SCALE;     //-- pos X
+                float Z         = reader.ReadSingle() / Settings.WORLD_SCALE;                    //-- Height
+                float X         = (reader.ReadSingle() - 17066) * -1 / Settings.WORLD_SCALE;     //-- pos Z
                 data.position   = new Vector3(X, Z, Y);
 
                 // same as in MDDF.

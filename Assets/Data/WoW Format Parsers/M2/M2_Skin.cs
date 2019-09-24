@@ -99,9 +99,9 @@ public static partial class M2
             submesh_boneInfluences[sub]     = reader.ReadUInt16();
             submesh_centerBoneIndex[sub]    = reader.ReadUInt16();
 
-            Vector3 canterPosition          = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            Vector3 canterPosition          = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE);
             submesh_centerPosition[sub]     = new Vector3(-canterPosition.x, canterPosition.z, -canterPosition.y);
-            Vector3 sortCenterPosition      = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            Vector3 sortCenterPosition      = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE);
             submesh_sortCenterPosition[sub] = new Vector3(-sortCenterPosition.x, sortCenterPosition.z, -sortCenterPosition.y);
 
             submesh_sortRadius[sub]         = reader.ReadSingle();
@@ -120,7 +120,7 @@ public static partial class M2
 
             for (int vn = 0; vn < submesh_NbrVerts[sm]; vn++)
             {
-                vertList[vn]    = m2Data.meshData.pos[vn + submesh_StartVertex[sm]];
+                vertList[vn] = m2Data.meshData.pos[vn + submesh_StartVertex[sm]];
                 normsList[vn]   = m2Data.meshData.normal[vn + submesh_StartVertex[sm]];
                 uvsList[vn]     = m2Data.meshData.tex_coords[vn + submesh_StartVertex[sm]];
                 uvs2List[vn]    = m2Data.meshData.tex_coords2[vn + submesh_StartVertex[sm]];

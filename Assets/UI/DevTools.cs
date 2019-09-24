@@ -8,7 +8,8 @@ using static DB2;
 
 public class DevTools : MonoBehaviour {
 
-    public WorldLoader World;
+    public WorldLoader world;
+    public WorldLoader2 world2;
     public Jenkins96 Hasher = new Jenkins96();
     public GameObject CASC;
     public CASCHandler CASCHandler;
@@ -61,7 +62,9 @@ public class DevTools : MonoBehaviour {
 
         WDT.WDTEntries.Clear();
         if (WDT.ParseWDT(WdtFileDataId))
-            World.LoadSingleADT(WdtFileDataId, currentSelectedPlayerSpawn);
+            //World.LoadSingleADT(WdtFileDataId, currentSelectedPlayerSpawn);
+            //world2.LoadWorld(WdtFileDataId, currentSelectedPlayerSpawn);
+            world.LoadWorld(WdtFileDataId, currentSelectedPlayerSpawn);
         else
             Debug.Log("Error");
     }

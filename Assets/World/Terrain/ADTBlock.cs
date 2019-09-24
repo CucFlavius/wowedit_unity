@@ -100,7 +100,7 @@ namespace Assets.World.Terrain
                     distance = currentDistance;
                 }
             }
-            if (distance < Settings.terrainMaterialDistance / Settings.WorldScale)
+            if (distance < Settings.terrainMaterialDistance / Settings.WORLD_SCALE)
             {
                 if (materialLoDState == 1 || reCheck)
                 {

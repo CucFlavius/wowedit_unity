@@ -43,6 +43,8 @@ namespace CASCLib
             }
 
             Debug.Log("CASCHandler: Initialized CASC...");
+
+            Assets.UI.CASC.CascHandler.unblockUI = true;
         }
 
         public static CASCHandler OpenStorage(CASCConfig config)

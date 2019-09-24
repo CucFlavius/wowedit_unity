@@ -17,8 +17,8 @@ namespace Assets.Data
     {
         public static BoundingBox ReadBoundingBoxes(this BinaryReader reader)
         {
-            Vector3 rawMin = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
-            Vector3 rawMax = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+            Vector3 rawMin = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE);
+            Vector3 rawMax = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE);
             BoundingBox box = new BoundingBox
             {
                 min = new Vector3(-rawMin.x, rawMin.z, -rawMin.y),

@@ -193,14 +193,18 @@ public class TerrainImport : MonoBehaviour
     public void Toggle_WMO(bool on)
     {
         SettingsTerrainImport.LoadWMOs = on;
-        Settings.Save();
+        PlayerPrefs.SetInt("LoadWMOs", on ? 1 : 0);
+        PlayerPrefs.Save();
+        //Settings.Save();
     }
 
     // Load M2's Toggle Interaction //
     public void Toggle_M2(bool on)
     {
         SettingsTerrainImport.LoadM2s = on;
-        Settings.Save();
+        PlayerPrefs.SetInt("LoadM2s", on ? 1 : 0);
+        PlayerPrefs.Save();
+        //Settings.Save();
     }
 
     #endregion

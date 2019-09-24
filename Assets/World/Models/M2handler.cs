@@ -62,12 +62,12 @@ namespace Assets.World.Models
 
             if (!terrainHandler.LoadedM2Ids.ContainsKey(fileDataId))
             {
-                //ParseM2Block(); //nonthreaded - for testing purposes
+                ParseM2Block(); //nonthreaded - for testing purposes
                 terrainHandler.LoadedM2Ids.Add(fileDataId, null);
                 M2Thread = new Thread(ParseM2Block);
                 M2Thread.IsBackground = true;
                 M2Thread.Priority = System.Threading.ThreadPriority.AboveNormal;
-                M2Thread.Start();
+                //M2Thread.Start();
             }
             else
             {

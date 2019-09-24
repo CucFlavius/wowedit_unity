@@ -96,16 +96,12 @@ namespace Assets.World.Terrain
             ADT.ThreadWorkingTextures = false;
             ADT.ThreadWorkingModels = false;
             MapTexture.MapTextureThreadRunning = false;
-            //ADTRootQueue = new Queue<QueueItem>();
             ADTRootQueue = new List<QueueItem>();
-            //ADTTexQueue = new Queue<QueueItem>();
             ADTTexQueue = new List<QueueItem>();
-            //ADTObjQueue = new Queue<QueueItem>();
             ADTObjQueue = new List<QueueItem>();
             currentLoadingHTerrainBlock = new Queue<QueueItem>();
             currentLoadingHTextureBlock = new Queue<QueueItem>();
             currentLoadingObjBlock = new Queue<QueueItem>();
-            //currentLoadingObj = new Queue<QueueItem>();
             mapTextureQueue = new Queue<QueueItem>();
         }
 
@@ -123,7 +119,6 @@ namespace Assets.World.Terrain
             if (ADTObjQueue.Count > 0 && !ADT.ThreadWorkingModels)
             {
                 ADT.ThreadWorkingModels = true;
-                //QueueItem q = ADTObjQueue.Dequeue();
                 QueueItem q = ADTObjQueue[0];
                 ADTObjQueue.RemoveAt(0);
                 ADTObjThreadRun(q);
@@ -131,7 +126,6 @@ namespace Assets.World.Terrain
             if (ADTTexQueue.Count > 0 && !ADT.ThreadWorkingTextures)
             {
                 ADT.ThreadWorkingTextures = true;
-                //QueueItem q = ADTTexQueue.Dequeue();
                 QueueItem q = ADTTexQueue[0];
                 ADTTexQueue.RemoveAt(0);
                 ADTTexThreadRun(q);
@@ -195,7 +189,7 @@ namespace Assets.World.Terrain
         public void ADTRootThreadRun(QueueItem queueItem)
         {
             currentHTerrain = queueItem;
-            //ParseHTerrainMesh(); // nonthreaded - for testing purposes
+            //ADTRootThread(); // nonthreaded - for testing purposes
             ADTRThread = new Thread(ADTRootThread);
             ADTRThread.IsBackground = true;
             ADTRThread.Priority = System.Threading.ThreadPriority.AboveNormal;
@@ -562,7 +556,7 @@ namespace Assets.World.Terrain
                 if (Gobject.Block != null)
                 {
 
-                    float blockSize = 533.33333f / Settings.WorldScale;
+                    float blockSize = 533.33333f / Settings.WORLD_SCALE;
 
                     if (SettingsTerrainImport.LoadWMOs)
                     {

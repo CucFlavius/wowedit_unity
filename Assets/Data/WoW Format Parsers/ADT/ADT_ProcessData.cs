@@ -23,9 +23,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     {
                         for (int j = 0; j < 9; j++)
                         {
-                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.WorldScale,
-                                                                                chunkData.VertexHeights[currentVertex] / Settings.WorldScale,
-                                                                                (float)(-j * 4.1666625) / Settings.WorldScale);
+                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.WORLD_SCALE,
+                                                                                chunkData.VertexHeights[currentVertex] / Settings.WORLD_SCALE,
+                                                                                (float)(-j * 4.1666625) / Settings.WORLD_SCALE);
                             currentVertex++;
                         }
                     }
@@ -33,9 +33,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                     {
                         for (int j1 = 0; j1 < 8; j1++)
                         {
-                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.WorldScale,
-                                                                                chunkData.VertexHeights[currentVertex] / Settings.WorldScale,
-                                                                                (float)((-j1 - 0.5) * 4.1666625) / Settings.WorldScale);
+                            chunkData.VertexArray[currentVertex] = new Vector3((float)(-i * 2.08333125) / Settings.WORLD_SCALE,
+                                                                                chunkData.VertexHeights[currentVertex] / Settings.WORLD_SCALE,
+                                                                                (float)((-j1 - 0.5) * 4.1666625) / Settings.WORLD_SCALE);
                             currentVertex++;
                         }
                     }
@@ -177,9 +177,9 @@ namespace Assets.Data.WoW_Format_Parsers.ADT
                 chunkData.UVArray = ADT.Chunk_UVs;
 
                 // scale chunk positions to worldScale //
-                Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.WorldScale,
-                                                     chunkData.MeshPosition.z / Settings.WorldScale,
-                                                     chunkData.MeshPosition.y / Settings.WorldScale);
+                Vector3 newMapPosition = new Vector3(chunkData.MeshPosition.x / Settings.WORLD_SCALE,
+                                                     chunkData.MeshPosition.z / Settings.WORLD_SCALE,
+                                                     chunkData.MeshPosition.y / Settings.WORLD_SCALE);
                 chunkData.MeshPosition = newMapPosition;
             }
         }

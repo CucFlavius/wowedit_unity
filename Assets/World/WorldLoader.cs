@@ -38,7 +38,7 @@ namespace Assets.World
         // Use this for initialization
         void Start()
         {
-            blockSize           = 533.33333f / Settings.WorldScale;
+            blockSize           = 533.33333f / Settings.WORLD_SCALE;
             // create matrices //
             ADTMatrix           = new int[maxWorldSize, maxWorldSize];
             //LoadedADTBlocks   = new Queue<GameObject>();
@@ -144,7 +144,8 @@ namespace Assets.World
             {
                 for (int y = 0; y < 64; y++)
                 {
-                    existingADTs[x, y] = MinimapData.mapAvailability[x, y].ADT;
+                    //existingADTs[x, y] = MinimapData.mapAvailability[x, y].ADT;
+                    existingADTs[x, y] = WDT.Flags[WdtFileDataId].HasADT[x, y];
                 }
             }
 

@@ -64,7 +64,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             groupDataBuffer.triangles = new uint[nIndices];
             for (int i = 0; i < nIndices; i++)
             {
-                groupDataBuffer.triangles[i] = reader.ReadUInt32();
+                groupDataBuffer.triangles[i] = reader.ReadUInt16();
             }
         } // loaded
 
@@ -75,7 +75,7 @@ namespace Assets.Data.WoW_Format_Parsers.WMO
             groupDataBuffer.vertices = new Vector3[nVertices];
             for (int i = 0; i < nVertices; i++)
             {
-                Vector3 positions = new Vector3(reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale, reader.ReadSingle() / Settings.WorldScale);
+                Vector3 positions = new Vector3(reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE, reader.ReadSingle() / Settings.WORLD_SCALE);
                 groupDataBuffer.vertices[i] = new Vector3(-positions.x, positions.z, -positions.y);
             }
         } // loaded
